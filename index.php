@@ -13,11 +13,10 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <meta name="mobile-web-app-capable" content="yes">
   <link rel='stylesheet' href='assets/css/style.css'>
+  <link rel='stylesheet' href='assets/css/material.blue_grey-light_green.css'>
 
   <!-- Google Font -->
-  <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
         <?php
               function get_client_ip() {
             $ipaddress = '';

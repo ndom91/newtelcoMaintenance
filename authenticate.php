@@ -358,8 +358,15 @@ if (!$_SESSION['logged_in']):
 
       <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
       <!-- Google font-->
-      <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet"><link href="https://fonts.googleapis.com/css?family=Quicksand:500,700" rel="stylesheet">
+      <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+
       <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+      <link rel='stylesheet' href='assets/css/material.blue_grey-light_green.css'>
+      <!-- material design -->
+      <link rel="stylesheet" href="assets/css/material.min.css">
+      <script src="assets/js/material.min.js"></script>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
   </head>
 
   <body>
@@ -416,7 +423,7 @@ if (!$_SESSION['logged_in']):
                                 <div class="row m-t-30">
                                   <div style = "font-size:11px; color:#cc0000; margin-top:10px"><?php echo $error; ?></div>
                                     <div class="col-md-12">
-                                        <input type="submit" value=" Sign In " class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20"></input>
+                                        <input type="submit" value=" Sign In " class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"></input>
 
                                     </div>
                                 </div>

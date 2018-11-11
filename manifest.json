@@ -1,0 +1,22 @@
+{
+    "dir": "ltr",
+    "lang": "en",
+    "name": "Newtelco Maintenance",
+    "scope": "/",
+    "display": "standalone",
+    "start_url": "https://maintenance.newtelco.de/",
+    "short_name": "Newtelco Maint",
+    "theme_color": "transparent",
+    "description": "",
+    "orientation": "any",
+    "background_color": "transparent",
+    "related_applications": [],
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "/assets/images/nt_logo_64.png",
+            "type": "image/png",
+            "sizes": "64x64"
+        }
+    ]
+}

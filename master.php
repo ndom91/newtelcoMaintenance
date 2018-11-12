@@ -6,6 +6,22 @@ if (isset($_REQUEST['logout'])) {
   unset($_SESSION['id_token_token']);
 }
 
+/*
+$redirect_uri = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
+$client1 = new Google_Client();
+$client1->setAuthConfig($oauth_credentials);
+$client1->setRedirectUri($redirect_uri);
+$client1->setScopes('https://www.googleapis.com/auth/userinfo.email');
+$client1->setApplicationName("NT_User_Info");
+$apiKey = 'AIzaSyDwfqT6lZld67Py1WwZ9x-6HHVkv9_p-y8';
+
+
+$client1->setDeveloperKey($apiKey);
+$oauth2 = new \Google_Service_Oauth2($client1);
+$userInfo = $oauth2->userinfo->get();
+print_r($userInfo);
+*/
+
 ?>
 
 <html>
@@ -87,6 +103,7 @@ if (isset($_REQUEST['logout'])) {
                 <li class="mdl-menu__item"><a href="?logout">Logout</a></li>
               </ul>
           </div>
+              
         </div>
       </header>
       <div class="mdl-layout__drawer">
@@ -104,11 +121,52 @@ if (isset($_REQUEST['logout'])) {
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Logout</button>
           </a>
         </nav>
+
       </div>
         <main class="mdl-layout__content">
             <div class="mdl-grid">
-              <div class="mdl-cell mdl-cell--8-col mdl-cell--4-col-phone">CS 6 (8 on tablet)</div>
-              <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone">CS 6 (8 on tablet)</div>
+              <div class="mdl-cell mdl-cell--3-col mdl-cell--0-col-phone"></div>
+              <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
+                <!-- Wide card with share menu button -->
+                  <style>
+                  .demo-card-wide.mdl-card {
+                    width: 562px;
+                    margin-top: 3%;
+                  }
+                  .demo-card-wide > .mdl-card__title {
+                    color: #fff;
+                    height: 65px;
+                    background: #4d4d4d;
+                  }
+                  .demo-card-wide > .mdl-card__menu {
+                    color: #fff;
+                  }
+                  </style>
+
+                  <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                    <div class="mdl-card__title">
+                      <h2 class="mdl-card__title-text">Welcome <?php echo $token_data['name'] ?></h2>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      Mauris sagittis pellentesque lacus eleifend lacinia...<br><br>
+                      <b>Debug:</b>
+                      <pre><?php 
+                      var_export($token_data);
+                      ?></pre>
+                      
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                      <a href="overview.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
+                        Overview
+                      </a>
+                      <a href="incoming.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
+                        Incoming
+                      </a>
+                    </div>
+                  </div>
+              </div>
+              <div class="mdl-cell mdl-cell--3-col mdl-cell--0-col-phone"></div>
             </div>
         </main>
         <footer class="mdl-mini-footer mdl-grid">

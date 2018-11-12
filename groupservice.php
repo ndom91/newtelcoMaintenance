@@ -6,6 +6,22 @@ if (isset($_REQUEST['logout'])) {
   unset($_SESSION['id_token_token']);
 }
 
+/*
+$redirect_uri = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
+$client1 = new Google_Client();
+$client1->setAuthConfig($oauth_credentials);
+$client1->setRedirectUri($redirect_uri);
+$client1->setScopes('https://www.googleapis.com/auth/userinfo.email');
+$client1->setApplicationName("NT_User_Info");
+$apiKey = 'AIzaSyDwfqT6lZld67Py1WwZ9x-6HHVkv9_p-y8';
+
+
+$client1->setDeveloperKey($apiKey);
+$oauth2 = new \Google_Service_Oauth2($client1);
+$userInfo = $oauth2->userinfo->get();
+print_r($userInfo);
+*/
+
 ?>
 
 <html>
@@ -87,6 +103,7 @@ if (isset($_REQUEST['logout'])) {
                 <li class="mdl-menu__item"><a href="?logout">Logout</a></li>
               </ul>
           </div>
+              
         </div>
       </header>
       <div class="mdl-layout__drawer">
@@ -104,11 +121,27 @@ if (isset($_REQUEST['logout'])) {
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Logout</button>
           </a>
         </nav>
+
       </div>
         <main class="mdl-layout__content">
             <div class="mdl-grid">
-              <div class="mdl-cell mdl-cell--8-col mdl-cell--4-col-phone">CS 6 (8 on tablet)</div>
-              <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone">CS 6 (8 on tablet)</div>
+              <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
+              <div class="mdl-cell mdl-cell--10-col mdl-cell--4-col-phone">
+                <iframe id="forum_embed"
+                  src="javascript:void(0)"
+                  scrolling="no"
+                  frameborder="0"
+                  width="100%"
+                  height="800">
+                </iframe>
+                <script type="text/javascript">
+                  document.getElementById('forum_embed').src =
+                     'https://groups.google.com/a/newtelco.de/forum/embed/?place=forum/service'
+                     + '&showsearch=true&showpopout=false&showtabs=true'
+                     + '&parenturl=' + encodeURIComponent(window.location.href);
+                </script>
+              </div>
+              <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
             </div>
         </main>
         <footer class="mdl-mini-footer mdl-grid">

@@ -28,12 +28,30 @@ print_r($userInfo);
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <link rel="manifest" href="manifest.json"></link>
   <meta name="application-name" content="Newtelco Maintenance">
   <title>Newtelco Maintenance | Welcome</title>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <meta name="mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" sizes="57x57" href="assets/images/favicon/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="assets/images/favicon/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="assets/images/favicon/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="assets/images/favicon/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="assets/images/favicon/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="assets/images/favicon/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="assets/images/favicon/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="assets/images/favicon/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="assets/images/favicon/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="assets/images/favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
+  <meta name="msapplication-TileColor" content="#67B246">
+  <meta name="msapplication-TileImage" content="assets/images/favicon/ms-icon-144x144.png">
+  <meta name="theme-color" content="#67B246">
+  <link rel="manifest" href="manifest.json"></link>
+
   <link rel='stylesheet' href='assets/css/style.css'>
+  <link rel='stylesheet' href='assets/css/dropdown.css'>
 
   <!-- font awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -76,7 +94,16 @@ print_r($userInfo);
           <div class="mdl-layout-spacer"></div>
           <div class="menu_userdetails">
             <span class="mdl-layout-subtitle"><?php echo $token_data['email'] ?></span>
-            <img class="menu_userphoto" src="<?php echo $token_data['picture'] ?>"/>
+            <button id="user-profile-menu" class="mdl-button mdl-js-button mdl-userprofile-button">
+              <img class="menu_userphoto" src="<?php echo $token_data['picture'] ?>"/>
+            </button>
+              <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                  for="user-profile-menu">
+                <li class="mdl-menu__item">Some Action</li>
+                <li class="mdl-menu__item">Another Action</li>
+                <li disabled class="mdl-menu__item">Disabled Action</li>
+                <li class="mdl-menu__item"><a href="?logout">Logout</a></li>
+              </ul>
           </div>
               
         </div>
@@ -85,8 +112,11 @@ print_r($userInfo);
         <span class="mdl-layout-title">Maintenance</span>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" href="index.php"><i class="fas fa-home"></i>  Home</a>
+          <a class="mdl-navigation__link" href="userhome.php"><i class="fas fa-user"></i>  <?php echo $token_data['name'] ?></a>
           <a class="mdl-navigation__link" href="overview.php"><i class="fas fa-book-open"></i>  Overview</a>
-          <a class="mdl-navigation__link" href="incoming.php"><i class="fas fa-folder-plus"></i>  Incoming</a>
+          <a class="mdl-navigation__link " href="incoming.php"><i class="fas fa-folder-plus mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
+          <a class="mdl-navigation__link" href="group.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">maintenance@newtelco.de</small></a>
+          <a class="mdl-navigation__link" href="groupservice.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">service@newtelco.de</small></a>
           <a class="mdl-navigation__link" target="_blank" href="https://crm.newtelco.de"><i class="fas fa-users"></i>  CRM</a>
           <div class="mdl-layout-spacer"></div>
           <a class="mdl-navigation__link menu_logout" href="?logout">
@@ -102,7 +132,7 @@ print_r($userInfo);
                 <!-- Wide card with share menu button -->
                   <style>
                   .demo-card-wide.mdl-card {
-                    width: 562px;
+                    width: 100%;
                     margin-top: 3%;
                   }
                   .demo-card-wide > .mdl-card__title {
@@ -140,17 +170,18 @@ print_r($userInfo);
               </div>
               <div class="mdl-cell mdl-cell--3-col mdl-cell--0-col-phone"></div>
             </div>
-        </main>
-        <footer class="mdl-mini-footer">
-            <div class="mdl-mini-footer__left-section">
+        </main> 
+        <footer class="mdl-mini-footer mdl-grid">
+            <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--10-col mdl-cell--middle">
               <span class="mdl-logo">Newtelco GmbH</span>
               <ul class="mdl-mini-footer__link-list">
                 <li><a href="#">Help</a></li>
                 <li><a href="#">Privacy & Terms</a></li>
               </ul>
             </div>
-            <div class="mdl-mini-footer__right-section">
-              <div>
+          <div class="mdl-layout-spacer"></div>
+            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--2-col mdl-cell--middle mdl-typography--text-right">
+              <div class="footertext">
                 built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" href="https://github.com/ndom91">ndom91</a> &copy;
               </div>
             </div>

@@ -12,8 +12,8 @@ html {
     font-size: .9375rem;
     overflow-x: hidden;
     color: #333;
-    font-family: "Open Sans", sans-serif;
-    background-color: rgba(103, 178, 70, 0.89);
+    font-family: 'Roboto', sans-serif;
+    background-color: #fff;
 }
 body::after {	
 	content: "";
@@ -28,6 +28,48 @@ body::after {
 	box-shadow: 
 	  inset 0px 121px 110px -100px #000,
 	  inset 0px -121px 110px -100px #000; 
-    background: url('../images/bg4.png') no-repeat center center fixed;
+    /*background: url('../images/bg4.png') no-repeat center center fixed; */
 }
 
+.footera {
+	text-decoration: none;
+}
+.love {
+	color: rgb(255,138,128);
+}
+.signin_box {
+	text-align: center;
+	justify-content: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+.signin_btn {
+	height: 50px;
+	width: auto;
+}
+.menu_userdetails {
+	padding-left: 40px;
+	display: block;
+    position: relative;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+    box-sizing: border-box;
+}
+.menu_userphoto {
+	border-radius: 50px;
+	height: 40px;
+	width: 40px;
+	margin-left: 10px;
+}
+.menu_logout {
+	position:  fixed;
+	bottom: 0;
+	width: 100%;
+}
+.menu_logout:hover {
+	background-color: rgb(250,250,250) !important;
+}

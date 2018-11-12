@@ -4,6 +4,8 @@
 
 // source: https://gist.github.com/frankleromain/2387759
 // ldap: https://samjlevy.com/php-ldap-login/
+// Oauth client ID: 976818051506-97ogoa6f0dn9q3f46i2mr0aoln5v126g.apps.googleusercontent.com
+// Oauth client secret: yvoadPSUH2whghdoJHt8UOe8
 
 function authenticateldap($user, $password) {
   if(empty($user) || empty($password)) return false;
@@ -358,89 +360,98 @@ if (!$_SESSION['logged_in']):
 
       <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
       <!-- Google font-->
-      <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
 
       <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-      <link rel='stylesheet' href='assets/css/material.blue_grey-light_green.css'>
       <!-- material design -->
-      <link rel="stylesheet" href="assets/css/material.min.css">
+      <link rel="stylesheet" href="assets/css/material.css">
       <script src="assets/js/material.min.js"></script>
       <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
   </head>
 
   <body>
-    <section class="login-block">
-        <!-- Container-fluid starts -->
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-12">
-                    <!-- Authentication card start -->
-                    <form class="md-float-material form-material" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="post">
-                        <div class="text-center">
-                            <img src="assets/images/newtelco_full2_lightgray2.png" style="opacity:0.7" alt="newtelco_full_lightgray2.png">
-                        </div>
-                        <div class="auth-box card">
-                            <div class="card-block">
-                                <div class="row m-b-20">
-                                    <div class="col-md-12">
-                                        <h3 class="text-center txt-primary">Sign In</h3>
-                                    </div>
-                                </div>
-                                <div class="form-group form-primary">
-                                    <input type="text" id="user" name="user" class="form-control" required="">
-                                    <span class="form-bar"></span>
-                                    <label class="float-label">Username</label>
-                                </div>
-                                <div class="form-group form-primary">
-                                    <input type="password" id="pass" name="pass" class="form-control" required="">
-                                    <span class="form-bar"></span>
-                                    <label class="float-label">Password</label>
-                                </div>
-                                <div class="row m-t-25 text-left">
-                                    <div class="col-12">
-                                        <div class="checkbox-fade fade-in-primary">
-                                  <?php if ($validationresults == FALSE && $verifiedEmail == FALSE)
-                                    echo '<div class="row m-t-25 text-left">
-                                      <div class="col-12">
-                                        <div class="checkbox-fade fade-in-primary">
-                                          <label>
-                                            <span class="error-text">Email not verified - please check your inbox.</span>
-                                          </label>
-                                        </div>
-                                      </div>
-                                    </div>'; ?>
-                                  <?php if ($validationresults == FALSE)
-                                    echo '<div class="row m-t-25 text-left">
-                                      <div class="col-12">
-                                        <div class="checkbox-fade fade-in-primary">
-                                          <label>
-                                            <span class="error-text">Please enter valid username or password.</span>
-                                          </label>
-                                        </div>
-                                      </div>
-                                    </div>'; ?>
-                                <div class="row m-t-30">
-                                  <div style = "font-size:11px; color:#cc0000; margin-top:10px"><?php echo $error; ?></div>
-                                    <div class="col-md-12">
-                                        <input type="submit" value=" Sign In " class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"></input>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header ">
+      
+        <main class="mdl-layout__content">
+            <!-- Wide card with share menu button -->
+            <style>
+            .demo-card-wide.mdl-card {
+              width: 412px;
+              margin-left: auto;
+              margin-right: auto;
+              margin-top: 12%;
+            }
+            .demo-card-wide > .mdl-card__title {
+              color: #fff;
+              height: 176px;
+              background: url('assets/images/bg4.png') center / cover;
+            }
+            .demo-card-wide > .mdl-card__menu {
+              color: #fff;
+            }
+            </style>
 
-                                    </div>
-                                </div>
-                                <p class="text-inverse text-left">Don't have an account?<a href="auth-sign-up-social.html"> <b>Register here </b></a>!</p>
-                            </div>
-                        </div>
-                    </form>
-                        <!-- end of form -->
-                    </div>
-                    <!-- Authentication card end -->
-                </div>
-                <!-- end of col-sm-12 -->
+            <div class="demo-card-wide mdl-card mdl-shadow--6dp">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text"><img height="27px" width="200px" src="assets/images/newtelco_full2_lightgray2.png"/></h2>
+              </div>
+              <div class="mdl-card__supporting-text">
+              <!-- login form -->
+                <form class="mdl-float-material form-material" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="post">
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="width:100%">
+                    <input class="mdl-textfield__input" type="text" id="user" name="user">
+                    <label class="mdl-textfield__label" for="user">Username</label>
+                  </div>
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="width:100%">
+                    <input class="mdl-textfield__input" type="password" id="pass" name="pass">
+                    <label class="mdl-textfield__label" for="pass">Password</label>
+                  </div>
+              </div>
+              <!-- Login Errors -->
+              <div style="justify-content: center">
+                <div style = "font-size:11px; color:#cc0000;"><?php echo $error; ?></div>
+
+                 <?php if ($validationresults == FALSE && $verifiedEmail == FALSE)
+                          echo '<div class="mdl-grid">
+                                  <div class="mdl-layout-spacer"></div>
+                                    <span class="mdl-chip  mdl-chip--contact">
+                                      <span class="mdl-chip__contact mdl-color--red mdl-color-text--white">E</span>
+                                      <span class="mdl-chip__text">Email not verified - please check your inbox.</span>
+                                    </span>
+                                  <div class="mdl-layout-spacer"></div>
+                                </div>'; ?>
+                <?php if ($validationresults == FALSE)
+                  echo '<div class="mdl-grid">
+                          <div class="mdl-layout-spacer"></div>
+                            <span class="mdl-chip mdl-chip--contact">
+                              <span class="mdl-chip__contact mdl-color--red mdl-color-text--white">E</span>
+                              <span class="mdl-chip__text">Please enter valid username or password.</span>
+                            </span>
+                          <div class="mdl-layout-spacer"></div>
+                        </div>'; ?>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+                <input  type="submit" text="Login" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color--light-green-nt">
+                <span class="mdl-layout-spacer"></span>
+                <span style="float:right; padding: 10px;font-size:14px; font-family: Roboto;">Don't have an account? <a href="register.php"><b>Register here</b></a>!</span>
+              </div>
             </div>
-            <!-- end of row -->
-        </div>
-        <!-- end of container-fluid -->
-    </section>
+            </form>
+
+        </main>
+
+        <footer class="mdl-mini-footer">
+          <div class="mdl-mini-footer__left-section">
+            <div class="mdl-logo">Newtelco GmbH</div>
+            <ul class="mdl-mini-footer__link-list">
+              <li><a href="#">Help</a></li>
+              <li><a href="#">Privacy & Terms</a></li>
+            </ul>
+          </div>
+        </footer>
+      </div>
 </body>
 </div>
 </html>

@@ -824,7 +824,7 @@ main {
 /* Animations */
 /* Dialog */
 html, body {
-  font-family: "Helvetica", "Arial", sans-serif;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-size: 14px;
   font-weight: 400;
   line-height: 20px; }
@@ -905,7 +905,7 @@ p {
   margin-bottom: 16px; }
 
 a {
-  color: rgb(255,64,129);
+  color: rgb(103, 178, 70);
   font-weight: 500; }
 
 blockquote {
@@ -2360,11 +2360,11 @@ ul, ol {
 .mdl-color--light-green-A100 {
   background-color: rgb(204,255,144) !important; }
 
-.mdl-color-text--light-green-A200 {
-  color: rgb(178,255,89) !important; }
+.mdl-color-text--light-green-nt {
+  color: rgb(103, 178, 70) !important; }
 
-.mdl-color--light-green-A200 {
-  background-color: rgb(178,255,89) !important; }
+.mdl-color--light-green-nt {
+  background-color: rgb(103, 178, 70) !important; }
 
 .mdl-color-text--light-green-A400 {
   color: rgb(118,255,3) !important; }
@@ -5932,9 +5932,9 @@ input.mdl-button[type="submit"] {
   -webkit-justify-content: space-between;
       -ms-flex-pack: justify;
           justify-content: space-between;
-  padding: 32px 16px;
+  padding: 12px 16px;
   color: rgb(158,158,158);
-  background-color: rgb(66,66,66); }
+  background-color: rgba(66,66,66,0.7); }
   .mdl-mini-footer:after {
     content: '';
     display: block; }

@@ -82,8 +82,7 @@ if (isset($_REQUEST['logout'])) {
       </div>
         <main class="mdl-layout__content">
             <div class="mdl-grid">
-              <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
-              <div class="mdl-cell mdl-cell--10-col mdl-cell--4-col-phone">
+              <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
                 <div class="mdl-grid">
                   <div class="mdl-cell mdl-cell--2-col">
                     <form action="overview" method="post">
@@ -133,16 +132,26 @@ if (isset($_REQUEST['logout'])) {
                     //Already has some IP address records in the database
                     //Get the total failed login attempts associated with this IP address
                     $kunden_id = $fetch[0];
-                    $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.receivedmail, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal, companies.name, kunden.derenCID FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$kunden_id'");
+                    $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$kunden_id'");
                     //$rowx = mysqli_fetch_array($resultx);
                     //echo("Error description: " . mysqli_error($dbhandle));
 
                     echo '<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--4dp">
                             <thead>
                               <tr>
-                                <th class="mdl-data-table__cell--non-numeric">Material</th>
-                                <th>Quantity</th>
-                                <th>Unit price</th>
+                                <th class="mdl-data-table__cell--non-numeric">Mail Eingang Date/Time</th>
+                                <th>Received Mail Date/Time</th>
+                                <th>Company Name</th>
+                                <th>Deren CID</th>
+                                <th>Bearbeitet Von</th>
+                                <th>Maintenance Date/Time</th>
+                                <th>Start Date/Time</th>
+                                <th>End Date/Time</th>
+                                <th>Postponed</th>
+                                <th>Notes</th>
+                                <th>Mail Ankunde Date/Time</th>
+                                <th>Mail to Send</th>
+                                <th>Add to Cal</th>
                               </tr>
                             </thead>
                             <tbody>';
@@ -161,7 +170,6 @@ if (isset($_REQUEST['logout'])) {
                 ?>
 
               </div>
-              <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
             </div>
         </main>
         <footer class="mdl-mini-footer">

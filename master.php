@@ -115,6 +115,7 @@ print_r($userInfo);
           <a class="mdl-navigation__link" href="incoming.php"><i class="fas fa-folder-plus mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
           <a class="mdl-navigation__link" href="group.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">maintenance@newtelco.de</small></a>
           <a class="mdl-navigation__link" href="groupservice.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">service@newtelco.de</small></a>
+          <a class="mdl-navigation__link" href="addedit.php"><i class="fas fa-plus-circle"></i></i>  Add</a>
           <a class="mdl-navigation__link" target="_blank" href="https://crm.newtelco.de"><i class="fas fa-users"></i>  CRM</a>
           <div class="mdl-layout-spacer"></div>
           <a class="mdl-navigation__link menu_logout" href="?logout">
@@ -130,7 +131,7 @@ print_r($userInfo);
                 <!-- Wide card with share menu button -->
                   <style>
                   .demo-card-wide.mdl-card {
-                    width: 562px;
+                    width: 100%;
                     margin-top: 3%;
                   }
                   .demo-card-wide > .mdl-card__title {

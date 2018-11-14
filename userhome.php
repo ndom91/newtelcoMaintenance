@@ -43,6 +43,9 @@ if (isset($_REQUEST['logout'])) {
   <!-- Google font-->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
 
+  <!-- jquery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
   <!-- material design -->
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
@@ -100,6 +103,7 @@ if (isset($_REQUEST['logout'])) {
           <a class="mdl-navigation__link" href="incoming.php"><i class="fas fa-folder-plus mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
           <a class="mdl-navigation__link" href="group.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">maintenance@newtelco.de</small></a>
           <a class="mdl-navigation__link" href="groupservice.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">service@newtelco.de</small></a>
+          <a class="mdl-navigation__link" href="addedit.php"><i class="fas fa-plus-circle"></i></i>  Add</a>
           <a class="mdl-navigation__link" target="_blank" href="https://crm.newtelco.de"><i class="fas fa-users"></i>  CRM</a>
           <div class="mdl-layout-spacer"></div>
           <a class="mdl-navigation__link menu_logout" href="?logout">
@@ -162,8 +166,7 @@ if (isset($_REQUEST['logout'])) {
                   </script>
                   <?php
 
-                  //https://stackoverflow.com/questions/32655874/cannot-get-the-body-of-email-with-gmail-php-api
-
+                  // https://stackoverflow.com/questions/32655874/cannot-get-the-body-of-email-with-gmail-php-api
 
                   function decodeBody($body) {
                       $rawData = $body;
@@ -175,6 +178,13 @@ if (isset($_REQUEST['logout'])) {
                       return $decodedMessage;
                   }
 
+                  function getHeader($headers, $name) {
+                    foreach($headers as $header) {
+                      if($header['name'] == $name) {
+                        return $header['value'];
+                      }
+                    }
+                  }
 
                   function fetchMails($gmail, $q) {
 
@@ -182,11 +192,13 @@ if (isset($_REQUEST['logout'])) {
                       $list = $gmail->users_messages->listUsersMessages('me', array('q' => $q));
                       while ($list->getMessages() != null) {
                        
-                        echo '<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--4dp">
+                        echo '<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--4dp mailLinks" id="mailTable">
                                 <thead>
                                   <tr>
                                     <th>Mail ID</th>
+                                    <th class="mdl-data-table__cell--non-numeric">From</th>
                                     <th class="mdl-data-table__cell--non-numeric">Subject</th>
+                                    <th class="mdl-data-table__cell--non-numeric">Snippet</th>
                                   </tr>
                                 </thead>
                                 <tbody>';
@@ -199,6 +211,10 @@ if (isset($_REQUEST['logout'])) {
                               //$optParamsGet2['labelId'] = $labelID; 
                               $single_message = $gmail->users_messages->get('me', $message_id, $optParamsGet2);
                               $payload = $single_message->getPayload();
+                              $headers = $payload->getHeaders();
+                              $snippet = getHeader($headers, 'Snippet');;
+                              $subject = getHeader($headers, 'Subject');
+                              $from = getHeader($headers, 'From');
 
                               // With no attachment, the payload might be directly in the body, encoded.
                               $body = $payload->getBody();
@@ -220,7 +236,7 @@ if (isset($_REQUEST['logout'])) {
                                       if($part['parts'] && !$FOUND_BODY) {
                                           foreach ($part['parts'] as $p) {
                                               // replace 'text/html' by 'text/plain' if you prefer
-                                              if($p['mimeType'] === 'text/html' && $p['body']) {
+                                              if($p['mimeType'] === 'text/plain' && $p['body']) {
                                                   $FOUND_BODY = decodeBody($p['body']->data);
                                                   break;
                                               }
@@ -234,9 +250,26 @@ if (isset($_REQUEST['logout'])) {
                               // Finally, print the message ID and the body
                               
                               echo '<tr>
-                                      <td><a name="' . $message_id . '" id="show-dialog2">' . $message_id . '</a><td><td>SUBJECT</td>
+                                      <td><a id="show-dialog2" data-target="' . $message_id . '">' . $message_id . '</a></td>
+                                        <td>'. $from  . '</td>
+                                        <td>'. $subject  . '</td>
+                                        <td>'. $snippet  . '</td>
                                     </tr>';
-                              //print_r($message_id . " <br> <br> <br> *-*-*- " . $FOUND_BODY);
+
+
+                                echo '<dialog id="dialog_' . $message_id . '" class="mdl-dialog" style="width: 800px !important;">
+                                <h4 class="mdl-dialog__title">Subject: ' . $subject . '</h4>
+                                <h6 class="mdl-dialog__title" style="font-size: 24px !important">From: ' . $from . '</h6>
+                                <div class="mdl-dialog__content">
+                                  <p><div style="width: 750px; ">
+                                   ' . $FOUND_BODY . '
+                                  </pre></p>
+                                </div>
+                                <div class="mdl-dialog__actions">
+                                  <button type="button" class="mdl-button">Fuck You</button>
+                                  <button type="button" class="mdl-button close">Close</button>
+                                </div>
+                              </dialog>';
                               
                           }
 
@@ -248,22 +281,59 @@ if (isset($_REQUEST['logout'])) {
                           }
 
                       }
-                      
+
                   echo '</tbody>
                   </table>';
 
-                          echo '<dialog id="dialog2" class="mdl-dialog">
-                                <h4 class="mdl-dialog__title">Email Body</h4>
-                                <div class="mdl-dialog__content">
-                                  <p>
-                                   ' . $FOUND_BODY . '
-                                  </p>
-                                </div>
-                                <div class="mdl-dialog__actions">
-                                  <button type="button" class="mdl-button">Agree</button>
-                                  <button type="button" class="mdl-button close">Disagree</button>
-                                </div>
-                              </dialog>';
+                  echo '
+                    <script>
+
+                    var modalTriggers = document.querySelectorAll(\'.mailLinks\');
+
+                    // Getting the target modal of every button and applying listeners
+                    for (var i = modalTriggers.length - 1; i >= 0; i--) {
+                          var t = modalTriggers[i].getAttribute(\'data-target\');
+                          var id = \'#\' + modalTriggers[i].getAttribute(\'id\');
+                          modalProcess(t, id);
+                    }
+
+                    function modalProcess(selector, button) {
+                      var dialog = document.querySelector(selector);
+                      var showDialogButton = document.querySelector(button);
+
+                      if (dialog) {
+                        if (!dialog.showModal) {
+                          dialogPolyfill.registerDialog(dialog);
+                        }
+                        showDialogButton.addEventListener(\'click\', function() {
+                          dialog.showModal();
+                        });
+                        dialog.querySelector(\'.close\').addEventListener(\'click\', function() {
+                          dialog.close();
+                        });
+                      }
+                    }
+
+                    var mailID2 = \'\';
+
+                    $("#mailTable").click(function() {
+                        var mailID2 = $(event.target).attr(\'data-target\');
+                        console.log(mailID2);
+                        var dialog2 = document.querySelector(\'#dialog_\' + mailID2);
+                        var showDialogButton2 = document.querySelector(\'[data-target="\' + mailID2 + \'"]\');
+                        if (! dialog2.showModal) {
+                          dialogPolyfill.registerDialog(dialog);
+                        }
+                        showDialogButton2.addEventListener(\'click\', function() {
+                          dialog2.showModal();
+                        });
+                        dialog2.querySelector(\'.close\').addEventListener(\'click\', function() {
+                          dialog2.close();
+                        });
+                    });
+                  </script>';
+
+                        
                   } catch (Exception $e) {
                       echo $e->getMessage();
                   }
@@ -271,30 +341,18 @@ if (isset($_REQUEST['logout'])) {
                   } 
                   
 
-
-                  $labelID = $_POST['label'];
+                  if(isset($_POST['label'])) {
+                    $labelID = $_POST['label'];
+                  } else {
+                    $labelID = '0';
+                  }
 
                   $q = 'label:' . $labelID . ' newer_than:1d';
                   fetchMails($service, $q);
 
                   
-                  ?>
                    
-                  <script>
-                    var dialog2 = document.querySelector('#dialog2');
-                    var showDialogButton2 = document.querySelector('#show-dialog2');
-                    if (! dialog2.showModal) {
-                      dialogPolyfill.registerDialog(dialog);
-                    }
-                    showDialogButton2.addEventListener('click', function() {
-                      dialog2.showModal();
-                    });
-                    dialog2.querySelector('.close').addEventListener('click', function() {
-                      dialog2.close();
-                    });
-                  </script>
 
-                  <?php
 
                   /* 
                   KIND OF WORKING

@@ -101,6 +101,7 @@ if (isset($_REQUEST['logout'])) {
           <a class="mdl-navigation__link" href="incoming.php"><i class="fas fa-folder-plus mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
           <a class="mdl-navigation__link" href="group.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">maintenance@newtelco.de</small></a>
           <a class="mdl-navigation__link" href="groupservice.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">service@newtelco.de</small></a>
+          <a class="mdl-navigation__link" href="addedit.php"><i class="fas fa-plus-circle"></i></i>  Add</a>
           <a class="mdl-navigation__link" target="_blank" href="https://crm.newtelco.de"><i class="fas fa-users"></i>  CRM</a>
           <div class="mdl-layout-spacer"></div>
           <a class="mdl-navigation__link menu_logout" href="?logout">
@@ -166,7 +167,7 @@ if (isset($_REQUEST['logout'])) {
                       if ($fetch = mysqli_fetch_array($kunden_query)) {
                           //Found a companyn - now show all maintenances for company
                           $kunden_id = $fetch[0];
-                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$kunden_id'");
+                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$kunden_id'");
                         }
                   
                 } elseif (! empty($_POST['tdCID'])){
@@ -192,7 +193,7 @@ if (isset($_REQUEST['logout'])) {
                       if ($fetch = mysqli_fetch_array($dCID_query)) {
                           //Found a dCID - now show all maintenances for dCID
                           
-                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid LIKE '$dCIDresult[0]'");
+                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid LIKE '$dCIDresult[0]'");
                         }
                   }
 
@@ -202,11 +203,14 @@ if (isset($_REQUEST['logout'])) {
                   //echo '</pre>';
                   // END DEBUG
 
-                  echo '<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--4dp">
+                  // class - mdl-data-table--selectable for select buttons on rows
+                  echo '<table class="mdl-data-table mdl-js-data-table  mdl-shadow--4dp" style="width: 100%">
                           <thead>
                             <tr>
-                              <th class="mdl-data-table__cell--non-numeric">Mail Eingang Date/Time</th>
-                              <th>Received Mail Date/Time</th>
+                              <th style="width:20px!important"></th>
+                              <th class="mdl-data-table__cell--non-numeric">id</th>
+                              <th class="mdl-data-table__cell--non-numeric">Maileingang Date/Time</th>
+                              <th>R Mail</th>
                               <th>Company Name</th>
                               <th>Deren CID</th>
                               <th>Bearbeitet Von</th>
@@ -215,8 +219,8 @@ if (isset($_REQUEST['logout'])) {
                               <th>End Date/Time</th>
                               <th>Postponed</th>
                               <th>Notes</th>
-                              <th>Mail Ankunde Date/Time</th>
-                              <th>Mail to Send</th>
+                              <th>Mail an Kunde Date/Time</th>
+                              <th>S Mail</th>
                               <th>Add to Cal</th>
                             </tr>
                           </thead>
@@ -224,6 +228,11 @@ if (isset($_REQUEST['logout'])) {
 
                     while ($rowx = mysqli_fetch_assoc($resultx)) {
                       echo '<tr>';
+                          echo '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+                                  <a href="addedit.php?mid=' . $rowx['id'] . '">
+                                    <i class="material-icons">edit</i>
+                                  </a>
+                                </button></td>';
                       foreach($rowx as $field) {
                           echo '<td>' . htmlspecialchars($field) . '</td>';
                       }

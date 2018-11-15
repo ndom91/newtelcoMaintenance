@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <?php
 require('authenticate_google.php');
+require_once('config.php');
+
+global $dbhandle;
 
 if (isset($_REQUEST['logout'])) {
   unset($_SESSION['id_token_token']);
@@ -45,26 +48,22 @@ if (isset($_REQUEST['logout'])) {
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <?php
-          function get_client_ip() {
-        $ipaddress = '';
-        if (isset($_SERVER['HTTP_CLIENT_IP']))
-            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-        else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED'];
-        else if(isset($_SERVER['REMOTE_ADDR']))
-            $ipaddress = $_SERVER['REMOTE_ADDR'];
-        else
-            $ipaddress = 'UNKNOWN';
-        return $ipaddress;
-    }
-    ?>
+
+  <!-- jquery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+  <!-- Datatables -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
+
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->
@@ -108,10 +107,237 @@ if (isset($_REQUEST['logout'])) {
       </div>
         <main class="mdl-layout__content">
             <div class="mdl-grid">
-              <div class="mdl-cell mdl-cell--8-col mdl-cell--4-col-phone">CS 6 (8 on tablet)</div>
-              <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone">CS 6 (8 on tablet)</div>
+              <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
+                <div class="mdl-grid">
+                  <div class="mdl-cell mdl-cell--2-col">
+                    <form action="incoming" method="post">
+                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" name="tKunde" id="tKunde">
+                        <label class="mdl-textfield__label" for="tKunde">Kunde</label>
+                      </div>
+                  </div>
+                  <div class="mdl-cell mdl-cell--2-col">
+                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="tLieferant">
+                        <label class="mdl-textfield__label" for="tLieferant">Lieferant</label>
+                      </div>
+                  </div>
+                  <div class="mdl-cell mdl-cell--2-col">
+                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="tuCID">
+                        <label class="mdl-textfield__label" for="tuCID">unsere CID</label>
+                      </div>
+                  </div>
+                  <div class="mdl-cell mdl-cell--2-col">
+                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" name="tdCID" id="tdCID">
+                        <label class="mdl-textfield__label" for="tdCID">deren CID</label>
+                      </div>
+                  </div>
+                  <div class="mdl-cell mdl-cell--2-col"></div>
+                  <div class="mdl-cell mdl-cell--2-col mdl-typography--text-right">
+                    <button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--light-green-nt ">
+                      <i class="material-icons">search</i>
+                    </button>
+                    </form>
+                  </div>
+                </div>
+                <?php 
+                $kunde = '';
+                $tdCID = '';
+
+                if (! empty($_POST['tKunde'])){
+                      $kunde = $_POST['tKunde'];
+                      $query = $kunde;   
+
+                      // DEBUG
+                      //echo '<b>Debug:</b><br>';
+                      //echo '<pre>';
+                      // END DEBUG
+
+                      $kunden_escape = mysqli_real_escape_string($dbhandle, $query);
+                      $kunden_escape = '%' . $kunden_escape . '%';
+                      // search first for existance of company
+                      $kunden_query = mysqli_query($dbhandle, "SELECT `id`,`name` FROM `companies` WHERE `name` LIKE '$kunden_escape'");
+
+                      if ($fetch = mysqli_fetch_array($kunden_query)) {
+                          //Found a companyn - now show all maintenances for company
+                          $kunden_id = $fetch[0];
+                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$kunden_id'");
+                        }
+                  
+                } elseif (! empty($_POST['tdCID'])){
+                      $tdCID = $_POST['tdCID'];
+                      $query = $tdCID;
+
+                      // DEBUG
+                      //echo '<b>Debug:</b><br>';
+                      //echo '<pre>';
+                      //echo $tdCID . '<br>';
+                      // END DEBUG
+
+                      $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
+                      $dCID_escape = '%' . $dCID_escape . '%';
+                      $dCID_query = mysqli_query($dbhandle, "SELECT id, derenCID FROM `kunden` WHERE `derenCID` LIKE '$dCID_escape'");
+                      $dCIDresult = mysqli_fetch_array($dCID_query);
+                      
+                      // DEBUG
+                      //$dCIDresult = mysqli_fetch_array($dCID_query);
+                      //echo 'Query Result:' . $dCIDresult[0]. '<br>';
+                      // END DEBUG
+
+                      if ($fetch = mysqli_fetch_array($dCID_query)) {
+                          //Found a dCID - now show all maintenances for dCID
+                          
+                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid LIKE '$dCIDresult[0]'");
+                        }
+                  }
+
+
+                  // DEBUG
+                  //echo("Error description: " . mysqli_error($dbhandle));
+                  //echo '</pre>';
+                  // END DEBUG
+
+                  // class - mdl-data-table--selectable for select buttons on rows
+
+                  // mdl table class - class="mdl-data-table mdl-js-data-table  mdl-shadow--4dp" style="width: 100%"
+                  // non-numeric columns: class="mdl-data-table__cell--non-numeric"
+                  echo '<div class="dataTables_wrapper">
+                  <table id="dataTable1" class="table table-striped compact nowrap" style="width: 100%">
+                          <thead>
+                            <tr>
+                              <th style="width:20px!important"></th>
+                              <th class="">id</th>
+                              <th class="">Maileingang Date/Time</th>
+                              <th>R Mail</th>
+                              <th>Company Name</th>
+                              <th>Deren CID</th>
+                              <th>Bearbeitet Von</th>
+                              <th>Maintenance Date/Time</th>
+                              <th>Start Date/Time</th>
+                              <th>End Date/Time</th>
+                              <th>Postponed</th>
+                              <th>Notes</th>
+                              <th>Mail an Kunde Date/Time</th>
+                              <th>S Mail</th>
+                              <th>Add to Cal</th>
+                              <th>Complete</th>
+                            </tr>
+                          </thead>
+                          <tbody>';
+
+                    while ($rowx = mysqli_fetch_assoc($resultx)) {
+                      echo '<tr>';
+                      // button - class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab"
+                          echo '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+                                  <a href="addedit.php?mid=' . $rowx['id'] . '">
+                                    <i class="material-icons">edit</i>
+                                  </a>
+                                </button></td>';
+                      foreach($rowx as $field) {
+                          if ($rowx['maileingang']) {
+                            echo '<td>' . $field . '</td>';
+                          } else {
+                          echo '<td>' . htmlspecialchars($field) . '</td>';
+                          }
+                      }
+                      echo '</tr>';
+                  }
+                  echo '</tbody>
+                  </table>
+                  ';
+                
+
+                ?>
+
+                <table id="dataTable2" class="hidden table table-striped compact nowrap" style="width: 100%">
+                          <thead>
+                            <tr>
+                              <th class="">ID</th>
+                              <th class="">Deren CID</th>
+                              <th>Unsere CID</th>
+                              <th>Company</th>
+                            </tr>
+                          </thead>
+                      </table>
+                      </div>
+              </div>
             </div>
         </main>
+        <script>
+        $(document).ready(function() {
+             var table = $('#dataTable1').DataTable( {
+                  scrollx: true,
+                  select: true,
+                  stateSave: true,
+                  columnDefs: [
+                      {
+                          "targets": [ 1 ],
+                          "visible": false,
+                          "searchable": false
+                      },
+                      {
+                          targets: [2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+                          className: 'mdl-data-table__cell--non-numeric'
+                      }
+                  ]
+              } );
+
+              table.on( 'select', function ( e, dt, type, indexes ) {
+                  if ( type === 'row' ) {
+                      var data2 = table.rows( { selected: true } ).data()[0][5]
+                            if ( $.fn.dataTable.isDataTable( '#dataTable2' ) ) {
+                                table2 = $('#dataTable2').DataTable();
+                                table2.destroy();
+                            }
+                            //window.location.hash = "#?dcid=" + data;
+                            $('#dataTable2').addClass('display').removeClass('hidden');
+                            $('#dataTable2').DataTable( {    
+                                  /*"processing": true,
+                                  "serverSide": true,
+                                 "ajax": {
+                                      "url": "dCID=" + data2,
+                                      "type": "GET"
+                                  },
+                                  "columns": [
+                                      { "data": "id" },
+                                      { "data": "dCID" },
+                                      { "data": "uCID" },
+                                      { "data": "company" }
+                                  ]*/
+                             } );
+                            $.ajax({    
+                                method: 'GET',
+                                url: 'api',      
+                                data: "dCID=" + data2,
+                                dataType: 'json',
+                                success: function(data) {
+                                  
+                                  for (var row2 in data) {
+                                    $('#dataTable2 tr:last').after('<tr><td>' + data[row2][0] + '</td><td>' + data[row2][1] + '</td><td>' + data[row2][2] + '</td><td>' + data[row2][3] + '</td></tr>');
+                                  }
+                                  /*console.log(status);
+
+                                  console.log(data[0]);
+                                  for (var row2 in data) { 
+
+                                    var item = data[row2];
+                                    console.log(item);
+
+                                    var id = data[0];
+                                    var dCID1 = data[1];
+                                    var uCID1 = data[2];
+                                    var company = data[3];*/
+
+                                  //} 
+                                }
+                            });
+                  }
+              })
+            })
+           
+        </script>
         <footer class="mdl-mini-footer mdl-grid">
             <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--10-col mdl-cell--middle">
               <span class="mdl-logo">Newtelco GmbH</span>

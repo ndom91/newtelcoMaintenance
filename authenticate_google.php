@@ -34,6 +34,7 @@ $plus = new Google_Service_Plus($client);
  ************************************************/
 if (isset($_REQUEST['logout'])) {
   unset($_SESSION['id_token_token']);
+  session_destroy();
 }
 /************************************************
  * If we have a code back from the OAuth 2.0 flow,

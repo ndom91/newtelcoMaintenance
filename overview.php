@@ -48,26 +48,22 @@ if (isset($_REQUEST['logout'])) {
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <?php
-          function get_client_ip() {
-        $ipaddress = '';
-        if (isset($_SERVER['HTTP_CLIENT_IP']))
-            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-        else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED'];
-        else if(isset($_SERVER['REMOTE_ADDR']))
-            $ipaddress = $_SERVER['REMOTE_ADDR'];
-        else
-            $ipaddress = 'UNKNOWN';
-        return $ipaddress;
-    }
-    ?>
+  
+  <!-- jquery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+  <!-- Datatables -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
+
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->
@@ -167,7 +163,7 @@ if (isset($_REQUEST['logout'])) {
                       if ($fetch = mysqli_fetch_array($kunden_query)) {
                           //Found a companyn - now show all maintenances for company
                           $kunden_id = $fetch[0];
-                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$kunden_id'");
+                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$kunden_id'");
                         }
                   
                 } elseif (! empty($_POST['tdCID'])){
@@ -193,7 +189,7 @@ if (isset($_REQUEST['logout'])) {
                       if ($fetch = mysqli_fetch_array($dCID_query)) {
                           //Found a dCID - now show all maintenances for dCID
                           
-                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid LIKE '$dCIDresult[0]'");
+                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid LIKE '$dCIDresult[0]'");
                         }
                   }
 
@@ -204,12 +200,16 @@ if (isset($_REQUEST['logout'])) {
                   // END DEBUG
 
                   // class - mdl-data-table--selectable for select buttons on rows
-                  echo '<table class="mdl-data-table mdl-js-data-table  mdl-shadow--4dp" style="width: 100%">
+
+                  // mdl table class - class="mdl-data-table mdl-js-data-table  mdl-shadow--4dp" style="width: 100%"
+                  // non-numeric columns: class="mdl-data-table__cell--non-numeric"
+                  echo '<div class="dataTables_wrapper">
+                  <table id="dataTable1" class="table table-striped compact nowrap" style="width: 100%">
                           <thead>
                             <tr>
                               <th style="width:20px!important"></th>
-                              <th class="mdl-data-table__cell--non-numeric">id</th>
-                              <th class="mdl-data-table__cell--non-numeric">Maileingang Date/Time</th>
+                              <th class="">id</th>
+                              <th class="">Maileingang Date/Time</th>
                               <th>R Mail</th>
                               <th>Company Name</th>
                               <th>Deren CID</th>
@@ -222,24 +222,31 @@ if (isset($_REQUEST['logout'])) {
                               <th>Mail an Kunde Date/Time</th>
                               <th>S Mail</th>
                               <th>Add to Cal</th>
+                              <th>Complete</th>
                             </tr>
                           </thead>
                           <tbody>';
 
                     while ($rowx = mysqli_fetch_assoc($resultx)) {
                       echo '<tr>';
+                      // button - class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab"
                           echo '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
                                   <a href="addedit.php?mid=' . $rowx['id'] . '">
                                     <i class="material-icons">edit</i>
                                   </a>
                                 </button></td>';
                       foreach($rowx as $field) {
+                          if ($rowx['maileingang']) {
+                            echo '<td>' . $field . '</td>';
+                          } else {
                           echo '<td>' . htmlspecialchars($field) . '</td>';
+                          }
                       }
                       echo '</tr>';
                   }
                   echo '</tbody>
-                  </table>';
+                  </table>
+                  </div>';
                 
 
                 ?>
@@ -247,6 +254,33 @@ if (isset($_REQUEST['logout'])) {
               </div>
             </div>
         </main>
+        <script>
+        $(document).ready(function() {
+             var table = $('#dataTable1').DataTable( {
+                  scrollx: true,
+                  select: true,
+                  stateSave: true,
+                  columnDefs: [
+                      {
+                          "targets": [ 1 ],
+                          "visible": false,
+                          "searchable": false
+                      },
+                      {
+                          targets: [2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+                          className: 'mdl-data-table__cell--non-numeric'
+                      }
+                  ]
+              } );
+
+              table.on( 'select', function ( e, dt, type, indexes ) {
+                  if ( type === 'row' ) {
+                      var data = table.rows( { selected: true } ).data()[0][1]
+                        console.log(data);
+                  }
+              } );
+          } );
+        </script>
         <footer class="mdl-mini-footer mdl-grid">
             <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--10-col mdl-cell--middle">
               <span class="mdl-logo">Newtelco GmbH</span>

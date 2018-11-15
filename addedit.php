@@ -237,9 +237,9 @@ print_r($userInfo);
                                 <a href="overview.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
                                   Save
                                 </a>
-                                <a onclick="window.history.back()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
+                                <!-- <a href="incoming.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
                                   Back
-                                </a>
+                                </a> -->
                               </div>
                             </div>
                         </div>

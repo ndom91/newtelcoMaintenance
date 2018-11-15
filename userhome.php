@@ -50,26 +50,7 @@ if (isset($_REQUEST['logout'])) {
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <?php
-          function get_client_ip() {
-        $ipaddress = '';
-        if (isset($_SERVER['HTTP_CLIENT_IP']))
-            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-        else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED'];
-        else if(isset($_SERVER['REMOTE_ADDR']))
-            $ipaddress = $_SERVER['REMOTE_ADDR'];
-        else
-            $ipaddress = 'UNKNOWN';
-        return $ipaddress;
-    }
-    ?>
+
 </head>
 <body id="mdlBody">
   <!-- Always shows a header, even in smaller screens. -->
@@ -186,6 +167,29 @@ if (isset($_REQUEST['logout'])) {
                     }
                   }
 
+                  function stripHTML($html) {
+
+                      $dom = new DOMDocument();
+
+                      $dom->loadHTML($html);
+
+                      $script = $dom->getElementsByTagName('script');
+
+                      $remove = [];
+                      foreach($script as $item)
+                      {
+                        $remove[] = $item;
+                      }
+
+                      foreach ($remove as $item)
+                      {
+                        $item->parentNode->removeChild($item); 
+                      }
+
+                      $html = $dom->saveHTML();
+                      return $html;
+                  }
+
                   function fetchMails($gmail, $q) {
 
                   try{
@@ -249,6 +253,8 @@ if (isset($_REQUEST['logout'])) {
                               }
                               // Finally, print the message ID and the body
                               
+
+
                               echo '<tr>
                                       <td><a id="show-dialog2" data-target="' . $message_id . '">' . $message_id . '</a></td>
                                         <td>'. $from  . '</td>
@@ -262,7 +268,7 @@ if (isset($_REQUEST['logout'])) {
                                 <h6 class="mdl-dialog__title" style="font-size: 24px !important">From: ' . $from . '</h6>
                                 <div class="mdl-dialog__content">
                                   <p><div style="width: 750px; ">
-                                   ' . $FOUND_BODY . '
+                                   ' . stripHTML($FOUND_BODY) . '
                                   </pre></p>
                                 </div>
                                 <div class="mdl-dialog__actions">
@@ -351,90 +357,118 @@ if (isset($_REQUEST['logout'])) {
                   fetchMails($service, $q);
 
                   
-                   
-
-
-                  /* 
-                  KIND OF WORKING
-                    https://stackoverflow.com/questions/24503483/reading-messages-from-gmail-in-php-using-gmail-api/31047235
-
-                  $labelID = $_POST['label'];
-
-                  $optParams = [];
-                  $optParams['maxResults'] = 5; // Return Only 5 Messages
-                  $optParams['labelIds'] = $labelID; 
-                  $messages = $service->users_messages->listUsersMessages('me',$optParams);
-                  $list = $messages->getMessages();
-                  $messageId = $list[0]->getId(); // Grab first Message
-
-
-                  $optParamsGet = [];
-                  $optParamsGet['format'] = 'full'; // Display message in payload
-                  $message = $service->users_messages->get('me',$messageId,$optParamsGet);
-                  $messagePayload = $message->getPayload();
-                  $headers = $message->getPayload()->getHeaders();
-                  $parts = $message->getPayload()->getParts();
-
-                  $body = $parts[0]['body'];
-                  $rawData = $body->data;
-                  $sanitizedData = strtr($rawData,'-_', '+/');
-                  $decodedMessage = base64_decode($sanitizedData);
-
-                  var_dump($decodedMessage);
-
-                  */
-
-
-                  /*
-
-                  https://developers.google.com/gmail/api/v1/reference/users/messages/list?apix_params=%7B%22userId%22%3A%22me%22%2C%22labelIds%22%3A%5B%22Label_187%22%5D%7D
-
-                  $labelID = $_POST['label'];
-                  $userID = 'me';
-
-                  function listMessages($service, $userId) {
-                    $pageToken = NULL;
-                    $messages = array();
-                    $opt_param = array('labelIDs') == $labelID;
-                    do {
-                      try {
-                        if ($pageToken) {
-                          $opt_param['pageToken'] = $pageToken;
-                        }
-                        $messagesResponse = $service->users_messages->listUsersMessages($userId, $opt_param);
-                        if ($messagesResponse->getMessages()) {
-                          $messages = array_merge($messages, $messagesResponse->getMessages());
-                          $pageToken = $messagesResponse->getNextPageToken();
-                        }
-                      } catch (Exception $e) {
-                        print 'An error occurred: ' . $e->getMessage();
-                      }
-                    } while ($pageToken);
-
-                    foreach ($messages as $message) {
-                      print 'Message with ID: ' . $message->getId() . '<br/>';
-                    }
-
-                    return $messages;
-                  }
-
-
-                  TEST:
-
-                  var_dump($_POST);
-                  // Get emails after label has been chosen
-                  if (isset($_POST['labelID'])){
-                    // get emails by labelID
-                    $opt_param = array('labelIDs') == 'Label_143';
-                    $messagesResponse = 
-                         $service->users_messages->listUsersMessages($userId, $opt_param);
-                  };
-                  */
-
                   ?>
 
               </div>
-              <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone">CS 6 (8 on tablet)</div>
+              <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone">
+                <h4>Calendar</h4>
+
+
+
+
+
+<!--
+                <button id="show-dialog" type="button" class="mdl-button">Select Label</button>
+                  <dialog style="width: 900px;" id="dialog1" class="mdl-dialog">
+                    <h4 class="mdl-dialog__title">Which label are your maintenance emails in?</h4>
+                    <div class="mdl-dialog__content">
+                      <p>
+                        
+                        <?php/*
+                          $service = new Google_Service_Gmail($client);
+
+                          // Print the labels in the user's account.
+                          $user = 'me';
+                          $results = $service->users_labels->listUsersLabels($user);
+
+                          if (count($results->getLabels()) == 0) {
+                           print "No labels found.\n";
+                          } else {
+
+                            echo '<form action="userhome" method="post">';
+                            echo '<div class="mdl-grid">';
+                            foreach ($results->getLabels() as $label) {
+                              echo '<div class="mdl-cell mdl-cell--2-col">' . $label->getName() . '</div>';
+                              //printf($label->getName());
+
+                              echo '<div class="mdl-cell mdl-cell--2-col"><button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getName() . '"><i class="material-icons">add</i></button></div>';
+                            }
+                            echo '</form></div>';
+                          }
+                          */
+                        ?>
+                      </p>
+                    </div>
+                    <div class="mdl-dialog__actions">
+                      <button type="button" class="mdl-button close">Close</button>
+                    </div>
+                  </dialog>
+                  <script>
+                    var dialog = document.querySelector('#dialog1');
+                    var showDialogButton = document.querySelector('#show-dialog');
+                    if (! dialog.showModal) {
+                      dialogPolyfill.registerDialog(dialog);
+                    }
+                    showDialogButton.addEventListener('click', function() {
+                      dialog.showModal();
+                    });
+                    dialog.querySelector('.close').addEventListener('click', function() {
+                      dialog.close();
+                    });
+                  </script>
+
+-->
+
+                  <button id="show-dialog3" type="button" class="mdl-button">Select Calendar</button>
+                  <dialog style="width: 900px;" id="dialog3" class="mdl-dialog">
+                    <h4 class="mdl-dialog__title">Which calendar are your maintenance tasks in?</h4>
+                    <div class="mdl-dialog__content">
+                      <p>
+                        
+                        <?php
+                          $service2 = new Google_Service_Calendar($client);
+                          $calendarList = $service2->calendarList->listCalendarList();
+
+                          while(true) {
+
+                            echo '<form action="userhome" method="post">';
+                            echo '<div class="mdl-grid">';
+                            foreach ($calendarList->getItems() as $calendarListEntry) {
+                              echo '<div class="mdl-cell mdl-cell--2-col">' . $calendarListEntry->getSummary() . '</div>';
+                              echo '<div class="mdl-cell mdl-cell--2-col"><button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getName() . '"><i class="material-icons">add</i></button></div>';
+                            }
+
+                            echo '</form></div>';
+                            $pageToken = $calendarList->getNextPageToken();
+                            if ($pageToken) {
+                              $optParams = array('pageToken' => $pageToken);
+                              $calendarList = $service->calendarList->listCalendarList($optParams);
+                            } else {
+                              break;
+                            }
+                          }
+                        ?>
+                      </p>
+                    </div>
+                    <div class="mdl-dialog__actions">
+                      <button type="button" class="mdl-button close">Close</button>
+                    </div>
+                  </dialog>
+                  <script>
+                    var dialog3 = document.querySelector('#dialog3');
+                    var showDialogButton3 = document.querySelector('#show-dialog3');
+                    if (! dialog3.showModal) {
+                      dialogPolyfill.registerDialog(dialog3);
+                    }
+                    showDialogButton3.addEventListener('click', function() {
+                      dialog3.showModal();
+                    });
+                    dialog3.querySelector('.close').addEventListener('click', function() {
+                      dialog3.close();
+                    });
+                  </script>
+
+              </div>
             </div>
         </main>
         <footer class="mdl-mini-footer mdl-grid">

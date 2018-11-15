@@ -33,7 +33,6 @@ body::after {
 
 /* Login */
 
-
 .signin_box {
 	text-align: center;
 	justify-content: center;
@@ -53,7 +52,7 @@ body::after {
     overflow-y: auto !important;
 }
 
-/* Overview - Datatables */
+/* Overview / Datatables */
 
 .dataTables_wrapper {
     width: 100%;
@@ -67,8 +66,13 @@ body::after {
 }
 
 .dataTables_empty {
-  display:none;
+  	display:none;
 }
+
+a.editLink {
+	color: #67B246 !important;
+}
+
 /* Menu */
 
 .menu_userdetails {
@@ -142,7 +146,14 @@ body::after {
 
 .footera {
 	text-decoration: none;
+	color: #67B246 !important;
 }
+
+.footera:hover {
+	text-decoration: none;
+	color: #67B246 !important;
+}
+
 .love {
 	color: rgb(255,138,128);
 }

@@ -83,7 +83,7 @@ if (isset($_REQUEST['logout'])) {
                 <li class="mdl-menu__item">Some Action</li>
                 <li class="mdl-menu__item">Another Action</li>
                 <li disabled class="mdl-menu__item">Disabled Action</li>
-                <li class="mdl-menu__item"><a href="?logout">Logout</a></li>
+                <li class="mdl-menu__item"><a class="usermenuhref" href="?logout">Logout</a></li>
               </ul>
           </div>
         </div>
@@ -231,7 +231,7 @@ if (isset($_REQUEST['logout'])) {
                       echo '<tr>';
                       // button - class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab"
                           echo '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-                                  <a href="addedit.php?mid=' . $rowx['id'] . '">
+                                  <a class="editLink" href="addedit.php?mid=' . $rowx['id'] . '">
                                     <i class="material-icons">edit</i>
                                   </a>
                                 </button></td>';

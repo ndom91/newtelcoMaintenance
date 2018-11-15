@@ -6,6 +6,10 @@ if (isset($_REQUEST['logout'])) {
   unset($_SESSION['id_token_token']);
 }
 
+if (empty($_SESSION['id_token_token'])) {
+  session_destroy();
+  header('Location: https://maintenance.newtelco.de/index.php');
+}
 /*
 $redirect_uri = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
 $client1 = new Google_Client();
@@ -83,7 +87,7 @@ print_r($userInfo);
                 <li class="mdl-menu__item">Some Action</li>
                 <li class="mdl-menu__item">Another Action</li>
                 <li disabled class="mdl-menu__item">Disabled Action</li>
-                <li class="mdl-menu__item"><a href="?logout">Logout</a></li>
+                <li class="mdl-menu__item"><a class="usermenuhref" href="?logout">Logout</a></li>
               </ul>
           </div>
               

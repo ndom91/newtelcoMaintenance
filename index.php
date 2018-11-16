@@ -48,6 +48,8 @@ if (empty($_SESSION['id_token_token'])) {
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link href='http://rawgit.com/kimjs3550/material-icons-autocomplete/master/icon-style.css' rel='stylesheet'>
+
 
 </head>
 <body>
@@ -72,7 +74,7 @@ if (empty($_SESSION['id_token_token'])) {
                 <li class="mdl-menu__item"><a class="usermenuhref" href="?logout">Logout</a></li>
               </ul>
           </div>
-              
+
         </div>
       </header>
       <div class="mdl-layout__drawer">
@@ -121,10 +123,10 @@ if (empty($_SESSION['id_token_token'])) {
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                       Mauris sagittis pellentesque lacus eleifend lacinia...<br><br>
                       <b>Debug:</b>
-                      <pre><?php 
+                      <pre><?php
                       var_export($token_data);
                       ?></pre>
-                      
+
                     </div>
                     <div class="mdl-card__actions mdl-card--border">
                       <a href="overview.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
@@ -138,7 +140,7 @@ if (empty($_SESSION['id_token_token'])) {
               </div>
               <div class="mdl-cell mdl-cell--3-col mdl-cell--0-col-phone"></div>
             </div>
-        </main> 
+        </main>
         <footer class="mdl-mini-footer mdl-grid">
             <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--10-col mdl-cell--middle">
               <span class="mdl-logo">Newtelco GmbH</span>
@@ -157,4 +159,3 @@ if (empty($_SESSION['id_token_token'])) {
       </div>
 </body>
 </html>
-

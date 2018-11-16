@@ -61,9 +61,10 @@ if (isset($_REQUEST['logout'])) {
           <span class="mdl-layout-title">Maintenance</span>
           <div class="mdl-layout-spacer"></div>
           <div class="menu_userdetails">
-            <span class="mdl-layout-subtitle"><?php echo $token_data['email'] ?></span>
             <button id="user-profile-menu" class="mdl-button mdl-js-button mdl-userprofile-button">
               <img class="menu_userphoto" src="<?php echo $token_data['picture'] ?>"/>
+              <span class="mdl-layout-subtitle menumail"> <?php echo $token_data['email'] ?></span>
+              <i class="fas fa-angle-down menuangle"></i>
             </button>
               <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
                   for="user-profile-menu">
@@ -94,10 +95,11 @@ if (isset($_REQUEST['logout'])) {
       </div>
         <main class="mdl-layout__content">
             <div class="mdl-grid">
-              <div class="mdl-cell mdl-cell--8-col mdl-cell--4-col-phone">
-                <h4>Mails</h4>
-
-                <button id="show-dialog" type="button" class="mdl-button">Select Label</button>
+              <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
+                <div class="userHomeHeader">
+                  <h4 class="selectGoogleLabel">Mails</h4>
+                  <button id="show-dialog" type="button" class="mdl-button selectGoogleButton">Select Label</button>
+                </div>
                   <dialog style="width: 900px;" id="dialog1" class="mdl-dialog">
                     <h4 class="mdl-dialog__title">Which label are your maintenance emails in?</h4>
                     <div class="mdl-dialog__content">
@@ -360,66 +362,11 @@ if (isset($_REQUEST['logout'])) {
                   ?>
 
               </div>
-              <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone">
-                <h4>Calendar</h4>
-
-
-
-
-
-<!--
-                <button id="show-dialog" type="button" class="mdl-button">Select Label</button>
-                  <dialog style="width: 900px;" id="dialog1" class="mdl-dialog">
-                    <h4 class="mdl-dialog__title">Which label are your maintenance emails in?</h4>
-                    <div class="mdl-dialog__content">
-                      <p>
-                        
-                        <?php/*
-                          $service = new Google_Service_Gmail($client);
-
-                          // Print the labels in the user's account.
-                          $user = 'me';
-                          $results = $service->users_labels->listUsersLabels($user);
-
-                          if (count($results->getLabels()) == 0) {
-                           print "No labels found.\n";
-                          } else {
-
-                            echo '<form action="userhome" method="post">';
-                            echo '<div class="mdl-grid">';
-                            foreach ($results->getLabels() as $label) {
-                              echo '<div class="mdl-cell mdl-cell--2-col">' . $label->getName() . '</div>';
-                              //printf($label->getName());
-
-                              echo '<div class="mdl-cell mdl-cell--2-col"><button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getName() . '"><i class="material-icons">add</i></button></div>';
-                            }
-                            echo '</form></div>';
-                          }
-                          */
-                        ?>
-                      </p>
-                    </div>
-                    <div class="mdl-dialog__actions">
-                      <button type="button" class="mdl-button close">Close</button>
-                    </div>
-                  </dialog>
-                  <script>
-                    var dialog = document.querySelector('#dialog1');
-                    var showDialogButton = document.querySelector('#show-dialog');
-                    if (! dialog.showModal) {
-                      dialogPolyfill.registerDialog(dialog);
-                    }
-                    showDialogButton.addEventListener('click', function() {
-                      dialog.showModal();
-                    });
-                    dialog.querySelector('.close').addEventListener('click', function() {
-                      dialog.close();
-                    });
-                  </script>
-
--->
-
-                  <button id="show-dialog3" type="button" class="mdl-button">Select Calendar</button>
+              <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
+              <div class="userHomeHeader">
+                <h4 class="selectGoogleLabel">Calendar</h4>
+                <button id="show-dialog3" type="button" class="mdl-button selectGoogleButton">Select Calendar</button>
+              </div>
                   <dialog style="width: 900px;" id="dialog3" class="mdl-dialog">
                     <h4 class="mdl-dialog__title">Which calendar are your maintenance tasks in?</h4>
                     <div class="mdl-dialog__content">
@@ -435,7 +382,7 @@ if (isset($_REQUEST['logout'])) {
                             echo '<div class="mdl-grid">';
                             foreach ($calendarList->getItems() as $calendarListEntry) {
                               echo '<div class="mdl-cell mdl-cell--2-col">' . $calendarListEntry->getSummary() . '</div>';
-                              echo '<div class="mdl-cell mdl-cell--2-col"><button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getName() . '"><i class="material-icons">add</i></button></div>';
+                              echo '<div class="mdl-cell mdl-cell--2-col"><button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="cal" value="' . $calendarListEntry->getID() . '"><i class="material-icons">add</i></button></div>';
                             }
 
                             echo '</form></div>';
@@ -467,7 +414,62 @@ if (isset($_REQUEST['logout'])) {
                       dialog3.close();
                     });
                   </script>
+                  <?php
 
+                  if(isset($_POST['cal'])) {
+                    $calID = $_POST['cal'];
+                  } else {
+                    $calID = '0';
+                  }
+                  $optParams = array(
+                    'maxResults' => 10,
+                    'orderBy' => 'startTime',
+                    'singleEvents' => true,
+                    'timeMin' => date('c'),
+                  );
+
+                  $resultsCal = $service2->events->listEvents($calID, $optParams);
+                  $events = $resultsCal->getItems();
+
+
+                  if (empty($events)) {
+                      echo "<br><h5>No upcoming events found.</h5><br>";
+                  } else {
+                      echo '<table class="mdl-data-table mdl-js-data-table mdl-shadow--4dp calEntries" id="calTable">
+                                <thead>
+                                  <tr>
+                                    <th class="mdl-data-table__cell--non-numeric">Summary</th>
+                                    <th class="mdl-data-table__cell--non-numeric">Creator</th>
+                                    <th class="">Start</th>
+                                    <th class="">End</th>
+                                  </tr>
+                                </thead>
+                                <tbody>';
+
+                      // print "Upcoming events:\n";
+                      foreach ($events as $event) {
+                          $start = $event->start->dateTime;
+                          if (empty($start)) {
+                              $start = $event->start->date;
+                          }
+                          $end = $event->end->dateTime;
+                          if (empty($end)) {
+                              $end = $event->end->date;
+                          }
+
+                          echo '<tr>
+                                  <td>' . $event->getSummary() . '</td>
+                                  <td>' . $event->creator->displayName . '</td>
+                                  <td>' . $start . '</td>
+                                  <td>' . $end . '</td>
+                                </tr>';
+                          //printf("%s (%s)\n", $event->getSummary(), $start);
+                      }
+                      echo '</tbody>
+                        </table>';
+                  }
+
+                  ?>
               </div>
             </div>
         </main>

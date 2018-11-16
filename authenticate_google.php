@@ -36,6 +36,7 @@ if (isset($_REQUEST['logout'])) {
   unset($_SESSION['id_token_token']);
   session_destroy();
 }
+
 /************************************************
  * If we have a code back from the OAuth 2.0 flow,
  * we need to exchange that with the
@@ -62,6 +63,7 @@ if (
   $client->setAccessToken($_SESSION['id_token_token']);
 } else {
   $authUrl = $client->createAuthUrl();
+  header('Location: ' . $authUrl);
 }
 /************************************************
   If we're signed in we can go ahead and retrieve

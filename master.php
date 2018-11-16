@@ -91,9 +91,10 @@ print_r($userInfo);
           <span class="mdl-layout-title">Maintenance</span>
           <div class="mdl-layout-spacer"></div>
           <div class="menu_userdetails">
-            <span class="mdl-layout-subtitle"><?php echo $token_data['email'] ?></span>
             <button id="user-profile-menu" class="mdl-button mdl-js-button mdl-userprofile-button">
               <img class="menu_userphoto" src="<?php echo $token_data['picture'] ?>"/>
+              <span class="mdl-layout-subtitle menumail"> <?php echo $token_data['email'] ?></span>
+              <i class="fas fa-angle-down menuangle"></i>
             </button>
               <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
                   for="user-profile-menu">

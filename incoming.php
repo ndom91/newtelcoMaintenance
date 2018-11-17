@@ -110,6 +110,48 @@ if (isset($_REQUEST['logout'])) {
             <div class="mdl-grid">
               <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
                 <div class="mdl-grid tableSearchGrid">
+                  <div class="mdl-cell mdl-cell--1-col">
+                    <div class="userHomeHeader">
+                      <button id="show-dialog" type="button" class="mdl-button selectGoogleButton">Mail Label</button>
+                    </div>
+                    <dialog style="width: 900px;" id="dialog1" class="mdl-dialog">
+                      <h4 class="mdl-dialog__title">Which label are your maintenance emails in?</h4>
+                      <div class="mdl-dialog__content">
+                        <p>
+
+                          <?php
+                            $service = new Google_Service_Gmail($client);
+
+                            // Print the labels in the user's account.
+                            $user = 'me';
+                            $results = $service->users_labels->listUsersLabels($user);
+
+                            if (count($results->getLabels()) == 0) {
+                             print "No labels found.\n";
+                            } else {
+
+                              echo '<form action="incoming" method="post">';
+                              echo '<div class="mdl-grid">';
+                              foreach ($results->getLabels() as $label) {
+                                echo '<div class="mdl-cell mdl-cell--2-col">' . $label->getName() . '</div>';
+                                //printf($label->getName());
+
+                                echo '<div class="mdl-cell mdl-cell--2-col"><button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getName() . '"><i class="material-icons">add</i></button></div>';
+                              }
+                              echo '</form></div>';
+                            }
+
+                            ?>
+                          </p>
+                        </div>
+                        <div class="mdl-dialog__actions">
+                          <button type="button" class="mdl-button close">Close</button>
+                        </div>
+                      </dialog>
+                    </div>
+
+
+
                 <div class="mdl-cell mdl-cell--2-col">
                   <form action="incoming" method="post">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -136,7 +178,7 @@ if (isset($_REQUEST['logout'])) {
                       </div>
                   </div>
                   <div class="mdl-cell mdl-cell--2-col"></div>
-                  <div class="mdl-cell mdl-cell--2-col mdl-typography--text-right">
+                  <div class="mdl-cell mdl-cell--1-col mdl-typography--text-right">
                     <button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--light-green-nt ">
                       <i class="material-icons">search</i>
                     </button>
@@ -196,6 +238,7 @@ if (isset($_REQUEST['logout'])) {
                               <th class="">id</th>
                               <th class="">Maileingang Date/Time</th>
                               <th>R Mail</th>
+                              <th>R Mail Content</th>
                               <th>Lieferant</th>
                               <th>Deren CID</th>
                               <th>Bearbeitet Von</th>
@@ -228,9 +271,226 @@ if (isset($_REQUEST['logout'])) {
                       }
                       echo '</tr>';
                   }
-                  echo '</tbody>
-                  </table>
-                  ';
+
+                // https://stackoverflow.com/questions/32655874/cannot-get-the-body-of-email-with-gmail-php-api
+
+                function decodeBody($body) {
+                    $rawData = $body;
+                    $sanitizedData = strtr($rawData,'-_', '+/');
+                    $decodedMessage = base64_decode($sanitizedData);
+                    if(!$decodedMessage){
+                        $decodedMessage = FALSE;
+                    }
+                    return $decodedMessage;
+                }
+
+                function getHeader($headers, $name) {
+                  foreach($headers as $header) {
+                    if($header['name'] == $name) {
+                      return $header['value'];
+                    }
+                  }
+                }
+
+                function stripHTML($html) {
+
+                    $dom = new DOMDocument();
+
+                    $dom->loadHTML($html);
+
+                    $script = $dom->getElementsByTagName('script');
+
+                    $remove = [];
+                    foreach($script as $item)
+                    {
+                      $remove[] = $item;
+                    }
+
+                    foreach ($remove as $item)
+                    {
+                      $item->parentNode->removeChild($item);
+                    }
+
+                    $html = $dom->saveHTML();
+                    return $html;
+                }
+
+                function fetchMails($gmail, $q) {
+
+                try{
+                    $list = $gmail->users_messages->listUsersMessages('me', array('q' => $q));
+                    while ($list->getMessages() != null) {
+
+                        foreach ($list->getMessages() as $mlist) {
+
+                            $message_id = $mlist->id;
+                            $optParamsGet2['format'] = 'full';
+                            //$optParamsGet2['maxResults'] = 5; // Return Only 5 Messages
+                            //$optParamsGet2['labelId'] = $labelID;
+                            $single_message = $gmail->users_messages->get('me', $message_id, $optParamsGet2);
+                            $payload = $single_message->getPayload();
+                            $headers = $payload->getHeaders();
+                            $snippet = $single_message->getSnippet();
+                            $date = getHeader($headers, 'Date');
+                            $subject = getHeader($headers, 'Subject');
+                            $from = getHeader($headers, 'From');
+                            $fromHTML = htmlentities($from);
+                            if (($pos = strpos($fromHTML, "@")) !== FALSE) {
+                              $domain = substr($fromHTML, strpos($fromHTML, "@") + 1);
+                              $dtld = substr($fromHTML, strpos($fromHTML, "."));
+                              $domain = basename($domain, $dtld);
+                            }
+
+                            // With no attachment, the payload might be directly in the body, encoded.
+                            $body = $payload->getBody();
+                            $FOUND_BODY = decodeBody($body['data']);
+
+                            // If we didn't find a body, let's look for the parts
+                            if(!$FOUND_BODY) {
+                                $parts = $payload->getParts();
+                                foreach ($parts  as $part) {
+                                    if($part['body'] && $part['mimeType'] == 'text/html') {
+                                        $FOUND_BODY = decodeBody($part['body']->data);
+                                        break;
+                                    }
+                                }
+                            } if(!$FOUND_BODY) {
+                                foreach ($parts  as $part) {
+                                    // Last try: if we didn't find the body in the first parts,
+                                    // let's loop into the parts of the parts (as @Tholle suggested).
+                                    if($part['parts'] && !$FOUND_BODY) {
+                                        foreach ($part['parts'] as $p) {
+                                            // replace 'text/html' by 'text/plain' if you prefer
+                                            if($p['mimeType'] === 'text/plain' && $p['body']) {
+                                                $FOUND_BODY = decodeBody($p['body']->data);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if($FOUND_BODY) {
+                                        break;
+                                    }
+                                }
+                            }
+                            // Finally, print the message ID and the body
+
+
+
+                            echo '<tr>
+                                    <td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+                                            <a class="editLink" href="addedit.php?mid=' . $rowx['id'] . '">
+                                              <i class="material-icons">edit</i>
+                                            </a>
+                                          </button></td>
+                                    <td></td>
+                                    <td>'. $date  . '</td>
+                                    <td><a id="show-dialog2" data-target="' . $message_id . '">' . $message_id . '</a></td>
+                                    <td></td>
+                                    <td>'. htmlentities($from)  . '</td>
+                                    <td>'. $subject  . '</td>
+                                    <td>'. $domain  . '</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                  </tr>';
+
+                              echo '<dialog id="dialog_' . $message_id . '" class="mdl-dialog" style="width: 800px !important;">
+                                  <h4 class="mdl-dialog__title">Subject: ' . $subject . '</h4>
+                                  <h6 class="mdl-dialog__title" style="font-size: 24px !important">From: ' . $from . '</h6>
+                                  <div class="mdl-dialog__content">
+                                    <p><div style="width: 750px; ">
+                                     ' . stripHTML($FOUND_BODY) . '
+                                    </pre></p>
+                                  </div>
+                                  <div class="mdl-dialog__actions">
+                                    <button type="button" class="mdl-button">Fuck You</button>
+                                    <button type="button" class="mdl-button close">Close</button>
+                                  </div>
+                                </dialog>';
+
+                        }
+
+                        if ($list->getNextPageToken() != null) {
+                            $pageToken = $list->getNextPageToken();
+                            $list = $gmail->users_messages->listUsersMessages('me', array('pageToken' => $pageToken));
+                        } else {
+                            break;
+                        }
+
+                    }
+
+                echo '</tbody>
+                </table>';
+
+                echo '
+                  <script>
+
+                  var modalTriggers = document.querySelectorAll(\'.mailLinks\');
+
+                  // Getting the target modal of every button and applying listeners
+                  for (var i = modalTriggers.length - 1; i >= 0; i--) {
+                        var t = modalTriggers[i].getAttribute(\'data-target\');
+                        var id = \'#\' + modalTriggers[i].getAttribute(\'id\');
+                        modalProcess(t, id);
+                  }
+
+                  function modalProcess(selector, button) {
+                    var dialog = document.querySelector(selector);
+                    var showDialogButton = document.querySelector(button);
+
+                    if (dialog) {
+                      if (!dialog.showModal) {
+                        dialogPolyfill.registerDialog(dialog);
+                      }
+                      showDialogButton.addEventListener(\'click\', function() {
+                        dialog.showModal();
+                      });
+                      dialog.querySelector(\'.close\').addEventListener(\'click\', function() {
+                        dialog.close();
+                      });
+                    }
+                  }
+
+                  var mailID2 = \'\';
+
+                  $("#dataTable3").click(function() {
+                      var mailID2 = $(event.target).attr(\'data-target\');
+                      console.log(mailID2);
+                      var dialog2 = document.querySelector(\'#dialog_\' + mailID2);
+                      var showDialogButton2 = document.querySelector(\'[data-target="\' + mailID2 + \'"]\');
+                      if (! dialog2.showModal) {
+                        dialogPolyfill.registerDialog(dialog);
+                      }
+                      showDialogButton2.addEventListener(\'click\', function() {
+                        dialog2.showModal();
+                      });
+                      dialog2.querySelector(\'.close\').addEventListener(\'click\', function() {
+                        dialog2.close();
+                      });
+                  });
+                </script>';
+
+
+                } catch (Exception $e) {
+                    echo $e->getMessage();
+                }
+
+                }
+
+
+                if(isset($_POST['label'])) {
+                  $labelID = $_POST['label'];
+                } else {
+                  $labelID = '0';
+                }
+
+                $q = 'label:' . $labelID . ' newer_than:2d';
+                fetchMails($service, $q);
 
 
                 ?>
@@ -263,7 +523,7 @@ if (isset($_REQUEST['logout'])) {
                           "searchable": false
                       },
                       {
-                          targets: [2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
+                          targets: [2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
                           className: 'mdl-data-table__cell--non-numeric'
                       }
                   ]
@@ -329,6 +589,19 @@ if (isset($_REQUEST['logout'])) {
               })
             })
 
+        </script>
+        <script>
+          var dialog = document.querySelector('#dialog1');
+          var showDialogButton = document.querySelector('#show-dialog');
+          if (! dialog.showModal) {
+            dialogPolyfill.registerDialog(dialog);
+          }
+          showDialogButton.addEventListener('click', function() {
+            dialog.showModal();
+          });
+          dialog.querySelector('.close').addEventListener('click', function() {
+            dialog.close();
+          });
         </script>
         <footer class="mdl-mini-footer mdl-grid">
             <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--10-col mdl-cell--middle">

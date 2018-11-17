@@ -104,7 +104,6 @@ table.dataTable.dtr-inline.collapsed.compact>tbody>tr>td:first-child:before, tab
   width: 100px;
 }
 table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before, table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>th:first-child:before {
-  background-image: url('assets/images/baseline-add-24px.svg') !important;
   background-color: #67B246 !important;
   font-size: 36px;
   line-height: 40px !important;

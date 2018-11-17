@@ -104,7 +104,7 @@ if (isset($_REQUEST['logout'])) {
                     <h4 class="mdl-dialog__title">Which label are your maintenance emails in?</h4>
                     <div class="mdl-dialog__content">
                       <p>
-                        
+
                         <?php
                           $service = new Google_Service_Gmail($client);
 
@@ -185,7 +185,7 @@ if (isset($_REQUEST['logout'])) {
 
                       foreach ($remove as $item)
                       {
-                        $item->parentNode->removeChild($item); 
+                        $item->parentNode->removeChild($item);
                       }
 
                       $html = $dom->saveHTML();
@@ -197,7 +197,7 @@ if (isset($_REQUEST['logout'])) {
                   try{
                       $list = $gmail->users_messages->listUsersMessages('me', array('q' => $q));
                       while ($list->getMessages() != null) {
-                       
+
                         echo '<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--4dp mailLinks" id="mailTable">
                                 <thead>
                                   <tr>
@@ -214,11 +214,11 @@ if (isset($_REQUEST['logout'])) {
                               $message_id = $mlist->id;
                               $optParamsGet2['format'] = 'full';
                               //$optParamsGet2['maxResults'] = 5; // Return Only 5 Messages
-                              //$optParamsGet2['labelId'] = $labelID; 
+                              //$optParamsGet2['labelId'] = $labelID;
                               $single_message = $gmail->users_messages->get('me', $message_id, $optParamsGet2);
                               $payload = $single_message->getPayload();
                               $headers = $payload->getHeaders();
-                              $snippet = getHeader($headers, 'Snippet');;
+                              $snippet = $single_message->getSnippet();
                               $subject = getHeader($headers, 'Subject');
                               $from = getHeader($headers, 'From');
 
@@ -237,7 +237,7 @@ if (isset($_REQUEST['logout'])) {
                                   }
                               } if(!$FOUND_BODY) {
                                   foreach ($parts  as $part) {
-                                      // Last try: if we didn't find the body in the first parts, 
+                                      // Last try: if we didn't find the body in the first parts,
                                       // let's loop into the parts of the parts (as @Tholle suggested).
                                       if($part['parts'] && !$FOUND_BODY) {
                                           foreach ($part['parts'] as $p) {
@@ -254,7 +254,7 @@ if (isset($_REQUEST['logout'])) {
                                   }
                               }
                               // Finally, print the message ID and the body
-                              
+
 
 
                               echo '<tr>
@@ -278,7 +278,7 @@ if (isset($_REQUEST['logout'])) {
                                   <button type="button" class="mdl-button close">Close</button>
                                 </div>
                               </dialog>';
-                              
+
                           }
 
                           if ($list->getNextPageToken() != null) {
@@ -341,13 +341,13 @@ if (isset($_REQUEST['logout'])) {
                     });
                   </script>';
 
-                        
+
                   } catch (Exception $e) {
                       echo $e->getMessage();
                   }
 
-                  } 
-                  
+                  }
+
 
                   if(isset($_POST['label'])) {
                     $labelID = $_POST['label'];
@@ -358,7 +358,7 @@ if (isset($_REQUEST['logout'])) {
                   $q = 'label:' . $labelID . ' newer_than:1d';
                   fetchMails($service, $q);
 
-                  
+
                   ?>
 
               </div>
@@ -371,7 +371,7 @@ if (isset($_REQUEST['logout'])) {
                     <h4 class="mdl-dialog__title">Which calendar are your maintenance tasks in?</h4>
                     <div class="mdl-dialog__content">
                       <p>
-                        
+
                         <?php
                           $service2 = new Google_Service_Calendar($client);
                           $calendarList = $service2->calendarList->listCalendarList();
@@ -491,4 +491,3 @@ if (isset($_REQUEST['logout'])) {
       </div>
 </body>
 </html>
-

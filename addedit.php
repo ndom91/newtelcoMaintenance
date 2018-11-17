@@ -88,7 +88,7 @@ print_r($userInfo);
                 <li class="mdl-menu__item"><a class="usermenuhref" href="?logout">Logout</a></li>
               </ul>
           </div>
-              
+
         </div>
       </header>
       <div class="mdl-layout__drawer">
@@ -127,7 +127,7 @@ print_r($userInfo);
                       $mID_escape = mysqli_real_escape_string($dbhandle, $activeID);
                       $mID_query = mysqli_query($dbhandle, "SELECT * FROM `maintenancedb` WHERE `id` LIKE $mID_escape");
                       $mIDresult = mysqli_fetch_array($mID_query);
-                      
+
                       // DEBUG
                       //echo "mIDresult: " . $mIDresult['bearbeitetvon'] . "<br>";
                       //$dCIDresult = mysqli_fetch_array($dCID_query);
@@ -135,7 +135,7 @@ print_r($userInfo);
                       // END DEBUG
 
                   ?>
-                  
+
                   <!-- EDIT MODE -->
 
                   <div class="mdl-cell mdl-cell--3-col mdl-cell--0-col-phone"></div>
@@ -206,13 +206,13 @@ print_r($userInfo);
                           <label class="mdl-textfield__label" for="makdt">Mail an Kunde Date/Time</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['mailsend'] ?>" id="smail">
-                          <label class="mdl-textfield__label" for="smail">S Mail</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                           <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['cal'] ?>" id="cal">
                           <label class="mdl-textfield__label" for="cal">Add to Cal</label>
                         </div>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2">
+                          <input type="checkbox" id="switch-2" class="mdl-switch__input" <?php if ($mIDresult['done'] == 1) { echo 'checked'; } ?>>
+                          <span class="mdl-switch__label">Completed</span>
+                        </label>
                               </form>
                               </div>
                               <div class="mdl-card__actions mdl-card--border">
@@ -306,13 +306,13 @@ print_r($userInfo);
                           <label class="mdl-textfield__label" for="makdt">Mail an Kunde Date/Time</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['mailsend'] ?>" id="smail">
-                          <label class="mdl-textfield__label" for="smail">S Mail</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                           <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['cal'] ?>" id="cal">
                           <label class="mdl-textfield__label" for="cal">Add to Cal</label>
                         </div>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2">
+                          <input type="checkbox" id="switch-2" class="mdl-switch__input" <?php if ($mIDresult['done'] == 1) { echo 'checked'; } ?>>
+                          <span class="mdl-switch__label">Completed</span>
+                        </label>
 
                                 </form>
                               </div>
@@ -329,7 +329,7 @@ print_r($userInfo);
                         <div class="mdl-cell mdl-cell--3-col mdl-cell--0-col-phone"></div>
                       </div>
                         <?php
-                      } 
+                      }
                       ?>
         </main>
         <footer class="mdl-mini-footer mdl-grid">
@@ -350,4 +350,3 @@ print_r($userInfo);
       </div>
 </body>
 </html>
-

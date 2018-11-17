@@ -15,7 +15,7 @@ html {
     font-family: 'Roboto', sans-serif;
     background-color: #fff;
 }
-body::after {	
+body::after {
 	content: "";
 	opacity: 0.7;
 	top: 0;
@@ -25,9 +25,9 @@ body::after {
 	position: fixed;
 	z-index: -1;
 	width: 100%;
-	box-shadow: 
+	box-shadow:
 	  inset 0px 121px 110px -100px #000,
-	  inset 0px -121px 110px -100px #000; 
+	  inset 0px -121px 110px -100px #000;
     /*background: url('../images/bg4.png') no-repeat center center fixed; */
 }
 
@@ -70,6 +70,10 @@ body::after {
 
 /* Overview / Datatables */
 
+
+.tableSearchGrid > .mdl-cell > .mdl-textfield.is-focused .mdl-textfield__label:after {
+  bottom: 13px;
+}
 .dataTables_wrapper {
     width: 100%;
     margin: 0 auto;
@@ -87,6 +91,23 @@ body::after {
 
 a.editLink {
 	color: #67B246 !important;
+}
+.dtr-inline, collapsed {
+  width: 100px;
+}
+
+table.dataTable.dtr-inline.collapsed.compact>tbody>tr>td:first-child:before, table.dataTable.dtr-inline.collapsed.compact>tbody>tr>th:first-child:before {
+  height: 36px !important;
+  width: 36px !important;
+  border-radius: 50% !important;
+  top: 10px !important;
+  width: 100px;
+}
+table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before, table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>th:first-child:before {
+  background-image: url('assets/images/baseline-add-24px.svg') !important;
+  background-color: #67B246 !important;
+  font-size: 36px;
+  line-height: 40px !important;
 }
 
 /* Menu */
@@ -164,7 +185,7 @@ a.editLink {
 	margin-left: 10px;
 }
 
-/* Footer */ 
+/* Footer */
 
 .mdl-mini-footer {
 	width:  100%;

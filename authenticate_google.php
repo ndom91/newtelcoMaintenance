@@ -50,7 +50,7 @@ if (isset($_GET['code'])) {
   $_SESSION['id_token_token'] = $token;
   // redirect back to the example
   header('Location: https://maintenance.newtelco.de/index.php');
-  return;
+  // return;
 }
 /************************************************
   If we have an access token, we can make
@@ -120,7 +120,7 @@ if (!isset($_SESSION['id_token_token'])):
   <body>
     <!-- Always shows a header, even in smaller screens. -->
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header ">
-      
+
         <main class="mdl-layout__content">
             <!-- Wide card with share menu button -->
             <style>
@@ -157,9 +157,9 @@ if (!isset($_SESSION['id_token_token'])):
                   <div class="request">
                     <a class='login' href='<?= $authUrl ?>' data-onsuccess="onSignIn"><img class="signin_btn"  src="assets/images/btn_signinGoogle.png"/></a>
                   </div>
-                <?php 
+                <?php
                 else: var_export($token_data);
-                endif 
+                endif
                 ?>
                 </div>
               </div>

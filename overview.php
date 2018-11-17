@@ -48,7 +48,7 @@ if (isset($_REQUEST['logout'])) {
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  
+
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
@@ -63,6 +63,9 @@ if (isset($_REQUEST['logout'])) {
 
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css"/>
   <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
+
+  <script type="text/javascript" src="assets/js/dataTables.responsive.js"></script>
+  <link rel="stylesheet" type="text/css" href="assets/css/responsive.dataTables.css"/>
 
 </head>
 <body>
@@ -109,9 +112,21 @@ if (isset($_REQUEST['logout'])) {
         <main class="mdl-layout__content">
             <div class="mdl-grid">
               <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
-                <div class="mdl-grid">
+                <div class="mdl-grid tableSearchGrid">
                   <div class="mdl-cell mdl-cell--2-col">
                     <form action="overview" method="post">
+                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" name="tLieferant" id="tLieferant">
+                        <label class="mdl-textfield__label" for="tLieferant">Lieferant</label>
+                      </div>
+                  </div>
+                  <div class="mdl-cell mdl-cell--2-col">
+                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" name="tdCID" id="tdCID">
+                        <label class="mdl-textfield__label" for="tdCID">deren CID</label>
+                      </div>
+                  </div>
+                  <div class="mdl-cell mdl-cell--2-col">
                       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input class="mdl-textfield__input" type="text" name="tKunde" id="tKunde">
                         <label class="mdl-textfield__label" for="tKunde">Kunde</label>
@@ -119,20 +134,8 @@ if (isset($_REQUEST['logout'])) {
                   </div>
                   <div class="mdl-cell mdl-cell--2-col">
                       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" id="tLieferant">
-                        <label class="mdl-textfield__label" for="tLieferant">Lieferant</label>
-                      </div>
-                  </div>
-                  <div class="mdl-cell mdl-cell--2-col">
-                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" id="tuCID">
+                        <input class="mdl-textfield__input" type="text" name="tuCID" id="tuCID">
                         <label class="mdl-textfield__label" for="tuCID">unsere CID</label>
-                      </div>
-                  </div>
-                  <div class="mdl-cell mdl-cell--2-col">
-                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" name="tdCID" id="tdCID">
-                        <label class="mdl-textfield__label" for="tdCID">deren CID</label>
                       </div>
                   </div>
                   <div class="mdl-cell mdl-cell--2-col"></div>
@@ -143,112 +146,100 @@ if (isset($_REQUEST['logout'])) {
                     </form>
                   </div>
                 </div>
-                <?php 
-                $kunde = '';
+                <?php
+                $lieferant = '';
                 $tdCID = '';
 
-                if (! empty($_POST['tKunde'])){
-                      $kunde = $_POST['tKunde'];
-                      $query = $kunde;   
+                if (empty($_POST['tLieferant']) && empty($_POST['tdCID'])) {
+                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id");
+                }
 
-                      // DEBUG
-                      //echo '<b>Debug:</b><br>';
-                      //echo '<pre>';
-                      // END DEBUG
+                if (! empty($_POST['tLieferant'])){
+                    $lieferant = $_POST['tLieferant'];
+                    $query = $lieferant;
 
-                      $kunden_escape = mysqli_real_escape_string($dbhandle, $query);
-                      $kunden_escape = '%' . $kunden_escape . '%';
-                      // search first for existance of company
-                      $kunden_query = mysqli_query($dbhandle, "SELECT `id`,`name` FROM `companies` WHERE `name` LIKE '$kunden_escape'");
+                    // DEBUG
+                    //echo '<b>Debug:</b><br>';
+                    //echo '<pre>';
+                    // END DEBUG
 
-                      if ($fetch = mysqli_fetch_array($kunden_query)) {
-                          //Found a companyn - now show all maintenances for company
-                          $kunden_id = $fetch[0];
-                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$kunden_id'");
-                        }
-                  
+                    $lieferant_escape = mysqli_real_escape_string($dbhandle, $query);
+                    $lieferant_escape = '%' . $lieferant_escape . '%';
+                    // search first for existance of company
+                    $lieferant_query = mysqli_query($dbhandle, "SELECT `id`,`name` FROM `companies` WHERE `name` LIKE '$lieferant_escape'");
+
+                    if ($fetch = mysqli_fetch_array($lieferant_query)) {
+                        //Found a companyn - now show all maintenances for company
+                        $lieferant_id = $fetch[0];
+                        $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
+                      }
+
                 } elseif (! empty($_POST['tdCID'])){
                       $tdCID = $_POST['tdCID'];
                       $query = $tdCID;
 
-                      // DEBUG
-                      //echo '<b>Debug:</b><br>';
-                      //echo '<pre>';
-                      //echo $tdCID . '<br>';
-                      // END DEBUG
-
                       $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
                       $dCID_escape = '%' . $dCID_escape . '%';
-                      $dCID_query = mysqli_query($dbhandle, "SELECT id, derenCID FROM `kunden` WHERE `derenCID` LIKE '$dCID_escape'");
-                      $dCIDresult = mysqli_fetch_array($dCID_query);
-                      
-                      // DEBUG
-                      //$dCIDresult = mysqli_fetch_array($dCID_query);
-                      //echo 'Query Result:' . $dCIDresult[0]. '<br>';
-                      // END DEBUG
 
-                      if ($fetch = mysqli_fetch_array($dCID_query)) {
-                          //Found a dCID - now show all maintenances for dCID
-                          
-                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.mailsend, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid LIKE '$dCIDresult[0]'");
+                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
+
+                }
+
+
+                // DEBUG
+                //echo("Error description: " . mysqli_error($dbhandle));
+                //echo '</pre>';
+                // END DEBUG
+
+                // class - mdl-data-table--selectable for select buttons on rows
+
+                // mdl table class - class="mdl-data-table mdl-js-data-table  mdl-shadow--4dp" style="width: 100%"
+                // non-numeric columns: class="mdl-data-table__cell--non-numeric"
+
+                echo '<div class="dataTables_wrapper">
+                <table id="dataTable1" class="table table-striped compact nowrap" style="width: 100%">
+                        <thead>
+                          <tr>
+                            <th style="width: max-content;"></th>
+                            <th class="">id</th>
+                            <th class="">Maileingang Date/Time</th>
+                            <th>R Mail</th>
+                            <th>Lieferant</th>
+                            <th>Deren CID</th>
+                            <th>Bearbeitet Von</th>
+                            <th>Maintenance Date/Time</th>
+                            <th>Start Date/Time</th>
+                            <th>End Date/Time</th>
+                            <th>Postponed</th>
+                            <th>Notes</th>
+                            <th>Mail an Kunde Date/Time</th>
+                            <th>Add to Cal</th>
+                            <th>Complete</th>
+                          </tr>
+                        </thead>
+                        <tbody>';
+
+                  while ($rowx = mysqli_fetch_assoc($resultx)) {
+                    echo '<tr>';
+                    // button - class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab"
+                        echo '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+                                <a class="editLink" href="addedit.php?mid=' . $rowx['id'] . '">
+                                  <i class="material-icons">edit</i>
+                                </a>
+                              </button></td>';
+                    foreach($rowx as $field) {
+                        if ($rowx['maileingang']) {
+                          echo '<td>' . $field . '</td>';
+                        } else {
+                        echo '<td>' . htmlspecialchars($field) . '</td>';
                         }
-                  }
-
-
-                  // DEBUG
-                  //echo("Error description: " . mysqli_error($dbhandle));
-                  //echo '</pre>';
-                  // END DEBUG
-
-                  // class - mdl-data-table--selectable for select buttons on rows
-
-                  // mdl table class - class="mdl-data-table mdl-js-data-table  mdl-shadow--4dp" style="width: 100%"
-                  // non-numeric columns: class="mdl-data-table__cell--non-numeric"
-                  echo '<div class="dataTables_wrapper">
-                  <table id="dataTable1" class="table table-striped compact nowrap" style="width: 100%">
-                          <thead>
-                            <tr>
-                              <th style="width:20px!important"></th>
-                              <th class="">id</th>
-                              <th class="">Maileingang Date/Time</th>
-                              <th>R Mail</th>
-                              <th>Company Name</th>
-                              <th>Deren CID</th>
-                              <th>Bearbeitet Von</th>
-                              <th>Maintenance Date/Time</th>
-                              <th>Start Date/Time</th>
-                              <th>End Date/Time</th>
-                              <th>Postponed</th>
-                              <th>Notes</th>
-                              <th>Mail an Kunde Date/Time</th>
-                              <th>S Mail</th>
-                              <th>Add to Cal</th>
-                              <th>Complete</th>
-                            </tr>
-                          </thead>
-                          <tbody>';
-
-                    while ($rowx = mysqli_fetch_assoc($resultx)) {
-                      echo '<tr>';
-                      // button - class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab"
-                          echo '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-                                  <a class="editLink" href="addedit.php?mid=' . $rowx['id'] . '">
-                                    <i class="material-icons">edit</i>
-                                  </a>
-                                </button></td>';
-                      foreach($rowx as $field) {
-                          if ($rowx['maileingang']) {
-                            echo '<td>' . $field . '</td>';
-                          } else {
-                          echo '<td>' . htmlspecialchars($field) . '</td>';
-                          }
-                      }
-                      echo '</tr>';
+                    }
+                    echo '</tr>';
                   }
                   echo '</tbody>
                   </table>
                   </div>';
-                
+
 
                 ?>
 
@@ -259,16 +250,21 @@ if (isset($_REQUEST['logout'])) {
         $(document).ready(function() {
              var table = $('#dataTable1').DataTable( {
                   scrollx: true,
-                  select: true,
                   stateSave: true,
+                  scrollY: false,
+                  select: true,
+                  responsive: true,
                   columnDefs: [
                       {
                           "targets": [ 1 ],
                           "visible": false,
                           "searchable": false
                       },
+                      { responsivePriority: 1, targets: [ 0, 2, 3, 4, 5, 6, 7 ] },
+                      { responsivePriority: 2, targets: -1 },
+                      { responsivePriority: 500, targets: [ 8, 9, 10, 11 ] },
                       {
-                          targets: [2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+                          targets: [2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
                           className: 'mdl-data-table__cell--non-numeric'
                       }
                   ]
@@ -300,4 +296,3 @@ if (isset($_REQUEST['logout'])) {
       </div>
 </body>
 </html>
-

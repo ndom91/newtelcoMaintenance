@@ -65,6 +65,9 @@ print_r($userInfo);
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+  <!-- jquery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->
@@ -127,7 +130,7 @@ print_r($userInfo);
                     $onotes = '';
                     $omailankunde = '';
                     $ocal = '';
-                    $odone = 0;
+                    $odone = '';
 
                     if (isset($_GET['mid'])) {
 
@@ -299,7 +302,7 @@ print_r($userInfo);
                             var dialog2 = document.querySelector(\'#viewMailID\');
                             dialog2.preventDefault();
                             event.preventDefault();
-                            
+
                             var showDialogButton2 = document.querySelector(\'[data-target="\' + mailID2 + \'"]\');
                             if (! dialog2.showModal) {
                               dialogPolyfill.registerDialog(dialog);
@@ -412,7 +415,7 @@ print_r($userInfo);
                               </form>
                               </div>
                               <div class="mdl-card__actions mdl-card--border">
-                                <a href="overview.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
+                                <a id="btnSave" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
                                   Save
                                 </a>
                                 <!-- <a href="incoming.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
@@ -426,7 +429,11 @@ print_r($userInfo);
                           <h4>kunden datatable</h4>
                         </div>
                       </div>
+                      <script>
 
+
+
+                      </script>
                         <?php
                         /*   ENDED THIS IF LOOP UP TOP FOR EDIT MODE
                       } else {
@@ -440,58 +447,51 @@ print_r($userInfo);
 
                       <script>
 
-                        $('#maintSave').on('click', function(e) {
+                        $('#btnSave').on('click', function(e) {
 
                                 e.preventDefault();
 
-                                alert('Maintenance Saved');
+                                //alert('Maintenance Saved');
 
-                               $('.rowCont tr').each(function(row, tr){
-
-                               if($(this).find('input').is(':checked')) {  // I have added the if condition here
+                                //console.log($('#rmail').text());
 
                                 var TableData = new Array();
 
 
-                                TableData[row] = {
+                                TableData[0] = {
 
+                                  "omaileingang" : $('#medt').val(),
+                                  "oreceivedmail" : $('#rmail').val(),
+                                  "olieferant" : $('#company').val(),
+                                  "oderenCIDid" : $('#dcid').val(),
+                                  "obearbeitetvon" : $('#bearbeitet').val(),
+                                  "omaintenancedate" : $('#mdt').val(),
+                                  "ostartdatetime" : $('#sdt').val(),
+                                  "oenddatetime" : $('#edt').val(),
+                                  "opostponed": $('#pponed').val(),
+                                  "onotes" : $('#notes').val(),
+                                  "omailankunde" : $('#makdt').val(),
+                                  "ocal" : $('#cal').val(),
+                                  "odone" : $('#switch-2:checked').val()
 
-                                          "userid" : $('#userid').text(),
-                                          "user_name" : $('#user').text(),
-                                          "date" : $(tr).find('td:eq(3)').text(),
-                                          "exam" : $(tr).find('td:eq(4)').text(),
-                                          "venue" : $(tr).find('td:eq(5)').text(),
-                                          "price" : $(tr).find('td:eq(6)').text(),
-                                          "total_orders" : $(tr).find('td:eq(7)').text(),
-                                          "amount" : $(tr).find('td:eq(8)').text(),
-                                          //"orders_completion" : $(tr).find('.chk')[0].checked
-                                          "orders_completion" : $('#checked').val()
+                                  }
 
-                                      }
-
-                                  TableData = JSON.stringify(TableData);
-                                  console.log(TableData);
+                                  //TableData = JSON.stringify(TableData);
+                                  console.log('tabledata: ' + TableData);
 
                                   //alert(TableData);
 
                                   $.ajax({
 
                                    type : "POST",
-                                   url : "/invl_exams/ordercompletion",
+                                   url : "api",
                                    cache : "false",
+                                   dataType: "json",
                                    data :  {data:TableData},
                                    success : function(result){
-
-                                     console.log(result);
-
+                                     console.log('result: ' + result);
                                    }
-
-
                                   });
-
-                                 } // Here for the checkbox if condition
-
-                                }); // each function
 
                               }); // clicking orderSave button
 

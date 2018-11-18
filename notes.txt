@@ -1,0 +1,16 @@
+TO DO
+----------
+
+submit addedit to DB
+
+fix field types on table views + addedit
+
+NOTES
+-------------
+momentJS DateTime Format:
+Fri, 16 Nov 2018 08:22:07 +0000
+"ddd, DD MMM YYYY HH:mm:SS ZZ"
+
+MAJOR NOTES
+-------------
+SET maintenancedb.id and kunden.id to A.I. from the get go

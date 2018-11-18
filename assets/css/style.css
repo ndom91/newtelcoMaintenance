@@ -53,12 +53,15 @@ body::after {
 }
 
 .selectGoogleButton {
-	display: inline;
+	display: inline !important;
 	float: right;
+  background-color: #67B246 !important;
+  color: #fff !important;
 }
 
 .selectGoogleLabel {
 	display: inline;
+  padding: 10px 0;
 }
 
 .userHomeHeader {
@@ -72,12 +75,54 @@ body::after {
 #viewMailID {
     float: right;
 }
+/* Select Mail Modal */
 
+.labelSelectHeader {
+  height: 30px;
+  width: 98%;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+.mailcSelectHeader {
+  height: 50px;
+  width: 98%;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+.labelSelectLabel {
+  font-size: 2em !important;
+  display: inline;
+  padding: 24px 10px 0;
+  margin: 0;
+}
+.labelSelectClose {
+  float: right;
+  display: inline;
+  height: 48px !important;
+  width: 48px !important;
+  min-width: 48px !important;
+  background-color: #67B246 !important;
+  color: #fff !important;
+}
+.mailcSelectClose {
+  margin-top: -50px !important;
+  float: right;
+  display: inline;
+  height: 48px !important;
+  width: 48px !important;
+  min-width: 48px !important;
+  background-color: #67B246 !important;
+  color: #fff !important;
+}
+.labelSelectBtn {
+  float:right;
+}
 /* Overview / Datatables */
 
 .tableSearchGrid > .mdl-cell > .mdl-textfield.is-focused .mdl-textfield__label:after {
   bottom: 13px;
 }
+
 .dataTables_wrapper {
     width: 100%;
     margin: 0 auto;

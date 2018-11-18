@@ -23,21 +23,6 @@
 
     $fields=$_POST['data'];
 
-/*
-    $omaileingang = '';
-    $oreceivedmail = '';
-    $olieferant = '';
-    $oderenCIDid = '';
-    $obearbeitetvon = '';
-    $omaintenancedate = '';
-    $ostartdatetime = '';
-    $oenddatetime = '';
-    $opostponed = '';
-    $onotes = '';
-    $omailankunde = '';
-    $ocal = '';
-    $odone = 0;
-*/
     $omaileingang = mysqli_real_escape_string($dbhandle, $fields[0]['omaileingang']);
     $oreceivedmail = mysqli_real_escape_string($dbhandle, $fields[0]['oreceivedmail']);
     $olieferant = mysqli_real_escape_string($dbhandle, $fields[0]['olieferant']);

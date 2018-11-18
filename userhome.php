@@ -98,10 +98,18 @@ if (isset($_REQUEST['logout'])) {
               <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
                 <div class="userHomeHeader">
                   <h4 class="selectGoogleLabel">Mails</h4>
-                  <button id="show-dialog" type="button" class="mdl-button selectGoogleButton">Select Label</button>
+                  <button id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectGoogleButton">
+                    <i class="material-icons">mail</i>
+                  </button>
                 </div>
                   <dialog style="width: 900px;" id="dialog1" class="mdl-dialog">
-                    <h4 class="mdl-dialog__title">Which label are your maintenance emails in?</h4>
+                    <div class="labelSelectHeader">
+                      <h6 class="mdl-dialog__title labelSelectLabel">Which label are your maintenance emails in?</h6>
+
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 labelSelectClose">
+                          <i class="material-icons">close</i>
+                        </button>
+                    </div>
                     <div class="mdl-dialog__content">
                       <p>
 
@@ -119,19 +127,16 @@ if (isset($_REQUEST['logout'])) {
                             echo '<form action="userhome" method="post">';
                             echo '<div class="mdl-grid">';
                             foreach ($results->getLabels() as $label) {
-                              echo '<div class="mdl-cell mdl-cell--2-col">' . $label->getName() . '</div>';
+                              echo '<div class="mdl-cell mdl-cell--3-col">' . $label->getName() . '</div>';
                               //printf($label->getName());
 
-                              echo '<div class="mdl-cell mdl-cell--2-col"><button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getName() . '"><i class="material-icons">add</i></button></div>';
+                              echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getName() . '"><i class="material-icons">check</i></button></div>';
                             }
                             echo '</form></div>';
                           }
 
                         ?>
                       </p>
-                    </div>
-                    <div class="mdl-dialog__actions">
-                      <button type="button" class="mdl-button close">Close</button>
                     </div>
                   </dialog>
                   <script>
@@ -143,7 +148,7 @@ if (isset($_REQUEST['logout'])) {
                     showDialogButton.addEventListener('click', function() {
                       dialog.showModal();
                     });
-                    dialog.querySelector('.close').addEventListener('click', function() {
+                    dialog.querySelector('.close1').addEventListener('click', function() {
                       dialog.close();
                     });
                   </script>
@@ -316,7 +321,7 @@ if (isset($_REQUEST['logout'])) {
                         showDialogButton.addEventListener(\'click\', function() {
                           dialog.showModal();
                         });
-                        dialog.querySelector(\'.close\').addEventListener(\'click\', function() {
+                        dialog.querySelector(\'.close1\').addEventListener(\'click\', function() {
                           dialog.close();
                         });
                       }
@@ -335,7 +340,7 @@ if (isset($_REQUEST['logout'])) {
                         showDialogButton2.addEventListener(\'click\', function() {
                           dialog2.showModal();
                         });
-                        dialog2.querySelector(\'.close\').addEventListener(\'click\', function() {
+                        dialog2.querySelector(\'.close1\').addEventListener(\'click\', function() {
                           dialog2.close();
                         });
                     });
@@ -365,10 +370,18 @@ if (isset($_REQUEST['logout'])) {
               <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
               <div class="userHomeHeader">
                 <h4 class="selectGoogleLabel">Calendar</h4>
-                <button id="show-dialog3" type="button" class="mdl-button selectGoogleButton">Select Calendar</button>
+                <button id="show-dialog3" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectGoogleButton">
+                  <i class="material-icons">calendar_today</i>
+                </button>
               </div>
                   <dialog style="width: 900px;" id="dialog3" class="mdl-dialog">
-                    <h4 class="mdl-dialog__title">Which calendar are your maintenance tasks in?</h4>
+                    <div class="labelSelectHeader">
+                      <h6 class="mdl-dialog__title labelSelectLabel">Which calendar are your maintenance tasks in?</h6>
+
+                        <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 labelSelectClose">
+                          <i class="material-icons">close</i>
+                        </button>
+                    </div>
                     <div class="mdl-dialog__content">
                       <p>
 
@@ -381,8 +394,8 @@ if (isset($_REQUEST['logout'])) {
                             echo '<form action="userhome" method="post">';
                             echo '<div class="mdl-grid">';
                             foreach ($calendarList->getItems() as $calendarListEntry) {
-                              echo '<div class="mdl-cell mdl-cell--2-col">' . $calendarListEntry->getSummary() . '</div>';
-                              echo '<div class="mdl-cell mdl-cell--2-col"><button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="cal" value="' . $calendarListEntry->getID() . '"><i class="material-icons">add</i></button></div>';
+                              echo '<div class="mdl-cell mdl-cell--3-col">' . $calendarListEntry->getSummary() . '</div>';
+                              echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="cal" value="' . $calendarListEntry->getID() . '"><i class="material-icons">check</i></button></div>';
                             }
 
                             echo '</form></div>';
@@ -397,9 +410,6 @@ if (isset($_REQUEST['logout'])) {
                         ?>
                       </p>
                     </div>
-                    <div class="mdl-dialog__actions">
-                      <button type="button" class="mdl-button close">Close</button>
-                    </div>
                   </dialog>
                   <script>
                     var dialog3 = document.querySelector('#dialog3');
@@ -410,7 +420,7 @@ if (isset($_REQUEST['logout'])) {
                     showDialogButton3.addEventListener('click', function() {
                       dialog3.showModal();
                     });
-                    dialog3.querySelector('.close').addEventListener('click', function() {
+                    dialog3.querySelector('.close1').addEventListener('click', function() {
                       dialog3.close();
                     });
                   </script>

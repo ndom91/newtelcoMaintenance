@@ -24,8 +24,8 @@ $redirect_uri = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
 $client = new Google_Client();
 $client->setAuthConfig($oauth_credentials);
 $client->setRedirectUri($redirect_uri);
-//$client->setScopes('email');
 $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/calendar'));
+$client->setApprovalPrompt('auto');
 $plus = new Google_Service_Plus($client);
 
 /************************************************
@@ -33,7 +33,7 @@ $plus = new Google_Service_Plus($client);
  * local access token in this case
  ************************************************/
 if (isset($_REQUEST['logout'])) {
-  unset($_SESSION['id_token_token']);
+  unset($_SESSION['token']);
   session_destroy();
 }
 

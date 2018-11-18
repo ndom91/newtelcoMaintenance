@@ -10873,7 +10873,8 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
     padding: 0; }
 
 .mdl-cell {
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  overflow-wrap: break-word; }
 
 .mdl-cell--top {
   -webkit-align-self: flex-start;

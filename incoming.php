@@ -113,12 +113,21 @@ if (isset($_REQUEST['logout'])) {
             <div class="mdl-grid">
               <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
                 <div class="mdl-grid tableSearchGrid">
-                  <div class="mdl-cell mdl-cell--1-col">
+                  <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
                     <div class="userHomeHeader">
-                      <button id="show-dialog" type="button" class="mdl-button selectGoogleButton">Mail Label</button>
+                      <h4 class="selectGoogleLabel">Incoming Maintenance E-Mail</h4>
+                      <button id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectGoogleButton">
+                        <i class="material-icons">mail</i>
+                      </button>
                     </div>
                     <dialog style="width: 900px;" id="dialog1" class="mdl-dialog">
-                      <h4 class="mdl-dialog__title">Which label are your maintenance emails in?</h4>
+                      <div class="labelSelectHeader">
+                        <h6 class="mdl-dialog__title labelSelectLabel">Which label are your maintenance emails in?</h6>
+
+                          <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 labelSelectClose">
+                            <i class="material-icons">close</i>
+                          </button>
+                      </div>
                       <div class="mdl-dialog__content">
                         <p>
 
@@ -136,19 +145,16 @@ if (isset($_REQUEST['logout'])) {
                               echo '<form action="incoming" method="post">';
                               echo '<div class="mdl-grid">';
                               foreach ($results->getLabels() as $label) {
-                                echo '<div class="mdl-cell mdl-cell--2-col">' . $label->getName() . '</div>';
+                                echo '<div class="mdl-cell mdl-cell--3-col">' . $label->getName() . '</div>';
                                 //printf($label->getName());
 
-                                echo '<div class="mdl-cell mdl-cell--2-col"><button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getName() . '"><i class="material-icons">add</i></button></div>';
+                                echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getName() . '"><i class="material-icons">check</i></button></div>';
                               }
                               echo '</form></div>';
                             }
 
                             ?>
                           </p>
-                        </div>
-                        <div class="mdl-dialog__actions">
-                          <button type="button" class="mdl-button close">Close</button>
                         </div>
                       </dialog>
                     </div>
@@ -392,7 +398,7 @@ if (isset($_REQUEST['logout'])) {
                                     <td><a id="show-dialog2" data-target="' . $message_id . '">' . $message_id . '</a></td>
                                     <td></td>
                                     <td>'. $domain  . '</td>
-                                    <td></td>
+                                    <td>abc123</td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -405,18 +411,21 @@ if (isset($_REQUEST['logout'])) {
                                   </tr>';
 
                               echo '<dialog id="dialog_' . $message_id . '" class="mdl-dialog" style="width: 800px !important;">
-                                  <h4 class="mdl-dialog__title">Subject: ' . $subject . '</h4>
-                                  <h6 class="mdl-dialog__title" style="font-size: 24px !important">From: ' . $from . '</h6>
-                                  <div class="mdl-dialog__content">
-                                    <p><div style="width: 750px; ">
-                                     ' . $FOUND_BODY . '
-                                    </pre></p>
-                                  </div>
-                                  <div class="mdl-dialog__actions">
-                                    <button type="button" class="mdl-button">Fuck You</button>
-                                    <button type="button" class="mdl-button close">Close</button>
-                                  </div>
-                                </dialog>';
+                                    <div class="mailcSelectHeader">
+                                      <h4 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $subject . '</h4><br>
+                                      <h6 class="labelSelectLabel" style="font-size: 20px !important"><font color="#67B246">From:</font> ' . htmlentities($from) . '</h6><br>
+                                      <h6 class="labelSelectLabel" style="font-size: 20px !important"><font color="#67B246">Date:</font> ' . $date . '</h6>
+                                      <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 mailcSelectClose">
+                                        <i class="material-icons">close</i>
+                                      </button>
+                                    </div>
+
+                                    <div class="mdl-dialog__content">
+                                      <p><div style="width: 750px; margin-top: 40px; ">
+                                       ' . $FOUND_BODY . '
+                                      </pre></p>
+                                    </div>
+                                  </dialog>';
 
                         }
 
@@ -455,7 +464,7 @@ if (isset($_REQUEST['logout'])) {
                       showDialogButton.addEventListener(\'click\', function() {
                         dialog.showModal();
                       });
-                      dialog.querySelector(\'.close\').addEventListener(\'click\', function() {
+                      dialog.querySelector(\'.close1\').addEventListener(\'click\', function() {
                         dialog.close();
                       });
                     }
@@ -474,7 +483,7 @@ if (isset($_REQUEST['logout'])) {
                       showDialogButton2.addEventListener(\'click\', function() {
                         dialog2.showModal();
                       });
-                      dialog2.querySelector(\'.close\').addEventListener(\'click\', function() {
+                      dialog2.querySelector(\'.close1\').addEventListener(\'click\', function() {
                         dialog2.close();
                       });
                   });
@@ -544,7 +553,7 @@ if (isset($_REQUEST['logout'])) {
 
               table.on( 'select', function ( e, dt, type, indexes ) {
                   if ( type === 'row' ) {
-                      var data2 = table.rows( { selected: true } ).data()[0][5]
+                      var data2 = table.rows( { selected: true } ).data()[0][6]
                             if ( $.fn.dataTable.isDataTable( '#dataTable2' ) ) {
                                 table2 = $('#dataTable2').DataTable();
                                 table2.destroy();
@@ -579,24 +588,13 @@ if (isset($_REQUEST['logout'])) {
                                 dataType: 'json',
                                 success: function(data) {
 
-                                  for (var row2 in data) {
-                                    $('#dataTable2 tr:last').after('<tr><td>' + data[row2][1] + '</td><td>' + data[row2][2] + '</td><td>' + data[row2][3] + '</td><td>' + data[row2][4] + '</td></tr>');
+                                    for (var row2 in data) {
+                                      $('#dataTable2 tr:last').after('<tr><td>' + data[row2][1] + '</td><td>' + data[row2][2] + '</td><td>' + data[row2][3] + '</td><td>' + data[row2][4] + '</td></tr>');
+                                    }
+
                                   }
-                                  /*console.log(status);
 
-                                  console.log(data[0]);
-                                  for (var row2 in data) {
-
-                                    var item = data[row2];
-                                    console.log(item);
-
-                                    var id = data[0];
-                                    var dCID1 = data[1];
-                                    var uCID1 = data[2];
-                                    var company = data[3];*/
-
-                                  //}
-                                }
+                              /*  */
                             });
                   }
               })
@@ -612,7 +610,7 @@ if (isset($_REQUEST['logout'])) {
           showDialogButton.addEventListener('click', function() {
             dialog.showModal();
           });
-          dialog.querySelector('.close').addEventListener('click', function() {
+          dialog.querySelector('.close1').addEventListener('click', function() {
             dialog.close();
           });
         </script>

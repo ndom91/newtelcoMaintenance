@@ -67,9 +67,13 @@ body::after {
 	margin-top: 5px;
 	margin-bottom: 10px;
 }
+/* Add Edit */
+
+#viewMailID {
+    float: right;
+}
 
 /* Overview / Datatables */
-
 
 .tableSearchGrid > .mdl-cell > .mdl-textfield.is-focused .mdl-textfield__label:after {
   bottom: 13px;

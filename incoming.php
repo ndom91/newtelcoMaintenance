@@ -11,7 +11,7 @@ if (isset($_REQUEST['logout'])) {
 
 ?>
 
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -63,6 +63,9 @@ if (isset($_REQUEST['logout'])) {
 
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css"/>
   <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+  <script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
 
 </head>
 <body>
@@ -152,6 +155,7 @@ if (isset($_REQUEST['logout'])) {
 
 
 
+                <!--  SEACH FIELDS
                 <div class="mdl-cell mdl-cell--2-col">
                   <form action="incoming" method="post">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -183,7 +187,7 @@ if (isset($_REQUEST['logout'])) {
                       <i class="material-icons">search</i>
                     </button>
                     </form>
-                  </div>
+                  </div> -->
                 </div>
                 <?php
                 $lieferant = '';
@@ -253,23 +257,24 @@ if (isset($_REQUEST['logout'])) {
                             </tr>
                           </thead>
                           <tbody>';
-
-                    while ($rowx = mysqli_fetch_assoc($resultx)) {
-                      echo '<tr>';
-                      // button - class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab"
-                          echo '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-                                  <a class="editLink" href="addedit.php?mid=' . $rowx['id'] . '">
-                                    <i class="material-icons">edit</i>
-                                  </a>
-                                </button></td>';
-                      foreach($rowx as $field) {
-                          if ($rowx['maileingang']) {
-                            echo '<td>' . $field . '</td>';
-                          } else {
-                          echo '<td>' . htmlspecialchars($field) . '</td>';
-                          }
-                      }
-                      echo '</tr>';
+                    if ((! empty($_POST['tdCID'])) || (! empty($_POST['tLieferant']))) {
+                      while ($rowx = mysqli_fetch_assoc($resultx)) {
+                        echo '<tr>';
+                        // button - class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab"
+                            echo '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+                                    <a class="editLink" href="addedit.php?mid=' . $rowx['id'] . '">
+                                      <i class="material-icons">edit</i>
+                                    </a>
+                                  </button></td>';
+                        foreach($rowx as $field) {
+                            if ($rowx['maileingang']) {
+                              echo '<td>' . $field . '</td>';
+                            } else {
+                            echo '<td>' . htmlspecialchars($field) . '</td>';
+                            }
+                        }
+                        echo '</tr>';
+                    }
                   }
 
                 // https://stackoverflow.com/questions/32655874/cannot-get-the-body-of-email-with-gmail-php-api
@@ -378,7 +383,7 @@ if (isset($_REQUEST['logout'])) {
 
                             echo '<tr>
                                     <td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-                                            <a class="editLink" href="addedit.php?mid=' . $rowx['id'] . '">
+                                          <a class="editLink" href="addedit?gmid=' . $message_id . '">
                                               <i class="material-icons">edit</i>
                                             </a>
                                           </button></td>
@@ -386,9 +391,9 @@ if (isset($_REQUEST['logout'])) {
                                     <td>'. $date  . '</td>
                                     <td><a id="show-dialog2" data-target="' . $message_id . '">' . $message_id . '</a></td>
                                     <td></td>
-                                    <td>'. htmlentities($from)  . '</td>
-                                    <td>'. $subject  . '</td>
                                     <td>'. $domain  . '</td>
+                                    <td></td>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -404,7 +409,7 @@ if (isset($_REQUEST['logout'])) {
                                   <h6 class="mdl-dialog__title" style="font-size: 24px !important">From: ' . $from . '</h6>
                                   <div class="mdl-dialog__content">
                                     <p><div style="width: 750px; ">
-                                     ' . stripHTML($FOUND_BODY) . '
+                                     ' . $FOUND_BODY . '
                                     </pre></p>
                                   </div>
                                   <div class="mdl-dialog__actions">
@@ -483,13 +488,18 @@ if (isset($_REQUEST['logout'])) {
                 }
 
 
-                if(isset($_POST['label'])) {
+                if(isset($_POST['label']) || isset($_SESSION['label'])) {
+                  if(! empty($_POST['label'])) {
                   $labelID = $_POST['label'];
+                  $_SESSION['label'] = $labelID;
+                  } else {
+                    $labelID = $_SESSION['label'];
+                  }
                 } else {
                   $labelID = '0';
                 }
 
-                $q = 'label:' . $labelID . ' newer_than:2d';
+                $q = 'label:' . $labelID . ' newer_than:3d';
                 fetchMails($service, $q);
 
 
@@ -512,18 +522,21 @@ if (isset($_REQUEST['logout'])) {
         </main>
         <script>
         $(document).ready(function() {
+
+            $.fn.dataTable.moment( 'ddd, DD MMM YYYY HH:mm:SS ZZ' );
+
              var table = $('#dataTable3').DataTable( {
                   scrollx: true,
                   select: true,
                   stateSave: true,
                   columnDefs: [
                       {
-                          "targets": [ 1 ],
+                          "targets": [ 1, 4, 9, 10, 11, 12, 13, 14 ],
                           "visible": false,
                           "searchable": false
                       },
                       {
-                          targets: [2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
+                          targets: [2, 3, 5, 6, 7, 8 ],
                           className: 'mdl-data-table__cell--non-numeric'
                       }
                   ]

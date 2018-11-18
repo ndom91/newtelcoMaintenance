@@ -27,7 +27,7 @@ print_r($userInfo);
 
 ?>
 
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -113,33 +113,226 @@ print_r($userInfo);
             <div class="mdl-grid">
 
                   <?php
+                    // Default Values (empty)
+                    $otitlestring = 'Add';
+                    $omaileingang = '';
+                    $oreceivedmail = '';
+                    $olieferant = '';
+                    $oderenCIDid = '';
+                    $obearbeitetvon = '';
+                    $omaintenancedate = '';
+                    $ostartdatetime = '';
+                    $oenddatetime = '';
+                    $opostponed = '';
+                    $onotes = '';
+                    $omailankunde = '';
+                    $ocal = '';
+                    $odone = 0;
+
                     if (isset($_GET['mid'])) {
 
                       $activeID = $_GET['mid'];
-
-                      // DEBUG
-                      //echo '<b>Debug:</b><br>';
-                      //echo '<pre>';
-                      //echo $tdCID . '<br>';
-                      //echo "activeID: " . $activeID . "<br>";
-                      // END DEBUG
 
                       $mID_escape = mysqli_real_escape_string($dbhandle, $activeID);
                       $mID_query = mysqli_query($dbhandle, "SELECT * FROM `maintenancedb` WHERE `id` LIKE $mID_escape");
                       $mIDresult = mysqli_fetch_array($mID_query);
 
-                      // DEBUG
-                      //echo "mIDresult: " . $mIDresult['bearbeitetvon'] . "<br>";
-                      //$dCIDresult = mysqli_fetch_array($dCID_query);
-                      //echo 'Query Result:' . $dCIDresult[0]. '<br>';
-                      // END DEBUG
+                      $otitlestring = 'Edit';
+                      $omaileingang = $mIDresult['maileingang'];
+                      $oreceivedmail = $mIDresult['receivedmail'];
+                      $olieferant = $mIDresult['lieferant'];
+                      $oderenCIDid = $mIDresult['derenCIDid'];
+                      $obearbeitetvon = $mIDresult['bearbeitetvon'];
+                      $omaintenancedate = $mIDresult['maintenancedate'];
+                      $ostartdatetime = $mIDresult['startDateTime'];
+                      $oenddatetime = $mIDresult['endDateTime'];
+                      $opostponed = $mIDresult['postponed'];
+                      $onotes = $mIDresult['notes'];
+                      $omailankunde = $mIDresult['mailankunde'];
+                      $ocal = $mIDresult['cal'];
+                      if ($mIDresult['done'] == 1) {
+                        $odone = 'checked';
+                      } else {
+                        $odone = '';
+                      }
+                    } elseif (isset($_GET['gmid'])) {
 
+                      $gmid = $_GET['gmid'];
+
+                      $service2 = new Google_Service_Gmail($client);
+
+                      // Print the labels in the user's account.
+                      $user = 'me';
+
+                      function decodeBody($body) {
+                          $rawData = $body;
+                          $sanitizedData = strtr($rawData,'-_', '+/');
+                          $decodedMessage = base64_decode($sanitizedData);
+                          if(!$decodedMessage){
+                              $decodedMessage = FALSE;
+                          }
+                          return $decodedMessage;
+                      }
+
+                      function getHeader($headers, $name) {
+                        foreach($headers as $header) {
+                          if($header['name'] == $name) {
+                            return $header['value'];
+                          }
+                        }
+                      }
+
+                      function stripHTML($html) {
+
+                          $dom = new DOMDocument();
+
+                          $dom->loadHTML($html);
+
+                          $script = $dom->getElementsByTagName('script');
+
+                          $remove = [];
+                          foreach($script as $item)
+                          {
+                            $remove[] = $item;
+                          }
+
+                          foreach ($remove as $item)
+                          {
+                            $item->parentNode->removeChild($item);
+                          }
+
+                          $html = $dom->saveHTML();
+                          return $html;
+                      }
+
+                      function getMessage2($service, $userId, $message_id) {
+                        try {
+                              $msgArray = array();
+
+                              $optParamsGet2['format'] = 'full';
+                              $single_message = $service->users_messages->get($userId, $message_id,$optParamsGet2);
+
+                              $payload = $single_message->getPayload();
+                              $headers = $payload->getHeaders();
+                              $snippet = $single_message->getSnippet();
+                              $date = getHeader($headers, 'Date');
+                              $subject = getHeader($headers, 'Subject');
+                              $from = getHeader($headers, 'From');
+                              $fromHTML = htmlentities($from);
+                              if (($pos = strpos($fromHTML, "@")) !== FALSE) {
+                                $domain = substr($fromHTML, strpos($fromHTML, "@") + 1);
+                                $dtld = substr($fromHTML, strpos($fromHTML, "."));
+                                $domain = basename($domain, $dtld);
+                              }
+
+                              $msgArray[] = $date;
+                              $msgArray[] = $domain;
+
+                              // With no attachment, the payload might be directly in the body, encoded.
+                              $body = $payload->getBody();
+                              $FOUND_BODY = decodeBody($body['data']);
+
+                              // If we didn't find a body, let's look for the parts
+                              if(!$FOUND_BODY) {
+                                  $parts = $payload->getParts();
+                                  foreach ($parts  as $part) {
+                                      if($part['body'] && $part['mimeType'] == 'text/html') {
+                                          $FOUND_BODY = decodeBody($part['body']->data);
+                                          break;
+                                      }
+                                  }
+                              } if(!$FOUND_BODY) {
+                                  foreach ($parts  as $part) {
+                                      // Last try: if we didn't find the body in the first parts,
+                                      // let's loop into the parts of the parts (as @Tholle suggested).
+                                      if($part['parts'] && !$FOUND_BODY) {
+                                          foreach ($part['parts'] as $p) {
+                                              // replace 'text/html' by 'text/plain' if you prefer
+                                              if($p['mimeType'] === 'text/plain' && $p['body']) {
+                                                  $FOUND_BODY = decodeBody($p['body']->data);
+                                                  break;
+                                              }
+                                          }
+                                      }
+                                      if($FOUND_BODY) {
+                                          break;
+                                      }
+                                  }
+                              }
+                              // Finally, print the message ID and the body
+
+
+                      echo '
+                        <script>
+
+                        var modalTriggers = document.querySelectorAll(\'.mailLinks\');
+
+                        // Getting the target modal of every button and applying listeners
+                        for (var i = modalTriggers.length - 1; i >= 0; i--) {
+                              var t = modalTriggers[i].getAttribute(\'data-target\');
+                              var id = \'#\' + modalTriggers[i].getAttribute(\'id\');
+                              modalProcess(t, id);
+                        }
+
+                        function modalProcess(selector, button) {
+                          var dialog = document.querySelector(selector);
+                          var showDialogButton = document.querySelector(button);
+
+                          if (dialog) {
+                            if (!dialog.showModal) {
+                              dialogPolyfill.registerDialog(dialog);
+                            }
+                            showDialogButton.addEventListener(\'click\', function() {
+                              dialog.showModal();
+                            });
+                            dialog.querySelector(\'.close\').addEventListener(\'click\', function() {
+                              dialog.close();
+                            });
+                          }
+                        }
+
+                        var mailID2 = \'\';
+
+                        $("#addEditDetails").click(function() {
+                            var mailID2 = $(event.target).attr(\'data-target\');
+                            console.log(mailID2);
+                            var dialog2 = document.querySelector(\'#viewMailID\');
+                            dialog2.preventDefault();
+                            event.preventDefault();
+                            
+                            var showDialogButton2 = document.querySelector(\'[data-target="\' + mailID2 + \'"]\');
+                            if (! dialog2.showModal) {
+                              dialogPolyfill.registerDialog(dialog);
+                            }
+                            showDialogButton2.addEventListener(\'click\', function() {
+                              dialog2.showModal();
+                            });
+                            dialog2.querySelector(\'.close\').addEventListener(\'click\', function() {
+                              dialog2.close();
+                            });
+                        });
+                      </script>';
+
+
+                      } catch (Exception $e) {
+                          echo $e->getMessage();
+                      }
+                        return $msgArray;
+                      }
+
+                      $msgInfo = getMessage2($service2, $user, $gmid);
+
+                      $otitlestring = 'Edit';
+                      $omaileingang = $msgInfo[0];
+                      $oreceivedmail = $gmid;
+                      $olieferant = $msgInfo[1];
+
+                    }
                   ?>
 
                   <!-- EDIT MODE -->
 
-                  <div class="mdl-cell mdl-cell--3-col mdl-cell--0-col-phone"></div>
-                  <div class="mdl-cell mdl-cell--5-col mdl-cell--4-col-phone">
+                  <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone" id="addEditDetails">
                   <style>
                   .demo-card-wide.mdl-card {
                     width: 100%;
@@ -157,60 +350,63 @@ print_r($userInfo);
 
                   <div class="demo-card-wide mdl-card mdl-shadow--2dp">
                     <div class="mdl-card__title">
-                      <h2 class="mdl-card__title-text"><?php if (isset($_GET['mid'])) { echo "Edit"; } else { echo "Add"; } ?> Maintenance Entry</h2>
+                      <h2 class="mdl-card__title-text"><?php echo $otitlestring ?> Maintenance Entry</h2>
                     </div>
                     <div class="mdl-card__supporting-text">
                       <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['maileingang'] ?>" id="medt">
+                          <input class="mdl-textfield__input" type="text" value="<?php echo $omaileingang ?>" id="medt">
                           <label class="mdl-textfield__label" for="medt">Maileingang Date/Time</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['receivedmail'] ?>" id="rmail">
-                          <label class="mdl-textfield__label" for="rmail">R Mail</label>
+                          <input class="mdl-textfield__input" type="text" value="<?php echo $oreceivedmail ?>" id="rmail">
+                          <label class="mdl-textfield__label" for="rmail">Incoming Mail ID</label>
+                          <?php if (! empty($oreceivedmail)) { echo '<button id="viewMailID" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab viewMail2">
+                                    <i class="material-icons">view</i>
+                                </button>'; } ?>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['lieferant'] ?>" id="company">
-                          <label class="mdl-textfield__label" for="company">Company Name</label>
+                          <input class="mdl-textfield__input" type="text" value="<?php echo $olieferant ?>" id="company">
+                          <label class="mdl-textfield__label" for="company">Lieferant</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['derenCIDid'] ?>" id="dcid">
+                          <input class="mdl-textfield__input" type="text" value="<?php echo $oderenCIDid ?>" id="dcid">
                           <label class="mdl-textfield__label" for="dcid">Deren CID</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['bearbeitetvon'] ?>" id="bearbeitet">
+                          <input class="mdl-textfield__input" type="text" value="<?php echo $obearbeitetvon ?>" id="bearbeitet">
                           <label class="mdl-textfield__label" for="bearbeitet">Bearbeitet Von</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['maintenancedate'] ?>" id="mdt">
+                          <input class="mdl-textfield__input" type="text" value="<?php echo $omaintenancedate ?>" id="mdt">
                           <label class="mdl-textfield__label" for="mdt">Maintenance Date/Time</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['startDateTime'] ?>" id="sdt">
+                          <input class="mdl-textfield__input" type="text" value="<?php echo $ostartdatetime ?>" id="sdt">
                           <label class="mdl-textfield__label" for="sdt">Start Date/Time</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['endDateTime'] ?>" id="edt">
+                          <input class="mdl-textfield__input" type="text" value="<?php echo $oenddatetime ?>" id="edt">
                           <label class="mdl-textfield__label" for="edt">End Date/Time</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['postponed'] ?>" id="pponed">
+                          <input class="mdl-textfield__input" type="text" value="<?php echo $opostponed ?>" id="pponed">
                           <label class="mdl-textfield__label" for="pponed">Postponed</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['notes'] ?>" id="notes">
+                          <input class="mdl-textfield__input" type="text" value="<?php echo $onotes ?>" id="notes">
                           <label class="mdl-textfield__label" for="notes">Notes</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['mailankunde'] ?>" id="makdt">
+                          <input class="mdl-textfield__input" type="text" value="<?php echo $omailankunde ?>" id="makdt">
                           <label class="mdl-textfield__label" for="makdt">Mail an Kunde Date/Time</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['cal'] ?>" id="cal">
+                          <input class="mdl-textfield__input" type="text" value="<?php echo $ocal ?>" id="cal">
                           <label class="mdl-textfield__label" for="cal">Add to Cal</label>
                         </div>
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2">
-                          <input type="checkbox" id="switch-2" class="mdl-switch__input" <?php if ($mIDresult['done'] == 1) { echo 'checked'; } ?>>
+                          <input type="checkbox" id="switch-2" class="mdl-switch__input" <?php echo $odone ?>>
                           <span class="mdl-switch__label">Completed</span>
                         </label>
                               </form>
@@ -225,112 +421,81 @@ print_r($userInfo);
                               </div>
                             </div>
                         </div>
-                        <div class="mdl-cell mdl-cell--3-col mdl-cell--0-col-phone"></div>
+                        <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
+
+                          <h4>kunden datatable</h4>
+                        </div>
                       </div>
 
                         <?php
+                        /*   ENDED THIS IF LOOP UP TOP FOR EDIT MODE
                       } else {
                         $mIDresult = [
                             "foo" => "bar",
                             "bar" => "foo",
                         ];
+                        */
                       ?>
 
-                  <!-- ADD MODE -->
 
-                    <div class="mdl-cell mdl-cell--3-col mdl-cell--0-col-phone"></div>
-                    <div class="mdl-cell mdl-cell--5-col mdl-cell--4-col-phone">
-                    <style>
-                    .demo-card-wide.mdl-card {
-                      width: 100%;
-                      margin-top: 3%;
-                    }
-                    .demo-card-wide > .mdl-card__title {
-                      color: #fff;
-                      height: 65px;
-                      background: #4d4d4d;
-                    }
-                    .demo-card-wide > .mdl-card__menu {
-                      color: #fff;
-                    }
-                    </style>
+                      <script>
 
-                      <div class="demo-card-wide mdl-card mdl-shadow--2dp">
-                    <div class="mdl-card__title">
-                      <h2 class="mdl-card__title-text"><?php if (isset($_GET['mid'])) { echo "Edit"; } else { echo "Add"; } ?> Maintenance Entry</h2>
-                    </div>
-                    <div class="mdl-card__supporting-text">
-                      <form action="#">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['maileingang'] ?>" id="medt">
-                          <label class="mdl-textfield__label" for="medt">Maileingang Date/Time</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['receivedmail'] ?>" id="rmail">
-                          <label class="mdl-textfield__label" for="rmail">R Mail</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['lieferant'] ?>" id="company">
-                          <label class="mdl-textfield__label" for="company">Company Name</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['derenCIDid'] ?>" id="dcid">
-                          <label class="mdl-textfield__label" for="dcid">Deren CID</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['bearbeitetvon'] ?>" id="bearbeitet">
-                          <label class="mdl-textfield__label" for="bearbeitet">Bearbeitet Von</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['maintenancedate'] ?>" id="mdt">
-                          <label class="mdl-textfield__label" for="mdt">Maintenance Date/Time</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['startDateTime'] ?>" id="sdt">
-                          <label class="mdl-textfield__label" for="sdt">Start Date/Time</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['endDateTime'] ?>" id="edt">
-                          <label class="mdl-textfield__label" for="edt">End Date/Time</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['postponed'] ?>" id="pponed">
-                          <label class="mdl-textfield__label" for="pponed">Postponed</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['notes'] ?>" id="notes">
-                          <label class="mdl-textfield__label" for="notes">Notes</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['mailankunde'] ?>" id="makdt">
-                          <label class="mdl-textfield__label" for="makdt">Mail an Kunde Date/Time</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                          <input class="mdl-textfield__input" type="text" value="<?php echo $mIDresult['cal'] ?>" id="cal">
-                          <label class="mdl-textfield__label" for="cal">Add to Cal</label>
-                        </div>
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2">
-                          <input type="checkbox" id="switch-2" class="mdl-switch__input" <?php if ($mIDresult['done'] == 1) { echo 'checked'; } ?>>
-                          <span class="mdl-switch__label">Completed</span>
-                        </label>
+                        $('#maintSave').on('click', function(e) {
 
-                                </form>
-                              </div>
-                              <div class="mdl-card__actions mdl-card--border">
-                                <a href="overview.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
-                                  Save
-                                </a>
-                                <a onclick="window.history.back()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
-                                  Back
-                                </a>
-                              </div>
-                            </div>
-                        </div>
-                        <div class="mdl-cell mdl-cell--3-col mdl-cell--0-col-phone"></div>
-                      </div>
-                        <?php
-                      }
-                      ?>
+                                e.preventDefault();
+
+                                alert('Maintenance Saved');
+
+                               $('.rowCont tr').each(function(row, tr){
+
+                               if($(this).find('input').is(':checked')) {  // I have added the if condition here
+
+                                var TableData = new Array();
+
+
+                                TableData[row] = {
+
+
+                                          "userid" : $('#userid').text(),
+                                          "user_name" : $('#user').text(),
+                                          "date" : $(tr).find('td:eq(3)').text(),
+                                          "exam" : $(tr).find('td:eq(4)').text(),
+                                          "venue" : $(tr).find('td:eq(5)').text(),
+                                          "price" : $(tr).find('td:eq(6)').text(),
+                                          "total_orders" : $(tr).find('td:eq(7)').text(),
+                                          "amount" : $(tr).find('td:eq(8)').text(),
+                                          //"orders_completion" : $(tr).find('.chk')[0].checked
+                                          "orders_completion" : $('#checked').val()
+
+                                      }
+
+                                  TableData = JSON.stringify(TableData);
+                                  console.log(TableData);
+
+                                  //alert(TableData);
+
+                                  $.ajax({
+
+                                   type : "POST",
+                                   url : "/invl_exams/ordercompletion",
+                                   cache : "false",
+                                   data :  {data:TableData},
+                                   success : function(result){
+
+                                     console.log(result);
+
+                                   }
+
+
+                                  });
+
+                                 } // Here for the checkbox if condition
+
+                                }); // each function
+
+                              }); // clicking orderSave button
+
+                          </script>
         </main>
         <footer class="mdl-mini-footer mdl-grid">
             <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--10-col mdl-cell--middle">

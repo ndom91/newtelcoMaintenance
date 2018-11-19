@@ -6,22 +6,6 @@ if (isset($_REQUEST['logout'])) {
   unset($_SESSION['id_token_token']);
 }
 
-/*
-$redirect_uri = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
-$client1 = new Google_Client();
-$client1->setAuthConfig($oauth_credentials);
-$client1->setRedirectUri($redirect_uri);
-$client1->setScopes('https://www.googleapis.com/auth/userinfo.email');
-$client1->setApplicationName("NT_User_Info");
-$apiKey = 'AIzaSyDwfqT6lZld67Py1WwZ9x-6HHVkv9_p-y8';
-
-
-$client1->setDeveloperKey($apiKey);
-$oauth2 = new \Google_Service_Oauth2($client1);
-$userInfo = $oauth2->userinfo->get();
-print_r($userInfo);
-*/
-
 ?>
 
 <html>
@@ -61,26 +45,10 @@ print_r($userInfo);
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <?php
-          function get_client_ip() {
-        $ipaddress = '';
-        if (isset($_SERVER['HTTP_CLIENT_IP']))
-            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_X_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-        else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-        else if(isset($_SERVER['HTTP_FORWARDED']))
-            $ipaddress = $_SERVER['HTTP_FORWARDED'];
-        else if(isset($_SERVER['REMOTE_ADDR']))
-            $ipaddress = $_SERVER['REMOTE_ADDR'];
-        else
-            $ipaddress = 'UNKNOWN';
-        return $ipaddress;
-    }
-    ?>
+
+  <!-- pace -->
+  <script src="assets/js/pace.js"></script>
+
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->
@@ -101,29 +69,33 @@ print_r($userInfo);
                 <li class="mdl-menu__item">Some Action</li>
                 <li class="mdl-menu__item">Another Action</li>
                 <li disabled class="mdl-menu__item">Disabled Action</li>
-                <li class="mdl-menu__item"><a href="?logout">Logout</a></li>
+                <li class="mdl-menu__item"><a class="usermenuhref" href="?logout">Logout</a></li>
               </ul>
           </div>
-              
+
         </div>
       </header>
       <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Maintenance</span>
+        <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link" href="index.php"><i class="fas fa-home"></i>  Home</a>
-          <a class="mdl-navigation__link" href="userhome.php"><i class="fas fa-user"></i>  <?php echo $token_data['name'] ?></a>
-          <a class="mdl-navigation__link" href="overview.php"><i class="fas fa-book-open"></i>  Overview</a>
-          <a class="mdl-navigation__link" href="incoming.php"><i class="fas fa-folder-plus mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
-          <a class="mdl-navigation__link" href="group.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">maintenance@newtelco.de</small></a>
-          <a class="mdl-navigation__link" href="groupservice.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">service@newtelco.de</small></a>
-          <a class="mdl-navigation__link" href="addedit.php"><i class="fas fa-plus-circle"></i></i>  Add</a>
-          <a class="mdl-navigation__link" target="_blank" href="https://crm.newtelco.de"><i class="fas fa-users"></i>  CRM</a>
+          <a class="mdl-navigation__link" href="index.php"><span class="ndl-home"></span>  Home</a>
+          <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a>
+          <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
+          <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
+          <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>
+          <a class="mdl-navigation__link" href="groupservice.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">service</small></a>
+          <a class="mdl-navigation__link" href="addedit.php"><i class="ndl-createnew"></i></i>  Add</a>
+          <a class="mdl-navigation__link" target="_blank" href="https://crm.newtelco.de"><i class="ndl-work"></i>  CRM</a>
           <div class="mdl-layout-spacer"></div>
           <a class="mdl-navigation__link menu_logout" href="?logout">
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Logout</button>
+            <button id="menuLogout" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+              <i class="material-icons">exit_to_app</i>
+            </button>
+            <div class="mdl-tooltip  mdl-tooltip--top" data-mdl-for="menuLogout">
+              Logout
+            </div>
           </a>
         </nav>
-
       </div>
         <main class="mdl-layout__content">
             <div class="mdl-grid">
@@ -153,10 +125,10 @@ print_r($userInfo);
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                       Mauris sagittis pellentesque lacus eleifend lacinia...<br><br>
                       <b>Debug:</b>
-                      <pre><?php 
+                      <pre><?php
                       var_export($token_data);
                       ?></pre>
-                      
+
                     </div>
                     <div class="mdl-card__actions mdl-card--border">
                       <a href="overview.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
@@ -189,4 +161,3 @@ print_r($userInfo);
       </div>
 </body>
 </html>
-

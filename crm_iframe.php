@@ -45,10 +45,9 @@ if (isset($_REQUEST['logout'])) {
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
+  
   <!-- pace -->
   <script src="assets/js/pace.js"></script>
-  
 
 </head>
 <body>
@@ -99,25 +98,11 @@ if (isset($_REQUEST['logout'])) {
         </nav>
       </div>
         <main class="mdl-layout__content">
-            <div class="mdl-grid">
-              <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
-              <div class="mdl-cell mdl-cell--10-col mdl-cell--4-col-phone">
-                <iframe id="forum_embed"
-                  src="javascript:void(0)"
-                  scrolling="no"
-                  frameborder="0"
-                  width="100%"
-                  height="800">
-                </iframe>
-                <script type="text/javascript">
-                  document.getElementById('forum_embed').src =
-                     'https://groups.google.com/a/newtelco.de/forum/embed/?place=forum/maintenance'
-                     + '&showsearch=true&showpopout=false&showtabs=true'
-                     + '&parenturl=' + encodeURIComponent(window.location.href);
-                </script>
-              </div>
-              <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
+          <div style="margin: 0; padding: 0; height: 100%; overflow: hidden;">
+            <div style="position:absolute; left: 0; right: 0; bottom: 0; top: 0px; ">
+              <iframe frameBorder="0" width="100%" height="100%" src="https://crm.newtelco.de">Browser not compatible.</iframe>
             </div>
+          </div>
         </main>
         <footer class="mdl-mini-footer mdl-grid">
             <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--10-col mdl-cell--middle">

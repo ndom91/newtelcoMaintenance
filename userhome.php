@@ -51,6 +51,9 @@ if (isset($_REQUEST['logout'])) {
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+  <!-- pace -->
+  <script src="assets/js/pace.js"></script>
+  
 </head>
 <body id="mdlBody">
   <!-- Always shows a header, even in smaller screens. -->
@@ -77,19 +80,24 @@ if (isset($_REQUEST['logout'])) {
         </div>
       </header>
       <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Maintenance</span>
+        <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link" href="index.php"><i class="fas fa-home"></i>  Home</a>
-          <a class="mdl-navigation__link" href="userhome.php"><i class="fas fa-user"></i>  <?php echo $token_data['name'] ?></a>
-          <a class="mdl-navigation__link" href="overview.php"><i class="fas fa-book-open"></i>  Overview</a>
-          <a class="mdl-navigation__link" href="incoming.php"><i class="fas fa-folder-plus mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
-          <a class="mdl-navigation__link" href="group.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">maintenance@newtelco.de</small></a>
-          <a class="mdl-navigation__link" href="groupservice.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">service@newtelco.de</small></a>
-          <a class="mdl-navigation__link" href="addedit.php"><i class="fas fa-plus-circle"></i></i>  Add</a>
-          <a class="mdl-navigation__link" target="_blank" href="https://crm.newtelco.de"><i class="fas fa-users"></i>  CRM</a>
+          <a class="mdl-navigation__link" href="index.php"><span class="ndl-home"></span>  Home</a>
+          <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a>
+          <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
+          <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
+          <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>
+          <a class="mdl-navigation__link" href="groupservice.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">service</small></a>
+          <a class="mdl-navigation__link" href="addedit.php"><i class="ndl-createnew"></i></i>  Add</a>
+          <a class="mdl-navigation__link" href="crm_iframe.php"><i class="ndl-work"></i>  CRM</a>
           <div class="mdl-layout-spacer"></div>
           <a class="mdl-navigation__link menu_logout" href="?logout">
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Logout</button>
+            <button id="menuLogout" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+              <i class="material-icons">exit_to_app</i>
+            </button>
+            <div class="mdl-tooltip  mdl-tooltip--top" data-mdl-for="menuLogout">
+              Logout
+            </div>
           </a>
         </nav>
       </div>
@@ -101,6 +109,9 @@ if (isset($_REQUEST['logout'])) {
                   <button id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectGoogleButton">
                     <i class="material-icons">mail</i>
                   </button>
+                  <div class="mdl-tooltip" for="show-dialog">
+                  Select your Mailbox
+                  </div>
                 </div>
                   <dialog style="width: 900px;" id="dialog1" class="mdl-dialog">
                     <div class="labelSelectHeader">
@@ -275,8 +286,8 @@ if (isset($_REQUEST['logout'])) {
                                 <h6 class="mdl-dialog__title" style="font-size: 24px !important">From: ' . $from . '</h6>
                                 <div class="mdl-dialog__content">
                                   <p><div style="width: 750px; ">
-                                   ' . stripHTML($FOUND_BODY) . '
-                                  </pre></p>
+                                   ' . $FOUND_BODY . '
+                                  </div>></p>
                                 </div>
                                 <div class="mdl-dialog__actions">
                                   <button type="button" class="mdl-button">Fuck You</button>
@@ -373,14 +384,16 @@ if (isset($_REQUEST['logout'])) {
                 <button id="show-dialog3" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectGoogleButton">
                   <i class="material-icons">calendar_today</i>
                 </button>
+                <div class="mdl-tooltip" for="show-dialog3">
+                Select your Maintenance Calendar
+                </div>
               </div>
                   <dialog style="width: 900px;" id="dialog3" class="mdl-dialog">
                     <div class="labelSelectHeader">
                       <h6 class="mdl-dialog__title labelSelectLabel">Which calendar are your maintenance tasks in?</h6>
-
-                        <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 labelSelectClose">
-                          <i class="material-icons">close</i>
-                        </button>
+                      <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 labelSelectClose">
+                        <i class="material-icons">close</i>
+                      </button>
                     </div>
                     <div class="mdl-dialog__content">
                       <p>

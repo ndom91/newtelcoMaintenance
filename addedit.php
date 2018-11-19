@@ -9,22 +9,6 @@ if (isset($_REQUEST['logout'])) {
   unset($_SESSION['id_token_token']);
 }
 
-/*
-$redirect_uri = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
-$client1 = new Google_Client();
-$client1->setAuthConfig($oauth_credentials);
-$client1->setRedirectUri($redirect_uri);
-$client1->setScopes('https://www.googleapis.com/auth/userinfo.email');
-$client1->setApplicationName("NT_User_Info");
-$apiKey = 'AIzaSyDwfqT6lZld67Py1WwZ9x-6HHVkv9_p-y8';
-
-
-$client1->setDeveloperKey($apiKey);
-$oauth2 = new \Google_Service_Oauth2($client1);
-$userInfo = $oauth2->userinfo->get();
-print_r($userInfo);
-*/
-
 ?>
 
 <html lang="en">
@@ -68,6 +52,13 @@ print_r($userInfo);
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
+  <!-- OverlayScrollbars -->
+  <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="stylesheet"/>
+  <script type="text/javascript" src="assets/js/OverlayScrollbars.js"></script>
+
+  <!-- pace -->
+  <script src="assets/js/pace.js"></script>
+  
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->
@@ -95,22 +86,26 @@ print_r($userInfo);
         </div>
       </header>
       <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Maintenance</span>
+        <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link" href="index.php"><i class="fas fa-home"></i>  Home</a>
-          <a class="mdl-navigation__link" href="userhome.php"><i class="fas fa-user"></i>  <?php echo $token_data['name'] ?></a>
-          <a class="mdl-navigation__link" href="overview.php"><i class="fas fa-book-open"></i>  Overview</a>
-          <a class="mdl-navigation__link" href="incoming.php"><i class="fas fa-folder-plus mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
-          <a class="mdl-navigation__link" href="group.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">maintenance@newtelco.de</small></a>
-          <a class="mdl-navigation__link" href="groupservice.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">service@newtelco.de</small></a>
-          <a class="mdl-navigation__link" href="addedit.php"><i class="fas fa-plus-circle"></i></i>  Add</a>
-          <a class="mdl-navigation__link" target="_blank" href="https://crm.newtelco.de"><i class="fas fa-users"></i>  CRM</a>
+          <a class="mdl-navigation__link" href="index.php"><span class="ndl-home"></span>  Home</a>
+          <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a>
+          <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
+          <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
+          <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>
+          <a class="mdl-navigation__link" href="groupservice.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">service</small></a>
+          <a class="mdl-navigation__link" href="addedit.php"><i class="ndl-createnew"></i></i>  Add</a>
+          <a class="mdl-navigation__link" href="crm_iframe.php"><i class="ndl-work"></i>  CRM</a>
           <div class="mdl-layout-spacer"></div>
           <a class="mdl-navigation__link menu_logout" href="?logout">
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Logout</button>
+            <button id="menuLogout" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+              <i class="material-icons">exit_to_app</i>
+            </button>
+            <div class="mdl-tooltip  mdl-tooltip--top" data-mdl-for="menuLogout">
+              Logout
+            </div>
           </a>
         </nav>
-
       </div>
         <main class="mdl-layout__content">
           <div class="mdl-grid">
@@ -230,6 +225,9 @@ print_r($userInfo);
 
                       $msgArray[] = $date;
                       $msgArray[] = $domain;
+                      $msgArray[] = $subject;
+                      $msgArray[] = $fromHTML;
+                      $msgArray[] = $date;
 
                       // With no attachment, the payload might be directly in the body, encoded.
                       $body = $payload->getBody();
@@ -263,78 +261,48 @@ print_r($userInfo);
                           }
                       }
 
+                      $msgArray[] = $FOUND_BODY;
 
 
 
-                echo '
-                  <script>
 
-                  var modalTriggers = document.querySelectorAll(\'.mailLinks\');
 
-                  // Getting the target modal of every button and applying listeners
-                  for (var i = modalTriggers.length - 1; i >= 0; i--) {
-                        var t = modalTriggers[i].getAttribute(\'data-target\');
-                        var id = \'#\' + modalTriggers[i].getAttribute(\'id\');
-                        modalProcess(t, id);
+
+                  /* PREVIOUS click event functions
+
+                    var mailID2 = $(event.target).attr(\'data-target\');
+                    console.log(mailID2);
+                    var dialog2 = document.querySelector(\'#viewMailID\');
+                    dialog2.preventDefault();
+                    event.preventDefault();
+                    var showDialogButton2 = document.querySelector(\'[data-target="\' + mailID2 + \'"]\');
+
+                    showDialogButton2.addEventListener(\'click\', function() {
+                      dialog2.showModal();
+                    });
+                    */
+
+
+                  } catch (Exception $e) {
+                      echo $e->getMessage();
+                  }
+                    return $msgArray;
                   }
 
-                  function modalProcess(selector, button) {
-                    var dialog = document.querySelector(selector);
-                    var showDialogButton = document.querySelector(button);
+                  $msgInfo = getMessage2($service2, $user, $gmid);
 
-                    if (dialog) {
-                      if (!dialog.showModal) {
-                        dialogPolyfill.registerDialog(dialog);
-                      }
-                      showDialogButton.addEventListener(\'click\', function() {
-                        dialog.showModal();
-                      });
-                      dialog.querySelector(\'.close\').addEventListener(\'click\', function() {
-                        dialog.close();
-                      });
-                    }
-                  }
+                  $otitlestring = 'Edit';
+                  $omaileingang = $msgInfo[0];
+                  $oreceivedmail = $gmid;
+                  $olieferant = $msgInfo[1];
 
-                  var mailID2 = \'\';
-
-                  $("#addEditDetails").click(function() {
-                      var mailID2 = $(event.target).attr(\'data-target\');
-                      console.log(mailID2);
-                      var dialog2 = document.querySelector(\'#viewMailID\');
-                      dialog2.preventDefault();
-                      event.preventDefault();
-
-                      var showDialogButton2 = document.querySelector(\'[data-target="\' + mailID2 + \'"]\');
-                      if (! dialog2.showModal) {
-                        dialogPolyfill.registerDialog(dialog);
-                      }
-                      showDialogButton2.addEventListener(\'click\', function() {
-                        dialog2.showModal();
-                      });
-                      dialog2.querySelector(\'.close\').addEventListener(\'click\', function() {
-                        dialog2.close();
-                      });
-                  });
-                </script>';
+                  $msubject = $msgInfo[2];
+                  $mfrom = $msgInfo[3];
+                  $mdate = $msgInfo[4];
+                  $mbody = $msgInfo[5];
 
 
-
-
-                } catch (Exception $e) {
-                    echo $e->getMessage();
                 }
-                  return $msgArray;
-                }
-
-                $msgInfo = getMessage2($service2, $user, $gmid);
-
-                $otitlestring = 'Edit';
-                $omaileingang = $msgInfo[0];
-                $oreceivedmail = $gmid;
-                $olieferant = $msgInfo[1];
-
-
-              }
             ?>
 
         <!-- EDIT MODE -->
@@ -368,10 +336,10 @@ print_r($userInfo);
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input class="mdl-textfield__input" type="text" value="<?php echo $oreceivedmail ?>" id="rmail">
                 <label class="mdl-textfield__label" for="rmail">Incoming Mail ID</label>
-                <?php if (! empty($oreceivedmail)) { echo '<button id="viewMailID" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab viewMail2">
-                          <i class="material-icons">view</i>
-                      </button>'; } ?>
               </div>
+              <?php if (! empty($oreceivedmail)) { echo '<button id="viewmailbtn" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab viewMail2">
+                                                           <i class="material-icons">alternate_email</i>
+                                                         </button>'; } ?>
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input class="mdl-textfield__input" type="text" value="<?php echo $olieferant ?>" id="company">
                 <label class="mdl-textfield__label" for="company">Lieferant</label>
@@ -416,23 +384,42 @@ print_r($userInfo);
                 <input type="checkbox" id="switch-2" class="mdl-switch__input" <?php echo $odone ?>>
                 <span class="mdl-switch__label">Completed</span>
               </label>
-                    </form>
-                    </div>
-                    <div class="mdl-card__actions mdl-card--border">
-                      <a id="btnSave" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
-                        Save
-                      </a>
-                      <!-- <a href="incoming.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
-                        Back
-                      </a> -->
-                    </div>
-                  </div>
-              </div>
-              <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
-
-                <h4>kunden datatable</h4>
-              </div>
+            </form>
             </div>
+            <div class="mdl-card__actions mdl-card--border">
+              <a id="btnSave" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
+                Save
+              </a>
+              <!-- <a href="incoming.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
+                Back
+              </a> -->
+            </div>
+          </div>
+          <?php
+          echo '<dialog id="mailDialog" class="mdl-dialog" style="width: 800px !important;">
+                <div class="mailcSelectHeader">
+                  <h4 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $msubject . '</h4><br>
+                  <h6 class="labelSelectLabel" style="font-size: 20px !important"><font color="#67B246">From:</font> ' . $mfrom . '</h6><br>
+                  <h6 class="labelSelectLabel" style="font-size: 20px !important"><font color="#67B246">Date:</font> ' . $mdate . '</h6>
+                  <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 mailcSelectClose">
+                    <i class="material-icons">close</i>
+                  </button>
+                </div>
+
+                <div class="mdl-dialog__content">
+                  <p><div style="width: 750px; margin-top: 40px; ">
+                   ' . $mbody . '
+                  </div>></p>
+                </div>
+              </dialog>';
+            ?>
+          </div>
+
+          <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
+
+            <h4>kunden datatable</h4>
+          </div>
+        </div>
 
       <script>
 
@@ -484,6 +471,29 @@ print_r($userInfo);
 
               }); // clicking orderSave button
 
+          </script>
+          <script>
+            var dialog = document.querySelector('#mailDialog');
+            var showDialogButton = document.querySelector('#viewmailbtn');
+            if (! dialog.showModal) {
+              dialogPolyfill.registerDialog(dialog);
+            }
+            showDialogButton.addEventListener('click', function() {
+              dialog.showModal();
+            });
+            dialog.querySelector('.close1').addEventListener('click', function() {
+              dialog.close();
+            });
+
+            document.addEventListener("DOMContentLoaded", function() {
+            	//The first argument are the elements to which the plugin shall be initialized
+            	//The second argument has to be at least a empty object or a object with your desired options
+            	OverlayScrollbars(document.querySelectorAll("#mailDialog"), {
+                className       : "os-theme-dark",
+              	resize          : "both",
+              	sizeAutoCapable : true
+              });
+            });
           </script>
         </main>
         <footer class="mdl-mini-footer mdl-grid">

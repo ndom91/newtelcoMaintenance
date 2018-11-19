@@ -67,6 +67,13 @@ if (isset($_REQUEST['logout'])) {
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
   <script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
 
+  <!-- OverlayScrollbars -->
+  <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="stylesheet"/>
+  <script type="text/javascript" src="assets/js/OverlayScrollbars.js"></script>
+
+  <!-- pace -->
+  <script src="assets/js/pace.js"></script>
+  
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->
@@ -93,19 +100,24 @@ if (isset($_REQUEST['logout'])) {
         </div>
       </header>
       <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Maintenance</span>
+        <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link" href="index.php"><i class="fas fa-home"></i>  Home</a>
-          <a class="mdl-navigation__link" href="userhome.php"><i class="fas fa-user"></i>  <?php echo $token_data['name'] ?></a>
-          <a class="mdl-navigation__link" href="overview.php"><i class="fas fa-book-open"></i>  Overview</a>
-          <a class="mdl-navigation__link" href="incoming.php"><i class="fas fa-folder-plus mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
-          <a class="mdl-navigation__link" href="group.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">maintenance@newtelco.de</small></a>
-          <a class="mdl-navigation__link" href="groupservice.php"><i class="far fa-comment-alt"></i>  Group <small style="color: #67B246">service@newtelco.de</small></a>
-          <a class="mdl-navigation__link" href="addedit.php"><i class="fas fa-plus-circle"></i></i>  Add</a>
-          <a class="mdl-navigation__link" target="_blank" href="https://crm.newtelco.de"><i class="fas fa-users"></i>  CRM</a>
+          <a class="mdl-navigation__link" href="index.php"><span class="ndl-home"></span>  Home</a>
+          <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a>
+          <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
+          <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
+          <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>
+          <a class="mdl-navigation__link" href="groupservice.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">service</small></a>
+          <a class="mdl-navigation__link" href="addedit.php"><i class="ndl-createnew"></i></i>  Add</a>
+          <a class="mdl-navigation__link" href="crm_iframe.php"><i class="ndl-work"></i>  CRM</a>
           <div class="mdl-layout-spacer"></div>
           <a class="mdl-navigation__link menu_logout" href="?logout">
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Logout</button>
+            <button id="menuLogout" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+              <i class="material-icons">exit_to_app</i>
+            </button>
+            <div class="mdl-tooltip  mdl-tooltip--top" data-mdl-for="menuLogout">
+              Logout
+            </div>
           </a>
         </nav>
       </div>
@@ -119,6 +131,9 @@ if (isset($_REQUEST['logout'])) {
                       <button id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectGoogleButton">
                         <i class="material-icons">mail</i>
                       </button>
+                      <div class="mdl-tooltip" for="show-dialog">
+                      Select your Maintenance Label
+                      </div>
                     </div>
                     <dialog style="width: 900px;" id="dialog1" class="mdl-dialog">
                       <div class="labelSelectHeader">
@@ -410,7 +425,7 @@ if (isset($_REQUEST['logout'])) {
                                     <td></td>
                                   </tr>';
 
-                              echo '<dialog id="dialog_' . $message_id . '" class="mdl-dialog" style="width: 800px !important;">
+                              echo '<dialog id="dialog_' . $message_id . '" class="mdl-dialog mailDialog1" style="width: 800px !important;">
                                     <div class="mailcSelectHeader">
                                       <h4 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $subject . '</h4><br>
                                       <h6 class="labelSelectLabel" style="font-size: 20px !important"><font color="#67B246">From:</font> ' . htmlentities($from) . '</h6><br>
@@ -423,7 +438,7 @@ if (isset($_REQUEST['logout'])) {
                                     <div class="mdl-dialog__content">
                                       <p><div style="width: 750px; margin-top: 40px; ">
                                        ' . $FOUND_BODY . '
-                                      </pre></p>
+                                      </div></p>
                                     </div>
                                   </dialog>';
 
@@ -612,6 +627,16 @@ if (isset($_REQUEST['logout'])) {
           });
           dialog.querySelector('.close1').addEventListener('click', function() {
             dialog.close();
+          });
+
+          document.addEventListener("DOMContentLoaded", function() {
+            //The first argument are the elements to which the plugin shall be initialized
+            //The second argument has to be at least a empty object or a object with your desired options
+            OverlayScrollbars(document.querySelectorAll(".mdl-dialog"), {
+              className       : "os-theme-dark",
+              resize          : "both",
+              sizeAutoCapable : true
+            });
           });
         </script>
         <footer class="mdl-mini-footer mdl-grid">

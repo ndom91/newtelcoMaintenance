@@ -11,6 +11,9 @@ momentJS DateTime Format:
 Fri, 16 Nov 2018 08:22:07 +0000
 "ddd, DD MMM YYYY HH:mm:SS ZZ"
 
+STLYE STUFF:
+https://kingsora.github.io/OverlayScrollbars (more than scrollbars!)
+
 MAJOR NOTES
 -------------
 SET maintenancedb.id and kunden.id to A.I. from the get go

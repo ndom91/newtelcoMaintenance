@@ -23,6 +23,8 @@
 
     $fields=$_POST['data'];
 
+    $addeditA = array();
+
     $omaileingang = mysqli_real_escape_string($dbhandle, $fields[0]['omaileingang']);
     $oreceivedmail = mysqli_real_escape_string($dbhandle, $fields[0]['oreceivedmail']);
     $olieferant = mysqli_real_escape_string($dbhandle, $fields[0]['olieferant']);
@@ -35,28 +37,35 @@
     $onotes = mysqli_real_escape_string($dbhandle, $fields[0]['onotes']);
     $omailankunde = mysqli_real_escape_string($dbhandle, $fields[0]['omailankunde']);
     $ocal = mysqli_real_escape_string($dbhandle, $fields[0]['ocal']);
-    $odone = mysqli_real_escape_string($dbhandle, $fields[0]['odone']);
+    //$odone = mysqli_real_escape_string($dbhandle, $fields[0]['odone']);
 
-    $lastIDQ =  mysqli_query($dbhandle, "SELECT MAX(id) FROM maintenancedb") or die(mysqli_error($dbhandle));
-    $fetchID = mysqli_fetch_array($lastIDQ);
-    $lastID = $fetchID[0] + 1;
-
-    $kundenQ = mysqli_query($dbhandle, "SELECT id, name FROM companies WHERE name LIKE '$olieferant'") or die(mysqli_error($dbhandle));
-    if ($fetchK = mysqli_fetch_array($kundenQ)) {
-      $olieferant = $fetchK[0];
+    $existingrmailQ =  mysqli_query($dbhandle, "SELECT receivedmail, derenCIDid FROM maintenancedb WHERE receivedmail LIKE '$oreceivedmail'") or die(mysqli_error($dbhandle));
+    //$existingrmailA =
+    if (mysqli_fetch_array($existingrmailQ)) {
+      $addeditA['exist'] = 1;
     } else {
-      $kundenIQ = mysqli_query($dbhandle, "INSERT INTO companies (name) VALUES ('$olieferant')") or die(mysqli_error($dbhandle));
+      $lastIDQ =  mysqli_query($dbhandle, "SELECT MAX(id) FROM maintenancedb") or die(mysqli_error($dbhandle));
+      $fetchID = mysqli_fetch_array($lastIDQ);
+      $lastID = $fetchID[0] + 1;
+
+      $kundenQ = mysqli_query($dbhandle, "SELECT id, name FROM companies WHERE name LIKE '$olieferant'") or die(mysqli_error($dbhandle));
+      if ($fetchK = mysqli_fetch_array($kundenQ)) {
+        $olieferant = $fetchK[0];
+      } else {
+        $kundenIQ = mysqli_query($dbhandle, "INSERT INTO companies (name) VALUES ('$olieferant')") or die(mysqli_error($dbhandle));
+      }
+
+      $resultx = mysqli_query($dbhandle, "INSERT INTO maintenancedb (id, maileingang, receivedmail, bearbeitetvon, lieferant, derenCIDid, maintenancedate, startDateTime, endDateTime, postponed, notes, mailankunde, cal, done)
+      VALUES ('$lastID', '$omaileingang', '$oreceivedmail', '$obearbeitetvon', '$olieferant', '$oderenCIDid', '$omaintenancedate', '$ostartdatetime', '$oenddatetime', '$opostponed', '$onotes', '$omailankunde', '$ocal', '$odone')")  or die(mysqli_error($dbhandle));
+
+      if ($resultx == 'TRUE'){
+          $addeditA['added'] = 1;
+      } else {
+          $addeditA['added'] = 0;
+      }
+
     }
-
-    $resultx = mysqli_query($dbhandle, "INSERT INTO maintenancedb (id, maileingang, receivedmail, bearbeitetvon, lieferant, derenCIDid, maintenancedate, startDateTime, endDateTime, postponed, notes, mailankunde, cal, done)
-    VALUES ('$lastID', '$omaileingang', '$oreceivedmail', '$obearbeitetvon', '$olieferant', '$oderenCIDid', '$omaintenancedate', '$ostartdatetime', '$oenddatetime', '$opostponed', '$onotes', '$omailankunde', '$ocal', '$odone')")  or die(mysqli_error($dbhandle));
-
-    if ($resultx == 'TRUE'){
-        echo 1;
-    } else {
-        echo 0;
-    }
-
+    echo json_encode($addeditA);
     //echo json_encode($oreceivedmail);
 
   } else {

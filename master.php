@@ -2,9 +2,6 @@
 <?php
 require('authenticate_google.php');
 
-if (isset($_REQUEST['logout'])) {
-  unset($_SESSION['id_token_token']);
-}
 
 ?>
 

@@ -2,10 +2,6 @@
 <?php
 require('authenticate_google.php');
 
-if (isset($_REQUEST['logout'])) {
-  unset($_SESSION['id_token_token']);
-}
-
 ?>
 
 <html>
@@ -45,7 +41,7 @@ if (isset($_REQUEST['logout'])) {
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  
+
   <!-- pace -->
   <script src="assets/js/pace.js"></script>
 

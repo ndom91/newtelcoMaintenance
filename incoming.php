@@ -5,9 +5,6 @@ require_once('config.php');
 
 global $dbhandle;
 
-if (isset($_REQUEST['logout'])) {
-  unset($_SESSION['id_token_token']);
-}
 
 ?>
 
@@ -39,10 +36,10 @@ if (isset($_REQUEST['logout'])) {
   <link rel='stylesheet' href='assets/css/style.css'>
 
   <!-- font awesome -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="dns-prefetch" rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
   <!-- Google font-->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+  <link rel="dns-prefetch" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
 
   <!-- material design -->
   <link rel="stylesheet" href="assets/css/material.css">
@@ -53,6 +50,7 @@ if (isset($_REQUEST['logout'])) {
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
   <!-- Datatables -->
+
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.css"/>
   <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
@@ -64,6 +62,10 @@ if (isset($_REQUEST['logout'])) {
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css"/>
   <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
 
+  <script type="text/javascript" src="assets/js/dataTables.responsive.js"></script>
+  <link rel="stylesheet" type="text/css" href="assets/css/responsive.dataTables.css"/>
+
+
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
   <script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
 
@@ -73,7 +75,7 @@ if (isset($_REQUEST['logout'])) {
 
   <!-- pace -->
   <script src="assets/js/pace.js"></script>
-  
+
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->
@@ -425,11 +427,11 @@ if (isset($_REQUEST['logout'])) {
                                     <td></td>
                                   </tr>';
 
-                              echo '<dialog id="dialog_' . $message_id . '" class="mdl-dialog mailDialog1" style="width: 800px !important;">
+                              echo '<dialog id="dialog_' . $message_id . '" class="mdl-dialog mailDialog1" style="width: 800px;">
                                     <div class="mailcSelectHeader">
                                       <h4 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $subject . '</h4><br>
-                                      <h6 class="labelSelectLabel" style="font-size: 20px !important"><font color="#67B246">From:</font> ' . htmlentities($from) . '</h6><br>
-                                      <h6 class="labelSelectLabel" style="font-size: 20px !important"><font color="#67B246">Date:</font> ' . $date . '</h6>
+                                      <h6 class="sublabelSelectLabel"><font color="#67B246">From:</font> ' . htmlentities($from) . '</h6><br>
+                                      <h6 class="sublabelSelectLabel"><font color="#67B246">Date:</font> ' . $date . '</h6>
                                       <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 mailcSelectClose">
                                         <i class="material-icons">close</i>
                                       </button>
@@ -553,15 +555,25 @@ if (isset($_REQUEST['logout'])) {
                   scrollx: true,
                   select: true,
                   stateSave: true,
+                  responsive: true,
+                  scrolly: false,
                   columnDefs: [
                       {
                           "targets": [ 1, 4, 9, 10, 11, 12, 13, 14 ],
                           "visible": false,
                           "searchable": false
                       },
+                      { responsivePriority: 1, targets: [ 3, 4 ] },
+                      { responsivePriority: 2, targets: [ 0, 2, 5, 6, 7 ] },
+                      { responsivePriority: 3, targets: -1 },
+                      { responsivePriority: 500, targets: [ 8, 9, 10, 11 ] },
                       {
                           targets: [2, 3, 5, 6, 7, 8 ],
                           className: 'mdl-data-table__cell--non-numeric'
+                      },
+                      {
+                          targets: [3, 5 ],
+                          className: 'all'
                       }
                   ]
               } );

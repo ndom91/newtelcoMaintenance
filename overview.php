@@ -5,9 +5,6 @@ require_once('config.php');
 
 global $dbhandle;
 
-if (isset($_REQUEST['logout'])) {
-  unset($_SESSION['id_token_token']);
-}
 
 ?>
 
@@ -69,7 +66,7 @@ if (isset($_REQUEST['logout'])) {
 
   <!-- pace -->
   <script src="assets/js/pace.js"></script>
-  
+
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->

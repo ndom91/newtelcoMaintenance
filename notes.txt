@@ -11,8 +11,11 @@ momentJS DateTime Format:
 Fri, 16 Nov 2018 08:22:07 +0000
 "ddd, DD MMM YYYY HH:mm:SS ZZ"
 
+upgrade to material-datetime-picker eventually
+
 STLYE STUFF:
 https://kingsora.github.io/OverlayScrollbars (more than scrollbars!)
+make grid for addedit.php form
 
 MAJOR NOTES
 -------------

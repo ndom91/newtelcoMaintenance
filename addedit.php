@@ -5,10 +5,6 @@ require_once('config.php');
 
 global $dbhandle;
 
-if (isset($_REQUEST['logout'])) {
-  unset($_SESSION['id_token_token']);
-}
-
 ?>
 
 <html lang="en">
@@ -39,18 +35,28 @@ if (isset($_REQUEST['logout'])) {
   <link rel='stylesheet' href='assets/css/style.css'>
 
   <!-- font awesome -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="dns-prefetch" rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
   <!-- Google font-->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+  <link rel="dns-prefetch" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
 
   <!-- material design -->
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+  <!--getmdl-select-->
+  <link rel="stylesheet" href="assets/css/getmdl-select.min.css">
+  <script defer src="assets/js/getmdl-select.min.js"></script>
+
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+  <!-- flatpickr -->
+  <link rel="dns-prefetch" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" type="text/css" href="assets/css/flatpickr_green.css">
+
+  <script rel="dns-prefetch" src="https://unpkg.com/flatpickr@4.5.2/dist/flatpickr.js"></script>
 
   <!-- OverlayScrollbars -->
   <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="stylesheet"/>
@@ -58,7 +64,7 @@ if (isset($_REQUEST['logout'])) {
 
   <!-- pace -->
   <script src="assets/js/pace.js"></script>
-  
+
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->
@@ -301,6 +307,24 @@ if (isset($_REQUEST['logout'])) {
                   $mdate = $msgInfo[4];
                   $mbody = $msgInfo[5];
 
+                  $emailBV = $token_data['email'];
+                  if (($pos2 = strpos($emailBV, "@")) !== FALSE) {
+                    $domainBV = substr($emailBV, strpos($emailBV, "@"));
+                    $usernameBV = basename($emailBV, $domainBV);
+                  }
+
+                  $workers = array();
+                  $workers[] = "ndomino";
+                  $workers[] = "fwaleska";
+                  $workers[] = "alissitsin";
+                  $workers[] = "sstergiou";
+
+                  if (($key = array_search($usernameBV, $workers)) !== false) {
+                      unset($workers[$key]);
+                      $workers = array_values($workers);
+                  }
+
+                  $derenCIDQ =  mysqli_query($dbhandle, "SELECT companies.name, kunden.derenCID FROM kunden LEFT JOIN companies ON kunden.kunde = companies.id WHERE companies.name LIKE '$olieferant'") or die(mysqli_error($dbhandle));
 
                 }
             ?>
@@ -344,14 +368,53 @@ if (isset($_REQUEST['logout'])) {
                 <input class="mdl-textfield__input" type="text" value="<?php echo $olieferant ?>" id="company">
                 <label class="mdl-textfield__label" for="company">Lieferant</label>
               </div>
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" value="<?php echo $oderenCIDid ?>" id="dcid">
-                <label class="mdl-textfield__label" for="dcid">Deren CID</label>
+              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+                  <input type="text" value="" class="mdl-textfield__input" id="#dcid" readonly>
+                  <input type="hidden" value="" name="#dcid">
+                  <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                  <label for="#dcid" class="mdl-textfield__label">Deren CID</label>
+                  <ul for="#dcid" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                      <!-- <li class="mdl-menu__item" data-val="<?php echo $oderenCIDid ?>"><?php echo $oderenCIDid ?></li> -->
+                      <?php
+                        while ($row = mysqli_fetch_row($derenCIDQ)) {
+                            echo '<li class="mdl-menu__item" data-val="' . $row[1] . '">' . $row[1] . '</li>';
+                        }
+                      ?>
+                  </ul>
               </div>
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" value="<?php echo $obearbeitetvon ?>" id="bearbeitet">
-                <label class="mdl-textfield__label" for="bearbeitet">Bearbeitet Von</label>
+              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height">
+                <input type="text" value="" class="mdl-textfield__input" id="bearbeitet" readonly>
+                <input type="hidden" value="" name="bearbeitet">
+                <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                <label for="bearbeitet" class="mdl-textfield__label">Bearbeitet Von</label>
+                <ul for="bearbeitet" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                    <li class="mdl-menu__item" data-val="<?php echo $usernameBV ?>" data-selected="true"><?php echo $usernameBV ?></li>
+                    <li class="mdl-menu__item" data-val="<?php echo $workers[0] ?>"><?php echo $workers[0] ?></li>
+                    <li class="mdl-menu__item" data-val="<?php echo $workers[1] ?>"><?php echo $workers[1] ?></li>
+                    <li class="mdl-menu__item" data-val="<?php echo $workers[2] ?>"><?php echo $workers[2] ?></li>
+                </ul>
               </div>
+              <div class="mdl-textfield mdl-textfield--floating-label">
+                  <input type="text" id="flatpickr" class="flatpickr" placeholder="" data-input> <!-- input is mandatory -->
+
+                  <!-- <i class="material-icons" title="toggle" data-toggle>
+                  calendar_today
+                  </i>
+
+                  <i class="material-icons" title="clear" data-clear>
+                  cancel
+                </i>-->
+                  <label class="mdl-textfield__label" for="flatpickr">Maintenance Date/Time</label>
+              </div>
+              <script>
+              $( '.flatpickr' ).flatpickr({
+                enableTime: true,
+                dateFormat: 'D, d M Y H:i:S ',
+                time_24hr: true
+                //"plugins": [new confirmDatePlugin({})]
+              });
+
+              </script>
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input class="mdl-textfield__input" type="text" value="<?php echo $omaintenancedate ?>" id="mdt">
                 <label class="mdl-textfield__label" for="mdt">Maintenance Date/Time</label>
@@ -376,10 +439,25 @@ if (isset($_REQUEST['logout'])) {
                 <input class="mdl-textfield__input" type="text" value="<?php echo $omailankunde ?>" id="makdt">
                 <label class="mdl-textfield__label" for="makdt">Mail an Kunde Date/Time</label>
               </div>
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" value="<?php echo $ocal ?>" id="cal">
-                <label class="mdl-textfield__label" for="cal">Add to Cal</label>
-              </div>
+              <?php
+                $mailRecipientQ =  mysqli_query($dbhandle, "SELECT maintenanceRecipient FROM companies WHERE companies.name LIKE '$olieferant'") or die(mysqli_error($dbhandle));
+                if ($row = mysqli_fetch_row($mailRecipientQ)) {
+                  $mailrecipient = $row[0];
+                }
+
+              ?>
+              <script>
+                function openInNewTab(url) {
+                  var win = window.open(url, '_blank');
+                  win.focus();
+                };
+              </script>
+              <button type="button" onclick="openInNewTab('mailto:<?php echo $mailrecipient ?>?subject=This is the subject&body=This is the body');" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                MAIL
+              </button>
+              <button onclick="<?php echo $ocal ?>" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                CAL
+              </button>
               <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2">
                 <input type="checkbox" id="switch-2" class="mdl-switch__input" <?php echo $odone ?>>
                 <span class="mdl-switch__label">Completed</span>
@@ -409,12 +487,19 @@ if (isset($_REQUEST['logout'])) {
                 <div class="mdl-dialog__content">
                   <p><div style="width: 750px; margin-top: 40px; ">
                    ' . $mbody . '
-                  </div>></p>
+                  </div></p>
                 </div>
               </dialog>';
             ?>
           </div>
-
+          <div id="sbMExists" class="mdl-js-snackbar mdl-snackbar">
+            <div class="mdl-snackbar__text"></div>
+            <button class="mdl-snackbar__action" type="button"></button>
+          </div>
+          <div id="sbMAS" class="mdl-js-snackbar mdl-snackbar">
+            <div class="mdl-snackbar__text"></div>
+            <button class="mdl-snackbar__action" type="button"></button>
+          </div>
           <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
 
             <h4>kunden datatable</h4>
@@ -453,7 +538,7 @@ if (isset($_REQUEST['logout'])) {
                   }
 
                   //TableData = JSON.stringify(TableData);
-                  console.log('tabledata: ' + TableData);
+                  //console.log('tabledata: ' + TableData);
 
                   //alert(TableData);
 
@@ -464,8 +549,39 @@ if (isset($_REQUEST['logout'])) {
                    cache : "false",
                    dataType: "json",
                    data :  {data:TableData},
-                   success : function(result){
-                     console.log('result: ' + result);
+                   success : function(result1){
+                     //console.log('result: ' + result1.exist);
+                     var obj = JSON.stringify(result1);
+                       //console.log('obj.exist: ' + obj.exist);
+
+                       if (result1.exist === 1) {
+                          var snackbarContainer = document.querySelector('#sbMExists');
+                          var midval = $('#rmail').val();
+                          var handler = function(event) {
+                            var aeURL = 'https://maintenance.newtelco.de/addedit?gmid=' + midval
+                            window.location.href = aeURL;
+                          };
+                          var dataME = {
+                            message: 'Maintenance Already Exists',
+                            timeout: 4000,
+                            actionHandler: handler,
+                            actionText: 'OPEN'
+                          };
+
+                          snackbarContainer.MaterialSnackbar.showSnackbar(dataME);
+
+                       } else if (result1.added === 1){
+                         var snackbarContainer2 = document.querySelector('#sbMAS');
+                         var dataME2 = {
+                           message: 'Maintenance Successfully Saved',
+                           timeout: 2000
+                         };
+
+                         snackbarContainer2.MaterialSnackbar.showSnackbar(dataME2);
+                       } else {
+                         alert('Invalid Response');
+                       }
+
                    }
                   });
 
@@ -512,5 +628,6 @@ if (isset($_REQUEST['logout'])) {
             </div>
         </footer>
       </div>
+
 </body>
 </html>

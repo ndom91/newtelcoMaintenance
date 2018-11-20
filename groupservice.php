@@ -2,10 +2,6 @@
 <?php
 require('authenticate_google.php');
 
-if (isset($_REQUEST['logout'])) {
-  unset($_SESSION['id_token_token']);
-}
-
 ?>
 
 <html>
@@ -48,7 +44,7 @@ if (isset($_REQUEST['logout'])) {
 
   <!-- pace -->
   <script src="assets/js/pace.js"></script>
-  
+
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->

@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html >
 <?php
 session_start();
 
@@ -33,8 +31,7 @@ $plus = new Google_Service_Plus($client);
  * local access token in this case
  ************************************************/
 if (isset($_REQUEST['logout'])) {
-  unset($_SESSION['token']);
-  session_destroy();
+  unset($_SESSION['id_token_token']);
 }
 
 /************************************************
@@ -63,7 +60,7 @@ if (
   $client->setAccessToken($_SESSION['id_token_token']);
 } else {
   $authUrl = $client->createAuthUrl();
-  header('Location: ' . $authUrl);
+  //header('Location: ' . $authUrl);
 }
 /************************************************
   If we're signed in we can go ahead and retrieve

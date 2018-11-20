@@ -2,11 +2,6 @@
 <?php
 require('authenticate_google.php');
 
-if (empty($_SESSION['id_token_token'])) {
-  session_destroy();
-  header('Location: https://maintenance.newtelco.de/index.php');
-}
-
 ?>
 
 <html>
@@ -48,10 +43,12 @@ if (empty($_SESSION['id_token_token'])) {
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link href='http://rawgit.com/kimjs3550/material-icons-autocomplete/master/icon-style.css' rel='stylesheet'>
 
   <!-- pace -->
   <script src="assets/js/pace.js"></script>
+
+  <!-- jquery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
 </head>
 <body>

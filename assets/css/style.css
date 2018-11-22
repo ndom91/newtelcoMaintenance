@@ -32,9 +32,7 @@ body::after {
 }
 /* flatpickr */
 .flatpickr {
-  wrap: true;
   border: 0 !important;
-  width: 100% !important;
 }
 /* <pace> */
 
@@ -147,13 +145,24 @@ body::after {
 #viewMailID {
     float: right;
 }
+
+.mdl-textfield__label__icon {
+   position: absolute;
+   right: 5px;
+   top: 20px;
+}
 /* Select Mail Modal */
 
+.mailDialog1 {
+   height: calc(100vh - 126px);
+   overflow-y:scroll;
+}
 .labelSelectHeader {
   height: 30px;
   width: 98%;
   padding: 15px;
   margin-bottom: 10px;
+  position: relative;
 }
 .mailcSelectHeader {
   height: 50px;
@@ -168,27 +177,32 @@ body::after {
   margin: 0;
 }
 .labelSelectClose {
-  float: right;
-  display: inline;
+  position:fixed !important;
+  top:50px;
+  right:50px;
+  z-index: 1000;
   height: 48px !important;
   width: 48px !important;
   min-width: 48px !important;
   background-color: #67B246 !important;
-  color: #fff !important;
+  color: #fff !important;wa
 }
 .mailcSelectClose {
-  margin-top: -50px !important;
-  float: right;
-  display: inline;
   height: 48px !important;
   width: 48px !important;
   min-width: 48px !important;
   background-color: #67B246 !important;
   color: #fff !important;
+  position:fixed !important;
+  top:50px;
+  right:50px;
+  z-index: 1000;
+  box-shadow: 0 5px 5px 0 rgba(255,255,255, 0.62), 0 5px 5px 0 rgba(255,255,255, 0.64);
 }
 .labelSelectBtn {
   float:right;
 }
+
 /* Overview / Datatables */
 
 .tableSearchGrid > .mdl-cell > .mdl-textfield.is-focused .mdl-textfield__label:after {
@@ -347,6 +361,7 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
   margin-right: 10px;
   white-space:nowrap;
   opacity: 0.8;
+  color: #67B246;
 }
 .ndl-createnew {
   content: url('/assets/images/svg/createnew.svg');

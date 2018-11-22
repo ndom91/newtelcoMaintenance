@@ -2,8 +2,8 @@ TO DO
 ----------
 
 submit addedit to DB
-
 fix field types on table views + addedit
+
 
 NOTES
 -------------
@@ -17,6 +17,29 @@ STLYE STUFF:
 https://kingsora.github.io/OverlayScrollbars (more than scrollbars!)
 make grid for addedit.php form
 
+
 MAJOR NOTES
 -------------
 SET maintenancedb.id and kunden.id to A.I. from the get go
+
+ESCAPE ALL USER ENTRY GOING TO DB
+
+i.e. - $mID_escape = mysqli_real_escape_string($dbhandle, $activeID);
+
+DB REDESIGN Notes
+-----------------
+
+maintenancedb
+-remove cal column (DONE)
+
+MANY -> ONE REBUILD:
+DEREN CID -> UNSERE CID
+-id         -id (PK)
+-derenCID   -derenCID (FK)
+            -unsereCID
+            -kunde (companies.id)
+            -mailsent(gmailID)
+
+MAIL SEND TO KUNDEN
+- move to from maintenancedb -> kunden tabelle (DONE)
+- datetime + click to send both in kunden tabelle (DONE)

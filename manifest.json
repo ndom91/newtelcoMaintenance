@@ -14,9 +14,9 @@
     "prefer_related_applications": false,
     "icons": [
         {
-            "src": "/assets/images/nt_logo_64.png",
+            "src": "/assets/images/nt_square32_2_light2.png",
             "type": "image/png",
-            "sizes": "64x64"
+            "sizes": "32x32"
         }
     ]
 }

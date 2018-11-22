@@ -5,6 +5,15 @@ require_once('config.php');
 
 global $dbhandle;
 
+if(isset($_POST['label']) || isset($_SESSION['label'])) {
+  if(isset($_POST['label'])) {
+    $labelID2 = $_POST['label'];
+  } else {
+    $labelID2 = $_SESSION['label'];
+  }
+
+  setcookie("label", $labelID2, strtotime( '+30 days' ));
+}
 
 ?>
 
@@ -96,7 +105,7 @@ global $dbhandle;
                 <li class="mdl-menu__item">Some Action</li>
                 <li class="mdl-menu__item">Another Action</li>
                 <li disabled class="mdl-menu__item">Disabled Action</li>
-                <li class="mdl-menu__item"><a class="usermenuhref" href="?logout">Logout</a></li>
+                <a class="usermenuhref" href="?logout"><li class="mdl-menu__item">Logout</li></a>
               </ul>
           </div>
         </div>
@@ -175,42 +184,6 @@ global $dbhandle;
                         </div>
                       </dialog>
                     </div>
-
-
-
-                <!--  SEACH FIELDS
-                <div class="mdl-cell mdl-cell--2-col">
-                  <form action="incoming" method="post">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                      <input class="mdl-textfield__input" type="text" name="tLieferant" id="tLieferant">
-                      <label class="mdl-textfield__label" for="tLieferant">Lieferant</label>
-                    </div>
-                </div>
-                <div class="mdl-cell mdl-cell--2-col">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                      <input class="mdl-textfield__input" type="text" name="tdCID" id="tdCID">
-                      <label class="mdl-textfield__label" for="tdCID">deren CID</label>
-                    </div>
-                </div>
-                  <div class="mdl-cell mdl-cell--2-col">
-                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" name="tKunde" id="tKunde">
-                        <label class="mdl-textfield__label" for="tKunde">Kunde</label>
-                      </div>
-                  </div>
-                  <div class="mdl-cell mdl-cell--2-col">
-                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" name="tuCID" id="tuCID">
-                        <label class="mdl-textfield__label" for="tuCID">unsere CID</label>
-                      </div>
-                  </div>
-                  <div class="mdl-cell mdl-cell--2-col"></div>
-                  <div class="mdl-cell mdl-cell--1-col mdl-typography--text-right">
-                    <button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--light-green-nt ">
-                      <i class="material-icons">search</i>
-                    </button>
-                    </form>
-                  </div> -->
                 </div>
                 <?php
                 $lieferant = '';
@@ -274,8 +247,6 @@ global $dbhandle;
                               <th>End Date/Time</th>
                               <th>Postponed</th>
                               <th>Notes</th>
-                              <th>Mail an Kunde Date/Time</th>
-                              <th>Add to Cal</th>
                               <th>Complete</th>
                             </tr>
                           </thead>
@@ -402,7 +373,35 @@ global $dbhandle;
                             }
                             // Finally, print the message ID and the body
 
+                            echo '
+                            <script>
+                            (function() {
+                              var iframe = document.getElementById(\'emailBody_' . $message_id . '\');
+                              var iframedoc = iframe.document;
 
+                              console.log("begin framedoc");
+                              if (iframe.contentDocument){
+
+                                console.log("contentDocument");
+                                iframedoc = iframe.contentDocument;
+                                console.log("iframe has contentDocument");
+                              } else if (iframe.contentWindow){
+                               iframedoc = iframe.contentWindow.document;
+                               console.log("iframe has contentWindow.document");
+                              }
+
+                              if (iframedoc) {
+                                //iframedoc.open();
+                                iframedoc.write(' . stripHTML($FOUND_BODY) . ');
+                                iframedoc.close();
+                                console.log("iframedoc is not NULL");
+                              } else {
+
+                                console.log("Cannot inject dynamic contents");
+                               alert(\'Cannot inject dynamic contents into iframe.\');
+                              }
+                            })();
+                            </script>';
 
                             echo '<tr>
                                     <td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
@@ -416,8 +415,6 @@ global $dbhandle;
                                     <td></td>
                                     <td>'. $domain  . '</td>
                                     <td>abc123</td>
-                                    <td></td>
-                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -439,8 +436,12 @@ global $dbhandle;
 
                                     <div class="mdl-dialog__content">
                                       <p><div style="width: 750px; margin-top: 40px; ">
-                                       ' . $FOUND_BODY . '
-                                      </div></p>
+                                        <div class="mdl-textfield mdl-js-textfield" style="margin-left: auto !important; margin-right: auto !important; width: 95% !important;">
+                                          <div contenteditable="true" class="mdl-textfield__input" type="text" rows= "3" style="width:100% !important; height: 100% !important;" id="sample5" >' . stripHTML($FOUND_BODY) . '</div>
+
+                                        </div>
+                                        <!-- <iframe height="100%" width="100%" frameborder="0" id="emailBody_' . $message_id . '"></iframe> -->
+                                      </p>
                                     </div>
                                   </dialog>';
 
@@ -522,27 +523,31 @@ global $dbhandle;
                     $labelID = $_SESSION['label'];
                   }
                 } else {
-                  $labelID = '0';
+                  if(isset($_COOKIE['label'])) {
+                    $labelID = $_COOKIE['label'];
+                  } else {
+                    $labelID = '0';
+                  }
                 }
 
-                $q = 'label:' . $labelID . ' newer_than:3d';
+                $q = 'label:' . $labelID . ' newer_than:7d';
                 fetchMails($service, $q);
 
 
                 ?>
 
                 <table id="dataTable2" class="hidden table table-striped compact nowrap" style="width: 100%">
-                          <thead>
-                            <tr>
-                              <th class="">ID</th>
-                              <th class="">Deren CID</th>
-                              <th>Unsere CID</th>
-                              <th>Kunde</th>
-                              <th>Sent Mail</th>
-                            </tr>
-                          </thead>
-                      </table>
-                      </div>
+                  <thead>
+                    <tr>
+                      <th class="">ID</th>
+                      <th class="">Deren CID</th>
+                      <th>Unsere CID</th>
+                      <th>Kunde</th>
+                      <th>Sent Mail</th>
+                    </tr>
+                  </thead>
+                </table>
+                </div>
               </div>
             </div>
         </main>
@@ -559,7 +564,7 @@ global $dbhandle;
                   scrolly: false,
                   columnDefs: [
                       {
-                          "targets": [ 1, 4, 9, 10, 11, 12, 13, 14 ],
+                          "targets": [ 1, 4, 9, 10, 11, 12 ],
                           "visible": false,
                           "searchable": false
                       },
@@ -585,44 +590,27 @@ global $dbhandle;
                                 table2 = $('#dataTable2').DataTable();
                                 table2.destroy();
                             }
-                            //window.location.hash = "#?dcid=" + data;
                             $('#dataTable2').addClass('display').removeClass('hidden');
                             $('#dataTable2').DataTable( {
+                              ajax: {
+                                url: "api?dCID=" + data2,
+                                dataSrc: ""
+                              },
+                              columns: [
+                                  { data: "id" },
+                                  { data: "derenCID" },
+                                  { data: "unsereCID" },
+                                  { data: "name" },
+                                  { data: "mailsend" }
+                              ],
                               columnDefs: [
                                   {
-                                      "targets": [ 0],
+                                      "targets": [ 0 ],
                                       "visible": false,
                                       "searchable": false
                                   }
                                 ]
-                                  /*"processing": true,
-                                  "serverSide": true,
-                                 "ajax": {
-                                      "url": "dCID=" + data2,
-                                      "type": "GET"
-                                  },
-                                  "columns": [
-                                      { "data": "id" },
-                                      { "data": "dCID" },
-                                      { "data": "uCID" },
-                                      { "data": "company" }
-                                  ]*/
                              } );
-                            $.ajax({
-                                method: 'GET',
-                                url: 'api',
-                                data: "dCID=" + data2,
-                                dataType: 'json',
-                                success: function(data) {
-
-                                    for (var row2 in data) {
-                                      $('#dataTable2 tr:last').after('<tr><td>' + data[row2][1] + '</td><td>' + data[row2][2] + '</td><td>' + data[row2][3] + '</td><td>' + data[row2][4] + '</td></tr>');
-                                    }
-
-                                  }
-
-                              /*  */
-                            });
                   }
               })
             })

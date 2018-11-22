@@ -87,7 +87,7 @@ global $dbhandle;
                 <li class="mdl-menu__item">Some Action</li>
                 <li class="mdl-menu__item">Another Action</li>
                 <li disabled class="mdl-menu__item">Disabled Action</li>
-                <li class="mdl-menu__item"><a class="usermenuhref" href="?logout">Logout</a></li>
+                <a class="usermenuhref" href="?logout"><li class="mdl-menu__item">Logout</li></a>
               </ul>
           </div>
         </div>
@@ -156,7 +156,7 @@ global $dbhandle;
                 $tdCID = '';
 
                 if (empty($_POST['tLieferant']) && empty($_POST['tdCID'])) {
-                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id");
+                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id");
                 }
 
                 if (! empty($_POST['tLieferant'])){
@@ -176,7 +176,7 @@ global $dbhandle;
                     if ($fetch = mysqli_fetch_array($lieferant_query)) {
                         //Found a companyn - now show all maintenances for company
                         $lieferant_id = $fetch[0];
-                        $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
+                        $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
                       }
 
                 } elseif (! empty($_POST['tdCID'])){
@@ -186,7 +186,7 @@ global $dbhandle;
                       $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
                       $dCID_escape = '%' . $dCID_escape . '%';
 
-                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
+                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
 
                 }
 
@@ -217,8 +217,6 @@ global $dbhandle;
                             <th>End Date/Time</th>
                             <th>Postponed</th>
                             <th>Notes</th>
-                            <th>Mail an Kunde Date/Time</th>
-                            <th>Add to Cal</th>
                             <th>Complete</th>
                           </tr>
                         </thead>
@@ -228,14 +226,26 @@ global $dbhandle;
                     echo '<tr>';
                     // button - class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab"
                         echo '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-                                <a class="editLink" href="addedit.php?mid=' . $rowx['id'] . '">
+                                <a class="editLink" href="addedit.php?update=1&mid=' . $rowx['id'] . '&gmid=' . $rowx['receivedmail'] . '">
                                   <i class="material-icons">edit</i>
                                 </a>
                               </button></td>';
+
+                    $donezo = $rowx['done'];
+
                     foreach($rowx as $field) {
                         if ($rowx['maileingang']) {
                           echo '<td>' . $field . '</td>';
+                        } elseif ($rowx['done']) {
+                            console.log('elseif: ' . $donezo);
+                          if ($donezo = '1'){
+                            echo '<img src="assets/images/svg/done.svg"/>';
+                          } else {
+                            echo '<img src="assets/images/svg/notdone.png"/>';
+                          }
+                          // TO-DO
                         } else {
+                          console.log('else: ' . $donezo);
                         echo '<td>' . htmlspecialchars($field) . '</td>';
                         }
                     }
@@ -269,7 +279,7 @@ global $dbhandle;
                       { responsivePriority: 2, targets: -1 },
                       { responsivePriority: 500, targets: [ 8, 9, 10, 11 ] },
                       {
-                          targets: [2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
+                          targets: [2, 3, 4, 6, 7, 8, 9, 10, 11, 12 ],
                           className: 'mdl-data-table__cell--non-numeric'
                       }
                   ]

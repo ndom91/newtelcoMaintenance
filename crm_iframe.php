@@ -65,7 +65,7 @@ require('authenticate_google.php');
                 <li class="mdl-menu__item">Some Action</li>
                 <li class="mdl-menu__item">Another Action</li>
                 <li disabled class="mdl-menu__item">Disabled Action</li>
-                <li class="mdl-menu__item"><a class="usermenuhref" href="?logout">Logout</a></li>
+                <a class="usermenuhref" href="?logout"><li class="mdl-menu__item">Logout</li></a>
               </ul>
           </div>
 

@@ -28,7 +28,7 @@ body::after {
 	box-shadow:
 	  inset 0px 121px 110px -100px #000,
 	  inset 0px -121px 110px -100px #000;
-    /*background: url('../images/bg4.png') no-repeat center center fixed; */
+    /*background: url('../images/bg4.jpg') no-repeat center center fixed; */
 }
 /* flatpickr */
 .flatpickr {
@@ -142,6 +142,24 @@ body::after {
 }
 /* Add Edit */
 
+.demo-card-wide.mdl-card {
+  width: 100%;
+  margin-top: 3%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.demo-card-wide > .mdl-card__title {
+  color: #fff;
+  height: 65px;
+  background: #4d4d4d;
+}
+.demo-card-wide > .mdl-card__menu {
+  color: #fff;
+}
+#addCalbtn {
+  float: left;
+  display: inline;
+}
 #viewMailID {
     float: right;
 }

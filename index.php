@@ -53,6 +53,34 @@ require('authenticate_google.php');
 
 </head>
 <body>
+  <?php
+/*
+  $serviceGmail = new Google_Service_Gmail($clientService);
+
+  $userIdNDO = 'ndomino@newtelco.de';
+
+  function listLabels($service3, $userId4) {
+    $labels = array();
+
+    try {
+      $labelsResponse = $service3->users_labels->listUsersLabels($userId4);
+
+      if ($labelsResponse->getLabels()) {
+        $labels = array_merge($labels, $labelsResponse->getLabels());
+      }
+
+      foreach ($labels as $label) {
+        print 'Label with ID: ' . $label->getId() . '<br/>';
+      }
+    } catch (Excetion $e) {
+      print 'An error occurred: ' . $e->getMessage();
+    }
+    return $labels;
+  }
+
+  /*$label_response = $service3->users_labels->get('ndomino@newtelco.de', 'STARRED');*/
+
+  ?>
   <!-- Always shows a header, even in smaller screens. -->
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header ">
       <header class="mdl-layout__header mdl-color--light-green-nt">
@@ -74,7 +102,6 @@ require('authenticate_google.php');
                 <a class="usermenuhref" href="?logout"><li class="mdl-menu__item">Logout</li></a>
               </ul>
           </div>
-
         </div>
       </header>
       <div class="mdl-layout__drawer">
@@ -128,7 +155,36 @@ require('authenticate_google.php');
                       Mauris sagittis pellentesque lacus eleifend lacinia...<br><br>
                       <b>Debug:</b>
                       <pre><?php
-                      var_export($token_data);
+/*
+                      function listLabels($service, $userId) {
+                        $labels = array();
+
+                        try {
+                          $labelsResponse = $service->users_labels->listUsersLabels($userId);
+
+                          if ($labelsResponse->getLabels()) {
+                            $labels = array_merge($labels, $labelsResponse->getLabels());
+                          }
+
+                          foreach ($labels as $label) {
+                            print 'Label with ID: ' . $label->getId() . '<br/>';
+                          }
+                        } catch (Excetion $e) {
+                          print 'An error occurred: ' . $e->getMessage();
+                        }
+
+                        return $labels;
+                      }
+
+                      $token5 = listLabels($gmailtest2,'ndomino@newtelco.de');
+
+                      //var_export($label_response);
+                      //var_export(listLabels($serviceGmail, $userIdNDO));
+                      //$token5 = make_iap_request("https://www.googleapis.com/gmail/v1/users/ndomino@newtelco.de/labels","https://www.googleapis.com/auth/gmail.readonly");
+                      var_export($token5);
+                      echo '<br><br>';*/
+
+                      //var_export($token_data);
                       ?></pre>
 
                     </div>

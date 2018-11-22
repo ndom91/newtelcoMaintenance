@@ -9567,7 +9567,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
     padding-left: 28px; }
 
 .mdl-switch__input {
-  line-height: 24px; }
+  line-height: 32px; }
   .mdl-switch.is-upgraded .mdl-switch__input {
     position: absolute;
     width: 0;

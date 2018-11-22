@@ -206,7 +206,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                       if ($fetch = mysqli_fetch_array($lieferant_query)) {
                           //Found a companyn - now show all maintenances for company
                           $lieferant_id = $fetch[0];
-                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
+                          $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
                         }
 
                 } elseif (! empty($_POST['tdCID'])){
@@ -216,7 +216,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                     $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
                     $dCID_escape = '%' . $dCID_escape . '%';
 
-                    $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.cal, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
+                    $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
                 }
 
 
@@ -231,7 +231,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   // non-numeric columns: class="mdl-data-table__cell--non-numeric"
 
                   echo '<div class="dataTables_wrapper">
-                  <table id="dataTable3" class="table table-striped compact nowrap" style="width: 100%">
+                  <table id="dataTable3" class="table table-striped compact nowrap order-column hover" style="width: 100%">
                           <thead>
                             <tr>
                               <th style="width:20px!important"></th>
@@ -242,7 +242,6 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                               <th>Lieferant</th>
                               <th>Deren CID</th>
                               <th>Bearbeitet Von</th>
-                              <th>Maintenance Date/Time</th>
                               <th>Start Date/Time</th>
                               <th>End Date/Time</th>
                               <th>Postponed</th>
@@ -413,9 +412,8 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                                     <td>'. $date  . '</td>
                                     <td><a id="show-dialog2" data-target="' . $message_id . '">' . $message_id . '</a></td>
                                     <td></td>
-                                    <td>'. $domain  . '</td>
+                                    <td>'. $from . '('. $domain . ')' . '</td>
                                     <td>abc123</td>
-                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -564,16 +562,14 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   scrolly: false,
                   columnDefs: [
                       {
-                          "targets": [ 1, 4, 9, 10, 11, 12 ],
+                          "targets": [ 1, 4, 6, 7, 8, 9, 10, 11, 12 ],
                           "visible": false,
                           "searchable": false
                       },
-                      { responsivePriority: 1, targets: [ 3, 4 ] },
-                      { responsivePriority: 2, targets: [ 0, 2, 5, 6, 7 ] },
-                      { responsivePriority: 3, targets: -1 },
-                      { responsivePriority: 500, targets: [ 8, 9, 10, 11 ] },
+                      { responsivePriority: 1, targets: [ 0, 2, 5 ] },
+                      { responsivePriority: 2, targets: [ 3 ] },
                       {
-                          targets: [2, 3, 5, 6, 7, 8 ],
+                          targets: [2, 3, 5 ],
                           className: 'mdl-data-table__cell--non-numeric'
                       },
                       {

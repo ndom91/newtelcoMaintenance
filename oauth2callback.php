@@ -4,10 +4,11 @@ require_once __DIR__.'/vendor/autoload.php';
 session_start();
 
 $client = new Google_Client();
-$client->setAuthConfigFile('client_secrets.json');
+$client->setAuthConfigFile('maintenanceapp-47fd37d3fda6.json');
 $client->setRedirectUri('https://' . $_SERVER['HTTP_HOST'] . '/oauth2callback.php');
-$client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY);
-
+//$client->setRedirectUri('postmessage');
+//$client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY);
+$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly'));
 if (! isset($_GET['code'])) {
   $auth_url = $client->createAuthUrl();
   header('Location: ' . filter_var($auth_url, FILTER_SANITIZE_URL));

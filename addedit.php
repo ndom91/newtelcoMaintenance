@@ -336,96 +336,96 @@ global $dbhandle;
         <!-- EDIT MODE -->
 
         <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone" id="addEditDetails">
-        <style>
-        .demo-card-wide.mdl-card {
-          width: 100%;
-          margin-top: 3%;
-        }
-        .demo-card-wide > .mdl-card__title {
-          color: #fff;
-          height: 65px;
-          background: #4d4d4d;
-        }
-        .demo-card-wide > .mdl-card__menu {
-          color: #fff;
-        }
-        </style>
 
         <div class="demo-card-wide mdl-card mdl-shadow--2dp">
           <div class="mdl-card__title">
             <h2 class="mdl-card__title-text"><?php echo $otitlestring ?> Maintenance Entry</h2>
+            <div class="mdl-layout-spacer"></div>
+            <button id="btnSave" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+              <i class="material-icons">save</i>
+            </button>
           </div>
           <div class="mdl-card__supporting-text">
             <form action="#">
+              <div class="mdl-grid">
               <input type="hidden" value="<?php echo $omaintid ?>" id="maintid">
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" value="<?php echo $omaileingang ?>" id="medt">
-                <label class="mdl-textfield__label" for="medt">Maileingang Date/Time</label>
+              <div class="mdl-cell mdl-cell--6-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" value="<?php echo $omaileingang ?>" id="medt">
+                  <label class="mdl-textfield__label" for="medt">Maileingang Date/Time</label>
+                </div>
               </div>
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="width: 250px !important;">
-                <input class="mdl-textfield__input" type="text" value="<?php echo $oreceivedmail ?>" id="rmail">
-                <label class="mdl-textfield__label" for="rmail">Incoming Mail ID</label>
-              </div>
-              <?php if (! empty($oreceivedmail)) { echo '<button style="margin: 0 10px;" id="viewmailbtn" type="button" class=" mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab viewMail2">
-                                                           <i class="material-icons mdl-textfield__label__icon2">alternate_email</i>
-                                                         </button>
-                                                         <div class="mdl-tooltip  mdl-tooltip--right" data-mdl-for="viewmailbtn">
-                                                           View Mail
-                                                         </div>'; } ?>
+              <div class="mdl-cell mdl-cell--6-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="float:left; width: 72% !important;">
+                  <input class="mdl-textfield__input" type="text" value="<?php echo $oreceivedmail ?>" id="rmail">
+                  <label class="mdl-textfield__label" for="rmail">Incoming Mail ID</label>
+                </div>
+                <?php if (! empty($oreceivedmail)) { echo '<button style="margin: 0 0 0 10px;" id="viewmailbtn" type="button" class=" mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab viewMail2">
+                                                             <i class="material-icons mdl-textfield__label__icon2">alternate_email</i>
+                                                           </button>
+                                                           <div class="mdl-tooltip  mdl-tooltip--bottom" data-mdl-for="viewmailbtn">
+                                                             View Mail
+                                                           </div>'; } ?>
+               </div>
+               <div class="mdl-cell mdl-cell--6-col">
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input class="mdl-textfield__input" type="text" data-val="<?php echo $olieferantID ?>" value="<?php echo $olieferant ?>" id="company">
                 <label class="mdl-textfield__label" for="company">Lieferant</label>
               </div>
-              <div class="mdl-selectfield mdl-js-selectfield mdl-textfield--floating-label">
-                <select id="dcid3" name="dcid3" class="mdl-selectfield__select">
-                  <option value=""></option>
-                  <?php
-                    while ($row = mysqli_fetch_row($derenCIDQ)) {
-                        echo '<option value="' . $row[2] . '">' . $row[1] . '</option>';
-                    }
-                  ?>
-                </select>
-                <label class="mdl-selectfield__label" for="dcid3">Deren CID</label>
               </div>
-              <div class="mdl-selectfield mdl-js-selectfield mdl-textfield--floating-label">
-                <select id="bearbeitet" name="bearbeitet" class="mdl-selectfield__select">
-                  <option value="<?php echo $usernameBV ?>"><?php echo $usernameBV ?></option>
-                  <option value="<?php echo $workers[0] ?>"><?php echo $workers[0] ?></option>
-                  <option value="<?php echo $workers[1] ?>"><?php echo $workers[1] ?></option>
-                  <option value="<?php echo $workers[2] ?>"><?php echo $workers[2] ?></option>
-                </select>
-                <label class="mdl-selectfield__label" for="bearbeitet">Bearbeitet Von</label>
+              <div class="mdl-cell mdl-cell--6-col">
+                <div class="mdl-selectfield mdl-js-selectfield mdl-textfield--floating-label">
+                  <select id="dcid3" name="dcid3" class="mdl-selectfield__select">
+                    <option value=""></option>
+                    <?php
+                      while ($row = mysqli_fetch_row($derenCIDQ)) {
+                          echo '<option value="' . $row[2] . '">' . $row[1] . '</option>';
+                      }
+                    ?>
+                  </select>
+                  <label class="mdl-selectfield__label" for="dcid3">Deren CID</label>
+                </div>
               </div>
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr">
-                  <input type="text" id="mdt" name="mdt" class="mdl-textfield__input"  value="<?php echo $omaintenancedate ?>" data-input>
-                  <i class="material-icons mdl-textfield__label__icon" title="toggle" data-toggle>
-                   calendar_today
-                  </i>
-                  <label class="mdl-textfield__label" for="mdt">Maintenance Date/Time</label>
+              <div class="mdl-cell mdl-cell--6-col">
+                <div class="mdl-selectfield mdl-js-selectfield mdl-textfield--floating-label">
+                  <select id="bearbeitet" name="bearbeitet" class="mdl-selectfield__select">
+                    <option value="<?php echo $usernameBV ?>"><?php echo $usernameBV ?></option>
+                    <option value="<?php echo $workers[0] ?>"><?php echo $workers[0] ?></option>
+                    <option value="<?php echo $workers[1] ?>"><?php echo $workers[1] ?></option>
+                    <option value="<?php echo $workers[2] ?>"><?php echo $workers[2] ?></option>
+                  </select>
+                  <label class="mdl-selectfield__label" for="bearbeitet">Bearbeitet Von</label>
+                </div>
               </div>
-
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr">
-                  <input type="text" id="sdt" class="mdl-textfield__input"  value="<?php echo $ostartdatetime ?>" data-input>
-                  <i class="material-icons mdl-textfield__label__icon" title="toggle" data-toggle>
-                   calendar_today
-                  </i>
-                  <label class="mdl-textfield__label" for="sdt">Start Date/Time</label>
+              <div class="mdl-cell mdl-cell--6-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" value="<?php echo $opostponed ?>" id="pponed">
+                  <label class="mdl-textfield__label" for="pponed">Postponed</label>
+                </div>
               </div>
-
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr">
-                  <input type="text" id="edt" class="mdl-textfield__input"  value="<?php echo $oenddatetime ?>" data-input>
-                  <i class="material-icons mdl-textfield__label__icon" title="toggle" data-toggle>
-                   calendar_today
-                  </i>
-                  <label class="mdl-textfield__label" for="edt">End Date/Time</label>
+              <div class="mdl-cell mdl-cell--6-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr">
+                    <input type="text" id="sdt" class="mdl-textfield__input"  value="<?php echo $ostartdatetime ?>" data-input>
+                    <i class="material-icons mdl-textfield__label__icon" title="toggle" data-toggle>
+                     calendar_today
+                    </i>
+                    <label class="mdl-textfield__label" for="sdt">Start Date/Time</label>
+                </div>
               </div>
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" value="<?php echo $opostponed ?>" id="pponed">
-                <label class="mdl-textfield__label" for="pponed">Postponed</label>
+              <div class="mdl-cell mdl-cell--6-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr">
+                    <input type="text" id="edt" class="mdl-textfield__input"  value="<?php echo $oenddatetime ?>" data-input>
+                    <i class="material-icons mdl-textfield__label__icon" title="toggle" data-toggle>
+                     calendar_today
+                    </i>
+                    <label class="mdl-textfield__label" for="edt">End Date/Time</label>
+                </div>
               </div>
-              <div class="mdl-textfield mdl-js-textfield">
-                <textarea class="mdl-textfield__input" type="text" rows= "3" id="notes" ><?php echo $onotes ?></textarea>
-                <label class="mdl-textfield__label" for="notes">Notes</label>
+              <div class="mdl-cell mdl-cell--12-col">
+                <div class="mdl-textfield mdl-js-textfield">
+                  <textarea class="mdl-textfield__input" type="text" rows= "3" id="notes" ><?php echo $onotes ?></textarea>
+                  <label class="mdl-textfield__label" for="notes">Notes</label>
+                </div>
               </div>
               <?php
                 $mailRecipientQ =  mysqli_query($dbhandle, "SELECT maintenanceRecipient FROM companies WHERE companies.name LIKE '$olieferant'") or die(mysqli_error($dbhandle));
@@ -453,9 +453,6 @@ global $dbhandle;
               </script>
               <br>
 
-              <button id="addCalbtn"  type="button" onclick="openInNewTab('http://www.google.com/calendar/event?action=TEMPLATE&dates=20181121%2F20181122&text=Newtelco%20Maintenance%20<?php echo $olieferant ?>&location=Maintenance%20Spot&details=Body%20Body%20Body.')" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-color--light-green-nt">
-                Add to Cal
-              </button>
               <script>
 
               $("#sendMailbtn").click(function(){
@@ -466,18 +463,19 @@ global $dbhandle;
               });
               </script>
               <input type="hidden" value=" <?php echo $update ?>" id="update">
+            </div>
             </form>
             </div>
             <div class="mdl-card__actions mdl-card--border">
-              <div style="display: inline; ">
-                <label style="display: inline; " class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2">
-                  <span style="top: 5px; color: #6e6e6e;" class="mdl-switch__label">Completed</span>
+              <div style="display: inline;">
+                <label style="display: inline; margin-right: 5px; float: right;width: 150px; line-height: 2.1em;" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2">
+                  <span style="color: #6e6e6e;" class="mdl-switch__label">Completed</span>
                   <input type="checkbox" id="switch-2" class="mdl-switch__input" <?php echo $odone ?>>
                 </label>
-
-                <a id="btnSave" style="display: inline; float:right;" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
-                  Save
-                </a>
+                <div class="mdl-layout-spacer"></div>
+                <button id="addCalbtn" type="button" onclick="openInNewTab('http://www.google.com/calendar/event?action=TEMPLATE&dates=20181121%2F20181122&text=Newtelco%20Maintenance%20<?php echo $olieferant ?>&location=Maintenance%20Spot&details=Body%20Body%20Body.')" class="mdl-button mdl-js-button mdl-button--raised">
+                  Add to Cal
+                </button>
               </div>
               <!-- <a href="incoming.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
                 Back
@@ -587,8 +585,15 @@ global $dbhandle;
           table3 = $('#dataTable4').DataTable();
           var data = table3.row( $(this).parents('tr') ).data();
             //alert("ID: "+  data['id'] +" - MR: "+ data['maintenanceRecipient'] );
-            openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?subject=Newtelco GmbH - Maintenance on CID: ' + data['unsereCID'] + '&body=Dear ' + data['name'] + '<br><br>We are writing to notify you of a routine scheduled maintenance.<br><br>From: ' + data['startDateTime'] + '<br>To: ' + data['endDateTime'] + '<br><br>If you have any questions, please reply to maintenance@newtelco.de<br><br>Thank you,<br>Newtelco Support Team.');
+            openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['unsereCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head><style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:151}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624}</style></head><body><div><p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['unsereCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + data['startDateTime'] + '</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + data['endDateTime'] + '</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">Planned maintenance on the network infrastructure to avoid unplanned outage in near future</span></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">360 minutes during the maintenance window</span></span></p></td></tr></table><p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us.</span></p></body>');
         } );
+
+        /***********************************************************************************************
+         *
+         * Gmail HTML Paste Extension:
+         * https://chrome.google.com/webstore/detail/gmail-append-html/dnfikahmfhcjfcmbgbkklecekfeijmda
+         *
+         ***********************************************************************************************/
 
         function openInNewTab2(url) {
           var win = window.open(url, '_blank');

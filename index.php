@@ -3,7 +3,6 @@
 require('authenticate_google.php');
 
 ?>
-
 <html>
 <head>
   <meta charset="utf-8">
@@ -53,35 +52,6 @@ require('authenticate_google.php');
 
 </head>
 <body>
-  <?php
-/*
-  $serviceGmail = new Google_Service_Gmail($clientService);
-
-  $userIdNDO = 'ndomino@newtelco.de';
-
-  function listLabels($service3, $userId4) {
-    $labels = array();
-
-    try {
-      $labelsResponse = $service3->users_labels->listUsersLabels($userId4);
-
-      if ($labelsResponse->getLabels()) {
-        $labels = array_merge($labels, $labelsResponse->getLabels());
-      }
-
-      foreach ($labels as $label) {
-        print 'Label with ID: ' . $label->getId() . '<br/>';
-      }
-    } catch (Excetion $e) {
-      print 'An error occurred: ' . $e->getMessage();
-    }
-    return $labels;
-  }
-
-  /*$label_response = $service3->users_labels->get('ndomino@newtelco.de', 'STARRED');*/
-
-  ?>
-  <!-- Always shows a header, even in smaller screens. -->
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header ">
       <header class="mdl-layout__header mdl-color--light-green-nt">
         <div class="mdl-layout__header-row">
@@ -127,64 +97,49 @@ require('authenticate_google.php');
         </nav>
       </div>
         <main class="mdl-layout__content">
+            <?php
+            if(isset($_POST['label']) || isset($_SESSION['label'])) {
+              if(! empty($_POST['label'])) {
+              $labelID = $_POST['label'];
+              $_SESSION['label'] = $labelID;
+              } else {
+                $labelID = $_SESSION['label'];
+              }
+            } else {
+              if(isset($_COOKIE['label'])) {
+                $labelID = $_COOKIE['label'];
+              } else {
+                $labelID = '0';
+              }
+            }
+            $service3 = new Google_Service_Gmail($clientService);
+            $results3 = $service3->users_labels->get($user,$labelID);
+
+            ?>
             <div class="mdl-grid">
               <div class="mdl-cell mdl-cell--3-col mdl-cell--0-col-phone"></div>
               <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
-                <!-- Wide card with share menu button -->
-                  <style>
-                  .demo-card-wide.mdl-card {
-                    width: 100%;
-                    margin-top: 3%;
-                  }
-                  .demo-card-wide > .mdl-card__title {
-                    color: #fff;
-                    height: 65px;
-                    background: #4d4d4d;
-                  }
-                  .demo-card-wide > .mdl-card__menu {
-                    color: #fff;
-                  }
-                  </style>
 
                   <div class="demo-card-wide mdl-card mdl-shadow--2dp">
                     <div class="mdl-card__title">
                       <h2 class="mdl-card__title-text">Welcome <?php echo $token_data['name'] ?></h2>
+
+                      <div class="mdl-layout-spacer"></div>
+                      <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="<?php if ($results3['messagesTotal'] == 0) { echo "♥"; } else { echo $results3['messagesTotal']; } ?>">email</div>
                     </div>
                     <div class="mdl-card__supporting-text">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                       Mauris sagittis pellentesque lacus eleifend lacinia...<br><br>
+
+                      <br>
                       <b>Debug:</b>
-                      <pre><?php
-/*
-                      function listLabels($service, $userId) {
-                        $labels = array();
+                      <pre>
+                      <?php
+                      print_r($results3);
 
-                        try {
-                          $labelsResponse = $service->users_labels->listUsersLabels($userId);
+                      echo '<br><br>';
 
-                          if ($labelsResponse->getLabels()) {
-                            $labels = array_merge($labels, $labelsResponse->getLabels());
-                          }
-
-                          foreach ($labels as $label) {
-                            print 'Label with ID: ' . $label->getId() . '<br/>';
-                          }
-                        } catch (Excetion $e) {
-                          print 'An error occurred: ' . $e->getMessage();
-                        }
-
-                        return $labels;
-                      }
-
-                      $token5 = listLabels($gmailtest2,'ndomino@newtelco.de');
-
-                      //var_export($label_response);
-                      //var_export(listLabels($serviceGmail, $userIdNDO));
-                      //$token5 = make_iap_request("https://www.googleapis.com/gmail/v1/users/ndomino@newtelco.de/labels","https://www.googleapis.com/auth/gmail.readonly");
-                      var_export($token5);
-                      echo '<br><br>';*/
-
-                      //var_export($token_data);
+                      var_export($token_data);
                       ?></pre>
 
                     </div>

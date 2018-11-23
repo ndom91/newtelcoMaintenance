@@ -161,7 +161,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                             $service = new Google_Service_Gmail($client);
 
                             // Print the labels in the user's account.
-                            $user = 'me';
+                            $user = 'ndomino@newtelco.de';
                             $results = $service->users_labels->listUsersLabels($user);
 
                             if (count($results->getLabels()) == 0) {
@@ -171,10 +171,13 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                               echo '<form action="incoming" method="post">';
                               echo '<div class="mdl-grid">';
                               foreach ($results->getLabels() as $label) {
-                                echo '<div class="mdl-cell mdl-cell--3-col">' . $label->getName() . '</div>';
-                                //printf($label->getName());
-
-                                echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getName() . '"><i class="material-icons">check</i></button></div>';
+                                $labelColor = $label->getColor();
+                                if ($labelColor['backgroundColor'] != '') {
+                                  echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="color: ' . $labelColor['textColor'] . '; background-color: ' . $labelColor['backgroundColor'] . '; box-shadow: 0px 0px 55px ' . $labelColor['backgroundColor'] . '">' . $label->getName() . '</div>';
+                                } else {
+                                echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="color: ' . $labelColor['textColor'] . '; background-color: ' . $labelColor['backgroundColor'] . ';">' . $label->getName() . '</div>';
+                                }
+                                echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" style="background-color: ' . $labelColor['backgroundColor'] . '" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getName() . '"><i class="material-icons">check</i></button></div>';
                               }
                               echo '</form></div>';
                             }
@@ -573,7 +576,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                           className: 'mdl-data-table__cell--non-numeric'
                       },
                       {
-                          targets: [3, 5 ],
+                          targets: [ 0, 3, 5 ],
                           className: 'all'
                       }
                   ]

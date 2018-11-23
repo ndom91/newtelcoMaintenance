@@ -202,7 +202,7 @@ global $dbhandle;
                 // non-numeric columns: class="mdl-data-table__cell--non-numeric"
 
                 echo '<div class="dataTables_wrapper">
-                <table id="dataTable1" class="table table-striped compact nowrap" style="width: 100%">
+                <table id="dataTable1" class="table table-striped compact hover nowrap" style="width: 100%">
                         <thead>
                           <tr>
                             <th style="width: max-content;"></th>

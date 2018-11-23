@@ -30,6 +30,10 @@ body::after {
 	  inset 0px -121px 110px -100px #000;
     /*background: url('../images/bg4.jpg') no-repeat center center fixed; */
 }
+table {
+  font-family: 'Roboto', sans serif !important;
+  color: #4d4d4d !important;
+}
 /* flatpickr */
 .flatpickr {
   border: 0 !important;
@@ -85,7 +89,9 @@ body::after {
     text-align: center;
   }
 }
+
 /* header */
+
 @media only screen and (max-width: 700px) {
   .mdl-layout__header-row > .mdl-layout-title {
     display: none;
@@ -112,14 +118,15 @@ body::after {
     float: left;
   }
 }
+
 /* Userhome */
 
 .mdl-dialog {
 	margin-top: 50px;
   height: 60%;
-	max-height: calc(100vh - 210px) !important; */
+	max-height: calc(100vh - 210px) !important;
 	width:  800px !important;
-    overflow-y: auto !important;
+  overflow-y: auto !important;
 }
 
 .selectGoogleButton {
@@ -140,14 +147,29 @@ body::after {
 	margin-top: 5px;
 	margin-bottom: 10px;
 }
-/* Add Edit */
 
+/* Add Edit */
+.demo-card-wide2 {
+  width: 492px !important;
+  max-width: 100%;
+  margin-top: 6%;
+  margin-left: auto;
+  margin-right: auto;
+}
 .demo-card-wide.mdl-card {
   width: 100%;
+  max-width: 100%;
   margin-top: 3%;
   margin-left: auto;
   margin-right: auto;
 }
+
+.mdl-card__title__login {
+  color: #fff !important;
+  height: 176px !important;
+  background: url('/assets/images/bg4.jpg') center / cover !important;
+}
+
 .demo-card-wide > .mdl-card__title {
   color: #fff;
   height: 65px;
@@ -169,9 +191,11 @@ body::after {
    right: 5px;
    top: 20px;
 }
+
 /* Select Mail Modal */
 
 .mailDialog1 {
+  width: 800px;
    height: calc(100vh - 126px);
    overflow-y:scroll;
 }
@@ -205,18 +229,33 @@ body::after {
   background-color: #67B246 !important;
   color: #fff !important;wa
 }
+
+.mailcSelectClose2 {
+  height: 48px !important;
+  width: 48px !important;
+  min-width: 48px !important;
+  background-color: #67B246 !important;
+  color: #fff !important;
+  position:relative !important;
+  float: right;
+  top: -70px;
+  z-index: 1000;
+  box-shadow: 0 5px 5px 0 rgba(255,255,255, 0.62), 0 5px 5px 0 rgba(255,255,255, 0.64);
+}
+
 .mailcSelectClose {
   height: 48px !important;
   width: 48px !important;
   min-width: 48px !important;
   background-color: #67B246 !important;
   color: #fff !important;
-  position:fixed !important;
-  top:50px;
-  right:50px;
+  position:relative !important;
+  float: right;
+  top: -110px;
   z-index: 1000;
   box-shadow: 0 5px 5px 0 rgba(255,255,255, 0.62), 0 5px 5px 0 rgba(255,255,255, 0.64);
 }
+
 .labelSelectBtn {
   float:right;
 }
@@ -242,6 +281,10 @@ body::after {
   	display:none;
 }
 
+table.dataTable tbody>tr>.selected {
+  background-color: #c2e0b5 !important;
+}
+
 a.editLink {
 	color: #67B246 !important;
 }
@@ -262,13 +305,25 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
   line-height: 40px !important;
 }
 
+.labelColors {
+  border-radius: 10px;
+  padding: 2px;
+  font-family: 'Roboto', sans serif;
+  text-align: center;
+}
+
 /* addedit */
+
 @media only screen and (max-width: 700px) {
   #dialog1 {
     width: 90% !important;
   }
   .labelSelectHeader {
     width: 92% !important;
+  }
+  #mailDialog {
+    width: 90% !important;
+    overflow-y:auto;
   }
   .mailDialog1 {
     width: 90% !important;
@@ -289,7 +344,12 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
     font-size: 1.2em !important;
   }
   .mailcSelectClose {
-    margin-top: -140px !important;
+    margin-top: -50px !important;
+    right: -20px;
+  }
+  .mailcSelectClose2 {
+    margin-top: -40px !important;
+    right: -20px;
   }
 }
 

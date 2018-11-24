@@ -4267,7 +4267,7 @@ input.mdl-button[type="submit"] {
   font-size: 18px;
   color: #6d6d6d;
   margin: 0; }
-  
+
 .mdl-card__subtitle-text {
   font-size: 14px;
   color: rgba(0,0,0, 0.54);
@@ -7761,7 +7761,7 @@ input.mdl-button[type="submit"] {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  background-color: rgb(63,81,181);
+  background-color: #76b958;
   overflow-y: hidden;
   overflow-x: scroll; }
   .mdl-layout__tab-bar::-webkit-scrollbar {
@@ -7812,7 +7812,7 @@ input.mdl-button[type="submit"] {
   width: 56px;
   z-index: 4;
   text-align: center;
-  background-color: rgb(63,81,181);
+  background-color: #76b958;
   color: transparent;
   cursor: pointer;
   -webkit-user-select: none;
@@ -7876,14 +7876,14 @@ input.mdl-button[type="submit"] {
   .mdl-layout.is-upgraded .mdl-layout__tab.is-active {
     color: rgb(255,255,255); }
   .mdl-layout.is-upgraded .mdl-layout__tab.is-active::after {
-    height: 2px;
+    height: 4px;
     width: 100%;
     display: block;
     content: " ";
     bottom: 0;
     left: 0;
     position: absolute;
-    background: rgb(255,64,129);
+    background: #fff;
     -webkit-animation: border-expand 0.2s cubic-bezier(0.4, 0, 0.4, 1) 0.01s alternate forwards;
             animation: border-expand 0.2s cubic-bezier(0.4, 0, 0.4, 1) 0.01s alternate forwards;
     transition: all 1s cubic-bezier(0.4, 0, 1, 1); }

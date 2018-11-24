@@ -82,7 +82,8 @@ require('authenticate_google.php');
           <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>
           <a class="mdl-navigation__link" href="groupservice.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">service</small></a>
           <a class="mdl-navigation__link" href="addedit.php"><i class="ndl-createnew"></i></i>  Add</a>
-          <a class="mdl-navigation__link" target="_blank" href="https://crm.newtelco.de"><i class="ndl-work"></i>  CRM</a>
+          <a class="mdl-navigation__link" target="_blank" href="crm_iframe.php"><i class="ndl-work"></i>  CRM</a>
+          <a class="mdl-navigation__link" href="settings.php"><i class="ndl-settings"></i>  Settings</a>
           <div class="mdl-layout-spacer"></div>
           <a class="mdl-navigation__link menu_logout" href="?logout">
             <button id="menuLogout" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">

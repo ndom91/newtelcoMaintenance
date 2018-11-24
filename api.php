@@ -5,7 +5,19 @@
 
   header('Content-Type: application/json');
 
-  if (isset($_GET['dCID'])) {
+  if (isset($_GET['firmen'])) {
+
+    $firmenQ = mysqli_query($dbhandle, "SELECT * FROM companies;") or die(mysqli_error($dbhandle));          //query
+
+    $firmenArray = array();
+
+    while($firmenResults = mysqli_fetch_assoc($firmenQ)) {
+      $firmenArray[] = $firmenResults;
+    }
+
+    echo json_encode($firmenArray);
+
+  } elseif (isset($_GET['dCID'])) {
 
     $dCID = $_GET['dCID'];
 

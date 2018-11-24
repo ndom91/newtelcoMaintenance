@@ -20,7 +20,7 @@ function getServiceAccountClient() {
         $client2 = new Google_Client();
         $client2->useApplicationDefaultCredentials();
         $client2->setScopes(['https://www.googleapis.com/auth/gmail.metadata','https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.modify','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.labels']);
-        //$client2->setAccessType('offline');
+        $client2->setAccessType('offline');
         $client2->setSubject($user);
         return $client2;
     } catch (Exception $e) {
@@ -49,7 +49,7 @@ $clientService = getGoogleClient();
  $client->setAuthConfig($oauth_credentials);
  $client->setRedirectUri($redirect_uri);
  $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/calendar'));
- $client->setApprovalPrompt('force');
+ $client->setApprovalPrompt('auto');
  $client->setAccessType('offline');
  $plus = new Google_Service_Plus($client);
 

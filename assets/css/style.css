@@ -1,10 +1,10 @@
 /*
-*
-* Newtelco Maintenance Stylesheet
-* Author: ndomino@newtelco.de
-* Initial Commit: 11.11.18
-*
-*/
+ *
+ * Newtelco Maintenance Stylesheet
+ * Author: ndomino@newtelco.de
+ * Initial Commit: 11.11.18
+ *
+ */
 
 /* General */
 
@@ -227,7 +227,7 @@ table {
   width: 48px !important;
   min-width: 48px !important;
   background-color: #67B246 !important;
-  color: #fff !important;wa
+  color: #fff !important;
 }
 
 .mailcSelectClose2 {
@@ -314,6 +314,9 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 
 /* addedit */
 
+#timezoneSelector {
+  width: 100%;
+}
 @media only screen and (max-width: 700px) {
   #dialog1 {
     width: 90% !important;
@@ -549,10 +552,46 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
   margin-left: 40px !important;
 }
 
+.settingWrapper {
+  border: 1px solid rgba(77,77,77,0.1);
+  border-radius: 5px;
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+#firmenTable {
+  height: auto;
+}
+
+#kundenTable {
+  height: 30vh;
+}
+
+.tableWrapper1 {
+  margin-top: 20px;
+  width: auto;
+  padding: 5%;
+}
+
+.searchWrapper {
+  float:left;
+  margin-bottom: 10px;
+}
+
+.searchResultClass{
+  background-color: rgba(103, 178, 70, 0.7);
+  background:rgba(103, 178, 70, 0.7);
+  color: rgba(103, 178, 70, 0.7);
+  font-weight: 700;
+
+}
+
 /* Footer */
 
 .mdl-mini-footer {
 	width:  100%;
+  padding: 12px 16px !important;
 }
 .footertext {
 	margin-right: 20px;

@@ -126,37 +126,40 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                 <!-- Square card -->
                 <style>
                 .demo-card-square.mdl-card {
-                  width: 520px;
-                  height: 320px;
+                  width: 575px;
+                  height: auto;
                   margin-left: auto;
                   margin-right: auto;
                 }
                 .demo-card-square > .mdl-card__title {
                   color: #fff;
+                  max-height: 70px;
                   background:
-                    url('') bottom right 15% no-repeat #67B246;
+                    url('') bottom right 15% no-repeat #4d4d4d;
                 }
                 </style>
                 <div class="demo-card-square mdl-card mdl-shadow--2dp">
                   <div class="mdl-card__title mdl-card--expand">
-                    <h2 class="mdl-card__title-text">Labels</h2>
+                    <h2 class="mdl-card__title-text">Settings</h2>
                   </div>
                   <div class="mdl-card__supporting-text">
                     <div class="mdl-grid">
-                      <div class="mdl-cell mdl-cell--8-col mdl-cell--3-col-phone">
-                        <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which label are your maintenance emails in?</font>
-                      </div>
-                      <div class="mdl-cell mdl-cell--4-col mdl-cell--1-col-phone">
-                        <button id="showdialog2" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectLabelSettings">
-                          <i class="material-icons">mail</i>
-                        </button>
+                      <div class="settingWrapper">
+                        <div class="mdl-cell mdl-cell--9-col mdl-cell--3-col-phone" style="line-height: 60px;">
+                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which label contains the maintenance emails?</font>
+                        </div>
+                        <div class="mdl-cell mdl-cell--3-col mdl-cell--1-col-phone">
+                          <button id="showdialog2" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectLabelSettings">
+                            <i class="material-icons">mail</i>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
                   <div class="mdl-card__actions mdl-card--border">
-                    <a href="index.php" class="mdl-button mdl-button--colored mdl-color-text--light-green-nt mdl-js-button mdl-js-ripple-effect">
+                    <!-- <a href="index.php" class="mdl-button mdl-button--colored mdl-color-text--light-green-nt mdl-js-button mdl-js-ripple-effect">
                       Home
-                    </a>
+                    </a> -->
                   </div>
                 </div>
 
@@ -174,7 +177,9 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   <h4 class="selectGoogleLabel">Firmen Details</h4>
                 </div>
                 <div class="tableWrapper1">
-                  <div id="console"></div>
+                  <div class="searchWrapper">
+                    Search: <input type="text" id="firmenSearch"/>
+                  </div><br><br>
                   <div id="firmenTable"></div>
                 </div>
               </div>
@@ -185,7 +190,19 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
         <section class="mdl-layout__tab-panel" id="kundenTab">
           <div class="page-content">
             <div class="mdl-grid">
-
+            <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
+              <div class="mdl-cell mdl-cell--10-col mdl-cell--0-col-phone">
+                <div class="settingsFirmenHeader">
+                  <h4 class="selectGoogleLabel">Kunden Details</h4>
+                </div>
+                <div class="tableWrapper1">
+                  <div class="searchWrapper">
+                    Search: <input type="text" id="kundenSearch"/>
+                  </div><br><br>
+                  <div id="kundenTable"></div>
+                </div>
+              </div>
+              <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
             </div>
           </div>
         </section>
@@ -193,8 +210,6 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
       <dialog style="width: 900px;" id="dialog3" class="mdl-dialog">
         <div class="labelSelectHeader">
           <h6 class="mdl-dialog__title labelSelectLabel">Which label are your maintenance emails in?</h6>
-
-
         </div>
         <div class="mdl-dialog__content">
           <p>
@@ -215,9 +230,9 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                 foreach ($results->getLabels() as $label) {
                   $labelColor = $label->getColor();
                   if ($labelColor['backgroundColor'] != '') {
-                    echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="color: ' . $labelColor['textColor'] . '; background-color: ' . $labelColor['backgroundColor'] . '; box-shadow: 0px 0px 55px ' . $labelColor['backgroundColor'] . '">' . $label->getName() . '</div>';
+                    echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="">' . $label->getName() . '</div>';
                   } else {
-                  echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="color: ' . $labelColor['textColor'] . '; background-color: ' . $labelColor['backgroundColor'] . ';">' . $label->getName() . '</div>';
+                  echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="color: ' . $labelColor['textColor'] . ';">' . $label->getName() . '</div>';
                   }
                   echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" style="background-color: ' . $labelColor['backgroundColor'] . '" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getName() . '"><i class="material-icons">check</i></button></div>';
                 }
@@ -232,32 +247,50 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
           </button>
         </dialog>
         <script>
+
+        /*****************
+         * 
+         *  FIRMEN Table
+         * 
+         ******************/
+
           var container = document.getElementById('firmenTable');
           var hot = new Handsontable(container, {
              rowHeaders: true,
              colHeaders: true,
              contextMenu: true,
-             colWidths: [35, 100, 85, 320],
+             colWidths: [100, 85, 320],
              columnSorting: true,
-             colHeaders: ['ID', 'Name', 'Mail Domain', 'Maintenance Recipient'],
+             colHeaders: ['Name', 'Mail Domain', 'Maintenance Recipient'],
              columns: [
-              {data: 'id'},
               {data: 'name'},
               {data: 'mailDomain'},
               {data: 'maintenanceRecipient'}
              ],
+             
+             stretchH: 'all',
              manualColumnMove: true,
              manualColumnResize: true,
              manualRowMove: true,
              manualRowResize: true,
-             minSpareRows: 1,
              contextMenu: true,
+             comments: true,
+             autoWrapRows: true,
+             height: 400,
+             search: true,
+             search: {
+               searchResultClass: 'searchResultClass'
+             },
+             cell: [
+               {row: 1, col: 4, comment: {value: 'Multiple recipients should be separated by semicolon (";")'}},
+               {row: 1, col: 3, comment: {value: 'Email address ending'}}
+             ],
              afterChange: function (change, source) {
                  $.ajax('save', 'GET', JSON.stringify({data: this.getData()}), function (res) {
                    var response = JSON.parse(res.response);
 
                    if (response.result === 'ok') {
-                       console.log("Data saved");
+                      console.log("Data saved");
                    }
                    else {
                       console.log("Saving error");
@@ -265,6 +298,17 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
               });
             }
           });
+
+          searchField = document.getElementById('firmenSearch');
+
+          Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+            var search = hot.getPlugin('search');
+            var queryResult = search.query(this.value);
+
+            console.log(queryResult);
+            hot.render();
+          });
+
           $( document ).ready(function() {
             // For Loading
             $.ajax({
@@ -276,6 +320,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
               'url':'api?firmen=1',
               'success': function (res) {
                 hot.loadData(res);
+                hot.render();
               },
               'error': function () {
                 console.log("Loading error");
@@ -294,6 +339,86 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
           });
           dialog.querySelector('.close1').addEventListener('click', function() {
             dialog.close();
+          });
+
+        /*****************
+         * 
+         *  KUNDEN Table
+         * 
+         ******************/
+
+          var container2 = document.getElementById('kundenTable');
+          var hot2 = new Handsontable(container2, {
+             rowHeaders: true,
+             colHeaders: true,
+             contextMenu: true,
+             colWidths: [85, 85, 100],
+             columnSorting: true,
+             colHeaders: ['Deren CID', 'Unsere CID', 'Kunde'],
+             columns: [
+              {data: 'derenCID'},
+              {data: 'unsereCID'},
+              {data: 'name'}
+             ],
+             
+             stretchH: 'all',
+             manualColumnMove: true,
+             manualColumnResize: true,
+             manualRowMove: true,
+             manualRowResize: true,
+             contextMenu: true,
+             height: 400,
+             comments: true,
+             autoWrapRows: true,
+             search: true,
+             search: {
+               searchResultClass: 'searchResultClass'
+             },
+             cell: [
+               {row: 1, col: 4, comment: {value: 'Multiple recipients should be separated by semicolon (";")'}},
+               {row: 1, col: 3, comment: {value: 'Email address ending'}}
+             ],
+             afterChange: function (change, source) {
+                 $.ajax('save', 'GET', JSON.stringify({data: this.getData()}), function (res2) {
+                   var response = JSON.parse(res2.response);
+
+                   if (response.result === 'ok') {
+                      console.log("Data saved");
+                   }
+                   else {
+                      console.log("Saving error");
+                   }
+              });
+            }
+          });
+
+          searchField2 = document.getElementById('kundenSearch');
+
+          Handsontable.dom.addEvent(searchField2, 'keyup', function (event) {
+            var search2 = hot2.getPlugin('search');
+            var queryResult2 = search2.query(this.value);
+
+            console.log(queryResult2);
+            hot2.render();
+          });
+
+          $( document ).ready(function() {
+            // For Loading
+            $.ajax({
+              type: "GET",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              'url':'api?kunden=1',
+              'success': function (res2) {
+                hot2.loadData(res2);
+                hot2.render();
+              },
+              'error': function () {
+                console.log("Loading error");
+              }
+            })
           });
         </script>
         <footer class="mdl-mini-footer mdl-grid">

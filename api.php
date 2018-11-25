@@ -5,7 +5,27 @@
 
   header('Content-Type: application/json');
 
-  if (isset($_GET['firmen'])) {
+  if (isset($_GET['kunden'])) {
+
+    /**********************
+     *  SETTINGS - KUNDEN
+     *********************/
+
+    $kundenQ = mysqli_query($dbhandle, "SELECT kunden.id, kunden.derenCID, kunden.unsereCID, companies.name FROM kunden LEFT JOIN companies ON kunden.kunde = companies.id;") or die(mysqli_error($dbhandle));          //query
+
+    $kundenArray = array();
+
+    while($kundenResults = mysqli_fetch_assoc($kundenQ)) {
+      $kundenArray[] = $kundenResults;
+    }
+
+    echo json_encode($kundenArray);
+
+  } elseif (isset($_GET['firmen'])) {
+
+    /**********************
+     *  SETTINGS - FIRMEN
+     *********************/
 
     $firmenQ = mysqli_query($dbhandle, "SELECT * FROM companies;") or die(mysqli_error($dbhandle));          //query
 
@@ -19,9 +39,13 @@
 
   } elseif (isset($_GET['dCID'])) {
 
+    /**************************
+     * OVERVIEW - dCID SEARCH
+     **************************/
+
     $dCID = $_GET['dCID'];
 
-    $result = mysqli_query($dbhandle, "SELECT kunden.id, kunden.derenCID, kunden.unsereCID, companies.name, kunden.mailsend, companies.maintenanceRecipient, maintenancedb.startDateTime, maintenancedb.endDateTime FROM kunden LEFT JOIN companies ON kunden.kunde = companies.id LEFT JOIN maintenancedb ON kunden.id = maintenancedb.derenCIDid WHERE kunden.derenCID LIKE '$dCID'") or die(mysqli_error($dbhandle));          //query
+    $result = mysqli_query($dbhandle, "SELECT kunden.id, kunden.derenCID, kunden.unsereCID, companies.name, companies.maintenanceRecipient, maintenancedb.startDateTime, maintenancedb.endDateTime FROM kunden LEFT JOIN companies ON kunden.kunde = companies.id LEFT JOIN maintenancedb ON kunden.id = maintenancedb.derenCIDid WHERE kunden.derenCID LIKE '$dCID'") or die(mysqli_error($dbhandle));          //query
 
     $array2 = array();
 
@@ -32,6 +56,10 @@
     echo json_encode($array2);
 
   } elseif (isset($_POST['data'])) {
+
+    /**************************
+     * ADDEDIT - ADD / UPDATE
+     **************************/
 
     $fields=$_POST['data'];
 
@@ -52,12 +80,13 @@
     //$omailankunde = mysqli_real_escape_string($dbhandle, $fields[0]['omailankunde']);
     //$ocal = mysqli_real_escape_string($dbhandle, $fields[0]['ocal']);
     $odone = mysqli_real_escape_string($dbhandle, $fields[0]['odone']);
+    $mailSentAt = mysqli_real_escape_string($dbhandle, $fields[0]['mailSentAt']);
     $update = $fields[0]['update'];
 
 
     //$existingrmailA =
     if ($update == '1') {
-      $resultx = mysqli_query($dbhandle, "UPDATE maintenancedb SET maileingang = '$omaileingang', receivedmail = '$oreceivedmail', bearbeitetvon = '$obearbeitetvon', lieferant = '$olieferantid', derenCIDid = '$oderenCIDid', maintenancedate = '$omaintenancedate', startDateTime = '$ostartdatetime', endDateTime = '$oenddatetime', postponed = '$opostponed', notes = '$onotes', done = '$odone' WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
+      $resultx = mysqli_query($dbhandle, "UPDATE maintenancedb SET maileingang = '$omaileingang', receivedmail = '$oreceivedmail', bearbeitetvon = '$obearbeitetvon', lieferant = '$olieferantid', derenCIDid = '$oderenCIDid', maintenancedate = '$omaintenancedate', startDateTime = '$ostartdatetime', endDateTime = '$oenddatetime', postponed = '$opostponed', notes = '$onotes', mailSentAt = '$mailSentAt', done = '$odone' WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
 
       if ($resultx == 'TRUE'){
           $addeditA['updated'] = 1;
@@ -73,15 +102,15 @@
         $fetchID = mysqli_fetch_array($lastIDQ);
         $lastID = $fetchID[0] + 1;
 
-        $kundenQ = mysqli_query($dbhandle, "SELECT id, name FROM companies WHERE name LIKE '$olieferant'") or die(mysqli_error($dbhandle));
+        $kundenQ = mysqli_query($dbhandle, "SELECT id FROM companies WHERE name LIKE '$olieferant' OR mailDomain LIKE '$olieferant'") or die(mysqli_error($dbhandle));
         if ($fetchK = mysqli_fetch_array($kundenQ)) {
-          $olieferant = $fetchK[0];
+          $olieferantid = $fetchK[0];
         } else {
-          $kundenIQ = mysqli_query($dbhandle, "INSERT INTO companies (name) VALUES ('$olieferant')") or die(mysqli_error($dbhandle));
+          $kundenIQ = mysqli_query($dbhandle, "INSERT INTO companies (name, mailDomain) VALUES ('$olieferant', '$olieferant')") or die(mysqli_error($dbhandle));
         }
 
-        $resultx = mysqli_query($dbhandle, "INSERT INTO maintenancedb (id, maileingang, receivedmail, bearbeitetvon, lieferant, derenCIDid, maintenancedate, startDateTime, endDateTime, postponed, notes, done)
-        VALUES ('$lastID', '$omaileingang', '$oreceivedmail', '$obearbeitetvon', '$olieferant', '$oderenCIDid', '$omaintenancedate', '$ostartdatetime', '$oenddatetime', '$opostponed', '$onotes', '$odone')")  or die(mysqli_error($dbhandle));
+        $resultx = mysqli_query($dbhandle, "INSERT INTO maintenancedb (id, maileingang, receivedmail, bearbeitetvon, lieferant, derenCIDid, maintenancedate, startDateTime, endDateTime, postponed, notes, mailSentAt, done)
+        VALUES ('$lastID', '$omaileingang', '$oreceivedmail', '$obearbeitetvon', '$olieferantid', '$oderenCIDid', '$omaintenancedate', '$ostartdatetime', '$oenddatetime', '$opostponed', '$onotes', '$mailSentAt', '$odone')")  or die(mysqli_error($dbhandle));
 
         if ($resultx == 'TRUE'){
             $addeditA['added'] = 1;
@@ -92,7 +121,6 @@
       }
     }
     echo json_encode($addeditA);
-    //echo json_encode($oreceivedmail);
 
   } else {
 

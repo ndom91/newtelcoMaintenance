@@ -43,31 +43,31 @@ global $dbhandle;
   <!-- luxon -->
   <script src="assets/js/luxon.min.js"></script>
   <script src="assets/js/moment.js"></script>
+  <script src="https://momentjs.com/downloads/moment-timezone-with-data.js"></script>
+  
+  <!-- jquery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
+  <!-- select2 -->
+  <script src="assets/js/select2_4.0.6-rc1.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
+  
   <!-- material design -->
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://storage.googleapis.com/non-spec-apps/mio-icons/latest/twotone.css">
+  
   <!--getmdl-select-->
-
   <script src="https://rawgit.com/MEYVN-digital/mdl-selectfield/master/mdl-selectfield.min.js"></script>
   <link rel="stylesheet" href="assets/css/mdl-selectfield.min.css">
-
-<!--   <link rel="stylesheet" href="assets/css/getmdl-select.min.css">
-  <script defer src="assets/js/getmdl-select.min.js"></script> -->
-
-  <!-- jquery -->
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
   <!-- flatpickr -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <link rel="stylesheet" type="text/css" href="assets/css/flatpickr_green.css">
-
   <script src="https://unpkg.com/flatpickr@4.5.2/dist/flatpickr.js"></script>
 
   <!-- Datatables -->
-
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.css"/>
   <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
@@ -423,6 +423,12 @@ global $dbhandle;
                 </div>
               </div>
               <div class="mdl-cell mdl-cell--12-col">
+                <label for="timezoneSelector">
+                  Timezone
+                  <select class="js-example-basic-multiple js-states form-control" id="timezoneSelector"></select>
+                </label>
+              </div>
+              <div class="mdl-cell mdl-cell--12-col">
                 <div class="mdl-textfield mdl-js-textfield">
                   <textarea class="mdl-textfield__input" type="text" rows= "3" id="notes" ><?php echo $onotes ?></textarea>
                   <label class="mdl-textfield__label" for="notes">Notes</label>
@@ -446,24 +452,16 @@ global $dbhandle;
                 time_24hr: true,
                 wrap: true,
                 altInput: true,
-                altFormat: 'Z'
-                //altFormat: 'd.m.Y H:i'
+                //altFormat: 'Z'
+                altFormat: 'd.m.Y H:i'
                 //"plugins": [new confirmDatePlugin({})]
               });
 
               </script>
               <br>
 
-              <script>
-
-              $("#sendMailbtn").click(function(){
-                  var DateTime = luxon.DateTime;
-                  var now = DateTime.local();
-                  console.log(now);
-                  $("#makdt").val(now);
-              });
-              </script>
               <input type="hidden" value=" <?php echo $update ?>" id="update">
+              <input type="hidden" value="" id="mailSentAt">
             </div>
             </form>
             </div>
@@ -527,7 +525,6 @@ global $dbhandle;
                     <th class="">Deren CID</th>
                     <th>Unsere CID</th>
                     <th>Kunde</th>
-                    <th>Mail Sent</th>
                     <th>Maintenance Recipient</th>
                     <th>startDateTime</th>
                     <th>endDateTime</th>
@@ -541,6 +538,220 @@ global $dbhandle;
         </div>
 
       <script>
+
+
+        const _t = (s) => {
+  if (i18n !== void 0 && i18n[s]) {
+    return i18n[s];
+  }
+
+  return s;
+};
+
+const timezones = [
+  "Etc/GMT+12",
+  "Pacific/Midway",
+  "Pacific/Honolulu",
+  "America/Juneau",
+  "America/Dawson",
+  "America/Boise",
+  "America/Chihuahua",
+  "America/Phoenix",
+  "America/Chicago",
+  "America/Regina",
+  "America/Mexico_City",
+  "America/Belize",
+  "America/Detroit",
+  "America/Indiana/Indianapolis",
+  "America/Bogota",
+  "America/Glace_Bay",
+  "America/Caracas",
+  "America/Santiago",
+  "America/St_Johns",
+  "America/Sao_Paulo",
+  "America/Argentina/Buenos_Aires",
+  "America/Godthab",
+  "Etc/GMT+2",
+  "Atlantic/Azores",
+  "Atlantic/Cape_Verde",
+  "GMT",
+  "Africa/Casablanca",
+  "Atlantic/Canary",
+  "Europe/Belgrade",
+  "Europe/Sarajevo",
+  "Europe/Brussels",
+  "Europe/Amsterdam",
+  "Africa/Algiers",
+  "Europe/Bucharest",
+  "Africa/Cairo",
+  "Europe/Helsinki",
+  "Europe/Athens",
+  "Asia/Jerusalem",
+  "Africa/Harare",
+  "Europe/Moscow",
+  "Asia/Kuwait",
+  "Africa/Nairobi",
+  "Asia/Baghdad",
+  "Asia/Tehran",
+  "Asia/Dubai",
+  "Asia/Baku",
+  "Asia/Kabul",
+  "Asia/Yekaterinburg",
+  "Asia/Karachi",
+  "Asia/Kolkata",
+  "Asia/Kathmandu",
+  "Asia/Dhaka",
+  "Asia/Colombo",
+  "Asia/Almaty",
+  "Asia/Rangoon",
+  "Asia/Bangkok",
+  "Asia/Krasnoyarsk",
+  "Asia/Shanghai",
+  "Asia/Kuala_Lumpur",
+  "Asia/Taipei",
+  "Australia/Perth",
+  "Asia/Irkutsk",
+  "Asia/Seoul",
+  "Asia/Tokyo",
+  "Asia/Yakutsk",
+  "Australia/Darwin",
+  "Australia/Adelaide",
+  "Australia/Sydney",
+  "Australia/Brisbane",
+  "Australia/Hobart",
+  "Asia/Vladivostok",
+  "Pacific/Guam",
+  "Asia/Magadan",
+  "Pacific/Fiji",
+  "Pacific/Auckland",
+  "Pacific/Tongatapu"
+];
+
+const i18n = {
+  "Etc/GMT+12": "International Date Line West",
+  "Pacific/Midway": "Midway Island, Samoa",
+  "Pacific/Honolulu": "Hawaii",
+  "America/Juneau": "Alaska",
+  "America/Dawson": "Pacific Time (US and Canada); Tijuana",
+  "America/Boise": "Mountain Time (US and Canada)",
+  "America/Chihuahua": "Chihuahua, La Paz, Mazatlan",
+  "America/Phoenix": "Arizona",
+  "America/Chicago": "Central Time (US and Canada)",
+  "America/Regina": "Saskatchewan",
+  "America/Mexico_City": "Guadalajara, Mexico City, Monterrey",
+  "America/Belize": "Central America",
+  "America/Detroit": "Eastern Time (US and Canada)",
+  "America/Indiana/Indianapolis": "Indiana (East)",
+  "America/Bogota": "Bogota, Lima, Quito",
+  "America/Glace_Bay": "Atlantic Time (Canada)",
+  "America/Caracas": "Caracas, La Paz",
+  "America/Santiago": "Santiago",
+  "America/St_Johns": "Newfoundland and Labrador",
+  "America/Sao_Paulo": "Brasilia",
+  "America/Argentina/Buenos_Aires": "Buenos Aires, Georgetown",
+  "America/Godthab": "Greenland",
+  "Etc/GMT+2": "Mid-Atlantic",
+  "Atlantic/Azores": "Azores",
+  "Atlantic/Cape_Verde": "Cape Verde Islands",
+  "GMT": "Dublin, Edinburgh, Lisbon, London",
+  "Africa/Casablanca": "Casablanca, Monrovia",
+  "Atlantic/Canary": "Canary Islands",
+  "Europe/Belgrade": "Belgrade, Bratislava, Budapest, Ljubljana, Prague",
+  "Europe/Sarajevo": "Sarajevo, Skopje, Warsaw, Zagreb",
+  "Europe/Brussels": "Brussels, Copenhagen, Madrid, Paris",
+  "Europe/Amsterdam": "Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna",
+  "Africa/Algiers": "West Central Africa",
+  "Europe/Bucharest": "Bucharest",
+  "Africa/Cairo": "Cairo",
+  "Europe/Helsinki": "Helsinki, Kiev, Riga, Sofia, Tallinn, Vilnius",
+  "Europe/Athens": "Athens, Istanbul, Minsk",
+  "Asia/Jerusalem": "Jerusalem",
+  "Africa/Harare": "Harare, Pretoria",
+  "Europe/Moscow": "Moscow, St. Petersburg, Volgograd",
+  "Asia/Kuwait": "Kuwait, Riyadh",
+  "Africa/Nairobi": "Nairobi",
+  "Asia/Baghdad": "Baghdad",
+  "Asia/Tehran": "Tehran",
+  "Asia/Dubai": "Abu Dhabi, Muscat",
+  "Asia/Baku": "Baku, Tbilisi, Yerevan",
+  "Asia/Kabul": "Kabul",
+  "Asia/Yekaterinburg": "Ekaterinburg",
+  "Asia/Karachi": "Islamabad, Karachi, Tashkent",
+  "Asia/Kolkata": "Chennai, Kolkata, Mumbai, New Delhi",
+  "Asia/Kathmandu": "Kathmandu",
+  "Asia/Dhaka": "Astana, Dhaka",
+  "Asia/Colombo": "Sri Jayawardenepura",
+  "Asia/Almaty": "Almaty, Novosibirsk",
+  "Asia/Rangoon": "Yangon Rangoon",
+  "Asia/Bangkok": "Bangkok, Hanoi, Jakarta",
+  "Asia/Krasnoyarsk": "Krasnoyarsk",
+  "Asia/Shanghai": "Beijing, Chongqing, Hong Kong SAR, Urumqi",
+  "Asia/Kuala_Lumpur": "Kuala Lumpur, Singapore",
+  "Asia/Taipei": "Taipei",
+  "Australia/Perth": "Perth",
+  "Asia/Irkutsk": "Irkutsk, Ulaanbaatar",
+  "Asia/Seoul": "Seoul",
+  "Asia/Tokyo": "Osaka, Sapporo, Tokyo",
+  "Asia/Yakutsk": "Yakutsk",
+  "Australia/Darwin": "Darwin",
+  "Australia/Adelaide": "Adelaide",
+  "Australia/Sydney": "Canberra, Melbourne, Sydney",
+  "Australia/Brisbane": "Brisbane",
+  "Australia/Hobart": "Hobart",
+  "Asia/Vladivostok": "Vladivostok",
+  "Pacific/Guam": "Guam, Port Moresby",
+  "Asia/Magadan": "Magadan, Solomon Islands, New Caledonia",
+  "Pacific/Fiji": "Fiji Islands, Kamchatka, Marshall Islands",
+  "Pacific/Auckland": "Auckland, Wellington",
+  "Pacific/Tongatapu": "Nuku'alofa"
+}
+//const dateTimeUtc = moment("2017-06-05T19:41:03Z").utc();
+//document.querySelector(".js-TimeUtc").innerHTML = dateTimeUtc.format("ddd, DD MMM YYYY HH:mm:ss");
+
+const selectorOptions = moment.tz.names()
+  .filter(tz => {
+    return timezones.includes(tz)
+  })
+  .reduce((memo, tz) => {
+    memo.push({
+      name: tz,
+      offset: moment.tz(tz).utcOffset()
+    });
+    
+    return memo;
+  }, [])
+  .sort((a, b) => {
+    return a.offset - b.offset
+  })
+  .reduce((memo, tz) => {
+    const timezone = tz.offset ? moment.tz(tz.name).format('Z') : '';
+
+    return memo.concat(`<option value="${tz.name}">(GMT${timezone}) ${_t(tz.name)}</option>`);
+  }, "");
+
+document.querySelector("#timezoneSelector").innerHTML = selectorOptions;
+
+$("#timezoneSelector").on("change", e => {
+  //const timestamp = dateTimeUtc.unix();
+  //const offset = moment.tz(e.target.value).utcOffset() * 60;
+  //const dateTimeLocal = moment.unix(timestamp + offset).utc();
+
+ // document.querySelector(".js-TimeLocal").innerHTML = dateTimeLocal.format("ddd, DD MMM YYYY HH:mm:ss");
+});
+
+//document.querySelector("#timezoneSelector").value = "Europe/Berlin";
+
+const event = new Event("change");
+document.querySelector("#timezoneSelector").dispatchEvent(event);
+
+$(document).ready(function() {
+  $("#timezoneSelector").select2({
+    placeholder: "Select a Timezone"
+  });
+});
+// note: timezone selector - https://codepen.io/matallo/pen/WEjKqG?editors=1010#0
+
+
 
         $("#dcid3").change(function() {
         if ( $.fn.dataTable.isDataTable( '#dataTable4' ) ) {
@@ -560,7 +771,6 @@ global $dbhandle;
               { data: "derenCID" },
               { data: "unsereCID" },
               { data: "name" },
-              { data: "mailsend" },
               { data: "maintenanceRecipient" },
               { data: "startDateTime" },
               { data: "endDateTime" },
@@ -568,7 +778,7 @@ global $dbhandle;
           ],
           columnDefs: [
               {
-                  "targets": [ 0, 5, 6, 7 ],
+                  "targets": [ 0, 4, 5, 6 ],
                   "visible": false,
                   "searchable": false
               }, {
@@ -587,6 +797,11 @@ global $dbhandle;
           var data = table3.row( $(this).parents('tr') ).data();
             //alert("ID: "+  data['id'] +" - MR: "+ data['maintenanceRecipient'] );
             openInNewTab2('mailto://' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['unsereCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head><style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:151}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624}</style></head><body><div><p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['unsereCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + data['startDateTime'] + '</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + data['endDateTime'] + '</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">Planned maintenance on the network infrastructure to avoid unplanned outage in near future</span></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">360 minutes during the maintenance window</span></span></p></td></tr></table><p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us.</span></p></body>');
+
+            var DateTime = luxon.DateTime;
+            var now = DateTime.local();
+            console.log(moment.utc().toISOString());
+            $("#mailSentAt").val(moment.utc().toISOString());
         } );
 
         /*************************************************************************************************
@@ -642,6 +857,7 @@ global $dbhandle;
                 "opostponed": $('#pponed').val(),
                 "onotes" : $('#notes').val(),
                 //"omailankunde" : makdtUTC.toString(),
+                "mailSentAt" : $('#mailSentAt').val(),
                 "odone" : odone,
                 "update" : $('#update').val(),
                 }
@@ -697,27 +913,29 @@ global $dbhandle;
 
           </script>
           <script>
-            var dialog = document.querySelector('#mailDialog');
-            var showDialogButton = document.querySelector('#viewmailbtn');
-            if (! dialog.showModal) {
-              dialogPolyfill.registerDialog(dialog);
-            }
-            showDialogButton.addEventListener('click', function() {
-              dialog.showModal();
-            });
-            dialog.querySelector('.close1').addEventListener('click', function() {
-              dialog.close();
-            });
-
-            document.addEventListener("DOMContentLoaded", function() {
-            	//The first argument are the elements to which the plugin shall be initialized
-            	//The second argument has to be at least a empty object or a object with your desired options
-            	OverlayScrollbars(document.querySelectorAll("#mailDialog"), {
-                className       : "os-theme-dark",
-              	resize          : "both",
-              	sizeAutoCapable : true
+            if ($("#viewmailbtn").length > 0) {
+              var dialog = document.querySelector('#mailDialog');
+              var showDialogButton = document.querySelector('#viewmailbtn');
+              if (! dialog.showModal) {
+                dialogPolyfill.registerDialog(dialog);
+              }
+              showDialogButton.addEventListener('click', function() {
+                dialog.showModal();
               });
-            });
+              dialog.querySelector('.close1').addEventListener('click', function() {
+                dialog.close();
+              });
+
+              document.addEventListener("DOMContentLoaded", function() {
+                //The first argument are the elements to which the plugin shall be initialized
+                //The second argument has to be at least a empty object or a object with your desired options
+                OverlayScrollbars(document.querySelectorAll("#mailDialog"), {
+                  className       : "os-theme-dark",
+                  resize          : "both",
+                  sizeAutoCapable : true
+                });
+              });
+            }
           </script>
         </main>
         <footer class="mdl-mini-footer mdl-grid">

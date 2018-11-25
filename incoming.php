@@ -535,7 +535,6 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                 $q = 'label:' . $labelID . ' newer_than:7d';
                 fetchMails($service, $q);
 
-
                 ?>
 
                 <table id="dataTable2" class="hidden table table-striped compact nowrap" style="width: 100%">
@@ -545,7 +544,6 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                       <th class="">Deren CID</th>
                       <th>Unsere CID</th>
                       <th>Kunde</th>
-                      <th>Sent Mail</th>
                     </tr>
                   </thead>
                 </table>
@@ -600,8 +598,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                                   { data: "id" },
                                   { data: "derenCID" },
                                   { data: "unsereCID" },
-                                  { data: "name" },
-                                  { data: "mailsend" }
+                                  { data: "name" }
                               ],
                               columnDefs: [
                                   {

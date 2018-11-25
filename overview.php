@@ -5,6 +5,12 @@ require_once('config.php');
 
 global $dbhandle;
 
+function console_log( $data ){
+  echo '<script>';
+  echo 'console.log('. json_encode( $data ) .')';
+  echo '</script>';
+}
+
 
 ?>
 
@@ -48,7 +54,12 @@ global $dbhandle;
 
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-
+ 
+  <!-- luxon -->
+  <script src="assets/js/luxon.min.js"></script>
+  <script src="assets/js/moment.js"></script>
+  <script src="https://momentjs.com/downloads/moment-timezone-with-data.js"></script>
+  
   <!-- Datatables -->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.css"/>
   <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.js"></script>
@@ -157,7 +168,7 @@ global $dbhandle;
                 $tdCID = '';
 
                 if (empty($_POST['tLieferant']) && empty($_POST['tdCID'])) {
-                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id");
+                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id");
                 }
 
                 if (! empty($_POST['tLieferant'])){
@@ -177,7 +188,7 @@ global $dbhandle;
                     if ($fetch = mysqli_fetch_array($lieferant_query)) {
                         //Found a companyn - now show all maintenances for company
                         $lieferant_id = $fetch[0];
-                        $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
+                        $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
                       }
 
                 } elseif (! empty($_POST['tdCID'])){
@@ -187,7 +198,7 @@ global $dbhandle;
                       $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
                       $dCID_escape = '%' . $dCID_escape . '%';
 
-                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
+                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
 
                 }
 
@@ -218,6 +229,8 @@ global $dbhandle;
                             <th>End Date/Time</th>
                             <th>Postponed</th>
                             <th>Notes</th>
+                            <th>Mail Sent At</th>
+                            <th>Updated At</th>
                             <th>Complete</th>
                           </tr>
                         </thead>
@@ -232,24 +245,24 @@ global $dbhandle;
                                 </a>
                               </button></td>';
 
-                    $donezo = $rowx['done'];
-
-                    foreach($rowx as $field) {
-                        if ($rowx['maileingang']) {
-                          echo '<td>' . $field . '</td>';
-                        } elseif ($rowx['done']) {
-                            console.log('elseif: ' . $donezo);
-                          if ($donezo = '1'){
-                            echo '<img src="assets/images/svg/done.svg"/>';
-                          } else {
-                            echo '<img src="assets/images/svg/notdone.png"/>';
-                          }
-                          // TO-DO
+                    while (list($key, $value) = each($rowx)) { 
+                     
+                      if ($key == 'updatedAt') { 
+                       // $isoUpdatedAt = moment().utc($value);
+                        echo "<td> $value </td>"; 
+                      } elseif ($key == 'done') {
+                        echo '<td style="text-align: center;">';
+                        if ($value == '1'){
+                          echo '<img src="assets/images/svg/done2.png"/>';
                         } else {
-                          console.log('else: ' . $donezo);
-                        echo '<td>' . htmlspecialchars($field) . '</td>';
+                          echo '<img src="assets/images/svg/notdone2.png"/>';
                         }
-                    }
+                        echo '</td>';
+                      } else {
+                        echo "<td>$value</td>"; 
+                      }
+                    } 
+
                     echo '</tr>';
                   }
                   echo '</tbody>
@@ -277,10 +290,10 @@ global $dbhandle;
                           "searchable": false
                       },
                       { responsivePriority: 1, targets: [ 0, 2, 3, 4, 5, 6, 7 ] },
-                      { responsivePriority: 2, targets: -1 },
-                      { responsivePriority: 500, targets: [ 8, 9, 10, 11 ] },
+                      { responsivePriority: 2, targets: [ -1 ] },
+                      { responsivePriority: 500, targets: [ 8, 9, 10, 11, 12, 13 ] },
                       {
-                          targets: [2, 3, 4, 6, 7, 8, 9, 10, 11, 12 ],
+                          targets: [2, 3, 4, 6, 7, 8, 9, 10, 11, 14 ],
                           className: 'mdl-data-table__cell--non-numeric'
                       }
                   ]

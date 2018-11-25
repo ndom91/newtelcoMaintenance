@@ -43,3 +43,28 @@ DEREN CID -> UNSERE CID
 MAIL SEND TO KUNDEN
 - move to from maintenancedb -> kunden tabelle (DONE)
 - datetime + click to send both in kunden tabelle (DONE)
+
+STILL OPEN
+------------
+- timezone conversions
+-- on save
+-- on display
+
+- mail delegation testing
+
+- move mail to *_DONE label when marked complete
+
+- show label counter in menu
+
+- responsive layout
+
+- JS / CSS
+-- clean up inline 
+-- host it all ourselves
+-- minify
+
+- caching / pwa / service worker?
+
+- lighthouse scores?
+
+- incoming layout -> 2 column

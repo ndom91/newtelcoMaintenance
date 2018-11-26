@@ -78,9 +78,15 @@ table {
 	margin-right: auto;
 }
 .signin_btn {
-	height: 50px;
-	width: auto;
+	height: 46px;
+  position: relative;
+  width: 191px;
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  transition: opacity 500ms;
 }
+
 @media only screen and (max-width: 700px) {
   .demo-card-wide {
     max-width: 95%;
@@ -137,6 +143,8 @@ table {
 }
 
 .selectGoogleLabel {
+  font-weight: 100 !important;
+  font-size: 32px;
 	display: inline;
   padding: 10px 0;
 }
@@ -149,6 +157,7 @@ table {
 }
 
 /* Add Edit */
+
 .demo-card-wide2 {
   width: 492px !important;
   max-width: 100%;
@@ -156,12 +165,17 @@ table {
   margin-left: auto;
   margin-right: auto;
 }
+
 .demo-card-wide.mdl-card {
   width: 100%;
   max-width: 100%;
   margin-top: 3%;
   margin-left: auto;
   margin-right: auto;
+}
+
+.updatedLabel {
+  color: #67B246;
 }
 
 .mdl-card__title__login {
@@ -175,13 +189,43 @@ table {
   height: 65px;
   background: #4d4d4d;
 }
+
 .demo-card-wide > .mdl-card__menu {
   color: #fff;
 }
+
+.notesTextArea {
+  width: 100% !important;
+}
+
+textarea.mdl-textfield__input {
+  border: 1px solid rgba(50,50,50,0.2) !important;
+  border-radius: 5px;
+  padding: 3px;
+}
+
+.timeZoneLabel {
+  color: rgb(103, 178, 70) !important;
+  font-size: 12px !important;
+}
+
+.notesLabel1 {
+  color: rgb(103, 178, 70) !important;
+  font-size: 12px !important;
+  line-height: 2;
+  margin-left: 2px;
+}
+
 #addCalbtn {
   float: left;
   display: inline;
+  color: #4e4e4e;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  line-height: 24px;
+  font-size: 16px;
 }
+
 #viewMailID {
     float: right;
 }
@@ -259,6 +303,24 @@ table {
 .labelSelectBtn {
   float:right;
 }
+/* incoming */
+
+.incomingHeaderWrapper {
+  height: 90px;
+  padding: 20px;
+}
+
+.mdl-2col {
+  display: inline-block;
+  width: calc(50% - 26px) !important;
+}
+
+@media only screen and (min-width: 800px) {
+  .table2 {
+    position: absolute;
+    margin-top: 130px;
+  }
+}
 
 /* Overview / Datatables */
 
@@ -273,12 +335,17 @@ table {
 }
 
 .page-item.active .page-link {
-	background-color: #4d4d4d !important;
-	border-color: #4d4d4d !important;
+	background-color: #a0a0a0 !important;
+	border-color: #a0a0a0 !important;
 }
-
+.page-item.active .page-link {
+  color: #fff !important;
+}
 .dataTables_empty {
-  	display:none;
+  display: none;
+}
+.page-link {
+  color: #67B246 !important;
 }
 
 table.dataTable tbody>tr>.selected {
@@ -293,16 +360,17 @@ a.editLink {
 }
 
 table.dataTable.dtr-inline.collapsed.compact>tbody>tr>td:first-child:before, table.dataTable.dtr-inline.collapsed.compact>tbody>tr>th:first-child:before {
-  height: 36px !important;
-  width: 36px !important;
+  height: 40px !important;
+  width: 40px !important;
   border-radius: 50% !important;
-  top: 10px !important;
+  top: 9px !important;
   width: 100px;
 }
 table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before, table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>th:first-child:before {
-  background-color: #67B246 !important;
-  font-size: 36px;
-  line-height: 40px !important;
+  background: rgba(158,158,158, 0.20) !important;
+  box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.12), 0 1px 1px 0 rgba(0, 0, 0, 0.24);
+  font-size: 40px;
+  line-height: 44px !important;
 }
 
 .labelColors {

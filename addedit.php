@@ -40,24 +40,26 @@ global $dbhandle;
   <!-- Google font-->
   <link rel="dns-prefetch" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
 
-  <!-- luxon -->
+  <!-- moment -->
   <script src="assets/js/luxon.min.js"></script>
   <script src="assets/js/moment.js"></script>
   <script src="https://momentjs.com/downloads/moment-timezone-with-data.js"></script>
-  
+  <script src="assets/js/moment-duration-format.js"></script>
+
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
   <!-- select2 -->
   <script src="assets/js/select2_4.0.6-rc1.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
-  
+
   <!-- material design -->
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://storage.googleapis.com/non-spec-apps/mio-icons/latest/twotone.css">
-  
+  <link rel="stylesheet" href="assets/css/materialdesignicons.min.css">
+  <!-- <link rel="stylesheet" href="https://storage.googleapis.com/non-spec-apps/mio-icons/latest/twotone.css"> -->
+
   <!--getmdl-select-->
   <script src="https://rawgit.com/MEYVN-digital/mdl-selectfield/master/mdl-selectfield.min.js"></script>
   <link rel="stylesheet" href="assets/css/mdl-selectfield.min.css">
@@ -98,7 +100,7 @@ global $dbhandle;
           <div class="menu_userdetails">
             <button id="user-profile-menu" class="mdl-button mdl-js-button mdl-userprofile-button">
               <img class="menu_userphoto" src="<?php echo $token_data['picture'] ?>"/>
-              <span class="mdl-layout-subtitle menumail"> <?php echo $token_data['email'] ?></span>
+              <span class="mdl-layout-subtitle menumail menu_username"> <?php echo $token_data['email'] ?></span>
               <i class="fas fa-angle-down menuangle"></i>
             </button>
               <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
@@ -181,6 +183,8 @@ global $dbhandle;
               $oenddatetime = $mIDresult['endDateTime'];
               $opostponed = $mIDresult['postponed'];
               $onotes = $mIDresult['notes'];
+              $oupdatedBy = $mIDresult['updatedBy'];
+              $oupdatedAt = $mIDresult['updatedAt'];
               $ocal = $mIDresult['cal'];
               if ($mIDresult['done'] == 1) {
                 $odone = 'checked';
@@ -192,7 +196,7 @@ global $dbhandle;
 
               $gmid = $_GET['gmid'];
 
-              $service2 = new Google_Service_Gmail($client);
+              $service2 = new Google_Service_Gmail($clientService);
 
               function decodeBody($body) {
                   $rawData = $body;
@@ -347,6 +351,7 @@ global $dbhandle;
             </button>
           </div>
           <div class="mdl-card__supporting-text">
+            <small><?php if ($oupdatedBy != '') { echo 'Last updated by: <span class="updatedLabel">' . $oupdatedBy . '</span> at <span class="updatedLabel" id="updatedAtLabel">' . $oupdatedAt . '</span>';}?></small>
             <form action="#">
               <div class="mdl-grid">
               <input type="hidden" value="<?php echo $omaintid ?>" id="maintid">
@@ -407,31 +412,28 @@ global $dbhandle;
               <div class="mdl-cell mdl-cell--6-col">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr">
                     <input type="text" id="sdt" class="mdl-textfield__input"  value="<?php echo $ostartdatetime ?>" data-input>
-                    <i class="material-icons mdl-textfield__label__icon" title="toggle" data-toggle>
-                     calendar_today
-                    </i>
+                    <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span>
                     <label class="mdl-textfield__label" for="sdt">Start Date/Time</label>
                 </div>
               </div>
               <div class="mdl-cell mdl-cell--6-col">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr">
                     <input type="text" id="edt" class="mdl-textfield__input"  value="<?php echo $oenddatetime ?>" data-input>
-                    <i class="material-icons mdl-textfield__label__icon" title="toggle" data-toggle>
-                     calendar_today
-                    </i>
+                    <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span>
                     <label class="mdl-textfield__label" for="edt">End Date/Time</label>
                 </div>
               </div>
               <div class="mdl-cell mdl-cell--12-col">
-                <label for="timezoneSelector">
+                <label class="timeZoneLabel" for="timezoneSelector">
                   Timezone
-                  <select class="js-example-basic-multiple js-states form-control" id="timezoneSelector"></select>
                 </label>
+                  <select class="js-example-basic-multiple js-states form-control" id="timezoneSelector"></select>
               </div>
               <div class="mdl-cell mdl-cell--12-col">
-                <div class="mdl-textfield mdl-js-textfield">
-                  <textarea class="mdl-textfield__input" type="text" rows= "3" id="notes" ><?php echo $onotes ?></textarea>
-                  <label class="mdl-textfield__label" for="notes">Notes</label>
+                <div class="mdl-textfield mdl-js-textfield notesTextArea">
+
+                  <span class="notesLabel1">Notes</span>
+                  <textarea class="mdl-textfield__input" type="text" rows= "4" id="notes" ><?php echo $onotes ?></textarea>
                 </div>
               </div>
               <?php
@@ -453,7 +455,7 @@ global $dbhandle;
                 wrap: true,
                 altInput: true,
                 //altFormat: 'Z'
-                altFormat: 'd.m.Y H:i'
+                altFormat: 'd M Y H:i:S'
                 //"plugins": [new confirmDatePlugin({})]
               });
 
@@ -473,7 +475,7 @@ global $dbhandle;
                 </label>
                 <div class="mdl-layout-spacer"></div>
                 <button id="addCalbtn" type="button" onclick="openInNewTab('http://www.google.com/calendar/event?action=TEMPLATE&dates=20181121%2F20181122&text=Newtelco%20Maintenance%20<?php echo $olieferant ?>&location=Maintenance%20Spot&details=Body%20Body%20Body.')" class="mdl-button mdl-js-button mdl-button--raised">
-                  Add to Cal
+                  <span class="mdi mdi-24px mdi-calendar-plus mdi-dark"> Add to Cal </span>
                 </button>
               </div>
               <!-- <a href="incoming.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
@@ -717,7 +719,7 @@ const selectorOptions = moment.tz.names()
       name: tz,
       offset: moment.tz(tz).utcOffset()
     });
-    
+
     return memo;
   }, [])
   .sort((a, b) => {
@@ -745,6 +747,12 @@ const event = new Event("change");
 document.querySelector("#timezoneSelector").dispatchEvent(event);
 
 $(document).ready(function() {
+  var mEingangVal =  moment($('#medt').val()).format("DD MMM YYYY HH:mm:SS ZZ");
+  $('#medt').val(mEingangVal);
+
+  var updatedAtLabel = moment($('#updatedAtLabel').html()).format("DD MMM YYYY HH:mm:SS ZZ");
+  $('#updatedAtLabel').html(updatedAtLabel);
+
   $("#timezoneSelector").select2({
     placeholder: "Select a Timezone"
   });
@@ -784,7 +792,7 @@ $(document).ready(function() {
               }, {
                   "targets": -1,
                   "data": null,
-                  "defaultContent": "<button id='sendMailbtn' type='button' class='mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--raised mdl-button--colored'>SEND</button>"
+                  "defaultContent": "<button id='sendMailbtn' type='button' class='mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--raised mdl-button--colored'><span class='mdi mdi-gmail mdi-24px'> <span class='mdi mdi-send mdi-24px'></span></button>"
               }
             ]
        });
@@ -795,12 +803,21 @@ $(document).ready(function() {
         $('#dataTable4').on( 'click', '#sendMailbtn', function () {
           table3 = $('#dataTable4').DataTable();
           var data = table3.row( $(this).parents('tr') ).data();
-            //alert("ID: "+  data['id'] +" - MR: "+ data['maintenanceRecipient'] );
-            openInNewTab2('mailto://' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['unsereCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head><style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:151}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624}</style></head><body><div><p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['unsereCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + data['startDateTime'] + '</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + data['endDateTime'] + '</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">Planned maintenance on the network infrastructure to avoid unplanned outage in near future</span></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">360 minutes during the maintenance window</span></span></p></td></tr></table><p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us.</span></p></body>');
+
+            var start = moment($('#sdt').val());
+            var end = moment($('#edt').val());
+
+            var startLabel = start.format("DD MMM YYYY HH:mm:SS ZZ");
+            var endLabel = end.format("DD MMM YYYY HH:mm:SS ZZ");
+
+            var ms = moment(end).diff(moment(start));
+            var d = moment.duration(ms);
+            var impactTime = d.format("mm");
+
+            openInNewTab2('mailto://' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['unsereCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head><style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:151}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624}</style></head><body><div><p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['unsereCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + startLabel + '</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + endLabel + '</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">Planned maintenance on the network infrastructure to avoid unplanned outage in near future</span></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">' + impactTime + ' minutes during the maintenance window</span></span></p></td></tr></table><p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us.</span></p></body>');
 
             var DateTime = luxon.DateTime;
             var now = DateTime.local();
-            console.log(moment.utc().toISOString());
             $("#mailSentAt").val(moment.utc().toISOString());
         } );
 
@@ -860,6 +877,7 @@ $(document).ready(function() {
                 "mailSentAt" : $('#mailSentAt').val(),
                 "odone" : odone,
                 "update" : $('#update').val(),
+                "updatedBy": $('.menu_username').text()
                 }
 
                 $.ajax({

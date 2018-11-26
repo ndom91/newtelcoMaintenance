@@ -40,12 +40,36 @@
   } elseif (isset($_GET['dCID'])) {
 
     /**************************
-     * OVERVIEW - dCID SEARCH
+     * INCOMING - dCID SHOW
      **************************/
 
     $dCID = $_GET['dCID'];
 
     $result = mysqli_query($dbhandle, "SELECT kunden.id, kunden.derenCID, kunden.unsereCID, companies.name, companies.maintenanceRecipient, maintenancedb.startDateTime, maintenancedb.endDateTime FROM kunden LEFT JOIN companies ON kunden.kunde = companies.id LEFT JOIN maintenancedb ON kunden.id = maintenancedb.derenCIDid WHERE kunden.derenCID LIKE '$dCID'") or die(mysqli_error($dbhandle));          //query
+
+    $array2 = array();
+
+    while($resultsrows = mysqli_fetch_assoc($result)) {
+      $array2[] = $resultsrows;
+    }
+
+    echo json_encode($array2);
+
+  } elseif (isset($_GET['dKName'])) {
+
+    /**************************
+     * INCOMING - dCID SHOW
+     **************************/
+
+    $dCID = $_GET['dKName'];
+
+    $result0 = mysqli_query($dbhandle, "SELECT companies.id FROM companies WHERE companies.name LIKE '$dCID'") or die(mysqli_error($dbhandle));
+
+    if ($fetch = mysqli_fetch_array($result0)) {
+        //Found a companyn - now show all maintenances for company
+        $company_id = $fetch[0];
+        $result = mysqli_query($dbhandle, "SELECT kunden.id, kunden.derenCID, kunden.unsereCID, companies.name FROM companies LEFT JOIN kunden ON companies.id = kunden.kunde WHERE companies.id LIKE '$company_id'") or die(mysqli_error($dbhandle));
+    }
 
     $array2 = array();
 
@@ -82,11 +106,12 @@
     $odone = mysqli_real_escape_string($dbhandle, $fields[0]['odone']);
     $mailSentAt = mysqli_real_escape_string($dbhandle, $fields[0]['mailSentAt']);
     $update = $fields[0]['update'];
+    $updatedBy = $fields[0]['updatedBy'];
 
 
     //$existingrmailA =
     if ($update == '1') {
-      $resultx = mysqli_query($dbhandle, "UPDATE maintenancedb SET maileingang = '$omaileingang', receivedmail = '$oreceivedmail', bearbeitetvon = '$obearbeitetvon', lieferant = '$olieferantid', derenCIDid = '$oderenCIDid', maintenancedate = '$omaintenancedate', startDateTime = '$ostartdatetime', endDateTime = '$oenddatetime', postponed = '$opostponed', notes = '$onotes', mailSentAt = '$mailSentAt', done = '$odone' WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
+      $resultx = mysqli_query($dbhandle, "UPDATE maintenancedb SET maileingang = '$omaileingang', receivedmail = '$oreceivedmail', bearbeitetvon = '$obearbeitetvon', lieferant = '$olieferantid', derenCIDid = '$oderenCIDid', maintenancedate = '$omaintenancedate', startDateTime = '$ostartdatetime', endDateTime = '$oenddatetime', postponed = '$opostponed', notes = '$onotes', mailSentAt = '$mailSentAt', updatedBy = '$updatedBy', done = '$odone' WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
 
       if ($resultx == 'TRUE'){
           $addeditA['updated'] = 1;
@@ -109,8 +134,8 @@
           $kundenIQ = mysqli_query($dbhandle, "INSERT INTO companies (name, mailDomain) VALUES ('$olieferant', '$olieferant')") or die(mysqli_error($dbhandle));
         }
 
-        $resultx = mysqli_query($dbhandle, "INSERT INTO maintenancedb (id, maileingang, receivedmail, bearbeitetvon, lieferant, derenCIDid, maintenancedate, startDateTime, endDateTime, postponed, notes, mailSentAt, done)
-        VALUES ('$lastID', '$omaileingang', '$oreceivedmail', '$obearbeitetvon', '$olieferantid', '$oderenCIDid', '$omaintenancedate', '$ostartdatetime', '$oenddatetime', '$opostponed', '$onotes', '$mailSentAt', '$odone')")  or die(mysqli_error($dbhandle));
+        $resultx = mysqli_query($dbhandle, "INSERT INTO maintenancedb (id, maileingang, receivedmail, bearbeitetvon, lieferant, derenCIDid, maintenancedate, startDateTime, endDateTime, postponed, notes, mailSentAt, updatedBy, done)
+        VALUES ('$lastID', '$omaileingang', '$oreceivedmail', '$obearbeitetvon', '$olieferantid', '$oderenCIDid', '$omaintenancedate', '$ostartdatetime', '$oenddatetime', '$opostponed', '$onotes', '$mailSentAt', '$updatedBy', '$odone')")  or die(mysqli_error($dbhandle));
 
         if ($resultx == 'TRUE'){
             $addeditA['added'] = 1;

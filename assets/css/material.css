@@ -398,10 +398,10 @@ html {
  * Customize the background color to match your design.
  */
 ::-moz-selection {
-  background: #b3d4fc;
+  background: rgba(103, 178, 70, 0.1);
   text-shadow: none; }
 ::selection {
-  background: #b3d4fc;
+  background: rgba(103, 178, 70, 0.1);
   text-shadow: none; }
 
 /*
@@ -4256,7 +4256,7 @@ input.mdl-button[type="submit"] {
   display: -ms-flexbox;
   display: flex;
   font-size: 24px;
-  font-weight: 300;
+  font-weight: 200;
   line-height: normal;
   overflow: hidden;
   -webkit-transform-origin: 149px 48px;

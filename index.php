@@ -37,12 +37,17 @@ require('authenticate_google.php');
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
   <!-- Google font-->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+  <link prefetch rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:200,300,700" type="text/css">
 
   <!-- material design -->
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="assets/css/materialdesignicons.min.css">
+
+  <!-- moment -->
+  <script src="assets/js/moment.js"></script>
+  <script src="https://momentjs.com/downloads/moment-timezone-with-data.js"></script>
 
   <!-- pace -->
   <script src="assets/js/pace.js"></script>
@@ -113,8 +118,11 @@ require('authenticate_google.php');
                 $labelID = '0';
               }
             }
-            $service3 = new Google_Service_Gmail($clientService);
-            $results3 = $service3->users_labels->get($user,$labelID);
+
+            if ($labelID != '0') {
+              $service3 = new Google_Service_Gmail($clientService);
+              $results3 = $service3->users_labels->get($user,$labelID);
+            }
 
             ?>
             <div class="mdl-grid">
@@ -123,16 +131,27 @@ require('authenticate_google.php');
 
                   <div class="demo-card-wide mdl-card mdl-shadow--2dp">
                     <div class="mdl-card__title">
-                      <h2 class="mdl-card__title-text">Welcome <?php echo $token_data['name'] ?></h2>
+                      <h2 class="mdl-card__title-text">Maintenance Management System</h2>
 
                       <div class="mdl-layout-spacer"></div>
-                      <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="<?php if ($results3['messagesTotal'] == 0) { echo "♥"; } else { echo $results3['messagesTotal']; } ?>">email</div>
+                      <a style="color: #fff !important;" href="incoming">
+                      <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="<?php if ($labelID != '0') { if ($results3['messagesTotal'] == 0) { echo "♥"; } else { echo $results3['messagesTotal']; }} else {  echo "♥"; } ?>">email</div></a>
                     </div>
                     <div class="mdl-card__supporting-text">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Mauris sagittis pellentesque lacus eleifend lacinia...<br><br>
+                      <h6>Welcome <?php echo $token_data['name'] ?>!</h6>
+                      <font class="welcomeTime"></font>
+                      <script>
+                        $(document).ready(function() {
+                          var now = moment();
+                          var homeNow = moment(now).format("DD MMM YYYY");
 
-                      <br>
+                          $('.welcomeTime').html('It is ' + homeNow);
+                        });
+                      </script>
+
+                      and you have <b><?php echo $results3['messagesTotal'] ?></b> maintenance mails open.</h6>
+                      <br><br>Good luck 😊
+                      <!-- DEBUG
                       <b>Debug:</b>
                       <pre>
                       <?php
@@ -141,15 +160,16 @@ require('authenticate_google.php');
                       echo '<br><br>';
 
                       var_export($token_data);
-                      ?></pre>
+                      ?></pre> -->
 
                     </div>
                     <div class="mdl-card__actions mdl-card--border">
-                      <a href="overview.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
-                        Overview
-                      </a>
-                      <a href="incoming.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
+                      <a href="incoming.php" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color-text--light-green-nt">
                         Incoming
+                      </a>
+                      <div style="display: inline !important;" class="mdl-layout-spacer"></div>
+                      <a href="overview.php" style="float: right;" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
+                        Overview
                       </a>
                     </div>
                   </div>

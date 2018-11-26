@@ -215,7 +215,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
           <p>
 
             <?php
-              $service = new Google_Service_Gmail($client);
+              $service = new Google_Service_Gmail($clientService);
 
               // Print the labels in the user's account.
               $user = 'ndomino@newtelco.de';
@@ -249,9 +249,9 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
         <script>
 
         /*****************
-         * 
+         *
          *  FIRMEN Table
-         * 
+         *
          ******************/
 
           var container = document.getElementById('firmenTable');
@@ -267,7 +267,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
               {data: 'mailDomain'},
               {data: 'maintenanceRecipient'}
              ],
-             
+
              stretchH: 'all',
              manualColumnMove: true,
              manualColumnResize: true,
@@ -342,9 +342,9 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
           });
 
         /*****************
-         * 
+         *
          *  KUNDEN Table
-         * 
+         *
          ******************/
 
           var container2 = document.getElementById('kundenTable');
@@ -360,7 +360,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
               {data: 'unsereCID'},
               {data: 'name'}
              ],
-             
+
              stretchH: 'all',
              manualColumnMove: true,
              manualColumnResize: true,

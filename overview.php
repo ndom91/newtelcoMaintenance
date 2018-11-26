@@ -5,13 +5,6 @@ require_once('config.php');
 
 global $dbhandle;
 
-function console_log( $data ){
-  echo '<script>';
-  echo 'console.log('. json_encode( $data ) .')';
-  echo '</script>';
-}
-
-
 ?>
 
 <html lang="en">
@@ -51,15 +44,16 @@ function console_log( $data ){
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="assets/css/materialdesignicons.min.css">
 
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
- 
+
   <!-- luxon -->
   <script src="assets/js/luxon.min.js"></script>
   <script src="assets/js/moment.js"></script>
   <script src="https://momentjs.com/downloads/moment-timezone-with-data.js"></script>
-  
+
   <!-- Datatables -->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.css"/>
   <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.js"></script>
@@ -245,23 +239,25 @@ function console_log( $data ){
                                 </a>
                               </button></td>';
 
-                    while (list($key, $value) = each($rowx)) { 
-                     
-                      if ($key == 'updatedAt') { 
+                    while (list($key, $value) = each($rowx)) {
+
+                      if ($key == 'updatedAt') {
                        // $isoUpdatedAt = moment().utc($value);
-                        echo "<td> $value </td>"; 
+                        echo "<td> $value </td>";
                       } elseif ($key == 'done') {
                         echo '<td style="text-align: center;">';
                         if ($value == '1'){
-                          echo '<img src="assets/images/svg/done2.png"/>';
+                          echo '<span class="mdi mdi-24px mdi-checkbox-blank-circle-outline mdi-dark mdi-inactive"></span>';
+                          //echo '<img src="assets/images/svg/done2.png"/>';
                         } else {
-                          echo '<img src="assets/images/svg/notdone2.png"/>';
+                          echo '<span class="mdi mdi-24px mdi-check-decagram mdi-dark"></span>';
+                          //echo '<img src="assets/images/svg/notdone2.png"/>';
                         }
                         echo '</td>';
                       } else {
-                        echo "<td>$value</td>"; 
+                        echo "<td>$value</td>";
                       }
-                    } 
+                    }
 
                     echo '</tr>';
                   }

@@ -48,8 +48,8 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
   <link rel="dns-prefetch" rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
   <!-- Google font-->
-  <link rel="dns-prefetch" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
-
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100.300.400,700" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
   <!-- material design -->
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
@@ -136,8 +136,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
         <main class="mdl-layout__content">
             <div class="mdl-grid">
               <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
-                <div class="mdl-grid tableSearchGrid">
-                  <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
+                  <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone incomingHeaderWrapper">
                     <div class="userHomeHeader">
                       <h4 class="selectGoogleLabel">Incoming Maintenance E-Mail</h4>
                       <button id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectGoogleButton">
@@ -159,7 +158,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                         <p>
 
                           <?php
-                            $service = new Google_Service_Gmail($client);
+                            $service = new Google_Service_Gmail($clientService);
 
                             // Print the labels in the user's account.
                             $user = 'ndomino@newtelco.de';
@@ -188,7 +187,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                         </div>
                       </dialog>
                     </div>
-                </div>
+                    <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone dataTables_wrapper mdl-2col">
                 <?php
                 $lieferant = '';
                 $tdCID = '';
@@ -234,16 +233,16 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   // mdl table class - class="mdl-data-table mdl-js-data-table  mdl-shadow--4dp" style="width: 100%"
                   // non-numeric columns: class="mdl-data-table__cell--non-numeric"
 
-                  echo '<div class="dataTables_wrapper">
+                  echo '
                   <table id="dataTable3" class="table table-striped compact nowrap order-column hover" style="width: 100%">
                           <thead>
                             <tr>
                               <th style="width:20px!important"></th>
                               <th class="">id</th>
                               <th class="">Maileingang Date/Time</th>
-                              <th>R Mail</th>
+                              <th>Mail ID</th>
                               <th>R Mail Content</th>
-                              <th>Lieferant</th>
+                              <th>Sender</th>
                               <th>Deren CID</th>
                               <th>Bearbeitet Von</th>
                               <th>Start Date/Time</th>
@@ -251,6 +250,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                               <th>Postponed</th>
                               <th>Notes</th>
                               <th>Complete</th>
+                              <th>Domain</th>
                             </tr>
                           </thead>
                           <tbody>';
@@ -417,13 +417,14 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                                     <td><a id="show-dialog2" data-target="' . $message_id . '">' . $message_id . '</a></td>
                                     <td></td>
                                     <td>'. $from . '('. $domain . ')' . '</td>
-                                    <td>abc123</td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
+                                    <td></td>
+                                    <td>' . $domain . '</td>
                                   </tr>';
 
                               echo '<dialog id="dialog_' . $message_id . '" class="mdl-dialog mailDialog1" style="width: 800px;">
@@ -536,17 +537,18 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                 fetchMails($service, $q);
 
                 ?>
-
-                <table id="dataTable2" class="hidden table table-striped compact nowrap" style="width: 100%">
-                  <thead>
-                    <tr>
-                      <th class="">ID</th>
-                      <th class="">Deren CID</th>
-                      <th>Unsere CID</th>
-                      <th>Kunde</th>
-                    </tr>
-                  </thead>
-                </table>
+                </div>
+                <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone mdl-2col table2">
+                  <table id="dataTable2" class="hidden table table-striped compact nowrap" style="width: 100%">
+                    <thead>
+                      <tr>
+                        <th class="">ID</th>
+                        <th class="">Deren CID</th>
+                        <th>Unsere CID</th>
+                        <th>Kunde</th>
+                      </tr>
+                    </thead>
+                  </table>
                 </div>
               </div>
             </div>
@@ -564,7 +566,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   scrolly: false,
                   columnDefs: [
                       {
-                          "targets": [ 1, 4, 6, 7, 8, 9, 10, 11, 12 ],
+                          "targets": [ 1, 4, 6, 7, 8, 9, 10, 11, 12, 13 ],
                           "visible": false,
                           "searchable": false
                       },
@@ -583,7 +585,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
               table.on( 'select', function ( e, dt, type, indexes ) {
                   if ( type === 'row' ) {
-                      var data2 = table.rows( { selected: true } ).data()[0][6]
+                      var data2 = table.rows( { selected: true } ).data()[0][13]
                             if ( $.fn.dataTable.isDataTable( '#dataTable2' ) ) {
                                 table2 = $('#dataTable2').DataTable();
                                 table2.destroy();
@@ -591,7 +593,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                             $('#dataTable2').addClass('display').removeClass('hidden');
                             $('#dataTable2').DataTable( {
                               ajax: {
-                                url: "api?dCID=" + data2,
+                                url: "api?dKName=" + data2,
                                 dataSrc: ""
                               },
                               columns: [

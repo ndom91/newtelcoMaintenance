@@ -19,7 +19,7 @@ function getServiceAccountClient() {
         // Create and configure a new client object.
         $client2 = new Google_Client();
         $client2->useApplicationDefaultCredentials();
-        $client2->setScopes(['https://www.googleapis.com/auth/gmail.metadata','https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.modify','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.labels']);
+        $client2->setScopes(['https://mail.google.com/','https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.modify','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.labels']);
         $client2->setAccessType('offline');
         $client2->setSubject($user);
         return $client2;
@@ -141,6 +141,9 @@ if (!isset($_SESSION['id_token_token'])):
       <meta name="theme-color" content="#67B246">
       <link rel="manifest" href="manifest.json"></link>
 
+      <!-- jquery -->
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
       <!-- Google font-->
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
 
@@ -173,7 +176,10 @@ if (!isset($_SESSION['id_token_token'])):
                 <div class="signin_box">
                 <?php if (isset($authUrl)): ?>
                   <div class="request">
-                    <a class='login' href='<?= $authUrl ?>' data-onsuccess="onSignIn"><img class="signin_btn"  src="assets/images/btn_signinGoogle.png"/></a>
+                    <a class='login' href='<?= $authUrl ?>' data-onsuccess="onSignIn"><img class="signin_btn" src="assets/images/btn_google_signin_dark_normal_web.png"
+onmouseover="this.src='assets/images/btn_google_signin_dark_focus_web.png'"
+onmouseout="this.src='assets/images/btn_google_signin_dark_normal_web.png'"
+border="0" alt=""/></a>
                   </div>
                 <?php
                 else: var_export($token_data);
@@ -185,7 +191,17 @@ if (!isset($_SESSION['id_token_token'])):
             </form>
 
         </main>
+        <script>
+        $('.login').mouseover(function() {
+          $('.signin_btn_focus').css("visibility","visible");
+          $('.signin_btn').css("visibility","hidden");
+        });
 
+        $('.login').mouseout(function() {
+          $('.signin_btn').css("visibility","visible");
+          $('.signin_btn_focus').css("visibility","hidden");
+        });
+        </script>
         <footer class="mdl-mini-footer">
           <div class="mdl-mini-footer__left-section">
             <div class="mdl-logo">Newtelco GmbH</div>
@@ -194,6 +210,12 @@ if (!isset($_SESSION['id_token_token'])):
               <li><a href="#">Privacy & Terms</a></li>
             </ul>
           </div>
+          <div class="mdl-layout-spacer"></div>
+            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--2-col mdl-cell--middle mdl-typography--text-right">
+              <div class="footertext">
+                built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" href="https://github.com/ndom91">ndom91</a> &copy;
+              </div>
+            </div>
         </footer>
       </div>
 </body>

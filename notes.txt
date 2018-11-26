@@ -1,8 +1,6 @@
-TO DO
+RESOURCES
 ----------
-
-submit addedit to DB
-fix field types on table views + addedit
+- Material Design Icons: https://materialdesignicons.com/icon/emoticon
 
 
 NOTES
@@ -50,8 +48,6 @@ STILL OPEN
 -- on save
 -- on display
 
-- mail delegation testing
-
 - move mail to *_DONE label when marked complete
 
 - show label counter in menu
@@ -59,7 +55,7 @@ STILL OPEN
 - responsive layout
 
 - JS / CSS
--- clean up inline 
+-- clean up inline
 -- host it all ourselves
 -- minify
 
@@ -67,4 +63,4 @@ STILL OPEN
 
 - lighthouse scores?
 
-- incoming layout -> 2 column
+- enable SAVEONCHANGE on Settings Tables

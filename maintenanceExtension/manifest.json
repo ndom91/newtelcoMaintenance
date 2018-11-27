@@ -1,7 +1,7 @@
 {
   "name": "Newtelco Maintenance Mail Add-er",
   "description": "Newtelco GmbH - Add Maintenance Mail to WebApp directly from Gmail",
-  "version": "0.1",
+  "version": "0.5",
   "content_scripts": [
     {
       "matches": [
@@ -17,7 +17,11 @@
     "https://inbox.google.com/"
   ],
   "manifest_version": 2,
+  "web_accessible_resources": [
+    "images/nt48.png"
+    ],
   "icons": {
-    "32": "/images/done2.png"
+    "32": "/images/done2.png",
+    "32": "/images/nt48.png"
   }
 }

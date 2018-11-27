@@ -49,11 +49,13 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
   <!-- Google font-->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100.300.400,700" type="text/css">
-<link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
+
   <!-- material design -->
   <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="assets/css/materialdesignicons.min.css">
 
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>

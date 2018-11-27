@@ -150,8 +150,9 @@ require('authenticate_google.php');
                       </script>
 
                       and you have <b><?php echo $results3['messagesTotal'] ?></b> maintenance mails open.</h6>
-                      <br><br>Good luck 😊
-                      <!-- DEBUG
+                      <br><br>Good luck <img style="height:16px;width:16px;" src="assets/images/google_smiley.png"/>
+
+                      <!-- DEBUG 😊
                       <b>Debug:</b>
                       <pre>
                       <?php

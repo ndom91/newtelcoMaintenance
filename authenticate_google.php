@@ -176,9 +176,9 @@ if (!isset($_SESSION['id_token_token'])):
                 <div class="signin_box">
                 <?php if (isset($authUrl)): ?>
                   <div class="request">
-                    <a class='login' href='<?= $authUrl ?>' data-onsuccess="onSignIn"><img class="signin_btn" src="assets/images/btn_google_signin_dark_normal_web.png"
-onmouseover="this.src='assets/images/btn_google_signin_dark_focus_web.png'"
-onmouseout="this.src='assets/images/btn_google_signin_dark_normal_web.png'"
+                    <a class='login' href='<?= $authUrl ?>' data-onsuccess="onSignIn"><img class="signin_btn" src="assets/images/btn_google_signin_light_normal_web.png"
+onmouseover="this.src='assets/images/btn_google_signin_light_focus_web.png'"
+onmouseout="this.src='assets/images/btn_google_signin_light_normal_web.png'"
 border="0" alt=""/></a>
                   </div>
                 <?php
@@ -191,17 +191,6 @@ border="0" alt=""/></a>
             </form>
 
         </main>
-        <script>
-        $('.login').mouseover(function() {
-          $('.signin_btn_focus').css("visibility","visible");
-          $('.signin_btn').css("visibility","hidden");
-        });
-
-        $('.login').mouseout(function() {
-          $('.signin_btn').css("visibility","visible");
-          $('.signin_btn_focus').css("visibility","hidden");
-        });
-        </script>
         <footer class="mdl-mini-footer">
           <div class="mdl-mini-footer__left-section">
             <div class="mdl-logo">Newtelco GmbH</div>

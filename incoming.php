@@ -56,7 +56,8 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
   <script src="assets/js/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="assets/css/materialdesignicons.min.css">
-
+  <script src="node_modules/@material/animation/dist/mdc.animation.min.js"></script>
+  <link rel="stylesheet" href="assets/css/material_animation.min.css">
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
@@ -116,7 +117,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
         <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" href="index.php"><span class="ndl-home"></span>  Home</a>
-          <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a>
+          <!-- <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a> -->
           <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
           <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
           <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>

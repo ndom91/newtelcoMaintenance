@@ -43,8 +43,8 @@ global $dbhandle;
   <!-- moment -->
   <script src="assets/js/luxon.min.js"></script>
   <script src="assets/js/moment.js"></script>
-  <script src="https://momentjs.com/downloads/moment-timezone-with-data.js"></script>
   <script src="assets/js/moment-duration-format.js"></script>
+  <script src="assets/js/moment-timezone-with-data.js"></script>
 
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -118,7 +118,7 @@ global $dbhandle;
         <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" href="index.php"><i class="ndl-home"></i>  Home</a>
-          <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a>
+          <!-- <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a> -->
           <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
           <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
           <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>
@@ -191,6 +191,21 @@ global $dbhandle;
               } else {
                 $odone = '';
               }
+
+
+              $newSDT = DateTime::createFromFormat("Y-m-d  H:i:s", $ostartdatetime);
+              $newSDT = new DateTime($ostartdatetime);
+              $newSDT->add(new DateInterval('PT1H'));
+              $newSDT = $newSDT->format('Y-m-d  H:i:s'); // for example
+
+
+              $newEDT = DateTime::createFromFormat("Y-m-d  H:i:s", $oenddatetime);
+              $newEDT = new DateTime($oenddatetime);
+              $newEDT->add(new DateInterval('PT1H'));
+              $newEDT = $newEDT->format('Y-m-d  H:i:s'); // for example
+
+
+
             }
             if (isset($_GET['gmid'])) {
 
@@ -411,14 +426,14 @@ global $dbhandle;
               </div>
               <div class="mdl-cell mdl-cell--6-col">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr">
-                    <input type="text" id="sdt" class="mdl-textfield__input"  value="<?php echo $ostartdatetime ?>" data-input>
+                    <input type="text" id="sdt" class="mdl-textfield__input"  value="<?php echo $newSDT ?>" data-input>
                     <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span>
                     <label class="mdl-textfield__label" for="sdt">Start Date/Time</label>
                 </div>
               </div>
               <div class="mdl-cell mdl-cell--6-col">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr">
-                    <input type="text" id="edt" class="mdl-textfield__input"  value="<?php echo $oenddatetime ?>" data-input>
+                    <input type="text" id="edt" class="mdl-textfield__input"  value="<?php echo $newEDT ?>" data-input>
                     <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span>
                     <label class="mdl-textfield__label" for="edt">End Date/Time</label>
                 </div>
@@ -741,7 +756,7 @@ $("#timezoneSelector").on("change", e => {
  // document.querySelector(".js-TimeLocal").innerHTML = dateTimeLocal.format("ddd, DD MMM YYYY HH:mm:ss");
 });
 
-//document.querySelector("#timezoneSelector").value = "Europe/Berlin";
+document.querySelector("#timezoneSelector").value = "Europe/Amsterdam";
 
 const event = new Event("change");
 document.querySelector("#timezoneSelector").dispatchEvent(event);
@@ -756,6 +771,7 @@ $(document).ready(function() {
   $("#timezoneSelector").select2({
     placeholder: "Select a Timezone"
   });
+
 });
 // note: timezone selector - https://codepen.io/matallo/pen/WEjKqG?editors=1010#0
 
@@ -847,6 +863,26 @@ $(document).ready(function() {
               var medtUTC = moment.parseZone(medt).utc().format();
               var medtISO = moment(medtUTC).toISOString();
 
+              var mdtTZ = $('#timezoneSelector').val();
+
+              var mSDT = $('#sdt').val();
+              //var mSDT = moment(mSDT).format('YYYY-MM-DD HH:mm:ss');
+              //console.log('Initial: ' + mSDT);
+              var mSDT = moment(mSDT).format('YYYY-MM-DD\THH:mm:ss');
+              var zOffset = moment.tz(mdtTZ).format('Z');
+              //console.log('offset: ' + zOffset);
+              var tzConcat = mSDT.concat(zOffset);
+              //console.log('tzConcat: ' + tzConcat);
+              var sdtUTC = moment(tzConcat).utc().format();
+              //console.log('UTC: ' +  sdtUTC);
+
+              var mEDT = $('#edt').val();
+              var mEDT = moment(mEDT).format('YYYY-MM-DD\THH:mm:ss');
+              var tzConcat2 = mEDT.concat(zOffset);
+              var edtUTC = moment(tzConcat2).utc().format();
+
+
+
               if($('#switch-2:checked').val() == 'on') {
                 var odone = '1';
               } else {
@@ -869,8 +905,8 @@ $(document).ready(function() {
                 "oderenCIDid" : dcid, //jquery data-val
                 "obearbeitetvon" : $('#bearbeitet').val(),
                 "omaintenancedate" : $('#mdt').val(),
-                "ostartdatetime" : $('#sdt').val(),
-                "oenddatetime" : $('#edt').val(),
+                "ostartdatetime" : sdtUTC,
+                "oenddatetime" : edtUTC,
                 "opostponed": $('#pponed').val(),
                 "onotes" : $('#notes').val(),
                 //"omailankunde" : makdtUTC.toString(),
@@ -896,7 +932,7 @@ $(document).ready(function() {
                         var snackbarContainer = document.querySelector('#sbMExists');
                         var midval = $('#rmail').val();
                         var handler = function(event) {
-                          var aeURL = 'https://maintenance.newtelco.de/addedit?gmid=' + midval
+                          var aeURL = 'https://maintenance.newtelco.de/addedit?update=1&gmid=' + midval
                           window.location.href = aeURL;
                         };
                         var dataME = {

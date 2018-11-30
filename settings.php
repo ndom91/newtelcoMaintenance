@@ -2,7 +2,6 @@
 <?php
 require('authenticate_google.php');
 
-
 if(isset($_POST['label']) || isset($_SESSION['label'])) {
   if(isset($_POST['label'])) {
     $labelID2 = $_POST['label'];
@@ -97,7 +96,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
         <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" href="index.php"><span class="ndl-home"></span>  Home</a>
-          <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a>
+          <!-- <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a> -->
           <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
           <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
           <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>
@@ -135,7 +134,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   color: #fff;
                   max-height: 70px;
                   background:
-                    url('') bottom right 15% no-repeat #4d4d4d;
+                  url('') bottom right 15% no-repeat #4d4d4d;
                 }
                 </style>
                 <div class="demo-card-square mdl-card mdl-shadow--2dp">
@@ -273,10 +272,11 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              manualColumnResize: true,
              manualRowMove: true,
              manualRowResize: true,
-             contextMenu: true,
              comments: true,
              autoWrapRows: true,
              height: 400,
+             filters: true,
+             dropdownMenu: true,
              search: true,
              search: {
                searchResultClass: 'searchResultClass'
@@ -284,19 +284,20 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              cell: [
                {row: 1, col: 4, comment: {value: 'Multiple recipients should be separated by semicolon (";")'}},
                {row: 1, col: 3, comment: {value: 'Email address ending'}}
-             ],
-             afterChange: function (change, source) {
-                 $.ajax('save', 'GET', JSON.stringify({data: this.getData()}), function (res) {
-                   var response = JSON.parse(res.response);
+             ]
+          });
 
-                   if (response.result === 'ok') {
-                      console.log("Data saved");
-                   }
-                   else {
-                      console.log("Saving error");
-                   }
-              });
-            }
+          hot.addHook('afterChange', function(change,source) {
+                $.ajax('save', 'GET', JSON.stringify({changes: change}), function (res) {
+                  var response = JSON.parse(res.response);
+
+                  if (response.result === 'ok') {
+                     console.log("Data saved");
+                  }
+                  else {
+                     console.log("Saving error");
+                  }
+             });
           });
 
           searchField = document.getElementById('firmenSearch');
@@ -366,10 +367,11 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              manualColumnResize: true,
              manualRowMove: true,
              manualRowResize: true,
-             contextMenu: true,
              height: 400,
              comments: true,
              autoWrapRows: true,
+             filters: true,
+             dropdownMenu: true,
              search: true,
              search: {
                searchResultClass: 'searchResultClass'

@@ -101,7 +101,7 @@ global $dbhandle;
         <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" href="index.php"><span class="ndl-home"></span>  Home</a>
-          <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a>
+          <!-- <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a> -->
           <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
           <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
           <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>
@@ -162,7 +162,7 @@ global $dbhandle;
                 $tdCID = '';
 
                 if (empty($_POST['tLieferant']) && empty($_POST['tdCID'])) {
-                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id");
+                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id");
                 }
 
                 if (! empty($_POST['tLieferant'])){
@@ -182,7 +182,7 @@ global $dbhandle;
                     if ($fetch = mysqli_fetch_array($lieferant_query)) {
                         //Found a companyn - now show all maintenances for company
                         $lieferant_id = $fetch[0];
-                        $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
+                        $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
                       }
 
                 } elseif (! empty($_POST['tdCID'])){
@@ -192,7 +192,7 @@ global $dbhandle;
                       $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
                       $dCID_escape = '%' . $dCID_escape . '%';
 
-                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.maintenancedate, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
+                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
 
                 }
 
@@ -218,7 +218,6 @@ global $dbhandle;
                             <th>Lieferant</th>
                             <th>Deren CID</th>
                             <th>Bearbeitet Von</th>
-                            <th>Maintenance Date/Time</th>
                             <th>Start Date/Time</th>
                             <th>End Date/Time</th>
                             <th>Postponed</th>
@@ -241,9 +240,38 @@ global $dbhandle;
 
                     while (list($key, $value) = each($rowx)) {
 
-                      if ($key == 'updatedAt') {
-                       // $isoUpdatedAt = moment().utc($value);
-                        echo "<td> $value </td>";
+                      if ($key == 'startDateTime') {
+
+                        $newDate = DateTime::createFromFormat("Y-m-d  H:i:s", $value);
+                        $newDate = new DateTime($value);
+                        $newDate->add(new DateInterval('PT1H'));
+                        $newDate = $newDate->format('Y-m-d  H:i:s'); // for example
+
+                        echo "<td> $newDate </td>";
+                      } elseif ($key == 'endDateTime') {
+
+                        $newDate = DateTime::createFromFormat("Y-m-d  H:i:s", $value);
+                        $newDate = new DateTime($value);
+                        $newDate->add(new DateInterval('PT1H'));
+                        $newDate = $newDate->format('Y-m-d  H:i:s'); // for example
+
+                        echo "<td> $newDate </td>";
+                      } elseif ($key == 'mailSentAt') {
+
+                        $newDate = DateTime::createFromFormat("Y-m-d  H:i:s", $value);
+                        $newDate = new DateTime($value);
+                        $newDate->add(new DateInterval('PT1H'));
+                        $newDate = $newDate->format('Y-m-d  H:i:s'); // for example
+
+                        echo "<td> $newDate </td>";
+                      } elseif ($key == 'maileingang') {
+
+                        $newDate = DateTime::createFromFormat("Y-m-d  H:i:s", $value);
+                        $newDate = new DateTime($value);
+                        $newDate->add(new DateInterval('PT1H'));
+                        $newDate = $newDate->format('Y-m-d  H:i:s'); // for example
+
+                        echo "<td> $newDate </td>";
                       } elseif ($key == 'done') {
                         echo '<td style="text-align: center;">';
                         if ($value == '1'){
@@ -285,11 +313,12 @@ global $dbhandle;
                           "visible": false,
                           "searchable": false
                       },
-                      { responsivePriority: 1, targets: [ 0, 2, 3, 4, 5, 6, 7 ] },
+                      { responsivePriority: 1, targets: [ 0, 2, 3, 4, 5, 6 ] },
                       { responsivePriority: 2, targets: [ -1 ] },
-                      { responsivePriority: 500, targets: [ 8, 9, 10, 11, 12, 13 ] },
+                      { responsivePriority: 5, targets: [ 7, 8, 12 ] },
+                      { responsivePriority: 10, targets: [ 11, 9, 10 ] },
                       {
-                          targets: [2, 3, 4, 6, 7, 8, 9, 10, 11, 14 ],
+                          targets: [2, 3, 4, 6, 7, 8, 9, 10, 13 ],
                           className: 'mdl-data-table__cell--non-numeric'
                       }
                   ]

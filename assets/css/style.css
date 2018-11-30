@@ -224,7 +224,7 @@ textarea.mdl-textfield__input {
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
   line-height: 24px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 #viewMailID {
@@ -592,6 +592,14 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
   font-size: 14px !important;
   position: relative;
   right: -10px;
+}
+.menuSubLabel2 {
+  color: #4e4e4e;
+  float: right;
+  top: 20px;
+  font-size: 20px !important;
+  position: relative;
+  right: -30px;
 }
 .mdl-layout__drawer .mdl-navigation .mdl-navigation__link {
   padding: 16px 30px !important;

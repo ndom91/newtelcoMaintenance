@@ -76,7 +76,7 @@ require('authenticate_google.php');
         <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" href="index.php"><span class="ndl-home"></span>  Home</a>
-          <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a>
+          <!-- <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a> -->
           <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
           <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
           <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>

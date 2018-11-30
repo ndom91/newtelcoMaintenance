@@ -79,20 +79,18 @@ $clientService = getGoogleClient();
  }
 
   if($client->isAccessTokenExpired()){  // if token expired
-    if (!empty($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']['id_token'])) {
+    if (isset($_SESSION['id_token_token']['id_token'])) {
       $refreshtoken = $_SESSION['id_token_token']['id_token'];
       $client->fetchAccessTokenWithRefreshToken($refreshtoken);
       $accessToken=$client->getAccessToken();
+      //var_dump($accessToken);
     }
   }
  /************************************************
    If we have an access token, we can make
    requests, else we generate an authentication URL.
   ************************************************/
- if (
-   !empty($_SESSION['id_token_token'])
-   && isset($_SESSION['id_token_token']['id_token'])
- ) {
+ if (!empty($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']['id_token'])) {
    $client->setAccessToken($_SESSION['id_token_token']);
  } else {
    $authUrl = $client->createAuthUrl();
@@ -110,8 +108,10 @@ $clientService = getGoogleClient();
    $token_data = $client->verifyIdToken();
  }
 
+//var_dump($_SESSION['id_token_token']['id_token']);
 
-if (!isset($_SESSION['id_token_token'])):
+if ($_SESSION['id_token_token']['id_token'] === NULL):
+  unset($_SESSION['id_token_token']);
 ?>
 
 <!DOCTYPE html>

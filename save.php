@@ -78,7 +78,8 @@ try {
   }
 
   $out = array(
-    'result' => 'ok'
+    'result' => 'ok',
+    'output' => $query
   );
   echo json_encode($out);
 

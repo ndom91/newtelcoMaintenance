@@ -826,7 +826,6 @@ main {
 html, body {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-size: 14px;
-  font-weight: 400;
   line-height: 20px; }
 
 h1, h2, h3, h4, h5, h6, p {
@@ -905,8 +904,7 @@ p {
   margin-bottom: 16px; }
 
 a {
-  color: rgb(103, 178, 70);
-  font-weight: 500; }
+  color: rgb(103, 178, 70); }
 
 blockquote {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
@@ -7377,7 +7375,6 @@ input.mdl-button[type="submit"] {
   text-decoration: none;
   margin: 0;
   font-size: 14px;
-  font-weight: 400;
   line-height: 24px;
   letter-spacing: 0;
   opacity: 0.87; }

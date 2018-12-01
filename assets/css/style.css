@@ -155,7 +155,7 @@ table {
 	margin-bottom: 10px;
 }
 
-/* Add Edit */
+/* Add/Edit */
 
 .demo-card-wide2 {
   width: 492px !important;
@@ -167,6 +167,7 @@ table {
 
 .demo-card-wide.mdl-card {
   width: 100%;
+  min-width: 450px;
   max-width: 100%;
   margin-top: 3%;
   margin-left: auto;
@@ -237,6 +238,10 @@ textarea.mdl-textfield__input {
    top: 20px;
 }
 
+.select2-container {
+    width: 100% !important;
+}
+
 /* Select Mail Modal */
 
 .mailDialog1 {
@@ -264,9 +269,9 @@ textarea.mdl-textfield__input {
   margin: 0;
 }
 .labelSelectClose {
-  position:fixed !important;
-  top:50px;
-  right:50px;
+  position:relative !important;
+  top:-50px;
+  float: right;
   z-index: 1000;
   height: 48px !important;
   width: 48px !important;
@@ -434,14 +439,13 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 .menu_userdetails {
 	padding-left: 40px;
 	display: block;
-    position: relative;
-    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: 0.02em;
-    font-weight: 400;
-    box-sizing: border-box;
+  position: relative;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  box-sizing: border-box;
 }
 .menu_userphoto {
 	border-radius: 50%;
@@ -459,29 +463,29 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 }
 .mdl-userprofile-button {
 	background: transparent;
-    border: none;
-    border-radius: 2px;
-    color: rgb(0,0,0);
-    position: relative;
-    height: 42px !important;
-    min-width: 64px;
-    display: inline-block;
-    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    text-transform: uppercase;
-    line-height: 1;
-    letter-spacing: 0;
-    overflow: hidden;
-    will-change: box-shadow;
-    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    outline: none;
-    cursor: pointer;
-    text-decoration: none;
-    text-align: center;
-    justify-content: center;
-    line-height: 36px;
-    vertical-align: middle;
+  border: none;
+  border-radius: 2px;
+  color: rgb(0,0,0);
+  position: relative;
+  height: 42px !important;
+  min-width: 64px;
+  display: inline-block;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: 0;
+  overflow: hidden;
+  will-change: box-shadow;
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  justify-content: center;
+  line-height: 36px;
+  vertical-align: middle;
 }
 .mdl-userprofile-button:hover {
     background-color: rgba(255,255,255, 0) !important;
@@ -672,6 +676,7 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 }
 .footertext {
 	margin-right: 20px;
+  min-width: 165px;
 }
 
 .footera {

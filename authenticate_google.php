@@ -46,11 +46,12 @@ $clientService = getGoogleClient();
  $redirect_uri = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
  $client = new Google_Client();
  // USER AUTH
+ $client->setAccessType('offline');
  $client->setAuthConfig($oauth_credentials);
  $client->setRedirectUri($redirect_uri);
  $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/calendar'));
- $client->setApprovalPrompt('auto');
- $client->setAccessType('offline');
+ $client->setApprovalPrompt('force');
+ $client->setLoginHint('@newtelco.de');
  $plus = new Google_Service_Plus($client);
 
  /************************************************
@@ -58,9 +59,8 @@ $clientService = getGoogleClient();
   * local access token in this case
   ************************************************/
  if (isset($_REQUEST['logout'])) {
-   unset($_SESSION['id_token_token']);
+   unset($_SESSION['access_token']);
  }
-
  /************************************************
   * If we have a code back from the OAuth 2.0 flow,
   * we need to exchange that with the
@@ -71,27 +71,24 @@ $clientService = getGoogleClient();
  if (isset($_GET['code'])) {
    $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
    // store in the session also
-   $_SESSION['id_token_token'] = $token;
-
+   $_SESSION['access_token'] = $token;
    // redirect back to the example
    header('Location: https://maintenance.newtelco.de/index.php');
    // return;
  }
 
-  if($client->isAccessTokenExpired()){  // if token expired
-    if (isset($_SESSION['id_token_token']['id_token'])) {
-      $refreshtoken = $_SESSION['id_token_token']['id_token'];
-      $client->fetchAccessTokenWithRefreshToken($refreshtoken);
-      $accessToken=$client->getAccessToken();
-      //var_dump($accessToken);
-    }
+  //print_r($_SESSION['access_token']);
+
+  if (isset($_SESSION['access_token']['refresh_token'])) {
+    setcookie("rtoken",$_SESSION['access_token']['refresh_token']);
+
   }
  /************************************************
    If we have an access token, we can make
    requests, else we generate an authentication URL.
   ************************************************/
- if (!empty($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']['id_token'])) {
-   $client->setAccessToken($_SESSION['id_token_token']);
+ if (!empty($_SESSION['access_token']) && isset($_SESSION['access_token']['refresh_token'])) {
+   $client->setAccessToken($_SESSION['access_token']);
  } else {
    $authUrl = $client->createAuthUrl();
    //header('Location: ' . $authUrl);
@@ -108,10 +105,19 @@ $clientService = getGoogleClient();
    $token_data = $client->verifyIdToken();
  }
 
-//var_dump($_SESSION['id_token_token']['id_token']);
+ if($client->isAccessTokenExpired()){  // if token expired
+     $refreshtoken = $_COOKIE['rtoken'];
+     var_dump($refreshtoken);
+     $client->refreshToken($refreshtoken);
+     //$client->fetchAccessTokenWithRefreshToken($refreshtoken);
+     //$accessToken=$client->getAccessToken();
+     //var_dump($client);
+     //$client->setAccessToken($accessToken);
+     
+ }
 
-if ($_SESSION['id_token_token']['id_token'] === NULL):
-  unset($_SESSION['id_token_token']);
+if ($_SESSION['access_token']['id_token'] === NULL):
+  unset($_SESSION['access_token']);
 ?>
 
 <!DOCTYPE html>

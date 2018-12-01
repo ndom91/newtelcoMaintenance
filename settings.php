@@ -87,18 +87,40 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
         </div>
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
-          <a href="#emailsTab" class="mdl-layout__tab is-active">Emails</a>
-          <a href="#firmenTab" class="mdl-layout__tab">Firmen</a>
-          <a href="#kundenTab" class="mdl-layout__tab">Kunden CIDs</a>
+          <a id="emailsTab" href="#emailsTab" class="mdl-layout__tab is-active">Emails</a>
+          <a id="firmenTab" href="#firmenTab" class="mdl-layout__tab">Firmen</a>
+          <a id="kundenTab" href="#kundenTab" class="mdl-layout__tab">Kunden CIDs</a>
         </div>
       </header>
+      <?php
+      if(isset($_POST['label']) || isset($_SESSION['label'])) {
+        if(! empty($_POST['label'])) {
+        $labelID = $_POST['label'];
+        $_SESSION['label'] = $labelID;
+        } else {
+          $labelID = $_SESSION['label'];
+        }
+      } else {
+        if(isset($_COOKIE['label'])) {
+          $labelID = $_COOKIE['label'];
+        } else {
+          $labelID = '0';
+        }
+      }
+
+      if ($labelID != '0') {
+        $service3 = new Google_Service_Gmail($clientService);
+        $results3 = $service3->users_labels->get($user,$labelID);
+      }
+
+      ?>
       <div class="mdl-layout__drawer">
         <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" href="index.php"><span class="ndl-home"></span>  Home</a>
           <!-- <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a> -->
           <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
-          <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
+          <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming<div class="material-icons mdl-badge mdl-badge--overlap menuSubLabel2" data-badge="<?php if ($labelID != '0') { if ($results3['messagesTotal'] == 0) { echo "♥"; } else { echo $results3['messagesTotal']; }} else {  echo "♥"; } ?>"></div></a></a>
           <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>
           <a class="mdl-navigation__link" href="groupservice.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">service</small></a>
           <a class="mdl-navigation__link" href="addedit.php"><i class="ndl-createnew"></i></i>  Add</a>
@@ -210,6 +232,9 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
         <div class="labelSelectHeader">
           <h6 class="mdl-dialog__title labelSelectLabel">Which label are your maintenance emails in?</h6>
         </div>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 labelSelectClose">
+          <i class="material-icons">close</i>
+        </button>
         <div class="mdl-dialog__content">
           <p>
 
@@ -241,17 +266,30 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
               ?>
             </p>
           </div>
-          <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 labelSelectClose">
-            <i class="material-icons">close</i>
-          </button>
         </dialog>
         <script>
 
-        /*****************
-         *
-         *  FIRMEN Table
-         *
-         ******************/
+
+          var dialog = document.querySelector('#dialog3');
+          var showDialogButton = document.querySelector('#showdialog2');
+          if (! dialog.showModal) {
+            dialogPolyfill.registerDialog(dialog);
+          }
+          showDialogButton.addEventListener('click', function() {
+            dialog.showModal();
+          });
+          dialog.querySelector('.close1').addEventListener('click', function() {
+            dialog.close();
+          });
+
+
+         $('#firmenTab').click(function(){
+
+         /*****************
+          *
+          *  FIRMEN Table
+          *
+          ******************/
 
           var container = document.getElementById('firmenTable');
           var hot = new Handsontable(container, {
@@ -277,6 +315,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              height: 400,
              filters: true,
              dropdownMenu: true,
+             renderAllRows: true,
              search: true,
              search: {
                searchResultClass: 'searchResultClass'
@@ -310,43 +349,33 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             hot.render();
           });
 
-          $( document ).ready(function() {
-            // For Loading
-            $.ajax({
-              type: "GET",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-              'url':'api?firmen=1',
-              'success': function (res) {
-                hot.loadData(res);
-                hot.render();
-              },
-              'error': function () {
-                console.log("Loading error");
-              }
-            })
-          });
+          // For Loading
+          $.ajax({
+            type: "GET",
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            'url':'api?firmen=1',
+            'success': function (res) {
+              hot.loadData(res);
+              hot.render();
+            },
+            'error': function () {
+              console.log("Loading error");
+            }
+          })
+        });
 
 
-          var dialog = document.querySelector('#dialog3');
-          var showDialogButton = document.querySelector('#showdialog2');
-          if (! dialog.showModal) {
-            dialogPolyfill.registerDialog(dialog);
-          }
-          showDialogButton.addEventListener('click', function() {
-            dialog.showModal();
-          });
-          dialog.querySelector('.close1').addEventListener('click', function() {
-            dialog.close();
-          });
 
-        /*****************
-         *
-         *  KUNDEN Table
-         *
-         ******************/
+         $('#kundenTab').click(function(){
+
+         /*****************
+          *
+          *  KUNDEN Table
+          *
+          ******************/
 
           var container2 = document.getElementById('kundenTable');
           var hot2 = new Handsontable(container2, {
@@ -371,6 +400,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              comments: true,
              autoWrapRows: true,
              filters: true,
+             renderAllRows: true,
              dropdownMenu: true,
              search: true,
              search: {
@@ -404,7 +434,6 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             hot2.render();
           });
 
-          $( document ).ready(function() {
             // For Loading
             $.ajax({
               type: "GET",

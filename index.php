@@ -37,7 +37,7 @@ require('authenticate_google.php');
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
   <!-- Google font-->
-  <link prefetch rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:200,300,700" type="text/css">
+  <link prefetch rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:200,300,400,500,700" type="text/css">
 
   <!-- material design -->
   <link rel="stylesheet" href="assets/css/material.css">
@@ -79,6 +79,28 @@ require('authenticate_google.php');
           </div>
         </div>
       </header>
+      <?php
+      if(isset($_POST['label']) || isset($_SESSION['label'])) {
+        if(! empty($_POST['label'])) {
+        $labelID = $_POST['label'];
+        $_SESSION['label'] = $labelID;
+        } else {
+          $labelID = $_SESSION['label'];
+        }
+      } else {
+        if(isset($_COOKIE['label'])) {
+          $labelID = $_COOKIE['label'];
+        } else {
+          $labelID = '0';
+        }
+      }
+
+      if ($labelID != '0') {
+        $service3 = new Google_Service_Gmail($clientService);
+        $results3 = $service3->users_labels->get($user,$labelID);
+      }
+
+      ?>
       <div class="mdl-layout__drawer">
         <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
         <nav class="mdl-navigation">
@@ -103,28 +125,7 @@ require('authenticate_google.php');
         </nav>
       </div>
         <main class="mdl-layout__content">
-            <?php
-            if(isset($_POST['label']) || isset($_SESSION['label'])) {
-              if(! empty($_POST['label'])) {
-              $labelID = $_POST['label'];
-              $_SESSION['label'] = $labelID;
-              } else {
-                $labelID = $_SESSION['label'];
-              }
-            } else {
-              if(isset($_COOKIE['label'])) {
-                $labelID = $_COOKIE['label'];
-              } else {
-                $labelID = '0';
-              }
-            }
 
-            if ($labelID != '0') {
-              $service3 = new Google_Service_Gmail($clientService);
-              $results3 = $service3->users_labels->get($user,$labelID);
-            }
-
-            ?>
             <div class="mdl-grid">
               <div class="mdl-cell mdl-cell--3-col mdl-cell--0-col-phone"></div>
               <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">

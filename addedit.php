@@ -114,13 +114,35 @@ global $dbhandle;
 
         </div>
       </header>
+      <?php
+      if(isset($_POST['label']) || isset($_SESSION['label'])) {
+        if(! empty($_POST['label'])) {
+        $labelID = $_POST['label'];
+        $_SESSION['label'] = $labelID;
+        } else {
+          $labelID = $_SESSION['label'];
+        }
+      } else {
+        if(isset($_COOKIE['label'])) {
+          $labelID = $_COOKIE['label'];
+        } else {
+          $labelID = '0';
+        }
+      }
+
+      if ($labelID != '0') {
+        $service3 = new Google_Service_Gmail($clientService);
+        $results3 = $service3->users_labels->get($user,$labelID);
+      }
+
+      ?>
       <div class="mdl-layout__drawer">
         <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" href="index.php"><i class="ndl-home"></i>  Home</a>
           <!-- <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a> -->
           <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
-          <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
+          <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming<div class="material-icons mdl-badge mdl-badge--overlap menuSubLabel2" data-badge="<?php if ($labelID != '0') { if ($results3['messagesTotal'] == 0) { echo "♥"; } else { echo $results3['messagesTotal']; }} else {  echo "♥"; } ?>"></div></a></a>
           <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>
           <a class="mdl-navigation__link" href="groupservice.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">service</small></a>
           <a class="mdl-navigation__link" href="addedit.php"><i class="ndl-createnew"></i></i>  Add</a>
@@ -192,7 +214,6 @@ global $dbhandle;
                 $odone = '';
               }
 
-
               $newSDT = DateTime::createFromFormat("Y-m-d  H:i:s", $ostartdatetime);
               $newSDT = new DateTime($ostartdatetime);
               $newSDT->add(new DateInterval('PT1H'));
@@ -203,8 +224,6 @@ global $dbhandle;
               $newEDT = new DateTime($oenddatetime);
               $newEDT->add(new DateInterval('PT1H'));
               $newEDT = $newEDT->format('Y-m-d  H:i:s'); // for example
-
-
 
             }
             if (isset($_GET['gmid'])) {
@@ -223,6 +242,12 @@ global $dbhandle;
                   return $decodedMessage;
               }
 
+              function get_email_domain($email) {
+                $domain = substr(strrchr($email[0], "@"), 1);
+                $result = preg_split('/(?=\.[^.]+$)/', $domain);
+                return $domain;
+              }
+
               function getHeader($headers, $name) {
                 foreach($headers as $header) {
                   if($header['name'] == $name) {
@@ -232,22 +257,16 @@ global $dbhandle;
               }
 
               function stripHTML($html) {
-
                   $dom = new DOMDocument();
-
                   $dom->loadHTML($html);
-
                   $script = $dom->getElementsByTagName('script');
-
                   $remove = [];
                   foreach($script as $item) {
                     $remove[] = $item;
                   }
-
                   foreach ($remove as $item) {
                     $item->parentNode->removeChild($item);
                   }
-
                   $html = $dom->saveHTML();
                   return $html;
               }
@@ -267,10 +286,12 @@ global $dbhandle;
                       $from = getHeader($headers, 'From');
                       $fromHTML = htmlentities($from);
                       if (($pos = strpos($fromHTML, "@")) !== FALSE) {
-                        $domain = substr($fromHTML, strpos($fromHTML, "@") + 1);
-                        $dtld = substr($fromHTML, strpos($fromHTML, "."));
-                        $domain = basename($domain, $dtld);
+                        preg_match_all("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $fromHTML, $matches);
+                        $fromAddress = $matches[0];
+                        $domain = get_email_domain($matches[0]);
                       }
+
+
 
                       $msgArray[] = $date;
                       $msgArray[] = $domain;
@@ -324,7 +345,15 @@ global $dbhandle;
                   $omaileingang = $msgInfo[0];
                   $oreceivedmail = $gmid;
                   $olieferantID = $olieferant;
-                  $olieferant = $msgInfo[1];
+
+                  $lieferantNameQ =  mysqli_query($dbhandle, "SELECT companies.name FROM companies WHERE companies.id LIKE '$olieferantID'");
+                  while ($row = mysqli_fetch_row($lieferantNameQ)) {
+                      $olieferant = $row[0];
+                  }
+                  
+                  if ($olieferant == '') {
+                    $olieferant = $msgInfo[1];
+                  }
 
                   $msubject = $msgInfo[2];
                   $mfrom = $msgInfo[3];
@@ -348,9 +377,10 @@ global $dbhandle;
                       $workers = array_values($workers);
                   }
 
-                  $derenCIDQ =  mysqli_query($dbhandle, "SELECT companies.name, kunden.derenCID, kunden.id FROM kunden LEFT JOIN companies ON kunden.kunde = companies.id WHERE companies.name LIKE '$olieferant'") or die(mysqli_error($dbhandle));
+                  $derenCIDQ =  mysqli_query($dbhandle, "SELECT companies.name, kunden.derenCID, kunden.id FROM kunden LEFT JOIN companies ON kunden.kunde = companies.id WHERE companies.id LIKE '$olieferantID'") or die(mysqli_error($dbhandle));
 
                 }
+
             ?>
 
         <!-- EDIT MODE -->
@@ -377,16 +407,18 @@ global $dbhandle;
                 </div>
               </div>
               <div class="mdl-cell mdl-cell--6-col">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="float:left; width: 72% !important;">
-                  <input class="mdl-textfield__input" type="text" value="<?php echo $oreceivedmail ?>" id="rmail">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input"  style="width: 82% !important;" type="text" value="<?php echo $oreceivedmail ?>" id="rmail">
                   <label class="mdl-textfield__label" for="rmail">Incoming Mail ID</label>
-                </div>
-                <?php if (! empty($oreceivedmail)) { echo '<button style="margin: 0 0 0 10px;" id="viewmailbtn" type="button" class=" mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab viewMail2">
-                                                             <i class="material-icons mdl-textfield__label__icon2">alternate_email</i>
+
+                <?php if (! empty($oreceivedmail)) { echo '<button style="position:absolute; right:0;" id="viewmailbtn" type="button" class=" mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab viewMail2">
+                                                             <i class="mdi mdi-24px mdi-email-search-outline mdi-dark"></i>
                                                            </button>
+
                                                            <div class="mdl-tooltip  mdl-tooltip--bottom" data-mdl-for="viewmailbtn">
                                                              View Mail
                                                            </div>'; } ?>
+                 </div>
                </div>
                <div class="mdl-cell mdl-cell--6-col">
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -395,20 +427,25 @@ global $dbhandle;
               </div>
               </div>
               <div class="mdl-cell mdl-cell--6-col">
-                <div class="mdl-selectfield mdl-js-selectfield mdl-textfield--floating-label">
+                <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
                   <select id="dcid3" name="dcid3" class="mdl-selectfield__select">
                     <option value=""></option>
                     <?php
                       while ($row = mysqli_fetch_row($derenCIDQ)) {
+                        if ((isset($_GET['mid'])) && ($row[2] == $oderenCIDid)) {
+                          echo '<option selected value="' . $row[2] . '">' . $row[1] . '</option>';
+                        } else {
                           echo '<option value="' . $row[2] . '">' . $row[1] . '</option>';
+                        }
                       }
                     ?>
                   </select>
                   <label class="mdl-selectfield__label" for="dcid3">Deren CID</label>
+                  <span class="mdl-selectfield__error">Select a value</span>
                 </div>
               </div>
               <div class="mdl-cell mdl-cell--6-col">
-                <div class="mdl-selectfield mdl-js-selectfield mdl-textfield--floating-label">
+                <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
                   <select id="bearbeitet" name="bearbeitet" class="mdl-selectfield__select">
                     <option value="<?php echo $usernameBV ?>"><?php echo $usernameBV ?></option>
                     <option value="<?php echo $workers[0] ?>"><?php echo $workers[0] ?></option>
@@ -416,6 +453,7 @@ global $dbhandle;
                     <option value="<?php echo $workers[2] ?>"><?php echo $workers[2] ?></option>
                   </select>
                   <label class="mdl-selectfield__label" for="bearbeitet">Bearbeitet Von</label>
+                  <span class="mdl-selectfield__error">Select a value</span>
                 </div>
               </div>
               <div class="mdl-cell mdl-cell--6-col">
@@ -479,6 +517,7 @@ global $dbhandle;
 
               <input type="hidden" value=" <?php echo $update ?>" id="update">
               <input type="hidden" value="" id="mailSentAt">
+              <input type="hidden" value="<?php echo $_COOKIE['label'] ?>" id="gmailLabel">
             </div>
             </form>
             </div>
@@ -489,13 +528,10 @@ global $dbhandle;
                   <input type="checkbox" id="switch-2" class="mdl-switch__input" <?php echo $odone ?>>
                 </label>
                 <div class="mdl-layout-spacer"></div>
-                <button id="addCalbtn" type="button" onclick="openInNewTab('http://www.google.com/calendar/event?action=TEMPLATE&dates=20181121%2F20181122&text=Newtelco%20Maintenance%20<?php echo $olieferant ?>&location=Maintenance%20Spot&details=Body%20Body%20Body.')" class="mdl-button mdl-js-button mdl-button--raised">
+                <button id="addCalbtn" type="button" class="mdl-button mdl-js-button mdl-button--raised">
                   <span class="mdi mdi-24px mdi-calendar-plus mdi-dark"> Add to Cal </span>
                 </button>
               </div>
-              <!-- <a href="incoming.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
-                Back
-              </a> -->
             </div>
           </div>
           <?php
@@ -504,7 +540,7 @@ global $dbhandle;
                   <h4 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $msubject . '</h4><br>
                   <h6 class="labelSelectLabel" style="font-size: 20px !important"><font color="#67B246">From:</font> ' . $mfrom . '</h6><br>
                   <h6 class="labelSelectLabel" style="font-size: 20px !important"><font color="#67B246">Date:</font> ' . $mdate . '</h6>
-                  <button type="button" class="mailcSelectClose2 mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1">
+                  <button tabindex="-1" type="button" class="mailcSelectClose2 mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1">
                     <i class="material-icons">close</i>
                   </button>
                 </div>
@@ -543,8 +579,6 @@ global $dbhandle;
                     <th>Unsere CID</th>
                     <th>Kunde</th>
                     <th>Maintenance Recipient</th>
-                    <th>startDateTime</th>
-                    <th>endDateTime</th>
                     <th>Notification</th>
                   </tr>
                 </thead>
@@ -556,8 +590,28 @@ global $dbhandle;
 
       <script>
 
+$('#addCalbtn').click(function(){
 
-        const _t = (s) => {
+
+  console.log('calSDT: ' + moment(calSDT).toISOString());
+
+  var calSDT = $('#sdt').val();
+  var calSDTISO = moment(calSDT).toISOString().replace(/[^a-z0-9\s]/gi, '');
+  var calSDTISO2 = calSDTISO.replace('000Z','Z');
+  console.log('calSDTISO: ' + calSDTISO2);
+
+  var calEDT = $('#edt').val();
+  var calEDTISO = moment(calEDT).toISOString().replace(/[^a-z0-9\s]/gi, '');;
+  var calEDTISO2 = calEDTISO.replace('000Z','Z');
+  console.log('calEDTISO: ' + calEDTISO2);
+
+  var selectedDCID = $( "#dcid3 option:selected" ).text();
+  var selectedCompany = $('#company').val();
+
+  openInNewTab(`http://www.google.com/calendar/event?action=TEMPLATE&dates=${calSDTISO2}%2F${calEDTISO2}&src=newtelco.de_hkp98ambbvctcn966gjj3c7dlo@group.calendar.google.com&text=Maintenance%20- '${selectedCompany}'%20on%20'${selectedDCID}'&add=service@newtelco.de&details=Newtelco%20Maintenance%20for%20<b>${selectedCompany}</b>%20on%20deren%20CID:%20'<b>${selectedDCID}</b>'.&trp=false`);
+});
+
+const _t = (s) => {
   if (i18n !== void 0 && i18n[s]) {
     return i18n[s];
   }
@@ -775,222 +829,225 @@ $(document).ready(function() {
 });
 // note: timezone selector - https://codepen.io/matallo/pen/WEjKqG?editors=1010#0
 
+$("#dcid3").change(function() {
+if ( $.fn.dataTable.isDataTable( '#dataTable4' ) ) {
+    table3 = $('#dataTable4').DataTable();
+    table3.destroy();
+}
+var data3 = $( "#dcid3 option:selected" ).text();
+$('#kundenCard').addClass('display').removeClass('hidden');
+//filter by selected value on second column
+var table4 = $('#dataTable4').DataTable( {
+  ajax: {
+    url: "api?dCID=" + data3,
+    dataSrc: ""
+  },
+  columns: [
+      { data: "id" },
+      { data: "derenCID" },
+      { data: "unsereCID" },
+      { data: "name" },
+      { data: "maintenanceRecipient" },
+      { title: "Notification" }
+  ],
+  columnDefs: [
+      {
+          "targets": [ 0, 4 ],
+          "visible": false,
+          "searchable": false
+      }, {
+          "targets": -1,
+          "data": null,
+          "defaultContent": "<button id='sendMailbtn' type='button' class='mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--raised mdl-button--colored'><span class='mdi mdi-gmail mdi-24px'> <span class='mdi mdi-send mdi-24px'></span></button>"
+      }
+    ]
+});
+
+});
 
 
-        $("#dcid3").change(function() {
-        if ( $.fn.dataTable.isDataTable( '#dataTable4' ) ) {
-            table3 = $('#dataTable4').DataTable();
-            table3.destroy();
+$(document).ready(function() {
+  $('#dataTable4').on( 'click', '#sendMailbtn', function () {
+    table3 = $('#dataTable4').DataTable();
+    var data = table3.row( $(this).parents('tr') ).data();
+
+      var start = moment($('#sdt').val());
+      var end = moment($('#edt').val());
+
+      var startLabel = start.format("DD MMM YYYY HH:mm:SS");
+      var endLabel = end.format("DD MMM YYYY HH:mm:SS");
+
+      var tzSuffix = $("#timezoneSelector option:selected").text();
+      var regExp = /\(([^)]+)\)/;
+      var matches = regExp.exec(tzSuffix);
+      var tzSuffixRAW = matches[1];
+
+      var ms = moment(end).diff(moment(start));
+      var d = moment.duration(ms);
+      var impactTime = d.format("mm");
+
+      openInNewTab2('mailto://' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['unsereCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head><style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:151}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624}</style></head><body><div><p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['unsereCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + startLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + endLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">Planned maintenance on the network infrastructure to avoid unplanned outage in near future</span></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">' + impactTime + ' minutes during the maintenance window</span></span></p></td></tr></table><p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us.</span></p></body>');
+
+      var DateTime = luxon.DateTime;
+      var now = DateTime.local();
+      $("#mailSentAt").val(moment.utc().toISOString());
+  } );
+
+  /*************************************************************************************************
+   *
+   *   Gmail HTML Paste Extension:
+   *   https://chrome.google.com/webstore/detail/gmail-append-html/dnfikahmfhcjfcmbgbkklecekfeijmda
+   *
+   *************************************************************************************************/
+
+  function openInNewTab2(url) {
+    var win = window.open(url, '_blank');
+    win.focus();
+  };
+});
+
+$('#btnSave').on('click', function(e) {
+
+  e.preventDefault();
+
+  // Some formatting before we push to mysql
+  var DateTime = luxon.DateTime;
+  //var makdtISO = DateTime.fromISO($('#makdt').val());
+  //var makdtUTC = makdtISO.toUTC();
+
+  var medt = $('#medt').val();
+  var medtUTC = moment.parseZone(medt).utc().format();
+  var medtISO = moment(medtUTC).toISOString();
+
+  var mdtTZ = $('#timezoneSelector').val();
+
+  var mSDT = $('#sdt').val();
+  //var mSDT = moment(mSDT).format('YYYY-MM-DD HH:mm:ss');
+  //console.log('Initial: ' + mSDT);
+  var mSDT = moment(mSDT).format('YYYY-MM-DD\THH:mm:ss');
+  var zOffset = moment.tz(mdtTZ).format('Z');
+  //console.log('offset: ' + zOffset);
+  var tzConcat = mSDT.concat(zOffset);
+  //console.log('tzConcat: ' + tzConcat);
+  var sdtUTC = moment(tzConcat).utc().format();
+  //console.log('UTC: ' +  sdtUTC);
+
+  var mEDT = $('#edt').val();
+  var mEDT = moment(mEDT).format('YYYY-MM-DD\THH:mm:ss');
+  var tzConcat2 = mEDT.concat(zOffset);
+  var edtUTC = moment(tzConcat2).utc().format();
+
+
+
+  if($('#switch-2:checked').val() == 'on') {
+    var odone = '1';
+  } else {
+    var odone = '0';
+  }
+
+  if($('#dcid3').val() == ''){
+    var dcid = '0';
+  } else {
+    var dcid = $('#dcid3').val();
+  }
+  var TableData = new Array();
+
+  TableData[0] = {
+    "omaintid" : $('#maintid').val(),
+    "omaileingang" : medtISO,
+    "oreceivedmail" : $('#rmail').val(),
+    "olieferant" : $('#company').val(),
+    "olieferantid" : $("#company").data('val'),
+    "oderenCIDid" : dcid, //jquery data-val
+    "obearbeitetvon" : $('#bearbeitet').val(),
+    "omaintenancedate" : $('#mdt').val(),
+    "ostartdatetime" : sdtUTC,
+    "oenddatetime" : edtUTC,
+    "opostponed": $('#pponed').val(),
+    "onotes" : $('#notes').val(),
+    //"omailankunde" : makdtUTC.toString(),
+    "mailSentAt" : $('#mailSentAt').val(),
+    "odone" : odone,
+    "update" : $('#update').val(),
+    "updatedBy": $('.menu_username').text(),
+    "gmailLabel" : $('#gmailLabel').val()
+    }
+
+    $.ajax({
+
+     type : "POST",
+     url : "api",
+     cache : "false",
+     dataType: "json",
+     data :  {data:TableData},
+     success : function(result1){
+       //console.log('result: ' + result1.exist);
+       var obj = JSON.stringify(result1);
+         //console.log('obj.exist: ' + obj.exist);
+
+         if (result1.exist === 1) {
+            var snackbarContainer = document.querySelector('#sbMExists');
+            var midval = $('#rmail').val();
+            var handler = function(event) {
+              var aeURL = 'https://maintenance.newtelco.de/addedit?update=1&gmid=' + midval
+              window.location.href = aeURL;
+            };
+            var dataME = {
+              message: 'Maintenance Already Exists',
+              timeout: 4000,
+              actionHandler: handler,
+              actionText: 'OPEN'
+            };
+            snackbarContainer.MaterialSnackbar.showSnackbar(dataME);
+         } else if (result1.added === 1){
+           var snackbarContainer2 = document.querySelector('#sbMAS');
+           var dataME2 = {
+             message: 'Maintenance Successfully Saved',
+             timeout: 2000
+           };
+           snackbarContainer2.MaterialSnackbar.showSnackbar(dataME2);
+         } else if (result1.updated === 1){
+           var snackbarContainer2 = document.querySelector('#sbUpdated');
+           var dataME3 = {
+             message: 'Maintenance Successfully Updated',
+             timeout: 2000
+           };
+           snackbarContainer2.MaterialSnackbar.showSnackbar(dataME3);
+         } else {
+           alert('Invalid Response');
+         }
+
+     }
+    });
+
+}); // clicking orderSave button
+
+    </script>
+    <script>
+      if ($("#viewmailbtn").length > 0) {
+        var dialog = document.querySelector('#mailDialog');
+        var showDialogButton = document.querySelector('#viewmailbtn');
+        if (! dialog.showModal) {
+          dialogPolyfill.registerDialog(dialog);
         }
-        var data3 = $("#dcid3").text().trim();
-        $('#kundenCard').addClass('display').removeClass('hidden');
-        //filter by selected value on second column
-        var table4 = $('#dataTable4').DataTable( {
-          ajax: {
-            url: "api?dCID=" + data3,
-            dataSrc: ""
-          },
-          columns: [
-              { data: "id" },
-              { data: "derenCID" },
-              { data: "unsereCID" },
-              { data: "name" },
-              { data: "maintenanceRecipient" },
-              { data: "startDateTime" },
-              { data: "endDateTime" },
-              { title: "Notification" }
-          ],
-          columnDefs: [
-              {
-                  "targets": [ 0, 4, 5, 6 ],
-                  "visible": false,
-                  "searchable": false
-              }, {
-                  "targets": -1,
-                  "data": null,
-                  "defaultContent": "<button id='sendMailbtn' type='button' class='mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--raised mdl-button--colored'><span class='mdi mdi-gmail mdi-24px'> <span class='mdi mdi-send mdi-24px'></span></button>"
-              }
-            ]
-       });
+        showDialogButton.addEventListener('click', function() {
+          dialog.showModal();
+        });
+        dialog.querySelector('.close1').addEventListener('click', function() {
+          dialog.close();
+        });
 
-      });
-
-      $(document).ready(function() {
-        $('#dataTable4').on( 'click', '#sendMailbtn', function () {
-          table3 = $('#dataTable4').DataTable();
-          var data = table3.row( $(this).parents('tr') ).data();
-
-            var start = moment($('#sdt').val());
-            var end = moment($('#edt').val());
-
-            var startLabel = start.format("DD MMM YYYY HH:mm:SS ZZ");
-            var endLabel = end.format("DD MMM YYYY HH:mm:SS ZZ");
-
-            var ms = moment(end).diff(moment(start));
-            var d = moment.duration(ms);
-            var impactTime = d.format("mm");
-
-            openInNewTab2('mailto://' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['unsereCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head><style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:151}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624}</style></head><body><div><p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['unsereCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + startLabel + '</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + endLabel + '</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">Planned maintenance on the network infrastructure to avoid unplanned outage in near future</span></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">' + impactTime + ' minutes during the maintenance window</span></span></p></td></tr></table><p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us.</span></p></body>');
-
-            var DateTime = luxon.DateTime;
-            var now = DateTime.local();
-            $("#mailSentAt").val(moment.utc().toISOString());
-        } );
-
-        /*************************************************************************************************
-         *
-         *   Gmail HTML Paste Extension:
-         *   https://chrome.google.com/webstore/detail/gmail-append-html/dnfikahmfhcjfcmbgbkklecekfeijmda
-         *
-         *************************************************************************************************/
-
-        function openInNewTab2(url) {
-          var win = window.open(url, '_blank');
-          win.focus();
-        };
-      });
-
-      $('#btnSave').on('click', function(e) {
-
-              e.preventDefault();
-
-              // Some formatting before we push to mysql
-              var DateTime = luxon.DateTime;
-              //var makdtISO = DateTime.fromISO($('#makdt').val());
-              //var makdtUTC = makdtISO.toUTC();
-
-              var medt = $('#medt').val();
-              var medtUTC = moment.parseZone(medt).utc().format();
-              var medtISO = moment(medtUTC).toISOString();
-
-              var mdtTZ = $('#timezoneSelector').val();
-
-              var mSDT = $('#sdt').val();
-              //var mSDT = moment(mSDT).format('YYYY-MM-DD HH:mm:ss');
-              //console.log('Initial: ' + mSDT);
-              var mSDT = moment(mSDT).format('YYYY-MM-DD\THH:mm:ss');
-              var zOffset = moment.tz(mdtTZ).format('Z');
-              //console.log('offset: ' + zOffset);
-              var tzConcat = mSDT.concat(zOffset);
-              //console.log('tzConcat: ' + tzConcat);
-              var sdtUTC = moment(tzConcat).utc().format();
-              //console.log('UTC: ' +  sdtUTC);
-
-              var mEDT = $('#edt').val();
-              var mEDT = moment(mEDT).format('YYYY-MM-DD\THH:mm:ss');
-              var tzConcat2 = mEDT.concat(zOffset);
-              var edtUTC = moment(tzConcat2).utc().format();
-
-
-
-              if($('#switch-2:checked').val() == 'on') {
-                var odone = '1';
-              } else {
-                var odone = '0';
-              }
-
-              if($('#dcid3').val() == ''){
-                var dcid = '0';
-              } else {
-                var dcid = $('#dcid3').val();
-              }
-              var TableData = new Array();
-
-              TableData[0] = {
-                "omaintid" : $('#maintid').val(),
-                "omaileingang" : medtISO,
-                "oreceivedmail" : $('#rmail').val(),
-                "olieferant" : $('#company').val(),
-                "olieferantid" : $("#company").data('val'),
-                "oderenCIDid" : dcid, //jquery data-val
-                "obearbeitetvon" : $('#bearbeitet').val(),
-                "omaintenancedate" : $('#mdt').val(),
-                "ostartdatetime" : sdtUTC,
-                "oenddatetime" : edtUTC,
-                "opostponed": $('#pponed').val(),
-                "onotes" : $('#notes').val(),
-                //"omailankunde" : makdtUTC.toString(),
-                "mailSentAt" : $('#mailSentAt').val(),
-                "odone" : odone,
-                "update" : $('#update').val(),
-                "updatedBy": $('.menu_username').text()
-                }
-
-                $.ajax({
-
-                 type : "POST",
-                 url : "api",
-                 cache : "false",
-                 dataType: "json",
-                 data :  {data:TableData},
-                 success : function(result1){
-                   //console.log('result: ' + result1.exist);
-                   var obj = JSON.stringify(result1);
-                     //console.log('obj.exist: ' + obj.exist);
-
-                     if (result1.exist === 1) {
-                        var snackbarContainer = document.querySelector('#sbMExists');
-                        var midval = $('#rmail').val();
-                        var handler = function(event) {
-                          var aeURL = 'https://maintenance.newtelco.de/addedit?update=1&gmid=' + midval
-                          window.location.href = aeURL;
-                        };
-                        var dataME = {
-                          message: 'Maintenance Already Exists',
-                          timeout: 4000,
-                          actionHandler: handler,
-                          actionText: 'OPEN'
-                        };
-                        snackbarContainer.MaterialSnackbar.showSnackbar(dataME);
-                     } else if (result1.added === 1){
-                       var snackbarContainer2 = document.querySelector('#sbMAS');
-                       var dataME2 = {
-                         message: 'Maintenance Successfully Saved',
-                         timeout: 2000
-                       };
-                       snackbarContainer2.MaterialSnackbar.showSnackbar(dataME2);
-                     } else if (result1.updated === 1){
-                       var snackbarContainer2 = document.querySelector('#sbUpdated');
-                       var dataME3 = {
-                         message: 'Maintenance Successfully Updated',
-                         timeout: 2000
-                       };
-                       snackbarContainer2.MaterialSnackbar.showSnackbar(dataME3);
-                     } else {
-                       alert('Invalid Response');
-                     }
-
-                 }
-                });
-
-            }); // clicking orderSave button
-
-          </script>
-          <script>
-            if ($("#viewmailbtn").length > 0) {
-              var dialog = document.querySelector('#mailDialog');
-              var showDialogButton = document.querySelector('#viewmailbtn');
-              if (! dialog.showModal) {
-                dialogPolyfill.registerDialog(dialog);
-              }
-              showDialogButton.addEventListener('click', function() {
-                dialog.showModal();
-              });
-              dialog.querySelector('.close1').addEventListener('click', function() {
-                dialog.close();
-              });
-
-              document.addEventListener("DOMContentLoaded", function() {
-                //The first argument are the elements to which the plugin shall be initialized
-                //The second argument has to be at least a empty object or a object with your desired options
-                OverlayScrollbars(document.querySelectorAll("#mailDialog"), {
-                  className       : "os-theme-dark",
-                  resize          : "both",
-                  sizeAutoCapable : true
-                });
-              });
-            }
-          </script>
+        document.addEventListener("DOMContentLoaded", function() {
+          //The first argument are the elements to which the plugin shall be initialized
+          //The second argument has to be at least a empty object or a object with your desired options
+          OverlayScrollbars(document.querySelectorAll("#mailDialog"), {
+            className       : "os-theme-dark",
+            resize          : "both",
+            sizeAutoCapable : true
+          });
+        });
+      }
+    </script>
         </main>
         <footer class="mdl-mini-footer mdl-grid">
             <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--10-col mdl-cell--middle">

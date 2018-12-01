@@ -1,9 +1,21 @@
 <?php
 
-  //require('authenticate_google.php');
+  require('authenticate_google.php');
   require_once('config.php');
 
   header('Content-Type: application/json');
+
+  function modifyMessage($service, $userId, $messageId, $labelsToAdd, $labelsToRemove) {
+    $mods = new Google_Service_Gmail_ModifyMessageRequest();
+    //$mods = new Google_Service_Gmail_ModifyThreadRequest();
+    $mods->setAddLabelIds($labelsToAdd);
+    $mods->setRemoveLabelIds($labelsToRemove);
+    try {
+      $message = $service->users_messages->modify($userId, $messageId, $mods);
+    } catch (Exception $e) {
+      print 'An error occurred: ' . $e->getMessage();
+    }
+  }
 
   if (isset($_GET['kunden'])) {
 
@@ -45,7 +57,7 @@
 
     $dCID = $_GET['dCID'];
 
-    $result = mysqli_query($dbhandle, "SELECT kunden.id, kunden.derenCID, kunden.unsereCID, companies.name, companies.maintenanceRecipient, maintenancedb.startDateTime, maintenancedb.endDateTime FROM kunden LEFT JOIN companies ON kunden.kunde = companies.id LEFT JOIN maintenancedb ON kunden.id = maintenancedb.derenCIDid WHERE kunden.derenCID LIKE '$dCID'") or die(mysqli_error($dbhandle));          //query
+    $result = mysqli_query($dbhandle, "SELECT kunden.id, kunden.derenCID, kunden.unsereCID, companies.name, companies.maintenanceRecipient FROM kunden LEFT JOIN companies ON kunden.kunde = companies.id WHERE kunden.derenCID LIKE '$dCID'") or die(mysqli_error($dbhandle));
 
     $array2 = array();
 
@@ -107,9 +119,17 @@
     $mailSentAt = mysqli_real_escape_string($dbhandle, $fields[0]['mailSentAt']);
     $update = $fields[0]['update'];
     $updatedBy = $fields[0]['updatedBy'];
+    $gmailLabelRemove = $fields[0]['gmailLabel'];
+    $gmailLabelRemove_ar = ["$gmailLabelRemove"];
+    $gmailLabelAdd = "Label_6022158568059110610";
+    $gmailLabelAdd_ar = ["$gmailLabelAdd"];
 
 
-    //$existingrmailA =
+    if ($odone == '1') {
+      $service3 = new Google_Service_Gmail($clientService);
+      modifyMessage($service3, 'ndomino@newtelco.de', $oreceivedmail, [$gmailLabelAdd], [$gmailLabelRemover]);
+    }
+
     if ($update == '1') {
       $resultx = mysqli_query($dbhandle, "UPDATE maintenancedb SET maileingang = '$omaileingang', receivedmail = '$oreceivedmail', bearbeitetvon = '$obearbeitetvon', lieferant = '$olieferantid', derenCIDid = '$oderenCIDid', startDateTime = '$ostartdatetime', endDateTime = '$oenddatetime', postponed = '$opostponed', notes = '$onotes', mailSentAt = '$mailSentAt', updatedBy = '$updatedBy', done = '$odone' WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
 

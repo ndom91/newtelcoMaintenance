@@ -113,13 +113,35 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
           </div>
         </div>
       </header>
+      <?php
+      if(isset($_POST['label']) || isset($_SESSION['label'])) {
+        if(! empty($_POST['label'])) {
+        $labelID = $_POST['label'];
+        $_SESSION['label'] = $labelID;
+        } else {
+          $labelID = $_SESSION['label'];
+        }
+      } else {
+        if(isset($_COOKIE['label'])) {
+          $labelID = $_COOKIE['label'];
+        } else {
+          $labelID = '0';
+        }
+      }
+
+      if ($labelID != '0') {
+        $service3 = new Google_Service_Gmail($clientService);
+        $results3 = $service3->users_labels->get($user,$labelID);
+      }
+
+      ?>
       <div class="mdl-layout__drawer">
         <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" href="index.php"><span class="ndl-home"></span>  Home</a>
           <!-- <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a> -->
           <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
-          <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming</a>
+          <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming<div class="material-icons mdl-badge mdl-badge--overlap menuSubLabel2" data-badge="<?php if ($labelID != '0') { if ($results3['messagesTotal'] == 0) { echo "♥"; } else { echo $results3['messagesTotal']; }} else {  echo "♥"; } ?>"></div></a></a>
           <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>
           <a class="mdl-navigation__link" href="groupservice.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">service</small></a>
           <a class="mdl-navigation__link" href="addedit.php"><i class="ndl-createnew"></i></i>  Add</a>
@@ -142,9 +164,9 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone incomingHeaderWrapper">
                     <div class="userHomeHeader">
                       <h4 class="selectGoogleLabel">Incoming Maintenance E-Mail</h4>
-                      <button id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectGoogleButton">
+                      <!-- <button id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectGoogleButton">
                         <i class="material-icons">mail</i>
-                      </button>
+                      </button> -->
                       <div class="mdl-tooltip" for="show-dialog">
                       Select your Maintenance Label
                       </div>
@@ -153,7 +175,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                       <div class="labelSelectHeader">
                         <h6 class="mdl-dialog__title labelSelectLabel">Which label are your maintenance emails in?</h6>
 
-                          <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 labelSelectClose">
+                          <button tabindex="-1" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 labelSelectClose">
                             <i class="material-icons">close</i>
                           </button>
                       </div>
@@ -297,6 +319,12 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   }
                 }
 
+                function get_email_domain($email) {
+                  $domain = substr(strrchr($email[0], "@"), 1);
+                  $result = preg_split('/(?=\.[^.]+$)/', $domain);
+                  return $domain;
+                }
+
                 function stripHTML($html) {
 
                     $dom = new DOMDocument();
@@ -341,10 +369,11 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                             $from = getHeader($headers, 'From');
                             $fromHTML = htmlentities($from);
                             if (($pos = strpos($fromHTML, "@")) !== FALSE) {
-                              $domain = substr($fromHTML, strpos($fromHTML, "@") + 1);
-                              $dtld = substr($fromHTML, strpos($fromHTML, "."));
-                              $domain = basename($domain, $dtld);
+                              preg_match_all("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $fromHTML, $matches);
+                              $fromAddress = $matches[0];
+                              $domain = get_email_domain($matches[0]);
                             }
+
 
                             // With no attachment, the payload might be directly in the body, encoded.
                             $body = $payload->getBody();
@@ -435,7 +464,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                                       <h4 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $subject . '</h4><br>
                                       <h6 class="sublabelSelectLabel"><font color="#67B246">From:</font> ' . htmlentities($from) . '</h6><br>
                                       <h6 class="sublabelSelectLabel"><font color="#67B246">Date:</font> ' . $date . '</h6>
-                                      <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 mailcSelectClose">
+                                      <button tabindex="-1" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 mailcSelectClose">
                                         <i class="material-icons">close</i>
                                       </button>
                                     </div>

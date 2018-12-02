@@ -55,15 +55,18 @@ global $dbhandle;
   <script src="https://momentjs.com/downloads/moment-timezone-with-data.js"></script>
 
   <!-- Datatables -->
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.css"/>
-  <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.js"></script>
+  <script src="assets/js/datatables.js"></script>
+  <script src="assets/css/datatables.css"></script>
+
+  <!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.css"/>
+   <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.js"></script> -->
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css"/>
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
 
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css"/>
+  <link rel="stylesheet" type="text/css" href="assets/css/select.dataTables.css"/>
   <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
 
   <script type="text/javascript" src="assets/js/dataTables.responsive.js"></script>
@@ -92,7 +95,13 @@ global $dbhandle;
                 <li class="mdl-menu__item">Some Action</li>
                 <li class="mdl-menu__item">Another Action</li>
                 <li disabled class="mdl-menu__item">Disabled Action</li>
-                <a class="usermenuhref" href="?logout"><li class="mdl-menu__item">Logout</li></a>
+                <a class="usermenuhref" href="?logout">
+                  <li class="mdl-menu__item">
+                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                        <path fill="#4e4e4e" d="M19,3H5C3.89,3 3,3.89 3,5V9H5V5H19V19H5V15H3V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M10.08,15.58L11.5,17L16.5,12L11.5,7L10.08,8.41L12.67,11H3V13H12.67L10.08,15.58Z" />
+                    </svg>
+                    Logout
+                  </li></a>
               </ul>
           </div>
         </div>
@@ -117,7 +126,7 @@ global $dbhandle;
         $service3 = new Google_Service_Gmail($clientService);
         $results3 = $service3->users_labels->get($user,$labelID);
       }
-      
+
       ?>
       <div class="mdl-layout__drawer">
         <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
@@ -145,7 +154,18 @@ global $dbhandle;
         <main class="mdl-layout__content">
             <div class="mdl-grid">
               <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
+                <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone incomingHeaderWrapper">
+                  <div class="userHomeHeader">
+                    <h4 class="selectGoogleLabel">Maintenance History</h4>
+                  </div>
+                </div>
+                <!--
                 <div class="mdl-grid tableSearchGrid">
+                  <!-- <div class="mdl-cell mdl-cell--1-col">
+                    <div class="searchHeaderLabel">
+                      Search
+                    </div>
+                  </div>
                   <div class="mdl-cell mdl-cell--2-col">
                     <form action="overview" method="post">
                       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -159,6 +179,8 @@ global $dbhandle;
                         <label class="mdl-textfield__label" for="tdCID">deren CID</label>
                       </div>
                   </div>
+                  <div class="mdl-cell mdl-cell--4-col"></div>
+                  <!--
                   <div class="mdl-cell mdl-cell--2-col">
                       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input class="mdl-textfield__input" type="text" name="tKunde" id="tKunde">
@@ -178,46 +200,43 @@ global $dbhandle;
                     </button>
                     </form>
                   </div>
-                </div>
+                </div>-->
                 <?php
                 $lieferant = '';
                 $tdCID = '';
 
                 if (empty($_POST['tLieferant']) && empty($_POST['tdCID'])) {
-                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id");
+                  $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.done FROM maintenancedb  LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id");
                 }
 
                 if (! empty($_POST['tLieferant'])){
-                    $lieferant = $_POST['tLieferant'];
-                    $query = $lieferant;
+                  $lieferant = $_POST['tLieferant'];
+                  $query = $lieferant;
 
-                    // DEBUG
-                    //echo '<b>Debug:</b><br>';
-                    //echo '<pre>';
-                    // END DEBUG
+                  // DEBUG
+                  //echo '<b>Debug:</b><br>';
+                  //echo '<pre>';
+                  // END DEBUG
 
-                    $lieferant_escape = mysqli_real_escape_string($dbhandle, $query);
-                    $lieferant_escape = '%' . $lieferant_escape . '%';
-                    // search first for existance of company
-                    $lieferant_query = mysqli_query($dbhandle, "SELECT `id`,`name` FROM `companies` WHERE `name` LIKE '$lieferant_escape'");
+                  $lieferant_escape = mysqli_real_escape_string($dbhandle, $query);
+                  $lieferant_escape = '%' . $lieferant_escape . '%';
+                  // search first for existance of company
+                  $lieferant_query = mysqli_query($dbhandle, "SELECT `id`,`name` FROM `companies` WHERE `name` LIKE '$lieferant_escape'");
 
-                    if ($fetch = mysqli_fetch_array($lieferant_query)) {
-                        //Found a companyn - now show all maintenances for company
-                        $lieferant_id = $fetch[0];
-                        $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
-                      }
-
+                  if ($fetch = mysqli_fetch_array($lieferant_query)) {
+                      //Found a companyn - now show all maintenances for company
+                    $lieferant_id = $fetch[0];
+                    $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
+                  }
                 } elseif (! empty($_POST['tdCID'])){
-                      $tdCID = $_POST['tdCID'];
-                      $query = $tdCID;
+                  $tdCID = $_POST['tdCID'];
+                  $query = $tdCID;
 
-                      $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
-                      $dCID_escape = '%' . $dCID_escape . '%';
+                  $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
+                  $dCID_escape = '%' . $dCID_escape . '%';
 
-                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
-
+                  $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM lieferantCID WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
                 }
-
 
                 // DEBUG
                 //echo("Error description: " . mysqli_error($dbhandle));
@@ -230,7 +249,7 @@ global $dbhandle;
                 // non-numeric columns: class="mdl-data-table__cell--non-numeric"
 
                 echo '<div class="dataTables_wrapper">
-                <table id="dataTable1" class="table table-striped compact hover nowrap" style="width: 100%">
+                <table id="dataTable1" class="table table-striped  hover nowrap" style="width: 100%">
                         <thead>
                           <tr>
                             <th style="width: max-content;"></th>
@@ -296,12 +315,10 @@ global $dbhandle;
                         echo "<td> $newDate </td>";
                       } elseif ($key == 'done') {
                         echo '<td style="text-align: center;">';
-                        if ($value == '1'){
-                          echo '<span class="mdi mdi-24px mdi-checkbox-blank-circle-outline mdi-dark mdi-inactive"></span>';
-                          //echo '<img src="assets/images/svg/done2.png"/>';
-                        } else {
+                        if ($value === '1'){
                           echo '<span class="mdi mdi-24px mdi-check-decagram mdi-dark"></span>';
-                          //echo '<img src="assets/images/svg/notdone2.png"/>';
+                        } else {
+                          echo '<span class="mdi mdi-24px mdi-checkbox-blank-circle-outline mdi-dark mdi-inactive"></span>';
                         }
                         echo '</td>';
                       } else {
@@ -315,9 +332,7 @@ global $dbhandle;
                   </table>
                   </div>';
 
-
                 ?>
-
               </div>
             </div>
         </main>
@@ -325,14 +340,20 @@ global $dbhandle;
         $(document).ready(function() {
              var table = $('#dataTable1').DataTable( {
                   scrollx: true,
-                  stateSave: true,
+                  //stateSave: true,
                   scrollY: false,
                   select: true,
                   responsive: true,
+                  order: [ 2, 'desc' ],
                   columnDefs: [
                       {
                           "targets": [ 1 ],
                           "visible": false,
+                          "searchable": false
+                      },
+                      {
+                          "targets": [ 0, 3, 13 ],
+                          "visible": true,
                           "searchable": false
                       },
                       { responsivePriority: 1, targets: [ 0, 2, 3, 4, 5, 6 ] },

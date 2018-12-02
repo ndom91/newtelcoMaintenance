@@ -81,7 +81,13 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                 <li class="mdl-menu__item">Some Action</li>
                 <li class="mdl-menu__item">Another Action</li>
                 <li disabled class="mdl-menu__item">Disabled Action</li>
-                <a class="usermenuhref" href="?logout"><li class="mdl-menu__item">Logout</li></a>
+                <a class="usermenuhref" href="?logout">
+                  <li class="mdl-menu__item">
+                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                        <path fill="#4e4e4e" d="M19,3H5C3.89,3 3,3.89 3,5V9H5V5H19V19H5V15H3V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M10.08,15.58L11.5,17L16.5,12L11.5,7L10.08,8.41L12.67,11H3V13H12.67L10.08,15.58Z" />
+                    </svg>
+                    Logout
+                  </li></a>
               </ul>
           </div>
 
@@ -89,6 +95,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
           <a id="emailsTab" href="#emailsTab" class="mdl-layout__tab is-active">Emails</a>
           <a id="firmenTab" href="#firmenTab" class="mdl-layout__tab">Firmen</a>
+          <a id="lieferantenTab" href="#lieferantenTab" class="mdl-layout__tab">Lieferanten CIDs</a>
           <a id="kundenTab" href="#kundenTab" class="mdl-layout__tab">Kunden CIDs</a>
         </div>
       </header>
@@ -208,6 +215,25 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             </div>
           </div>
         </section>
+        <section class="mdl-layout__tab-panel" id="lieferantenTab">
+          <div class="page-content">
+            <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
+              <div class="mdl-cell mdl-cell--10-col mdl-cell--0-col-phone">
+                <div class="settingsFirmenHeader">
+                  <h4 class="selectGoogleLabel">Lieferanten Details</h4>
+                </div>
+                <div class="tableWrapper1">
+                  <div class="searchWrapper">
+                    Search: <input type="text" id="lieferantenSearch"/>
+                  </div><br><br>
+                  <div id="lieferantenTable"></div>
+                </div>
+              </div>
+              <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
+            </div>
+          </div>
+        </section>
         <section class="mdl-layout__tab-panel" id="kundenTab">
           <div class="page-content">
             <div class="mdl-grid">
@@ -296,7 +322,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              rowHeaders: true,
              colHeaders: true,
              contextMenu: true,
-             colWidths: [100, 85, 320],
+             colWidths: [100, 100, 320],
              columnSorting: true,
              colHeaders: ['Name', 'Mail Domain', 'Maintenance Recipient'],
              columns: [
@@ -367,28 +393,107 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
           })
         });
 
+        $('#kundenTab').click(function(){
 
+        /*****************
+         *
+         *  KUNDEN Table
+         *
+         ******************/
 
-         $('#kundenTab').click(function(){
+         var container3 = document.getElementById('kundenTable');
+         var hot3 = new Handsontable(container3, {
+            rowHeaders: true,
+            colHeaders: true,
+            contextMenu: true,
+            colWidths: [100, 100, 100, 320],
+            columnSorting: true,
+            colHeaders: ['id', 'Lieferanten CID', 'Kunden CID', 'Company'],
+            columns: [
+             {data: 'id'},
+             {data: 'lieferantCID'},
+             {data: 'kundenCID'},
+             {data: 'name'}
+            ],
+
+            stretchH: 'all',
+            manualColumnMove: true,
+            manualColumnResize: true,
+            manualRowMove: true,
+            manualRowResize: true,
+            comments: true,
+            autoWrapRows: true,
+            height: 400,
+            filters: true,
+            dropdownMenu: true,
+            renderAllRows: true,
+            search: true,
+            search: {
+              searchResultClass: 'searchResultClass'
+            }
+         });
+
+         hot3.addHook('afterChange', function(change,source) {
+               $.ajax('save', 'GET', JSON.stringify({changes: change}), function (res3) {
+                 var response = JSON.parse(res3.response);
+
+                 if (response.result === 'ok') {
+                    console.log("Data saved");
+                 }
+                 else {
+                    console.log("Saving error");
+                 }
+            });
+         });
+
+         searchField3 = document.getElementById('kundenSearch');
+
+         Handsontable.dom.addEvent(searchField3, 'keyup', function (event) {
+           var search = hot3.getPlugin('search');
+           var queryResult = search.query(this.value);
+
+           console.log(queryResult);
+           hot3.render();
+         });
+
+         // For Loading
+         $.ajax({
+           type: "GET",
+           headers: {
+             'Accept': 'application/json',
+             'Content-Type': 'application/json'
+           },
+           'url':'api?kunden=1',
+           'success': function (res3) {
+             hot3.loadData(res3);
+             hot3.render();
+           },
+           'error': function () {
+             console.log("Loading error");
+           }
+         })
+        });
+
+         $('#lieferantenTab').click(function(){
 
          /*****************
           *
-          *  KUNDEN Table
+          *  LIEFERANT Table
           *
           ******************/
 
-          var container2 = document.getElementById('kundenTable');
+          var container2 = document.getElementById('lieferantenTable');
           var hot2 = new Handsontable(container2, {
              rowHeaders: true,
              colHeaders: true,
              contextMenu: true,
              colWidths: [85, 85, 100],
              columnSorting: true,
-             colHeaders: ['Deren CID', 'Unsere CID', 'Kunde'],
+             colHeaders: ['ID', 'Name', 'Deren CID'],
              columns: [
-              {data: 'derenCID'},
-              {data: 'unsereCID'},
-              {data: 'name'}
+              {data: 'id'},
+              {data: 'name'},
+              {data: 'derenCID'}
              ],
 
              stretchH: 'all',
@@ -406,10 +511,6 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              search: {
                searchResultClass: 'searchResultClass'
              },
-             cell: [
-               {row: 1, col: 4, comment: {value: 'Multiple recipients should be separated by semicolon (";")'}},
-               {row: 1, col: 3, comment: {value: 'Email address ending'}}
-             ],
              afterChange: function (change, source) {
                  $.ajax('save', 'GET', JSON.stringify({data: this.getData()}), function (res2) {
                    var response = JSON.parse(res2.response);
@@ -424,7 +525,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             }
           });
 
-          searchField2 = document.getElementById('kundenSearch');
+          searchField2 = document.getElementById('lieferantenSearch');
 
           Handsontable.dom.addEvent(searchField2, 'keyup', function (event) {
             var search2 = hot2.getPlugin('search');
@@ -441,7 +542,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
               },
-              'url':'api?kunden=1',
+              'url':'api?lieferanten=1',
               'success': function (res2) {
                 hot2.loadData(res2);
                 hot2.render();

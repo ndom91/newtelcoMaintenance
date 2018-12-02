@@ -49,8 +49,8 @@ $clientService = getGoogleClient();
  $client->setAccessType('offline');
  $client->setAuthConfig($oauth_credentials);
  $client->setRedirectUri($redirect_uri);
- $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/calendar'));
- $client->setApprovalPrompt('force');
+ $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly'));
+ $client->setApprovalPrompt('auto');
  $client->setLoginHint('@newtelco.de');
  $plus = new Google_Service_Plus($client);
 
@@ -81,7 +81,6 @@ $clientService = getGoogleClient();
 
   if (isset($_SESSION['access_token']['refresh_token'])) {
     setcookie("rtoken",$_SESSION['access_token']['refresh_token']);
-
   }
  /************************************************
    If we have an access token, we can make
@@ -107,14 +106,23 @@ $clientService = getGoogleClient();
 
  if($client->isAccessTokenExpired()){  // if token expired
      $refreshtoken = $_COOKIE['rtoken'];
-     var_dump($refreshtoken);
+     //var_dump($refreshtoken);
+
+     $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/admin.directory.user','https://www.googleapis.com/auth/admin.directory.user.readonly','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/calendar'));
      $client->refreshToken($refreshtoken);
-     //$client->fetchAccessTokenWithRefreshToken($refreshtoken);
-     //$accessToken=$client->getAccessToken();
-     //var_dump($client);
-     //$client->setAccessToken($accessToken);
-     
+     $client->fetchAccessTokenWithRefreshToken($refreshtoken);
+     $client->setApprovalPrompt('auto');
+     $client->setAccessType('offline');
+     $client->authenticate($refreshtoken);
+     $accessToken=$client->getAccessToken();
+     $_SESSION['access_token'] = $accessToken;
+     //var_dump($accessToken);
+     //$client->setAccessToken($_SESSION['access_token']);
+     $token_data = $client->verifyIdToken();
  }
+ $q = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' . $_SESSION['access_token']['access_token'];
+ $json = file_get_contents($q);
+ $token_data=json_decode($json,true);
 
 if ($_SESSION['access_token']['id_token'] === NULL):
   unset($_SESSION['access_token']);
@@ -188,7 +196,7 @@ onmouseout="this.src='assets/images/btn_google_signin_light_normal_web.png'"
 border="0" alt=""/></a>
                   </div>
                 <?php
-                else: var_export($token_data);
+              else: var_export($access_token);
                 endif
                 ?>
                 </div>

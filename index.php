@@ -74,7 +74,13 @@ require('authenticate_google.php');
                 <li class="mdl-menu__item">Some Action</li>
                 <li class="mdl-menu__item">Another Action</li>
                 <li disabled class="mdl-menu__item">Disabled Action</li>
-                <a class="usermenuhref" href="?logout"><li class="mdl-menu__item">Logout</li></a>
+                <a class="usermenuhref" href="?logout">
+                  <li class="mdl-menu__item">
+                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                        <path fill="#4e4e4e" d="M19,3H5C3.89,3 3,3.89 3,5V9H5V5H19V19H5V15H3V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M10.08,15.58L11.5,17L16.5,12L11.5,7L10.08,8.41L12.67,11H3V13H12.67L10.08,15.58Z" />
+                    </svg>
+                    Logout
+                  </li></a>
               </ul>
           </div>
         </div>
@@ -98,6 +104,9 @@ require('authenticate_google.php');
       if ($labelID != '0') {
         $service3 = new Google_Service_Gmail($clientService);
         $results3 = $service3->users_labels->get($user,$labelID);
+
+
+        $results4 = $service3->users_labels->get($user,'Label_6022158568059110610');
       }
 
       ?>
@@ -151,8 +160,12 @@ require('authenticate_google.php');
                       </script>
 
                       and you have <b><?php echo $results3['messagesTotal'] ?></b> maintenance mails open.</h6>
+                      <br><br>And <b><?php echo $results4['messagesTotal'] ?></b> maintenances completed!
                       <br><br>Good luck <img style="height:16px;width:16px;" src="assets/images/google_smiley.png"/>
-
+                      <br><br>
+                      <?php
+                        /* var_export($token_data);  */
+                      ?>
                       <!-- DEBUG 😊
                       <b>Debug:</b>
                       <pre>

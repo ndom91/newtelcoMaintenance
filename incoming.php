@@ -63,15 +63,15 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
   <!-- Datatables -->
 
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.css"/>
-  <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.18/b-1.5.4/b-colvis-1.5.4/b-html5-1.5.4/cr-1.5.0/fh-3.1.4/kt-2.5.0/datatables.min.js"></script>
+  <script src="assets/js/datatables.js"></script>
+  <script src="assets/css/datatables.css"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css"/>
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
 
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css"/>
+  <link rel="stylesheet" type="text/css" href="assets/css/select.dataTables.css"/>
   <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
 
   <script type="text/javascript" src="assets/js/dataTables.responsive.js"></script>
@@ -108,7 +108,13 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                 <li class="mdl-menu__item">Some Action</li>
                 <li class="mdl-menu__item">Another Action</li>
                 <li disabled class="mdl-menu__item">Disabled Action</li>
-                <a class="usermenuhref" href="?logout"><li class="mdl-menu__item">Logout</li></a>
+                <a class="usermenuhref" href="?logout">
+                  <li class="mdl-menu__item">
+                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                        <path fill="#4e4e4e" d="M19,3H5C3.89,3 3,3.89 3,5V9H5V5H19V19H5V15H3V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M10.08,15.58L11.5,17L16.5,12L11.5,7L10.08,8.41L12.67,11H3V13H12.67L10.08,15.58Z" />
+                    </svg>
+                    Logout
+                  </li></a>
               </ul>
           </div>
         </div>
@@ -166,10 +172,10 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                       <h4 class="selectGoogleLabel">Incoming Maintenance E-Mail</h4>
                       <!-- <button id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectGoogleButton">
                         <i class="material-icons">mail</i>
-                      </button> -->
+                      </button>
                       <div class="mdl-tooltip" for="show-dialog">
                       Select your Maintenance Label
-                      </div>
+                      </div>-->
                     </div>
                     <dialog style="width: 900px;" id="dialog1" class="mdl-dialog">
                       <div class="labelSelectHeader">
@@ -212,7 +218,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                         </div>
                       </dialog>
                     </div>
-                    <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone dataTables_wrapper mdl-2col">
+                    <div class="mdl-cell mdl-cell--8-col mdl-cell--4-col-phone dataTables_wrapper mdl-2col">
                 <?php
                 $lieferant = '';
                 $tdCID = '';
@@ -570,14 +576,13 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
                 ?>
                 </div>
-                <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone mdl-2col table2">
+                <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone mdl-2col table2">
                   <table id="dataTable2" class="hidden table table-striped compact nowrap" style="width: 100%">
                     <thead>
                       <tr>
                         <th class="">ID</th>
-                        <th class="">Deren CID</th>
-                        <th>Unsere CID</th>
-                        <th>Kunde</th>
+                        <th class="">Company</th>
+                        <th>Deren CID</th>
                       </tr>
                     </thead>
                   </table>
@@ -625,14 +630,13 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                             $('#dataTable2').addClass('display').removeClass('hidden');
                             $('#dataTable2').DataTable( {
                               ajax: {
-                                url: "api?dKName=" + data2,
+                                url: "api?liefName=" + data2,
                                 dataSrc: ""
                               },
                               columns: [
                                   { data: "id" },
-                                  { data: "derenCID" },
-                                  { data: "unsereCID" },
-                                  { data: "name" }
+                                  { data: "name" },
+                                  { data: "derenCID" }
                               ],
                               columnDefs: [
                                   {
@@ -648,6 +652,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
         </script>
         <script>
+          /* COMMENTED BECAUSE HIDDEN SELECT LABEL DIALOG ON INCOMING PAGE
           var dialog = document.querySelector('#dialog1');
           var showDialogButton = document.querySelector('#show-dialog');
           if (! dialog.showModal) {
@@ -658,7 +663,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
           });
           dialog.querySelector('.close1').addEventListener('click', function() {
             dialog.close();
-          });
+          }); */
 
           document.addEventListener("DOMContentLoaded", function() {
             //The first argument are the elements to which the plugin shall be initialized

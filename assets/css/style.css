@@ -262,18 +262,75 @@ textarea.mdl-textfield__input {
   margin-bottom: 10px;
   position: relative;
 }
+
 .mailcSelectHeader {
   height: 50px;
   width: 98%;
-  padding: 15px;
+  padding: 25px;
   margin-bottom: 10px;
 }
+
+.mailcHR2 {
+   border-bottom: 1px solid #67B246;
+   width: 75%;
+}
+
+.mailcHR {
+  overflow: hidden;
+  text-align: center;
+  padding-top: 30px;
+}
+
+.mailcHR:before,
+.mailcHR:after {
+  background-color: #67B246;
+  content: "";
+  display: inline-block;
+  height: 1px;
+  position: relative;
+  vertical-align: middle;
+  width: 50%;
+}
+
+.mailcHR:before {
+  right: 0.5em;
+  margin-left: -50%;
+}
+
+.mailcHR:after {
+  left: 0.5em;
+  margin-right: -50%;
+}
+
 .labelSelectLabel {
-  font-size: 2em !important;
+  font-size: 1.9em !important;
   display: inline;
-  padding: 24px 10px 0;
   margin: 0;
 }
+
+.sublabelSelectLabel {
+  font-size: 20px;
+  margin-bottom: -15px;
+}
+
+.mailWrapper0 {
+  /*width: 750px;
+  margin-top: 20px;  */
+  top: 150px;
+  position: absolute;
+}
+
+.mailWrapper1 {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 95% !important;
+}
+
+.mailWrapper2 {
+  width:100% !important;
+  height: 100% !important;
+}
+
 .labelSelectClose {
   position:relative !important;
   top:-50px;
@@ -307,7 +364,7 @@ textarea.mdl-textfield__input {
   color: #fff !important;
   position:relative !important;
   float: right;
-  top: -110px;
+  top: -70px !important;
   z-index: 1000;
   box-shadow: 0 5px 5px 0 rgba(255,255,255, 0.62), 0 5px 5px 0 rgba(255,255,255, 0.64);
 }
@@ -410,6 +467,13 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 #timezoneSelector {
   width: 100%;
 }
+
+#notes {
+  border-radius: 5px !important;
+  border: 1px solid rgba(78, 78, 78, 0.2) !important;
+  padding: 10px !important;
+}
+
 @media only screen and (max-width: 700px) {
   #dialog1 {
     width: 90% !important;
@@ -449,9 +513,6 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
   }
 }
 
-.sublabelSelectLabel {
-  font-size: 20px;
-}
 
 /* Menu */
 

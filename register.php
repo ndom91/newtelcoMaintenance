@@ -418,7 +418,7 @@ if ((isset($_POST["desired_password"])) && (isset($_POST["desired_username"])) &
           </div>
           <div class="mdl-mini-footer__right-section">
             <div>
-              built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" href="https://github.com/ndom91">ndom91</a> &copy;
+              built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" rel="noreferrer  href="https://github.com/ndom91">ndom91</a> &copy;
             </div>
           </div>
         </footer>

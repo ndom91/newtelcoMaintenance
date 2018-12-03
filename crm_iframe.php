@@ -140,7 +140,7 @@ require('authenticate_google.php');
           <div class="mdl-layout-spacer"></div>
             <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--4-col mdl-cell--middle mdl-typography--text-right">
               <div class="footertext">
-                built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" href="https://github.com/ndom91">ndom91</a> &copy;
+                built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" rel="noreferrer  href="https://github.com/ndom91">ndom91</a> &copy;
               </div>
             </div>
         </footer>

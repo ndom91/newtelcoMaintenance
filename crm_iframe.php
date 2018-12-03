@@ -35,7 +35,7 @@ require('authenticate_google.php');
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
   <!-- Google font-->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+  <link prefetch rel="stylesheet" href="assets/css/GFonts_Roboto.css" type="text/css">
 
   <!-- material design -->
   <link rel="stylesheet" href="assets/css/material.css">
@@ -130,7 +130,7 @@ require('authenticate_google.php');
           </div>
         </main>
         <footer class="mdl-mini-footer mdl-grid">
-            <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--10-col mdl-cell--middle">
+            <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--8-col mdl-cell--middle">
               <span class="mdl-logo">Newtelco GmbH</span>
               <ul class="mdl-mini-footer__link-list">
                 <li><a href="#">Help</a></li>
@@ -138,7 +138,7 @@ require('authenticate_google.php');
               </ul>
             </div>
           <div class="mdl-layout-spacer"></div>
-            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--2-col mdl-cell--middle mdl-typography--text-right">
+            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--4-col mdl-cell--middle mdl-typography--text-right">
               <div class="footertext">
                 built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" href="https://github.com/ndom91">ndom91</a> &copy;
               </div>

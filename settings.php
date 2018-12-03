@@ -39,21 +39,12 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
   <meta name="msapplication-TileImage" content="assets/images/favicon/ms-icon-144x144.png">
   <meta name="theme-color" content="#67B246">
   <link rel="manifest" href="manifest.json"></link>
-  <link rel='stylesheet' href='assets/css/style.css'>
 
   <!-- handsontable -->
   <script src="assets/js/handsontable.js"></script>
-  <link href="assets/css/handsontable.css" rel="stylesheet" media="screen">
-  <!-- font awesome -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-
-  <!-- Google font-->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
 
   <!-- material design -->
-  <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -61,6 +52,10 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
   <!-- pace -->
   <script src="assets/js/pace.js"></script>
 
+  <style>
+    <?php echo file_get_contents("assets/css/style.031218.min.css"); ?>
+    <?php echo file_get_contents("assets/css/material.031218.min.css"); ?>
+  </style>
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->
@@ -330,11 +325,8 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
               {data: 'mailDomain'},
               {data: 'maintenanceRecipient'}
              ],
-
              stretchH: 'all',
-             manualColumnMove: true,
              manualColumnResize: true,
-             manualRowMove: true,
              manualRowResize: true,
              comments: true,
              autoWrapRows: true,
@@ -345,17 +337,16 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              search: true,
              search: {
                searchResultClass: 'searchResultClass'
-             },
-             cell: [
-               {row: 1, col: 4, comment: {value: 'Multiple recipients should be separated by semicolon (";")'}},
-               {row: 1, col: 3, comment: {value: 'Email address ending'}}
-             ]
+             }
           });
 
           hot.addHook('afterChange', function(change,source) {
-                $.ajax('save', 'GET', JSON.stringify({changes: change}), function (res) {
+          const commentsPlugin = hot.getPlugin('comments');
+            commentsPlugin.setRange({from: {row: 0, col: 1}});
+            commentsPlugin.setComment('Multiple recipients should be separated by semicolon (";")');
+            commentsPlugin.show();
+                $.ajax('save?firmen=1', 'GET', JSON.stringify({changes: change}), function (res) {
                   var response = JSON.parse(res.response);
-
                   if (response.result === 'ok') {
                      console.log("Data saved");
                   }
@@ -408,18 +399,14 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             contextMenu: true,
             colWidths: [100, 100, 100, 320],
             columnSorting: true,
-            colHeaders: ['id', 'Lieferanten CID', 'Kunden CID', 'Company'],
+            colHeaders: ['Lieferanten CID', 'Kunden CID', 'Company'],
             columns: [
-             {data: 'id'},
-             {data: 'lieferantCID'},
+             {data: 'derenCID'},
              {data: 'kundenCID'},
              {data: 'name'}
             ],
-
             stretchH: 'all',
-            manualColumnMove: true,
             manualColumnResize: true,
-            manualRowMove: true,
             manualRowResize: true,
             comments: true,
             autoWrapRows: true,
@@ -434,7 +421,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
          });
 
          hot3.addHook('afterChange', function(change,source) {
-               $.ajax('save', 'GET', JSON.stringify({changes: change}), function (res3) {
+               $.ajax('save?kunden=1', 'GET', JSON.stringify({changes: change}), function (res3) {
                  var response = JSON.parse(res3.response);
 
                  if (response.result === 'ok') {
@@ -489,17 +476,13 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              contextMenu: true,
              colWidths: [85, 85, 100],
              columnSorting: true,
-             colHeaders: ['ID', 'Name', 'Deren CID'],
+             colHeaders: ['Name', 'Deren CID'],
              columns: [
-              {data: 'id'},
               {data: 'name'},
               {data: 'derenCID'}
              ],
-
              stretchH: 'all',
-             manualColumnMove: true,
              manualColumnResize: true,
-             manualRowMove: true,
              manualRowResize: true,
              height: 400,
              comments: true,
@@ -512,7 +495,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                searchResultClass: 'searchResultClass'
              },
              afterChange: function (change, source) {
-                 $.ajax('save', 'GET', JSON.stringify({data: this.getData()}), function (res2) {
+                 $.ajax('save?lieferant=1', 'GET', JSON.stringify({data: this.getData()}), function (res2) {
                    var response = JSON.parse(res2.response);
 
                    if (response.result === 'ok') {
@@ -554,7 +537,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
           });
         </script>
         <footer class="mdl-mini-footer mdl-grid">
-            <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--10-col mdl-cell--middle">
+            <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--8-col mdl-cell--middle">
               <span class="mdl-logo">Newtelco GmbH</span>
               <ul class="mdl-mini-footer__link-list">
                 <li><a href="#">Help</a></li>
@@ -562,12 +545,24 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
               </ul>
             </div>
           <div class="mdl-layout-spacer"></div>
-            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--2-col mdl-cell--middle mdl-typography--text-right">
+            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--4-col mdl-cell--middle mdl-typography--text-right">
               <div class="footertext">
                 built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" href="https://github.com/ndom91">ndom91</a> &copy;
               </div>
             </div>
         </footer>
       </div>
+
+      <!-- Google font-->
+      <link prefetch rel="preload stylesheet" as="style" href="assets/css/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+
+      <!-- material icons -->
+      <link rel="preload stylesheet" as="style" href="https://fonts.googleapis.com/icon?family=Material+Icons" onload="this.rel='stylesheet'">
+
+      <!-- font awesome -->
+      <link rel="preload stylesheet" as="style" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous" onload="this.rel='stylesheet'">
+
+      <!-- handsontable -->
+      <link href="assets/css/handsontable.css" rel="preload stylesheet" as="style" media="screen" onload="this.rel='stylesheet'">
 </body>
 </html>

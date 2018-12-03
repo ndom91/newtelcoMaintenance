@@ -29,22 +29,17 @@ require('authenticate_google.php');
   <meta name="msapplication-TileImage" content="assets/images/favicon/ms-icon-144x144.png">
   <meta name="theme-color" content="#67B246">
   <link rel="manifest" href="manifest.json"></link>
-  <link rel='stylesheet' href='assets/css/style.css'>
-
-  <!-- font awesome -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-
-  <!-- Google font-->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
 
   <!-- material design -->
-  <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
   <!-- pace -->
   <script src="assets/js/pace.js"></script>
 
+  <style>
+    <?php echo file_get_contents("assets/css/style.031218.min.css"); ?>
+    <?php echo file_get_contents("assets/css/material.031218.min.css"); ?>
+  </style>
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->
@@ -133,7 +128,7 @@ require('authenticate_google.php');
                   width="100%"
                   height="800">
                 </iframe>
-                <script type="text/javascript">
+                <script prefetch rel="preload" as="script" type="text/javascript">
                   document.getElementById('forum_embed').src =
                      'https://groups.google.com/a/newtelco.de/forum/embed/?place=forum/service'
                      + '&showsearch=true&showpopout=false&showtabs=true'
@@ -144,7 +139,7 @@ require('authenticate_google.php');
             </div>
         </main>
         <footer class="mdl-mini-footer mdl-grid">
-            <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--10-col mdl-cell--middle">
+            <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--8-col mdl-cell--middle">
               <span class="mdl-logo">Newtelco GmbH</span>
               <ul class="mdl-mini-footer__link-list">
                 <li><a href="#">Help</a></li>
@@ -152,12 +147,22 @@ require('authenticate_google.php');
               </ul>
             </div>
           <div class="mdl-layout-spacer"></div>
-            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--2-col mdl-cell--middle mdl-typography--text-right">
+            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--4-col mdl-cell--middle mdl-typography--text-right">
               <div class="footertext">
                 built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" href="https://github.com/ndom91">ndom91</a> &copy;
               </div>
             </div>
         </footer>
       </div>
+
+      <!-- Google font-->
+      <link prefetch rel="preload stylesheet" as="style" href="assets/css/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+
+      <!-- font awesome -->
+      <link rel="preload stylesheet" as="style" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous" onload="this.rel='stylesheet'">
+
+      <!-- material icons -->
+      <link rel="preload stylesheet" as="style" href="https://fonts.googleapis.com/icon?family=Material+Icons" onload="this.rel='stylesheet'">
+
 </body>
 </html>

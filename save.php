@@ -11,16 +11,29 @@
 
 require_once('functions.php');
 
-try {
-  //open the database
-  $db =  getConnection();
 
-  $colMap = array(
-    0 => 'id',
-    1 => 'name',
-    2 => 'mailDomain',
-    3 => 'maintenanceRecipient'
-  );
+$db =  getConnection();
+
+if($db) {
+
+  if (isset($_GET['lieferant'])) {
+    $colMap = array(
+      0 => 'name',
+      1 => 'mailDomain',
+      2 => 'maintenanceRecipient'
+    );
+  } elseif  (isset($_GET['kunden'])) {
+    $colMap = array(
+      0 => 'derenCID',
+      1 => 'kundenCID',
+      2 => 'name'
+    );
+  } elseif  (isset($_GET['firmen'])) {
+    $colMap = array(
+      0 => 'name',
+      1 => 'derenCID'
+    );
+  }
 
   if (isset($_POST['changes']) && $_POST['changes']) {
     foreach ($_POST['changes'] as $change) {
@@ -33,22 +46,49 @@ try {
         continue;
       }
 
-      $select = $db->prepare('SELECT id FROM companies WHERE id=? LIMIT 1');
+      if (isset($_GET['lieferant'])) {
+        $select = $db->prepare('SELECT id FROM lieferantCID WHERE id=? LIMIT 1');
+      } elseif  (isset($_GET['kunden'])) {
+        $select = $db->prepare('SELECT id FROM kundenCID WHERE id=? LIMIT 1');
+      } elseif  (isset($_GET['firmen'])) {
+        $select = $db->prepare('SELECT id FROM companies WHERE id=? LIMIT 1');
+      }
+
       $select->execute(array(
         $rowId
       ));
 
       if ($row = $select->fetch()) {
-        $query = $db->prepare('UPDATE companies SET `' . $colMap[$colId] . '` = :newVal WHERE id = :id');
+        if (isset($_GET['lieferant'])) {
+          $query = $db->prepare('UPDATE lieferantCID SET `' . $colMap[$colId] . '` = :newVal WHERE id = :id');
+        } elseif  (isset($_GET['kunden'])) {
+          $query = $db->prepare('UPDATE kundenCID SET `' . $colMap[$colId] . '` = :newVal WHERE id = :id');
+        } elseif  (isset($_GET['firmen'])) {
+          $query = $db->prepare('UPDATE companies SET `' . $colMap[$colId] . '` = :newVal WHERE id = :id');
+        }
       } else {
-        $query = $db->prepare('INSERT INTO companies (id, `' . $colMap[$colId] . '`) VALUES(:id, :newVal)');
+        if (isset($_GET['lieferant'])) {
+          $query = $db->prepare('INSERT INTO lieferantCID (id, `' . $colMap[$colId] . '`) VALUES(:id, :newVal)');
+        } elseif  (isset($_GET['kunden'])) {
+          $query = $db->prepare('INSERT INTO kundenCID (id, `' . $colMap[$colId] . '`) VALUES(:id, :newVal)');
+        } elseif  (isset($_GET['firmen'])) {
+          $query = $db->prepare('INSERT INTO companies (id, `' . $colMap[$colId] . '`) VALUES(:id, :newVal)');
+        }
       }
+
       $query->bindValue(':id', $rowId, PDO::PARAM_INT);
       $query->bindValue(':newVal', $newVal, PDO::PARAM_STR);
       $query->execute();
     }
   } elseif (isset($_POST['data']) && $_POST['data']) {
-    $select = $db->prepare('DELETE FROM companies');
+    if (isset($_GET['lieferant'])) {
+      $select = $db->prepare('DELETE FROM lieferantCID');
+    } elseif  (isset($_GET['kunden'])) {
+      $select = $db->prepare('DELETE FROM kundenCID');
+    } elseif  (isset($_GET['firmen'])) {
+      $select = $db->prepare('DELETE FROM companies');
+    }
+
     $select->execute();
 
     for ($r = 0, $rlen = count($_POST['data']); $r < $rlen; $r++) {
@@ -59,16 +99,34 @@ try {
         }
 
         $newVal = $_POST['data'][$r][$c];
+        if (isset($_GET['lieferant'])) {
+          $select = $db->prepare('SELECT id FROM lieferantCID WHERE id=? LIMIT 1');
+        } elseif  (isset($_GET['kunden'])) {
+          $select = $db->prepare('SELECT id FROM kundenCID WHERE id=? LIMIT 1');
+        } elseif  (isset($_GET['firmen'])) {
+          $select = $db->prepare('SELECT id FROM companies WHERE id=? LIMIT 1');
+        }
 
-        $select = $db->prepare('SELECT id FROM companies WHERE id=? LIMIT 1');
         $select->execute(array(
           $rowId
         ));
 
         if ($row = $select->fetch()) {
-          $query = $db->prepare('UPDATE companies SET `' . $colMap[$c] . '` = :newVal WHERE id = :id');
+          if (isset($_GET['lieferant'])) {
+            $query = $db->prepare('UPDATE lieferantCID SET `' . $colMap[$c] . '` = :newVal WHERE id = :id');
+          } elseif  (isset($_GET['kunden'])) {
+            $query = $db->prepare('UPDATE kundenCID SET `' . $colMap[$c] . '` = :newVal WHERE id = :id');
+          } elseif  (isset($_GET['firmen'])) {
+            $query = $db->prepare('UPDATE companies SET `' . $colMap[$c] . '` = :newVal WHERE id = :id');
+          }
         } else {
-          $query = $db->prepare('INSERT INTO companies (id, `' . $colMap[$c] . '`) VALUES(:id, :newVal)');
+          if (isset($_GET['lieferant'])) {
+            $query = $db->prepare('INSERT INTO lieferantCID (id, `' . $colMap[$c] . '`) VALUES(:id, :newVal)');
+          } elseif  (isset($_GET['kunden'])) {
+            $query = $db->prepare('INSERT INTO kundenCID (id, `' . $colMap[$c] . '`) VALUES(:id, :newVal)');
+          } elseif  (isset($_GET['firmen'])) {
+            $query = $db->prepare('INSERT INTO companies (id, `' . $colMap[$c] . '`) VALUES(:id, :newVal)');
+          }
         }
         $query->bindValue(':id', $rowId, PDO::PARAM_INT);
         $query->bindValue(':newVal', $newVal, PDO::PARAM_STR);
@@ -76,16 +134,20 @@ try {
       }
     }
   }
+  $dberror = $db->error;
+  $dbconnecterror = $db->connect_error;
 
   $out = array(
     'result' => 'ok',
-    'output' => $query
+    'state' => $db->sqlstate,
+    'error' => $dberror,
+    'connect_error' => $dbconnecterror
   );
   echo json_encode($out);
 
   closeConnection($db);
-}
-catch (PDOException $e) {
-  print 'Exception : ' . $e->getMessage();
-}
+} else {
+  $myeCode = $db->errorCode();
+  echo json_encode($myeCode);
+};
 ?>

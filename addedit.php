@@ -32,13 +32,9 @@ global $dbhandle;
   <meta name="msapplication-TileImage" content="assets/images/favicon/ms-icon-144x144.png">
   <meta name="theme-color" content="#67B246">
   <link rel="manifest" href="manifest.json"></link>
-  <link rel='stylesheet' href='assets/css/style.css'>
 
   <!-- font awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-
-  <!-- Google font-->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
 
   <!-- moment -->
   <script src="assets/js/luxon.min.js"></script>
@@ -51,41 +47,33 @@ global $dbhandle;
 
   <!-- select2 -->
   <script src="assets/js/select2_4.0.6-rc1.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
 
   <!-- material design -->
-  <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="assets/css/materialdesignicons.min.css">
   <!-- <link rel="stylesheet" href="https://storage.googleapis.com/non-spec-apps/mio-icons/latest/twotone.css"> -->
 
   <!--getmdl-select-->
   <script src="assets/js/mdl-selectfield.min.js"></script>
-  <link rel="stylesheet" href="assets/css/mdl-selectfield.min.css">
 
   <!-- flatpickr -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <link rel="stylesheet" type="text/css" href="assets/css/flatpickr_green.css">
   <script src="https://unpkg.com/flatpickr@4.5.2/dist/flatpickr.js"></script>
 
   <!-- Datatables -->
   <script src="assets/js/datatables.js"></script>
-  <script src="assets/css/datatables.css"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css"/>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
-  <link rel="stylesheet" type="text/css" href="assets/css/select.dataTables.css"/>
   <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
 
   <!-- OverlayScrollbars -->
-  <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="stylesheet"/>
   <script type="text/javascript" src="assets/js/OverlayScrollbars.js"></script>
 
   <!-- pace -->
   <script src="assets/js/pace.js"></script>
 
+  <style>
+  <?php echo file_get_contents("assets/css/style.031218.min.css"); ?>
+  <?php echo file_get_contents("assets/css/material.031218.min.css"); ?>
+  </style>
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->
@@ -1071,7 +1059,7 @@ $('#btnSave').on('click', function(e) {
     </script>
         </main>
         <footer class="mdl-mini-footer mdl-grid">
-            <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--10-col mdl-cell--middle">
+            <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--8-col mdl-cell--middle">
               <span class="mdl-logo">Newtelco GmbH</span>
               <ul class="mdl-mini-footer__link-list">
                 <li><a href="#">Help</a></li>
@@ -1079,7 +1067,7 @@ $('#btnSave').on('click', function(e) {
               </ul>
             </div>
           <div class="mdl-layout-spacer"></div>
-            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--2-col mdl-cell--middle mdl-typography--text-right">
+            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--4-col mdl-cell--middle mdl-typography--text-right">
               <div class="footertext">
                 built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" href="https://github.com/ndom91">ndom91</a> &copy;
               </div>
@@ -1087,5 +1075,30 @@ $('#btnSave').on('click', function(e) {
         </footer>
       </div>
 
+      <!-- Google font-->
+      <link prefetch rel="preload stylesheet" as="style" href="assets/css/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+
+      <!-- mdl-selectfield css -->
+      <link rel="preload stylesheet" as="style" href="assets/css/mdl-selectfield.min.css" onload="this.rel='stylesheet'">
+
+      <!-- select 2 css -->
+      <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" onload="this.rel='stylesheet'">
+
+      <!-- flatpickr -->
+      <link rel="preload stylesheet" as="style" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/flatpickr_green.css" onload="this.rel='stylesheet'">
+
+      <!-- material icons -->
+      <link rel="preload stylesheet" as="style" href="https://fonts.googleapis.com/icon?family=Material+Icons" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" href="assets/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
+
+      <!-- datatables css -->
+      <link rel="preload stylesheet" as="style" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/select.dataTables.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/datatables.css" onload="this.rel='stylesheet'">
+
+      <!-- overlay scrollbars css -->
+      <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
 </body>
 </html>

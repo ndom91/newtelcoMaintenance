@@ -50,7 +50,7 @@ $clientService = getGoogleClient();
  $client->setAuthConfig($oauth_credentials);
  $client->setRedirectUri($redirect_uri);
  $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly'));
- $client->setApprovalPrompt('auto');
+ $client->setApprovalPrompt('force');
  $client->setLoginHint('@newtelco.de');
  $plus = new Google_Service_Plus($client);
 
@@ -104,10 +104,10 @@ $clientService = getGoogleClient();
    $token_data = $client->verifyIdToken();
  }
 
+if($_COOKIE['rtoken']) {
  if($client->isAccessTokenExpired()){  // if token expired
-     $refreshtoken = $_COOKIE['rtoken'];
+      $refreshtoken = $_COOKIE['rtoken'];
      //var_dump($refreshtoken);
-
      $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/admin.directory.user','https://www.googleapis.com/auth/admin.directory.user.readonly','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/calendar'));
      $client->refreshToken($refreshtoken);
      $client->fetchAccessTokenWithRefreshToken($refreshtoken);
@@ -120,6 +120,7 @@ $clientService = getGoogleClient();
      //$client->setAccessToken($_SESSION['access_token']);
      $token_data = $client->verifyIdToken();
  }
+}
  $q = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' . $_SESSION['access_token']['access_token'];
  $json = file_get_contents($q);
  $token_data=json_decode($json,true);
@@ -159,7 +160,7 @@ if ($_SESSION['access_token']['id_token'] === NULL):
       <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
       <!-- Google font-->
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:200,400,500,700" type="text/css">
 
       <link rel="stylesheet" type="text/css" href="assets/css/style.css">
       <!-- material design -->
@@ -214,7 +215,7 @@ border="0" alt=""/></a>
             </ul>
           </div>
           <div class="mdl-layout-spacer"></div>
-            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--2-col mdl-cell--middle mdl-typography--text-right">
+            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--4-col mdl-cell--middle mdl-typography--text-right">
               <div class="footertext">
                 built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" href="https://github.com/ndom91">ndom91</a> &copy;
               </div>

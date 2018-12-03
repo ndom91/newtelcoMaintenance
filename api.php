@@ -23,7 +23,7 @@
      *  SETTINGS - KUNDEN
      *********************/
 
-    $kundenQ = mysqli_query($dbhandle, "SELECT kundenCID.id, kundenCID.lieferantCID, kundenCID.kundenCID, companies.name FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id;") or die(mysqli_error($dbhandle));
+    $kundenQ = mysqli_query($dbhandle, "SELECT lieferantCID.derenCID, kundenCID.kundenCID, companies.name FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id LEFT JOIN lieferantCID ON kundenCID.lieferantCID = lieferantCID.id;") or die(mysqli_error($dbhandle));
 
     $kundenArray = array();
 
@@ -35,11 +35,11 @@
 
   } elseif (isset($_GET['lieferanten'])) {
 
-    /**********************
+    /***************************
      *  SETTINGS - LIEFERANTEN
-     *********************/
+     **************************/
 
-    $kundenQ = mysqli_query($dbhandle, "SELECT lieferantCID.id, companies.name, lieferantCID.derenCID FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id;") or die(mysqli_error($dbhandle));
+    $kundenQ = mysqli_query($dbhandle, "SELECT companies.name, lieferantCID.derenCID FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id;") or die(mysqli_error($dbhandle));
 
     $kundenArray = array();
 

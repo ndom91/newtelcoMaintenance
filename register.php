@@ -182,7 +182,7 @@ if ((isset($_POST["desired_password"])) && (isset($_POST["desired_username"])) &
         //mail($email, $subject, $message, $from);
         //redirect to login page
         //$message = "wrong answer";
-        
+
         $_SESSION['registration_true'] = true;
 
         $base_url = "https://maintenance.newtelco.de/";
@@ -204,12 +204,12 @@ if ((isset($_POST["desired_password"])) && (isset($_POST["desired_username"])) &
         $mail->SMTPSecure = '';       //Sets connection prefix. Options are "", "ssl" or "tls"
         $mail->From = 'cloud@new-telco.de';   //Sets the From email address for the message
         $mail->FromName = 'Newtelco';     //Sets the From name of the message
-        $mail->AddAddress($desired_email, $desired_username);  //Adds a "To" address   
+        $mail->AddAddress($desired_email, $desired_username);  //Adds a "To" address
         $mail->WordWrap = 50;       //Sets word wrapping on the body of the message to a given number of characters
-        $mail->IsHTML(true);       //Sets message type to HTML    
+        $mail->IsHTML(true);       //Sets message type to HTML
         $mail->Subject = '[Newtelco IT] Email Verification';   //Sets the Subject of the message
         $mail->Body = $mail_body;       //An HTML or plain text message body
-        
+
         if($mail->Send())        //Send an Email. Return true on success or false on error
         {
             echo "<label class='text-success'>Register Done, Please check your mail.</label>";
@@ -247,7 +247,7 @@ if ((isset($_POST["desired_password"])) && (isset($_POST["desired_username"])) &
   <link rel="manifest" href="manifest.json"></link>
   <link rel='stylesheet' href='assets/css/style.css'>
   <!-- Google font-->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:200,400,500,700" type="text/css">
 
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
   <!-- material design -->
@@ -289,7 +289,7 @@ if ((isset($_POST["desired_password"])) && (isset($_POST["desired_username"])) &
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header ">
       <header class="mdl-layout__header mdl-color--light-green-nt">
         <div class="mdl-layout__header-row">
-         
+
           <span class="mdl-layout-title">Newtelco Maintenance</span>
           <div class="mdl-layout-spacer"></div>
             <?php if (isset($_SESSION['logged_in'])) { ?>
@@ -390,7 +390,7 @@ if ((isset($_POST["desired_password"])) && (isset($_POST["desired_username"])) &
                         echo '<span class="error_text">Your password should be alphanumeric and greater 8 characters.</span><br />'; ?><br />
 
                 <br />
-                
+
                 <input type="submit"  value="Register" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
 
                 <a href="index.php"><input type="back" value="Back to Login" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"></a>

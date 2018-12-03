@@ -42,52 +42,38 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
   <meta name="msapplication-TileImage" content="assets/images/favicon/ms-icon-144x144.png">
   <meta name="theme-color" content="#67B246">
   <link rel="manifest" href="manifest.json"></link>
-  <link rel='stylesheet' href='assets/css/style.css'>
-
-  <!-- font awesome -->
-  <link rel="dns-prefetch" rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-
-  <!-- Google font-->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100.300.400,700" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
 
   <!-- material design -->
-  <link rel="stylesheet" href="assets/css/material.css">
   <script src="assets/js/material.min.js"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="assets/css/materialdesignicons.min.css">
+
+  <!-- material animations UNUSED
   <script src="node_modules/@material/animation/dist/mdc.animation.min.js"></script>
-  <link rel="stylesheet" href="assets/css/material_animation.min.css">
+  <link rel="stylesheet" href="assets/css/material_animation.min.css"> -->
+
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
   <!-- Datatables -->
-
   <script src="assets/js/datatables.js"></script>
-  <script src="assets/css/datatables.css"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css"/>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
-
-  <link rel="stylesheet" type="text/css" href="assets/css/select.dataTables.css"/>
   <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
-
   <script type="text/javascript" src="assets/js/dataTables.responsive.js"></script>
-  <link rel="stylesheet" type="text/css" href="assets/css/responsive.dataTables.css"/>
 
-
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+  <!-- moment -->
+  <script src="assets/js/moment.js"></script>
   <script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
 
   <!-- OverlayScrollbars -->
-  <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="stylesheet"/>
   <script type="text/javascript" src="assets/js/OverlayScrollbars.js"></script>
 
   <!-- pace -->
   <script src="assets/js/pace.js"></script>
 
+  <style>
+    <?php echo file_get_contents("assets/css/style.031218.min.css"); ?>
+    <?php echo file_get_contents("assets/css/material.031218.min.css"); ?>
+  </style>
 </head>
 <body>
   <!-- Always shows a header, even in smaller screens. -->
@@ -676,7 +662,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
           });
         </script>
         <footer class="mdl-mini-footer mdl-grid">
-            <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--10-col mdl-cell--middle">
+            <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--8-col mdl-cell--middle">
               <span class="mdl-logo">Newtelco GmbH</span>
               <ul class="mdl-mini-footer__link-list">
                 <li><a href="#">Help</a></li>
@@ -684,12 +670,32 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
               </ul>
             </div>
           <div class="mdl-layout-spacer"></div>
-            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--2-col mdl-cell--middle mdl-typography--text-right">
+            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--4-col mdl-cell--middle mdl-typography--text-right">
               <div class="footertext">
                 built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" href="https://github.com/ndom91">ndom91</a> &copy;
               </div>
             </div>
         </footer>
       </div>
+
+      <!-- datatables css -->
+      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/responsive.dataTables.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/select.dataTables.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/datatables.css" onload="this.rel='stylesheet'">
+
+      <!-- font awesome -->
+      <link rel="preload stylesheet" as="style" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous" onload="this.rel='stylesheet'">
+
+      <!-- material icons -->
+      <link rel="preload stylesheet" as="style" href="https://fonts.googleapis.com/icon?family=Material+Icons" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" href="assets/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
+
+      <!-- Google font-->
+      <link prefetch rel="preload stylesheet" as="style" href="assets/css/GFonts_Roboto.css" type="text/css">
+
+      <!-- Overlay Scrollbars -->
+      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/OverlayScrollbars.css">
 </body>
 </html>

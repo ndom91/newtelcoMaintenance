@@ -69,6 +69,12 @@ table {
 
 /* </pace> */
 
+/* Index */
+
+.headerWelcome {
+  margin: 5px 10px;
+}
+
 /* Login */
 
 .signin_box {
@@ -223,7 +229,7 @@ textarea.mdl-textfield__input {
   display: inline;
   color: #4e4e4e;
   font-family: 'Roboto', sans-serif;
-  font-weight: 300;
+  font-weight: 200;
   line-height: 24px;
   font-size: 14px;
 }
@@ -381,7 +387,7 @@ table.dataTable.dtr-inline.collapsed.compact>tbody>tr>td:first-child:before, tab
 table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before, table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>th:first-child:before {
   background: rgba(158,158,158, 0.20) !important;
   box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.12), 0 1px 1px 0 rgba(0, 0, 0, 0.24);
-  font-size: 40px;
+  /* font-size: 40px; */
   line-height: 44px !important;
 }
 

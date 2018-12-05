@@ -39,6 +39,7 @@ global $dbhandle;
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/jquery.dataTables.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.bootstrap4.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.select.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.responsive.min.js"></script>
 
   <!-- OverlayScrollbars -->
   <script rel="preload" as="script" type="text/javascript" src="assets/js/OverlayScrollbars.min.js"></script>
@@ -66,7 +67,11 @@ global $dbhandle;
       echo $content_menu;
       ?>
 
+
         <main class="mdl-layout__content">
+          <div id="loading">
+            <img id="loading-image" src="assets/images/Preloader_3.gif" alt="Loading..." />
+          </div>
           <div class="mdl-grid">
 
           <?php
@@ -164,18 +169,55 @@ global $dbhandle;
               }
 
               function stripHTML($html) {
+
                   $dom = new DOMDocument();
                   $dom->loadHTML($html);
                   $script = $dom->getElementsByTagName('script');
+                  $html = $dom->getElementsByTagName('html');
+                  $body1 = $dom->getElementsByTagName('body');
+                  $table = $dom->getElementsByTagName('table');
                   $remove = [];
+
                   foreach($script as $item) {
                     $remove[] = $item;
                   }
+
+                  foreach($table as $item) {
+                    $item->setAttribute("style","overflow: auto !important;");
+                    $item->parentNode->setAttribute("style", "display: table !important;");
+                  }
+
+                  foreach($html as $item) {
+                    //$remove[] = $item;
+                  }
+
+                  foreach($body1 as $item) {
+                    //$remove[] = $item;
+                  }
+
                   foreach ($remove as $item) {
                     $item->parentNode->removeChild($item);
                   }
+
+                  $nodes = $dom->getElementsByTagName('*');
+
+
+                  foreach($nodes as $node)
+                  {
+                      if ($node->hasAttribute('onload')) {
+                          $node->removeAttribute('onload');
+                      }
+                      if ($node->hasAttribute('onclick')) {
+                          $node->removeAttribute('onclick');
+                      }
+                  }
+
                   $html = $dom->saveHTML();
-                  return $html;
+                  $html = strip_tags($html, "<table>");
+                  $inlineJS = "/\bon\w+=\S+(?=.*>)/";
+
+                  //$html = preg_replace('/\bon\w+=\S+(?=.*>)/g', '', $html);
+                  return trim($html);
               }
 
               function getMessage2($service, $userId, $message_id) {
@@ -467,10 +509,12 @@ global $dbhandle;
 
                 <div class="mdl-dialog__content">
                   <p>
-                  <div class="mailcHR">NT</div>
+                    <div class="mailcHR">NT</div>
                     <div class="mailWrapper0">
                       <div class="mdl-textfield mdl-js-textfield mailWrapper1">
-                        <div contenteditable="true" class="mdl-textfield__input mailWrapper2" type="text" rows= "1" id="sample5" >' . stripHTML($mbody) . '</div>
+                        <div style="display:inline-block !important;height: 100%;margin-top: 20px;" class=" mailWrapper2">
+                          <iframe class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0"  id="emailBodyFrame" src="msg/' . $oreceivedmail . '.html"></iframe>
+                        </div>
                       </div>
                     </div>
                   </p>
@@ -500,10 +544,10 @@ global $dbhandle;
                 <thead>
                   <tr>
                     <th>Unsere CID</th>
-                    <th class="">Kunde</th>
-                    <th>Kunden ID</th>
+                    <th class="">Unsere CID</th>
+                    <th>Kunde</th>
                     <th>Maintenance Recipient</th>
-                    <th>Notification</th>
+                    <th>Maintenance Recipient</th>
                   </tr>
                 </thead>
               </table>
@@ -767,23 +811,26 @@ var table4 = $('#dataTable4').DataTable( {
     dataSrc: ""
   },
   columns: [
+      { title: "Notification" },
       { data: "kundenCID" },
       { data: "name" },
       { data: "kunde" },
-      { data: "maintenanceRecipient" },
-      { title: "Notification" }
+      { data: "maintenanceRecipient" }
   ],
   columnDefs: [
       {
-          "targets": [ 2 ],
+          "targets": [ 3 ],
           "visible": false,
           "searchable": false
       }, {
-          "targets": -1,
+          "targets": 0,
           "data": null,
-          "defaultContent": "<button id='sendMailbtn' type='button' class='mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--raised mdl-button--colored'><span class='mdi mdi-gmail mdi-24px'> <span class='mdi mdi-send mdi-24px'></span></button>"
+          "defaultContent": "<button style='margin-left:auto;margin-right:auto;text-align:center;' id='sendMailbtn' type='button' class='mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored'><span class='mdi mdi-send mdi-24px'></span></button>",
+          className: 'text-center'
+
       }
-    ]
+    ],
+    responsive: true
 });
 
 });
@@ -949,6 +996,12 @@ $('#btnSave').on('click', function(e) {
     </script>
     <script>
       if ($("#viewmailbtn").length > 0) {
+
+        var mailID = $('#rmail').val();
+
+        $("#emailBodyFrame").attr('src',"msg/"+mailID+".html");
+        $("#emailBodyFrame").attr('src', function ( i, val ) { return val; });
+
         var dialog = document.querySelector('#mailDialog');
         var showDialogButton = document.querySelector('#viewmailbtn');
         if (! dialog.showModal) {
@@ -976,6 +1029,10 @@ $('#btnSave').on('click', function(e) {
           });
         });
       }
+
+      $( document ).ready(function() {
+         setTimeout(function() {$('#loading').hide()},500);
+      });
     </script>
     </main>
     <?php echo file_get_contents("views/footer.html"); ?>
@@ -1002,6 +1059,7 @@ $('#btnSave').on('click', function(e) {
   <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/bootstrap.min.css" onload="this.rel='stylesheet'">
 
   <!-- datatables css -->
+  <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/responsive.dataTables.min.css" onload="this.rel='stylesheet'">
   <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/dataTables.bootstrap4.min.css" onload="this.rel='stylesheet'">
   <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/select.dataTables.min.css" onload="this.rel='stylesheet'">
   <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/datatables.min.css" onload="this.rel='stylesheet'">

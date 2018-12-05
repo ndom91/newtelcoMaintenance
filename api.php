@@ -86,7 +86,7 @@
   } elseif (isset($_GET['liefName'])) {
 
     /**************************************
-     * INCOMING - liefName SHOW CIRCUITS
+     * INCOMING - liefName SHOW MAINTENANCES
      **************************************/
 
     $liefDomain = $_GET['liefName'];
@@ -94,27 +94,28 @@
     $result0 = mysqli_query($dbhandle, "SELECT companies.id FROM companies WHERE companies.mailDomain LIKE '$liefDomain'") or die(mysqli_error($dbhandle));
 
     if ($fetch = mysqli_fetch_array($result0)) {
-        //Found a companyn - now show all maintenances for company
+        //Found a company - now show all maintenances for company
         $company_id = $fetch[0];
-        $result = mysqli_query($dbhandle, "SELECT lieferantCID.id, lieferantCID.derenCID, companies.name FROM lieferantCID LEFT JOIN companies ON companies.id = lieferantCID.lieferant WHERE lieferantCID.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
+        $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.done FROM maintenancedb WHERE maintenancedb.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
+        //$result = mysqli_query($dbhandle, "SELECT lieferantCID.id, lieferantCID.derenCID, companies.name FROM lieferantCID LEFT JOIN companies ON companies.id = lieferantCID.lieferant WHERE lieferantCID.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
     } else {
       //echo json_encode(id:"no such company in DB");
-      $jsonArrayObject = array(array('id' => '', 'derenCID' => '', 'name' => 'no such company in DB yet'));
+      $jsonArrayObject = array(array('maileingang' => 'no such company in DB yet', 'bearbeitetvon' => '', 'startDateTime' => '', 'done' => ''));
       echo json_encode($jsonArrayObject);
       exit;
     }
 
-
     if ($resultsrows = mysqli_fetch_assoc($result)) {
       $array2 = array();
-      $array2[] = $resultsrows;
+      while  ($resultsrows = mysqli_fetch_assoc($result)) {
+        $array2[] = $resultsrows;
+      }
       echo json_encode($array2);
     } else {
       //echo json_encode("id":"no CIDs for such supplier");
-      $jsonArrayObject = array(array('id' => '', 'derenCID' => '', 'name' => 'no CIDs for such supplier'));
+      $jsonArrayObject = array(array('maileingang' => 'no CIDs for such supplier', 'bearbeitetvon' => '', 'startDateTime' => '', 'done' => ''));
       echo json_encode($jsonArrayObject);
     }
-
 
   } elseif (isset($_POST['data'])) {
 

@@ -54,6 +54,9 @@ global $dbhandle;
       ?>
 
         <main class="mdl-layout__content">
+          <div id="loading">
+            <img id="loading-image" src="assets/images/Preloader_3.gif" alt="Loading..." />
+          </div>
             <div class="mdl-grid">
               <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
                 <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone incomingHeaderWrapper">
@@ -276,6 +279,10 @@ global $dbhandle;
                   }
               } );
           } );
+
+          $( document ).ready(function() {
+             setTimeout(function() {$('#loading').hide()},500);
+          });
         </script>
         <?php echo file_get_contents("views/footer.html"); ?>
       </div>

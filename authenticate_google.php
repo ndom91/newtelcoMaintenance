@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+require_once('config.php');
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 include_once "base.php";
@@ -50,7 +52,7 @@ $clientService = getGoogleClient();
  $client->setAuthConfig($oauth_credentials);
  $client->setRedirectUri($redirect_uri);
  $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly'));
- $client->setApprovalPrompt('force');
+ $client->setApprovalPrompt('auto');
  $client->setLoginHint('@newtelco.de');
  $plus = new Google_Service_Plus($client);
 
@@ -86,12 +88,12 @@ $clientService = getGoogleClient();
    If we have an access token, we can make
    requests, else we generate an authentication URL.
   ************************************************/
- if (!empty($_SESSION['access_token']) && isset($_SESSION['access_token']['refresh_token'])) {
+  if (!empty($_SESSION['access_token']) && isset($_SESSION['access_token']['id_token'])) {
    $client->setAccessToken($_SESSION['access_token']);
- } else {
+  } else {
    $authUrl = $client->createAuthUrl();
    //header('Location: ' . $authUrl);
- }
+  }
  /************************************************
    If we're signed in we can go ahead and retrieve
    the ID token, which is part of the bundle of
@@ -100,27 +102,42 @@ $clientService = getGoogleClient();
    to retrieve the Google certificate to verify it,
    and that can be cached.
   ************************************************/
- if ($client->getAccessToken()) {
+  if ($client->getAccessToken()) {
    $token_data = $client->verifyIdToken();
+  }
+
+  if (isset($token_data)) {
+    $tokenemail = $token_data['email'];
+    $rtoken_query = mysqli_query($dbhandle, "SELECT refreshToken from authentication where email like '$tokenemail' ");
+
+
+    if ($fetch = mysqli_fetch_array($rtoken_query)) {
+      if (isset($_SESSION['access_token']['refresh_token'])) {
+        $rtoken = $_SESSION['access_token']['refresh_token'];
+        $rtoken_insertquery = mysqli_query($dbhandle, "UPDATE authentication set refreshToken = '$rtoken' where email like '$tokenemail'");
+      } else {
+        $fetch = mysqli_fetch_array($rtoken_query);
+        $rtoken = $fetch[0];
+      }
+    }
+  }
+
+  if($client->isAccessTokenExpired() && isset($rtoken)){  // if token expired
+
+    //var_dump($refreshtoken);
+    $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/admin.directory.user','https://www.googleapis.com/auth/admin.directory.user.readonly','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/calendar'));
+    $client->refreshToken($rtoken);
+    $client->fetchAccessTokenWithRefreshToken($rtoken);
+    $client->setApprovalPrompt('auto');
+    $client->setAccessType('offline');
+    $client->authenticate($rtoken);
+    $accessToken=$client->getAccessToken();
+    $_SESSION['access_token'] = $accessToken;
+    //var_dump($accessToken);
+    //$client->setAccessToken($_SESSION['access_token']);
+    $token_data = $client->verifyIdToken();
  }
 
-if($_COOKIE['rtoken']) {
- if($client->isAccessTokenExpired()){  // if token expired
-      $refreshtoken = $_COOKIE['rtoken'];
-     //var_dump($refreshtoken);
-     $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/admin.directory.user','https://www.googleapis.com/auth/admin.directory.user.readonly','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/calendar'));
-     $client->refreshToken($refreshtoken);
-     $client->fetchAccessTokenWithRefreshToken($refreshtoken);
-     $client->setApprovalPrompt('auto');
-     $client->setAccessType('offline');
-     $client->authenticate($refreshtoken);
-     $accessToken=$client->getAccessToken();
-     $_SESSION['access_token'] = $accessToken;
-     //var_dump($accessToken);
-     //$client->setAccessToken($_SESSION['access_token']);
-     $token_data = $client->verifyIdToken();
- }
-}
  $q = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' . $_SESSION['access_token']['access_token'];
  $json = file_get_contents($q);
  $token_data=json_decode($json,true);
@@ -134,40 +151,19 @@ if ($_SESSION['access_token']['id_token'] === NULL):
 <div class="loginBG">
 <head>
     <title>Newtelco Maintenance | Login</title>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-      <link rel="icon" href="assets/images/favicon/favicon.ico">
-      <link rel="apple-touch-icon" sizes="57x57" href="assets/images/favicon/apple-icon-57x57.png">
-      <link rel="apple-touch-icon" sizes="60x60" href="assets/images/favicon/apple-icon-60x60.png">
-      <link rel="apple-touch-icon" sizes="72x72" href="assets/images/favicon/apple-icon-72x72.png">
-      <link rel="apple-touch-icon" sizes="76x76" href="assets/images/favicon/apple-icon-76x76.png">
-      <link rel="apple-touch-icon" sizes="114x114" href="assets/images/favicon/apple-icon-114x114.png">
-      <link rel="apple-touch-icon" sizes="120x120" href="assets/images/favicon/apple-icon-120x120.png">
-      <link rel="apple-touch-icon" sizes="144x144" href="assets/images/favicon/apple-icon-144x144.png">
-      <link rel="apple-touch-icon" sizes="152x152" href="assets/images/favicon/apple-icon-152x152.png">
-      <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-icon-180x180.png">
-      <link rel="icon" type="image/png" sizes="192x192"  href="assets/images/favicon/android-icon-192x192.png">
-      <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
-      <link rel="icon" type="image/png" sizes="96x96" href="assets/images/favicon/favicon-96x96.png">
-      <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
-      <meta name="msapplication-TileColor" content="#67B246">
-      <meta name="msapplication-TileImage" content="assets/images/favicon/ms-icon-144x144.png">
-      <meta name="theme-color" content="#67B246">
-      <link rel="manifest" href="manifest.json"></link>
+    <?php echo file_get_contents("views/meta.html"); ?>
+    <link rel="icon" href="assets/images/favicon/favicon.ico">
 
-      <!-- jquery -->
-      <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <!-- jquery -->
+    <script rel="preload" as="script" src="assets/js/jquery-3.3.1.min.js"></script>
 
-      <!-- Google font-->
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:200,400,500,700" type="text/css">
+    <!-- material design -->
+    <script rel="preload" as="script" src="assets/js/material.min.js"></script>
 
-      <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-      <!-- material design -->
-      <link rel="stylesheet" href="assets/css/material.css">
-      <script src="assets/js/material.min.js"></script>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
+    <style>
+    <?php echo file_get_contents("assets/css/style.031218.min.css"); ?>
+    <?php echo file_get_contents("assets/css/material.031218.min.css"); ?>
+    </style>
   </head>
 
   <body>
@@ -206,24 +202,17 @@ border="0" alt=""/></a>
             </form>
 
         </main>
-        <footer class="mdl-mini-footer">
-          <div class="mdl-mini-footer__left-section">
-            <div class="mdl-logo">Newtelco GmbH</div>
-            <ul class="mdl-mini-footer__link-list">
-              <li><a href="#">Help</a></li>
-              <li><a href="#">Privacy & Terms</a></li>
-            </ul>
-          </div>
-          <div class="mdl-layout-spacer"></div>
-            <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--4-col mdl-cell--middle mdl-typography--text-right">
-              <div class="footertext">
-                built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" rel="noreferrer  href="https://github.com/ndom91">ndom91</a> &copy;
-              </div>
-            </div>
-        </footer>
+        <?php echo file_get_contents("views/footer.html"); ?>
       </div>
 </body>
 </div>
+
+    <!-- Google font-->
+    <link prefetch rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+
+    <!-- material design -->
+    <link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css">
+
 </html>
 
 <?php

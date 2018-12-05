@@ -59,7 +59,7 @@ require('authenticate_google.php');
 
                       <div class="mdl-layout-spacer"></div>
                       <a style="color: #fff !important;" href="incoming">
-                      <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="<?php if ($labelID != '0') { if ($results3['messagesTotal'] == 0) { echo "♥"; } else { echo $results3['messagesTotal']; }} else {  echo "♥"; } ?>">email</div></a>
+                      <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="<?php if ($labelID != '0') { if ($results3['messagesUnread'] == 0) { echo "♥"; } else { echo $results3['messagesUnread']; }} else {  echo "♥"; } ?>">email</div></a>
                     </div>
                     <div class="mdl-card__supporting-text">
                       <div class="headerWelcome">
@@ -77,25 +77,13 @@ require('authenticate_google.php');
                       </script>
 
                       <?php if ($labelID == '0'): ?>
-                        <br>If this is your first visit, <b>please set your prefered Maintenance Mail label</b> in the settings menu on the left<br><br>
+                        <br>If this is your first visit, <b>please set your prefered Maintenance Mail label</b> in the <a href="settings.php">settings</a><br><br>
                       <?php else : ?>
-                        <br>You have <b><?php echo $results3['messagesTotal'] ?></b> maintenance mails open.</h6>
+                        <br>You have <b><?php echo $results3['messagesUnread'] ?></b> maintenance mails open.</h6>
                         <br><br>And <b><?php echo $results4['messagesTotal'] ?></b> maintenances completed!
                         <br><br>Good luck <img style="height:16px;width:16px;" src="assets/images/google_smiley.png"/>
                         <br><br>
                       <?php endif; ?>
-
-
-                      <!-- DEBUG 😊
-                      <b>Debug:</b>
-                      <pre>
-                      <?php
-                      print_r($results3);
-
-                      echo '<br><br>';
-
-                      var_export($token_data);
-                      ?></pre> -->
 
                     </div>
                     <div class="mdl-card__actions mdl-card--border">

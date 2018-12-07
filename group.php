@@ -16,8 +16,8 @@ require('authenticate_google.php');
   <script rel="preload" as="script" type="text/javascript" src="assets/js/pace.js"></script>
 
   <style>
-    <?php echo file_get_contents("assets/css/style.031218.min.css"); ?>
-    <?php echo file_get_contents("assets/css/material.031218.min.css"); ?>
+    <?php echo file_get_contents("assets/css/style-ndo.min.css"); ?>
+    <?php echo file_get_contents("assets/css/material-ndo.min.css"); ?>
   </style>
 </head>
 <body>

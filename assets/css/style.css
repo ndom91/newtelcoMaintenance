@@ -15,6 +15,7 @@ html {
     font-family: 'Roboto', sans-serif;
     background-color: #fff;
 }
+
 body::after {
 	content: "";
 	opacity: 0.7;
@@ -30,6 +31,7 @@ body::after {
 	  inset 0px -121px 110px -100px #000;
     /*background: url('../images/bg4.jpg') no-repeat center center fixed; */
 }
+
 table {
   font-family: 'Roboto', sans serif !important;
   color: #4d4d4d !important;
@@ -53,6 +55,10 @@ table {
   top: 50%;
   left: 50%;
   z-index: 100;
+}
+
+.btnRotate {
+  transform: scale(1);
 }
 
 /* flatpickr */
@@ -273,6 +279,62 @@ textarea.mdl-textfield__input {
   height: 40px !important;
   width: 40px !important;
   min-width: 40px !important;
+}
+
+.mdi-send {
+  line-height: 1.8em;
+  letter-spacing: -0.2em;
+}
+
+.mdi-calendar-plus {
+  line-height: 330%;
+}
+
+.mdl-switch__ripple-container {
+  position: absolute;
+  z-index: 2;
+  top: -2px !important;
+  left: -14px;
+  box-sizing: border-box;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  overflow: hidden;
+  transition-duration: .4s;
+  transition-timing-function: step-end;
+  transition-property: left;
+}
+
+.mdl-switch__thumb{
+  background: #fafafa;
+  position: absolute;
+  left: 0;
+  top: 13px !important;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+  transition-duration: .28s;
+  transition-timing-function: cubic-bezier(.4,0,.2,1);
+  transition-property: left;
+}
+
+.mdl-switch.is-checked .mdl-switch__thumb {
+  background: #67b246;
+  left: 16px;
+  top: 13px;
+  box-shadow: 0 3px 4px 0 rgba(0,0,0,.14), 0 3px 3px -2px rgba(0,0,0,.2), 0 1px 8px 0 rgba(0,0,0,.12);
+}
+.mdl-switch__track {
+  position: absolute;
+  left: 0;
+  top: 17px !important;
+  height: 14px;
+  width: 36px;
+  border-radius: 14px;
+  cursor: pointer;
 }
 
 /* Select Mail Modal */

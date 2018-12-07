@@ -415,9 +415,9 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              contextMenu: true,
              colWidths: [85, 100],
              columnSorting: true,
-             colHeaders: ['lieferant', 'Deren CID'],
+             colHeaders: ['Deren CID', 'Lieferant'],
              columns: [
-              {data: 'kundenCID'},
+              {data: 'derenCID'},
               {data: 'name'}
              ],
              stretchH: 'all',

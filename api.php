@@ -46,17 +46,18 @@
      *  SETTINGS - LIEFERANTEN
      **************************/
 
-    $lieferantQ = mysqli_query($dbhandle, "SELECT lieferantCID.derenCID,companies.name  FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id");
+    $lieferantenQ = mysqli_query($dbhandle, "SELECT companies.name, lieferantCID.derenCID  FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id") or die(mysqli_error($dbhandle));
 
-    $lieferantArray = array();
+    $lieferantenArray = array();
 
-    while($lieferantResults = mysqli_fetch_assoc($lieferantQ)) {
+    while($lieferantenResults = mysqli_fetch_assoc($lieferantenQ)) {
       //var_dump($lieferantArray);
-      $lieferantArray[] = $lieferantResults;
+      $lieferantenArray[] = $lieferantenResults;
     }
-
-    echo json_encode($lieferantArray);
-    //echo json_encode($kundenArray);
+    //var_dump($lieferantArray);
+    //echo $lieferantArray[1];
+    //$lieferantenArray = utf8_encode($lieferantenArray);
+    echo json_encode($lieferantenArray);
     //var_dump(json_encode($lieferantArray));
 
   } elseif (isset($_GET['firmen'])) {

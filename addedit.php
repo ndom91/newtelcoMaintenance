@@ -48,8 +48,8 @@ global $dbhandle;
   <script rel="preload" as="script" type="text/javascript" src="assets/js/pace.js"></script>
 
   <style>
-  <?php echo file_get_contents("assets/css/style.031218.min.css"); ?>
-  <?php echo file_get_contents("assets/css/material.031218.min.css"); ?>
+  <?php echo file_get_contents("assets/css/style-ndo.min.css"); ?>
+  <?php echo file_get_contents("assets/css/material-ndo.min.css"); ?>
   </style>
 </head>
 <body>
@@ -491,13 +491,13 @@ global $dbhandle;
             </div>
             <div class="mdl-card__actions mdl-card--border">
               <div style="display: inline;">
-                <label style="display: inline; margin-right: 5px; float: right;width: 150px; line-height: 2.1em;" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2">
+                <label style="display: inline; margin-right: 5px; float: right;width: 150px; line-height: 2.8em;" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2">
                   <span style="color: #6e6e6e;" class="mdl-switch__label">Completed</span>
                   <input type="checkbox" id="switch-2" class="mdl-switch__input" <?php echo $odone ?>>
                 </label>
                 <div class="mdl-layout-spacer"></div>
-                <button id="addCalbtn" type="button" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
-                  <span class="mdi mdi-24px mdi-calendar-plus mdi-dark"></span>
+                <button id="addCalbtn" type="button" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+                  <span class="mdi mdi-24px mdi-calendar-plus mdi-light"></span>
                 </button>
               </div>
             </div>

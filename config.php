@@ -1,5 +1,5 @@
 <?php
-   
+
    $username = "ndomino";
    $password = "Miney91*";
    $hostname = "94.249.164.180";
@@ -19,6 +19,7 @@
    $publickey = "6LfBa20UAAAAAKhZPzEvB8oiLtMUcBpfHeuhuO1f";
 
    $dbhandle = mysqli_connect($hostname, $username, $password, $database);
+   mysqli_set_charset($dbhandle, 'utf8');
    // Test if connection occured.
    if (mysqli_connect_errno()) {
      printf("Connect failed: %s\n", mysqli_connect_error());

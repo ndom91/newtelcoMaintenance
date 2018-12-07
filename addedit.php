@@ -110,6 +110,7 @@ global $dbhandle;
               $omaileingang = $mIDresult['maileingang'];
               $oreceivedmail = $mIDresult['receivedmail'];
               $olieferant = $mIDresult['lieferant'];
+              $olieferantID = $mIDresult['lieferant'];
               $oderenCIDid = $mIDresult['derenCIDid'];
               $obearbeitetvon = $mIDresult['bearbeitetvon'];
               //$omaintenancedate = $mIDresult['maintenancedate'];
@@ -136,6 +137,8 @@ global $dbhandle;
               $newEDT = new DateTime($oenddatetime);
               $newEDT->add(new DateInterval('PT1H'));
               $newEDT = $newEDT->format('Y-m-d  H:i:s'); // for example
+
+              $derenCIDQ =  mysqli_query($dbhandle, "SELECT companies.name, lieferantCID.derenCID, lieferantCID.id FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id WHERE lieferantCID.lieferant LIKE '$olieferant'") or die(mysqli_error($dbhandle));
 
             }
             if (isset($_GET['gmid'])) {
@@ -320,27 +323,30 @@ global $dbhandle;
                   $mdate = $msgInfo[4];
                   $mbody = $msgInfo[5];
 
-                  $emailBV = $token_data['email'];
-                  if (($pos2 = strpos($emailBV, "@")) !== FALSE) {
-                    $domainBV = substr($emailBV, strpos($emailBV, "@"));
-                    $usernameBV = basename($emailBV, $domainBV);
-                  }
-
-                  $workers = array();
-                  $workers[] = "ndomino";
-                  $workers[] = "fwaleska";
-                  $workers[] = "alissitsin";
-                  $workers[] = "sstergiou";
-
-                  if (($key = array_search($usernameBV, $workers)) !== false) {
-                      unset($workers[$key]);
-                      $workers = array_values($workers);
-                  }
-
 
                   $derenCIDQ =  mysqli_query($dbhandle, "SELECT companies.name, lieferantCID.derenCID, lieferantCID.id FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id WHERE lieferantCID.lieferant LIKE '$olieferantID'") or die(mysqli_error($dbhandle));
 
+
+
                 }
+
+                $emailBV = $token_data['email'];
+                if (($pos2 = strpos($emailBV, "@")) !== FALSE) {
+                  $domainBV = substr($emailBV, strpos($emailBV, "@"));
+                  $usernameBV = basename($emailBV, $domainBV);
+                }
+
+                $workers = array();
+                $workers[] = "ndomino";
+                $workers[] = "fwaleska";
+                $workers[] = "alissitsin";
+                $workers[] = "sstergiou";
+
+                if (($key = array_search($usernameBV, $workers)) !== false) {
+                    unset($workers[$key]);
+                    $workers = array_values($workers);
+                }
+
 
             ?>
 
@@ -490,8 +496,8 @@ global $dbhandle;
                   <input type="checkbox" id="switch-2" class="mdl-switch__input" <?php echo $odone ?>>
                 </label>
                 <div class="mdl-layout-spacer"></div>
-                <button id="addCalbtn" type="button" class="mdl-button mdl-js-button mdl-button--raised">
-                  <span class="mdi mdi-24px mdi-calendar-plus mdi-dark"> Add to Cal </span>
+                <button id="addCalbtn" type="button" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+                  <span class="mdi mdi-24px mdi-calendar-plus mdi-dark"></span>
                 </button>
               </div>
             </div>
@@ -856,7 +862,7 @@ $(document).ready(function() {
     var d = moment.duration(ms);
     var impactTime = d.format("mm");
 
-    openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head><style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:151}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624}</style></head><body><div><p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + startLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + endLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">Planned maintenance on the network infrastructure to avoid unplanned outage in near future</span></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">' + impactTime + ' minutes during the maintenance window</span></span></p></td></tr></table><p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us.</span></p></body>');
+    openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head><style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:151}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624}</style></head><body style="{padding:0;margin:0;}"><div><p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + startLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + endLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">Planned maintenance on the network infrastructure to avoid unplanned outage in near future</span></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">' + impactTime + ' minutes during the maintenance window</span></span></p></td></tr></table><p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us.</span></p></body>');
 
     var DateTime = luxon.DateTime;
     var now = DateTime.local();

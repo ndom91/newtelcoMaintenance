@@ -337,11 +337,10 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             rowHeaders: true,
             colHeaders: true,
             contextMenu: true,
-            colWidths: [100, 100, 100, 320],
+            colWidths: [100, 100, 320],
             columnSorting: true,
-            colHeaders: ['Lieferanten CID', 'Kunden CID', 'Company'],
+            colHeaders: ['Kunden CID', 'Company'],
             columns: [
-             {data: 'derenCID'},
              {data: 'kundenCID'},
              {data: 'name'}
             ],
@@ -360,18 +359,18 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             }
          });
 
-         hot3.addHook('afterChange', function(change,source) {
-               $.ajax('save?kunden=1', 'GET', JSON.stringify({changes: change}), function (res3) {
-                 var response = JSON.parse(res3.response);
-
-                 if (response.result === 'ok') {
-                    console.log("Data saved");
-                 }
-                 else {
-                    console.log("Saving error");
-                 }
-            });
-         });
+         // hot3.addHook('afterChange', function(change,source) {
+         //       $.ajax('save?kunden=1', 'GET', JSON.stringify({changes: change}), function (res3) {
+         //         var response = JSON.parse(res3.response);
+         //
+         //         if (response.result === 'ok') {
+         //            console.log("Data saved");
+         //         }
+         //         else {
+         //            console.log("Saving error");
+         //         }
+         //    });
+         // });
 
          searchField3 = document.getElementById('kundenSearch');
 
@@ -414,12 +413,12 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              rowHeaders: true,
              colHeaders: true,
              contextMenu: true,
-             colWidths: [85, 85, 100],
+             colWidths: [85, 100],
              columnSorting: true,
-             colHeaders: ['Name', 'Deren CID'],
+             colHeaders: ['lieferant', 'Deren CID'],
              columns: [
-              {data: 'name'},
-              {data: 'derenCID'}
+              {data: 'kundenCID'},
+              {data: 'name'}
              ],
              stretchH: 'all',
              manualColumnResize: true,
@@ -434,18 +433,18 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              search: {
                searchResultClass: 'searchResultClass'
              },
-             afterChange: function (change, source) {
-                 $.ajax('save?lieferant=1', 'GET', JSON.stringify({data: this.getData()}), function (res2) {
-                   var response = JSON.parse(res2.response);
-
-                   if (response.result === 'ok') {
-                      console.log("Data saved");
-                   }
-                   else {
-                      console.log("Saving error");
-                   }
-              });
-            }
+            //  afterChange: function (change, source) {
+            //      $.ajax('save?lieferant=1', 'GET', JSON.stringify({data: this.getData()}), function (res2) {
+            //        var response = JSON.parse(res2.response);
+            //
+            //        if (response.result === 'ok') {
+            //           console.log("Data saved");
+            //        }
+            //        else {
+            //           console.log("Saving error");
+            //        }
+            //   });
+            // }
           });
 
           searchField2 = document.getElementById('lieferantenSearch');

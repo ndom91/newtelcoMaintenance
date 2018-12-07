@@ -1,6 +1,7 @@
 <?php
 
   require('authenticate_google.php');
+
   require_once('config.php');
 
   header('Content-Type: application/json');
@@ -23,12 +24,18 @@
      *  SETTINGS - KUNDEN
      *********************/
 
-    $kundenQ = mysqli_query($dbhandle, "SELECT lieferantCID.derenCID, kundenCID.kundenCID, companies.name FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id LEFT JOIN lieferantCID ON kundenCID.lieferantCID = lieferantCID.id;") or die(mysqli_error($dbhandle));
+     //var_dump($dbhandle);
+
+    $kundenQ = mysqli_query($dbhandle, "SELECT kundenCID.kundenCID, companies.name FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id") or die(mysqli_error($dbhandle));
+
+    //var_dump($kundenQ);
 
     $kundenArray = array();
 
+
     while($kundenResults = mysqli_fetch_assoc($kundenQ)) {
       $kundenArray[] = $kundenResults;
+      //var_dump($kundenArray);
     }
 
     echo json_encode($kundenArray);
@@ -39,15 +46,18 @@
      *  SETTINGS - LIEFERANTEN
      **************************/
 
-    $kundenQ = mysqli_query($dbhandle, "SELECT companies.name, lieferantCID.derenCID FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id;") or die(mysqli_error($dbhandle));
+    $lieferantQ = mysqli_query($dbhandle, "SELECT lieferantCID.derenCID,companies.name  FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id");
 
-    $kundenArray = array();
+    $lieferantArray = array();
 
-    while($kundenResults = mysqli_fetch_assoc($kundenQ)) {
-      $kundenArray[] = $kundenResults;
+    while($lieferantResults = mysqli_fetch_assoc($lieferantQ)) {
+      //var_dump($lieferantArray);
+      $lieferantArray[] = $lieferantResults;
     }
 
-    echo json_encode($kundenArray);
+    echo json_encode($lieferantArray);
+    //echo json_encode($kundenArray);
+    //var_dump(json_encode($lieferantArray));
 
   } elseif (isset($_GET['firmen'])) {
 
@@ -96,11 +106,11 @@
     if ($fetch = mysqli_fetch_array($result0)) {
         //Found a company - now show all maintenances for company
         $company_id = $fetch[0];
-        $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.done FROM maintenancedb WHERE maintenancedb.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
+        $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.done, maintenancedb.id FROM maintenancedb WHERE maintenancedb.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
         //$result = mysqli_query($dbhandle, "SELECT lieferantCID.id, lieferantCID.derenCID, companies.name FROM lieferantCID LEFT JOIN companies ON companies.id = lieferantCID.lieferant WHERE lieferantCID.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
     } else {
       //echo json_encode(id:"no such company in DB");
-      $jsonArrayObject = array(array('maileingang' => 'no such company in DB yet', 'bearbeitetvon' => '', 'startDateTime' => '', 'done' => ''));
+      $jsonArrayObject = array(array('maileingang' => 'no such company in DB yet', 'bearbeitetvon' => '', 'startDateTime' => '', 'done' => '', 'id' => ''));
       echo json_encode($jsonArrayObject);
       exit;
     }
@@ -113,7 +123,7 @@
       echo json_encode($array2);
     } else {
       //echo json_encode("id":"no CIDs for such supplier");
-      $jsonArrayObject = array(array('maileingang' => 'no CIDs for such supplier', 'bearbeitetvon' => '', 'startDateTime' => '', 'done' => ''));
+      $jsonArrayObject = array(array('maileingang' => 'no maintenances for this lieferant in system.', 'bearbeitetvon' => '', 'startDateTime' => '', 'done' => '', 'id' => ''));
       echo json_encode($jsonArrayObject);
     }
 

@@ -52,7 +52,7 @@ $clientService = getGoogleClient();
  $client->setAuthConfig($oauth_credentials);
  $client->setRedirectUri($redirect_uri);
  $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly'));
- $client->setApprovalPrompt('auto');
+ $client->setApprovalPrompt('force');
  $client->setLoginHint('@newtelco.de');
  $plus = new Google_Service_Plus($client);
 
@@ -84,16 +84,17 @@ $clientService = getGoogleClient();
   if (isset($_SESSION['access_token']['refresh_token'])) {
     setcookie("rtoken",$_SESSION['access_token']['refresh_token']);
   }
+
  /************************************************
    If we have an access token, we can make
    requests, else we generate an authentication URL.
   ************************************************/
-  if (!empty($_SESSION['access_token']) && isset($_SESSION['access_token']['id_token'])) {
+ if (!empty($_SESSION['access_token']) && isset($_SESSION['access_token']['refresh_token'])) {
    $client->setAccessToken($_SESSION['access_token']);
-  } else {
+ } else {
    $authUrl = $client->createAuthUrl();
    //header('Location: ' . $authUrl);
-  }
+ }
  /************************************************
    If we're signed in we can go ahead and retrieve
    the ID token, which is part of the bundle of
@@ -102,45 +103,60 @@ $clientService = getGoogleClient();
    to retrieve the Google certificate to verify it,
    and that can be cached.
   ************************************************/
-  if ($client->getAccessToken()) {
+ if ($client->getAccessToken()) {
    $token_data = $client->verifyIdToken();
-  }
+ }
 
-  if (isset($token_data)) {
-    $tokenemail = $token_data['email'];
-    $rtoken_query = mysqli_query($dbhandle, "SELECT refreshToken from authentication where email like '$tokenemail' ");
+//var_dump($_SESSION['access_token']);
 
-
-    if ($fetch = mysqli_fetch_array($rtoken_query)) {
-      if (isset($_SESSION['access_token']['refresh_token'])) {
-        $rtoken = $_SESSION['access_token']['refresh_token'];
-        $rtoken_insertquery = mysqli_query($dbhandle, "UPDATE authentication set refreshToken = '$rtoken' where email like '$tokenemail'");
-      } else {
-        $fetch = mysqli_fetch_array($rtoken_query);
-        $rtoken = $fetch[0];
-      }
-    }
-  }
-
-  if($client->isAccessTokenExpired() && isset($rtoken)){  // if token expired
-
+if($_COOKIE['rtoken']) {
+  if($client->isAccessTokenExpired()){  // if token expired
+    $refreshtoken = $_COOKIE['rtoken'];
     //var_dump($refreshtoken);
     $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/admin.directory.user','https://www.googleapis.com/auth/admin.directory.user.readonly','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/calendar'));
-    $client->refreshToken($rtoken);
-    $client->fetchAccessTokenWithRefreshToken($rtoken);
+    $client->refreshToken($refreshtoken);
+    $client->fetchAccessTokenWithRefreshToken($refreshtoken);
     $client->setApprovalPrompt('auto');
     $client->setAccessType('offline');
-    $client->authenticate($rtoken);
+    $client->authenticate($refreshtoken);
     $accessToken=$client->getAccessToken();
     $_SESSION['access_token'] = $accessToken;
     //var_dump($accessToken);
     //$client->setAccessToken($_SESSION['access_token']);
     $token_data = $client->verifyIdToken();
- }
+  }
+} else if($_COOKIE['mail1']) {
+  $requestedMail = $_COOKIE['mail1'];
+    if($client->isAccessTokenExpired()){
+      $rtoken_query = mysqli_query($dbhandle, "SELECT refreshToken from authentication where email like '$requestedMail' ");
+      if ($fetch = mysqli_fetch_array($rtoken_query)) {
+        $fetch = mysqli_fetch_array($rtoken_query);
+        $rtoken = $fetch[0];
+        $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email','https://www.googleapis.com/auth/admin.directory.user','https://www.googleapis.com/auth/admin.directory.user.readonly','https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/calendar'));
+        $client->refreshToken($rtoken);
+        $client->fetchAccessTokenWithRefreshToken($rtoken);
+        $client->setApprovalPrompt('auto');
+        $client->setAccessType('offline');
+        $client->authenticate($rtoken);
+        $accessToken=$client->getAccessToken();
+        $_SESSION['access_token'] = $accessToken;
+        //var_dump($accessToken);
+        //$client->setAccessToken($_SESSION['access_token']);
+        $token_data = $client->verifyIdToken();
+      }
+    }
+}
 
- $q = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' . $_SESSION['access_token']['access_token'];
- $json = file_get_contents($q);
- $token_data=json_decode($json,true);
+if($client->isAccessTokenExpired() && isset($rtoken)){
+  $rtoken_insertquery = mysqli_query($dbhandle, "UPDATE authentication set refreshToken = '$rtoken' where email like '$tokenemail'");
+}
+$q = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' . $_SESSION['access_token']['access_token'];
+$json = file_get_contents($q);
+$token_data=json_decode($json,true);
+
+if (isset($token_data['email'])) {
+  setcookie("mail1",$token_data['email']);
+}
 
 if ($_SESSION['access_token']['id_token'] === NULL):
   unset($_SESSION['access_token']);

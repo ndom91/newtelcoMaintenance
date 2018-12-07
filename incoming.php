@@ -130,39 +130,39 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                     </div>
                   </dialog>
                 </div>
-                <div class="mdl-cell mdl-cell--8-col mdl-cell--4-col-phone dataTables_wrapper mdl-2col">
+                <div class="mdl-cell mdl-cell--7-col mdl-cell--4-col-phone dataTables_wrapper mdl-2col">
             <?php
             $lieferant = '';
             $tdCID = '';
 
             if (! empty($_POST['tLieferant'])){
-                  $lieferant = $_POST['tLieferant'];
-                  $query = $lieferant;
+              $lieferant = $_POST['tLieferant'];
+              $query = $lieferant;
 
-                  // DEBUG
-                  //echo '<b>Debug:</b><br>';
-                  //echo '<pre>';
-                  // END DEBUG
+              // DEBUG
+              //echo '<b>Debug:</b><br>';
+              //echo '<pre>';
+              // END DEBUG
 
-                  $lieferant_escape = mysqli_real_escape_string($dbhandle, $query);
-                  $lieferant_escape = '%' . $lieferant_escape . '%';
-                  // search first for existance of company
-                  $lieferant_query = mysqli_query($dbhandle, "SELECT `id`,`name` FROM `companies` WHERE `name` LIKE '$lieferant_escape'");
+              $lieferant_escape = mysqli_real_escape_string($dbhandle, $query);
+              $lieferant_escape = '%' . $lieferant_escape . '%';
+              // search first for existance of company
+              $lieferant_query = mysqli_query($dbhandle, "SELECT `id`,`name` FROM `companies` WHERE `name` LIKE '$lieferant_escape'");
 
-                  if ($fetch = mysqli_fetch_array($lieferant_query)) {
-                      //Found a companyn - now show all maintenances for company
-                      $lieferant_id = $fetch[0];
-                      $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
-                    }
+              if ($fetch = mysqli_fetch_array($lieferant_query)) {
+                  //Found a companyn - now show all maintenances for company
+                  $lieferant_id = $fetch[0];
+                  $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
+                }
 
             } elseif (! empty($_POST['tdCID'])){
-                $tdCID = $_POST['tdCID'];
-                $query = $tdCID;
+              $tdCID = $_POST['tdCID'];
+              $query = $tdCID;
 
-                $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
-                $dCID_escape = '%' . $dCID_escape . '%';
+              $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
+              $dCID_escape = '%' . $dCID_escape . '%';
 
-                $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
+              $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
             }
 
               echo '
@@ -236,10 +236,10 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
                 $dom = new DOMDocument();
                 $dom->loadHTML($html);
-                $script = $dom->getElementsByTagName('script');
-                $html = $dom->getElementsByTagName('html');
-                $body1 = $dom->getElementsByTagName('body');
-                $table = $dom->getElementsByTagName('table');
+                //$script = $dom->getElementsByTagName('script');
+                //$html = $dom->getElementsByTagName('html');
+                //$body1 = $dom->getElementsByTagName('body');
+                //$table = $dom->getElementsByTagName('table');
                 $remove = [];
 
                 foreach($script as $item) {
@@ -251,13 +251,13 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   $item->parentNode->setAttribute("style", "display: table !important;");
                 }
 
-                foreach($html as $item) {
-                  //$remove[] = $item;
-                }
-
-                foreach($body1 as $item) {
-                  //$remove[] = $item;
-                }
+                // foreach($html as $item) {
+                //   //$remove[] = $item;
+                // }
+                //
+                // foreach($body1 as $item) {
+                //   //$remove[] = $item;
+                // }
 
                 foreach ($remove as $item) {
                   $item->parentNode->removeChild($item);
@@ -266,18 +266,18 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                 $nodes = $dom->getElementsByTagName('*');
 
 
-                foreach($nodes as $node)
-                {
-                    if ($node->hasAttribute('onload')) {
-                        $node->removeAttribute('onload');
-                    }
-                    if ($node->hasAttribute('onclick')) {
-                        $node->removeAttribute('onclick');
-                    }
-                }
+                // foreach($nodes as $node)
+                // {
+                //     if ($node->hasAttribute('onload')) {
+                //         $node->removeAttribute('onload');
+                //     }
+                //     if ($node->hasAttribute('onclick')) {
+                //         $node->removeAttribute('onclick');
+                //     }
+                // }
 
                 $html = $dom->saveHTML();
-                $html = strip_tags($html, "<table>");
+                //$html = strip_tags($html, "<table>");
                 $inlineJS = "/\bon\w+=\S+(?=.*>)/";
 
                 //$html = preg_replace('/\bon\w+=\S+(?=.*>)/g', '', $html);
@@ -341,17 +341,21 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                           }
                       }
                   }
+
+
                   // Finally, print the message ID and the body
                   $fContents = '';
 
                   $mFile = "msg/" . $message_id . ".html";
-                  $fContents .= stripHTML($FOUND_BODY);
-                  $fPreview = substr($fContents, 0, 45);
+                  //$fContents .= stripHTML($FOUND_BODY);
+                  $fContents .= $FOUND_BODY;
+                  //$fPreview = substr($fContents, 0, 45);
                   //var_dump('fPreview: ' . $fPreview . '<br>');
                   //var_dump('fSnippet: ' . $snippet . '<br>');
-                  if (!file_exists($mFile)) {
+
+                  //if (!file_exists($mFile)) {
                     file_put_contents($mFile, $fContents);
-                  }
+                  //}
 
                   echo '
                   <script>
@@ -426,7 +430,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                               <div class="mailWrapper0">
                                 <div class="mdl-textfield mdl-js-textfield mailWrapper1">
                                   <div style="display:inline-block !important;height: 100%;margin-top: 20px;" class=" mailWrapper2">
-                                    <iframe class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0" src="msg/' . $message_id . '.html" id="emailBody1_' . $message_id . '"></iframe>
+                                    <iframe importance="low" class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0" src="msg/' . $message_id . '.html" id="emailBody1_' . $message_id . '"></iframe>
                                   </div>
                                 </div>
                               </div>
@@ -545,14 +549,16 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
                 ?>
                 </div>
-                <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone mdl-2col table2">
+                <div class="mdl-cell mdl-cell--5-col mdl-cell--4-col-phone mdl-2col table2">
                   <table id="dataTable2" class="hidden table compact table-striped nowrap" style="width: 100%">
                     <thead>
                       <tr>
+                        <th class=""></th>
                         <th class="">Maileingang</th>
                         <th class="">Bearbeitet Von</th>
                         <th>Start Date/Time</th>
                         <th>Complete</th>
+                        <th>ID</th>
                       </tr>
                     </thead>
                   </table>
@@ -604,10 +610,12 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                                 dataSrc: ""
                               },
                               columns: [
+                                  { title: "View" },
                                   { data: "maileingang" },
                                   { data: "bearbeitetvon" },
                                   { data: "startDateTime" },
-                                  { data: "done" }
+                                  { data: "done" },
+                                  { data: "id" }
                               ],
                               columnDefs: [
                                   {
@@ -615,16 +623,31 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                                       "visible": true,
                                       "searchable": false
                                   },{
-                                    targets: [-1], render: function (a, b, data, d) {
+                                      "targets": [ 5 ],
+                                      "visible": false,
+                                      "searchable": false
+                                  },{
+                                    targets: [4], render: function (a, b, data, d) {
                                       if (data['done'] === '1'){
                                         return '<span class="mdi mdi-24px mdi-check-decagram mdi-dark"></span>';
-                                      } else {
+                                      } else if (data['done'] === '0') {
                                         return '<span class="mdi mdi-24px mdi-checkbox-blank-circle-outline mdi-dark mdi-inactive"></span>';
+                                      } else {
+                                        return '';
+                                      }
+                                    }
+                                  },{
+                                    targets: [0], render: function (a, b, data, d) {
+                                      if (data['id'] != ''){
+                                        return '<a href="addedit?mid='+data['id']+'"><button style=\'margin-left:auto;margin-right:auto;text-align:center;\' id=\'sendMailbtn\' type=\'button\' class=\'mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored\'><span class=\'mdi mdi-file-find mdi-24px\'></span></button></a>'
+                                      } else {
+                                        return '';
                                       }
                                     }
                                   }
                                 ],
-                                responsive: true
+                                responsive: true,
+                                order: [ 1, 'desc' ]
                              } );
                   }
               })

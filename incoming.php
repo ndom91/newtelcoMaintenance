@@ -33,9 +33,8 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
   <script rel="preload" as="script" type="text/javascript" src="assets/js/jquery-3.3.1.min.js"></script>
 
   <!-- Datatables -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/datatables.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/jquery.dataTables.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.bootstrap4.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.material.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.select.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.responsive.min.js"></script>
 
@@ -166,7 +165,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             }
 
               echo '
-              <table id="dataTable3" class="table table-striped compact nowrap order-column hover" style="width: 100%">
+              <table id="dataTable3" class="mdl-data-table striped" style="width: 100%">
                       <thead>
                         <tr>
                           <th style="width:20px!important"></th>
@@ -381,7 +380,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
                     if (iframedoc) {
                       iframedoc.document.open();
-                      iframedoc.document.write("' . stripHTML($FOUND_BODY) . '");
+                      iframedoc.document.write("' . $FOUND_BODY . '");
                       iframedoc.document.close();
                       console.log("iframedoc written");
                     } else {
@@ -550,7 +549,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                 ?>
                 </div>
                 <div class="mdl-cell mdl-cell--5-col mdl-cell--4-col-phone mdl-2col table2">
-                  <table id="dataTable2" class="hidden table compact table-striped nowrap" style="width: 100%">
+                  <table id="dataTable2" class="hidden mdl-data-table striped" style="width: 100%">
                     <thead>
                       <tr>
                         <th class=""></th>
@@ -693,12 +692,8 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
       <!-- datatables css -->
       <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/responsive.dataTables.min.css" onload="this.rel='stylesheet'">
-      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/dataTables.bootstrap4.min.css" onload="this.rel='stylesheet'">
       <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/select.dataTables.min.css" onload="this.rel='stylesheet'">
-      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/datatables.min.css" onload="this.rel='stylesheet'">
-
-      <!-- bootstrap -->
-      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/bootstrap.min.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/dataTables.material.min.css" onload="this.rel='stylesheet'">
 
       <!-- font awesome -->
       <link rel="preload stylesheet" as="style" href="assets/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">

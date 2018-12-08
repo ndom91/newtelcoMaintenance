@@ -24,12 +24,10 @@ global $dbhandle;
   <script rel="preload" as="script" type="text/javascript" src="assets/js/moment/moment-timezone-with-data.min.js"></script>
 
   <!-- Datatables -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/datatables.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/jquery.dataTables.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.bootstrap4.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.select.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.material.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.responsive.min.js"></script>
-
+  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.select.min.js"></script>
   <!-- pace -->
   <script rel="preload" as="script" type="text/javascript" src="assets/js/pace.js"></script>
 
@@ -154,7 +152,7 @@ global $dbhandle;
                 // non-numeric columns: class="mdl-data-table__cell--non-numeric"
 
                 echo '<div class="dataTables_wrapper">
-                <table id="dataTable1" class="table table-striped  hover nowrap" style="width: 100%">
+                <table id="dataTable1" class="mdl-data-table striped" style="width: 100%">
                         <thead>
                           <tr>
                             <th style="width: max-content;"></th>
@@ -266,7 +264,7 @@ global $dbhandle;
                       { responsivePriority: 5, targets: [ 7, 8, 12 ] },
                       { responsivePriority: 10, targets: [ 11, 9, 10 ] },
                       {
-                          targets: [2, 3, 4, 6, 7, 8, 9, 10, 13 ],
+                          targets: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ],
                           className: 'mdl-data-table__cell--non-numeric'
                       }
                   ]
@@ -292,12 +290,8 @@ global $dbhandle;
 
       <!-- datatables css -->
       <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/responsive.dataTables.min.css" onload="this.rel='stylesheet'">
-      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/dataTables.bootstrap4.min.css" onload="this.rel='stylesheet'">
       <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/select.dataTables.min.css" onload="this.rel='stylesheet'">
-      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/datatables.min.css" onload="this.rel='stylesheet'">
-
-      <!-- bootstrap -->
-      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/bootstrap.min.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/dataTables.material.min.css" onload="this.rel='stylesheet'">
 
       <!-- material icons -->
       <link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css" onload="this.rel='stylesheet'">

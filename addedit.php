@@ -35,9 +35,8 @@ global $dbhandle;
   <script rel="preload" as="script" type="text/javascript" src="assets/js/flatpickr.min.js"></script>
 
   <!-- Datatables -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/datatables.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.material.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/jquery.dataTables.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.bootstrap4.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.select.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.responsive.min.js"></script>
 
@@ -361,6 +360,9 @@ global $dbhandle;
             <button id="btnSave" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
               <i class="material-icons">save</i>
             </button>
+            <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnSave">
+              Save Maintenance
+            </div>
           </div>
           <div class="mdl-card__supporting-text">
             <small><?php if ($oupdatedBy != '') { echo 'Last updated by: <span class="updatedLabel">' . $oupdatedBy . '</span> at <span class="updatedLabel" id="updatedAtLabel">' . $oupdatedAt . '</span>';}?></small>
@@ -499,6 +501,9 @@ global $dbhandle;
                 <button id="addCalbtn" type="button" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
                   <span class="mdi mdi-24px mdi-calendar-plus mdi-light"></span>
                 </button>
+                <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="addCalbtn">
+                  Create Calendar Entry
+                </div>
               </div>
             </div>
           </div>
@@ -546,18 +551,19 @@ global $dbhandle;
                 <h2 class="mdl-card__title-text">Kunden Circuits</h2>
               </div>
               <div class="mdl-card__supporting-text">
-              <table id="dataTable4" class="display table table-striped compact nowrap" style="width: 100%">
+              <table id="dataTable4" class="mdl-data-table striped" style="width: 100%">
                 <thead>
                   <tr>
-                    <th>Unsere CID</th>
+                    <th>Unserer CID</th>
                     <th class="">Unsere CID</th>
                     <th>Kunde</th>
-                    <th>Maintenance Recipient</th>
+                    <th>Maintenancee Recipient</th>
                     <th>Maintenance Recipient</th>
                   </tr>
                 </thead>
               </table>
-            </div>
+
+              </div>
             </div>
           </div>
         </div>
@@ -567,17 +573,17 @@ global $dbhandle;
 $('#addCalbtn').click(function(){
 
 
-  console.log('calSDT: ' + moment(calSDT).toISOString());
+  //console.log('calSDT: ' + moment(calSDT).toISOString());
 
   var calSDT = $('#sdt').val();
   var calSDTISO = moment(calSDT).toISOString().replace(/[^a-z0-9\s]/gi, '');
   var calSDTISO2 = calSDTISO.replace('000Z','Z');
-  console.log('calSDTISO: ' + calSDTISO2);
+  //console.log('calSDTISO: ' + calSDTISO2);
 
   var calEDT = $('#edt').val();
   var calEDTISO = moment(calEDT).toISOString().replace(/[^a-z0-9\s]/gi, '');;
   var calEDTISO2 = calEDTISO.replace('000Z','Z');
-  console.log('calEDTISO: ' + calEDTISO2);
+  //console.log('calEDTISO: ' + calEDTISO2);
 
   var selectedDCID = $( "#dcid3 option:selected" ).text();
   var selectedCompany = $('#company').val();
@@ -831,10 +837,13 @@ var table4 = $('#dataTable4').DataTable( {
       }, {
           "targets": 0,
           "data": null,
-          "defaultContent": "<button style='margin-left:auto;margin-right:auto;text-align:center;' id='sendMailbtn' type='button' class='mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored'><span class='mdi mdi-send mdi-24px'></span></button>",
-          className: 'text-center'
-
-      }
+          "defaultContent": "<button style='margin-left:auto;margin-right:auto;text-align:center;' id='sendMailbtn' type='button' class='mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored'><span class='mdi mdi-send mdi-24px'></span></button><div class='mdl-tooltip  mdl-tooltip--bottom' data-mdl-for='sendMailbtn'> Send Notification </div>",
+          className: 'mdl-data-table__cell--non-numeric text-center'
+      },{
+          targets: [ 1, 2 ],
+          className: 'mdl-data-table__cell--non-numeric'
+      },
+      { responsivePriority: 1, targets: [ 0, 1, 2 ] }
     ],
     responsive: true
 });
@@ -880,6 +889,21 @@ $(document).ready(function() {
     var win = window.open(url, '_blank');
     win.focus();
   };
+
+});
+
+$(document).ready(function() {
+  if ($( "#dcid3 option:selected" ).text() != '') {
+    $('#kundenCard').addClass('display').removeClass('hidden');
+    var value = $( "#dcid3 option:selected" ).val(); 
+
+    $('#dcid3')
+         .find('option:checked(' + value + ')')
+         .prop('selected',true)
+         .trigger('change'); //trigger a change instead of click
+
+    return false;
+  }
 });
 
 $('#btnSave').on('click', function(e) {
@@ -1045,7 +1069,7 @@ $('#btnSave').on('click', function(e) {
   </div>
 
   <!-- Google font-->
-  <link prefetch rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
 
   <!-- mdl-selectfield css -->
   <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/mdl-selectfield.min.css" onload="this.rel='stylesheet'">
@@ -1061,14 +1085,10 @@ $('#btnSave').on('click', function(e) {
   <link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css" onload="this.rel='stylesheet'">
   <link rel="preload stylesheet" as="style" href="assets/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
 
-  <!-- bootstrap -->
-  <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/bootstrap.min.css" onload="this.rel='stylesheet'">
-
   <!-- datatables css -->
   <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/responsive.dataTables.min.css" onload="this.rel='stylesheet'">
-  <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/dataTables.bootstrap4.min.css" onload="this.rel='stylesheet'">
   <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/select.dataTables.min.css" onload="this.rel='stylesheet'">
-  <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/datatables.min.css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/dataTables.material.min.css" onload="this.rel='stylesheet'">
 
   <!-- font awesome -->
   <link rel="preload stylesheet" as="style" href="assets/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">

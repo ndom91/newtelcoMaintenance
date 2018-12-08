@@ -3842,7 +3842,7 @@ ul, ol {
   background: transparent;
   border: none;
   border-radius: 2px;
-  color: rgb(0,0,0);
+  color: rgba(0,0,0,.54);
   position: relative;
   height: 36px;
   margin: 0;
@@ -3890,14 +3890,14 @@ input.mdl-button[type="submit"] {
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.18), 0 8px 16px rgba(0, 0, 0, 0.36);
     background-color: rgba(158,158,158, 0.40); }
   .mdl-button--raised.mdl-button--colored {
-    background: rgb(63,81,181);
+    background: rgb(103, 178, 70);
     color: rgb(255,255,255); }
     .mdl-button--raised.mdl-button--colored:hover {
-      background-color: rgb(63,81,181); }
+      background-color: rgb(103, 178, 70); }
     .mdl-button--raised.mdl-button--colored:active {
-      background-color: rgb(63,81,181); }
+      background-color: rgb(103, 178, 70); }
     .mdl-button--raised.mdl-button--colored:focus:not(:active) {
-      background-color: rgb(63,81,181); }
+      background-color: rgb(103, 178, 70); }
     .mdl-button--raised.mdl-button--colored .mdl-ripple {
       background: rgb(255,255,255); }
 
@@ -5037,7 +5037,7 @@ input.mdl-button[type="submit"] {
 /* Dialog */
 .mdl-data-table {
   position: relative;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  /* border: 1px solid rgba(0, 0, 0, 0.12); */
   border-collapse: collapse;
   white-space: nowrap;
   font-size: 13px;
@@ -5048,14 +5048,18 @@ input.mdl-button[type="submit"] {
       margin-top: 0; }
   .mdl-data-table tbody tr {
     position: relative;
-    height: 48px;
+    height: 42px;
     transition-duration: 0.28s;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-property: background-color; }
+
+.mdl-data-table tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, .05)
+}
     .mdl-data-table tbody tr.is-selected {
       background-color: #e0e0e0; }
     .mdl-data-table tbody tr:hover {
-      background-color: #eeeeee; }
+      background-color: rgba(103, 178, 70, 0.2); }
   .mdl-data-table td, .mdl-data-table th {
     padding: 0 18px 12px 18px;
     text-align: right; }
@@ -5066,11 +5070,12 @@ input.mdl-button[type="submit"] {
   .mdl-data-table td {
     position: relative;
     vertical-align: middle;
-    height: 48px;
+    height: 38px;
     border-top: 1px solid rgba(0, 0, 0, 0.12);
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     padding-top: 12px;
-    box-sizing: border-box; }
+    box-sizing: border-box;
+    font-size: 14px; }
     .mdl-data-table td .mdl-data-table__select {
       vertical-align: middle; }
   .mdl-data-table th {
@@ -5117,7 +5122,8 @@ input.mdl-button[type="submit"] {
   width: 16px; }
 
 .mdl-data-table__cell--non-numeric.mdl-data-table__cell--non-numeric {
-  text-align: left; }
+  text-align: left;
+  border: none;}
 
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
@@ -10230,7 +10236,8 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
     transition-duration: 0.2s;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     visibility: hidden;
-    width: 10px; }
+    width: 10px;
+    top: 42px; }
   .mdl-textfield.is-focused .mdl-textfield__label:after {
     left: 0;
     visibility: visible;

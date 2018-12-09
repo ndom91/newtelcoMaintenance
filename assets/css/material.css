@@ -3925,7 +3925,9 @@ input.mdl-button[type="submit"] {
   .mdl-button--fab.mdl-button--mini-fab {
     height: 40px;
     min-width: 40px;
-    width: 40px; }
+    width: 40px;
+    margin-left: 5px;
+    margin-top: -3px;}
   .mdl-button--fab .mdl-button__ripple-container {
     border-radius: 50%;
     -webkit-mask-image: -webkit-radial-gradient(circle, white, black); }

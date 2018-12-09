@@ -43,6 +43,8 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
   <script rel="preload" as="script" type="text/javascript" src="assets/js/moment/datetime-moment.min.js"></script>
 
   <!-- OverlayScrollbars -->
+  <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+  <link type="text/css" href="assets/css/os-theme-minimal-dark.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
   <script rel="preload" as="script" type="text/javascript" src="assets/js/OverlayScrollbars.min.js"></script>
 
   <!-- pace -->
@@ -67,10 +69,6 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
       $content_menu = ob_get_clean();
       echo $content_menu;
     ?>
-
-    <script language="javascript" type="text/javascript">
-
-    </script>
 
     <main class="mdl-layout__content">
         <div id="loading">
@@ -189,11 +187,11 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   while ($rowx = mysqli_fetch_assoc($resultx)) {
                     echo '<tr>';
                     // button - class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab"
-                        echo '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-                                <a class="editLink" href="addedit.php?mid=' . $rowx['id'] . '">
-                                  <i class="material-icons">edit</i>
-                                </a>
-                              </button></td>';
+                        echo '<td><a class="editLink" href="addedit.php?mid=' . $rowx['id'] . '">
+                                    <button class="mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+                                      <i class="material-icons">edit</i>
+                                    </button>
+                                  </a></td>';
                     foreach($rowx as $field) {
                         if ($rowx['maileingang']) {
                           echo '<td>' . $field . '</td>';
@@ -393,11 +391,13 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
 
                   echo '<tr>
-                          <td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-                                <a class="editLink" href="addedit?gmid=' . $message_id . '">
-                                    <i class="material-icons">edit</i>
-                                  </a>
-                                </button></td>
+                          <td>
+                            <a class="editLink" href="addedit?gmid=' . $message_id . '">
+                              <button class="mdl-color-text--primary-contrast mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored button40">
+                                <span style="color:#fff !important; line-height: 41px !important;" class="mdi mdi-24px mdi-circle-edit-outline mdi-light">
+                              </button>
+                            </a>
+                          </td>
                           <td></td>
                           <td>'. $date  . '</td>
                           <td><a id="show-dialog2" data-target="' . $message_id . '">' . $message_id . '</a></td>
@@ -670,18 +670,22 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
           }); */
 
           document.addEventListener("DOMContentLoaded", function() {
-            //The first argument are the elements to which the plugin shall be initialized
-            //The second argument has to be at least a empty object or a object with your desired options
             OverlayScrollbars(document.querySelectorAll(".mdl-dialog"), {
               className       : "os-theme-dark",
               resize          : "vertical",
               sizeAutoCapable : true
             });
-            /*OverlayScrollbars(document.querySelectorAll(".frameClass"), {
-              className       : "os-theme-dark",
-              resize          : "vertical",
-              sizeAutoCapable : false
-            });*/
+            $(".mdl-layout__content").overlayScrollbars({
+              className:"os-theme-minimal-dark",
+              overflowBehavior : {
+                x: "hidden"
+              },
+              scrollbars : {
+            		visibility       : "auto",
+            		autoHide         : "move",
+            		autoHideDelay    : 500
+            	}
+            });
           });
 
           $( document ).ready(function() {
@@ -707,7 +711,5 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
       <!-- Google font-->
       <link prefetch rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
 
-      <!-- Overlay Scrollbars -->
-      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/OverlayScrollbars.min.css" onload="this.rel='stylesheet'">
 </body>
 </html>

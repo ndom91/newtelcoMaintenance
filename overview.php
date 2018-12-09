@@ -28,8 +28,14 @@ global $dbhandle;
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.material.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.responsive.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.select.min.js"></script>
+
   <!-- pace -->
   <script rel="preload" as="script" type="text/javascript" src="assets/js/pace.js"></script>
+
+  <!-- OverlayScrollbars -->
+  <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+  <link type="text/css" href="assets/css/os-theme-minimal-dark.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+  <script rel="preload" as="script" type="text/javascript" src="assets/js/OverlayScrollbars.min.js"></script>
 
   <style>
     <?php echo file_get_contents("assets/css/style-ndo.min.css"); ?>
@@ -176,11 +182,11 @@ global $dbhandle;
                   while ($rowx = mysqli_fetch_assoc($resultx)) {
                     echo '<tr>';
                     // button - class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab"
-                        echo '<td><button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-                                <a class="editLink" href="addedit.php?update=1&mid=' . $rowx['id'] . '&gmid=' . $rowx['receivedmail'] . '">
-                                  <i class="material-icons">edit</i>
-                                </a>
-                              </button></td>';
+                        echo '<td><a class="editLink" href="addedit.php?update=1&mid=' . $rowx['id'] . '&gmid=' . $rowx['receivedmail'] . '"><button class="mdl-color-text--primary-contrast mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored button40" style="margin-left:3px">
+
+                                  <span style="color:#fff !important; line-height: 41px !important;" class="mdi mdi-24px mdi-circle-edit-outline mdi-light">
+
+                              </button></a></td>';
 
                     while (list($key, $value) = each($rowx)) {
 
@@ -281,6 +287,20 @@ global $dbhandle;
           $( document ).ready(function() {
              setTimeout(function() {$('#loading').hide()},500);
           });
+
+          document.addEventListener("DOMContentLoaded", function() {
+            $(".mdl-layout__content").overlayScrollbars({
+              className:"os-theme-minimal-dark",
+              overflowBehavior : {
+                x: "hidden"
+              },
+              scrollbars : {
+            		visibility       : "auto",
+            		autoHide         : "move",
+            		autoHideDelay    : 500
+            	}
+             });
+          });
         </script>
         <?php echo file_get_contents("views/footer.html"); ?>
       </div>
@@ -299,5 +319,6 @@ global $dbhandle;
 
       <!-- Google font-->
       <link prefetch rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+
 </body>
 </html>

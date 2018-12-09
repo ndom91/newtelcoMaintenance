@@ -9,11 +9,19 @@ require('authenticate_google.php');
   <title>Newtelco Maintenance | Group Maintenance</title>
   <?php echo file_get_contents("views/meta.html"); ?>
 
+  <!-- jquery -->
+  <script rel="preload" as="script" src="assets/js/jquery-3.3.1.min.js"></script>
+
   <!-- material design -->
   <script rel="preload" as="script" type="text/javascript" src="assets/js/material.min.js"></script>
 
   <!-- pace -->
   <script rel="preload" as="script" type="text/javascript" src="assets/js/pace.js"></script>
+
+  <!-- OverlayScrollbars -->
+  <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+  <link type="text/css" href="assets/css/os-theme-minimal-dark.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+  <script rel="preload" as="script" type="text/javascript" src="assets/js/OverlayScrollbars.min.js"></script>
 
   <style>
     <?php echo file_get_contents("assets/css/style-ndo.min.css"); ?>
@@ -57,6 +65,21 @@ require('authenticate_google.php');
         </main>
         <?php echo file_get_contents("views/footer.html"); ?>
       </div>
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+          $(".mdl-layout__content").overlayScrollbars({
+            className:"os-theme-minimal-dark",
+            overflowBehavior : {
+              x: "hidden"
+            },
+            scrollbars : {
+              visibility       : "auto",
+              autoHide         : "move",
+              autoHideDelay    : 500
+            }
+          });
+        });
+      </script>
 
       <!-- Google font-->
       <link prefetch rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">

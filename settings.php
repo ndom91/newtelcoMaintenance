@@ -31,6 +31,11 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
   <!-- pace -->
   <script rel="preload" as="script" type="text/javascript" src="assets/js/pace.js"></script>
 
+  <!-- OverlayScrollbars -->
+  <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+  <link type="text/css" href="assets/css/os-theme-minimal-dark.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+  <script rel="preload" as="script" type="text/javascript" src="assets/js/OverlayScrollbars.min.js"></script>
+
   <style>
     <?php echo file_get_contents("assets/css/style-ndo.min.css"); ?>
     <?php echo file_get_contents("assets/css/material-ndo.min.css"); ?>
@@ -283,7 +288,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              manualRowResize: true,
              comments: true,
              autoWrapRows: true,
-             height: 400,
+             preventOverflow: 'horizontal',
              filters: true,
              dropdownMenu: true,
              renderAllRows: true,
@@ -330,6 +335,15 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             'success': function (res) {
               hot.loadData(res);
               hot.render();
+              var firmenHeight = $('#firmenTable > .ht_master > .wtHolder > .wtHider').css( "height" );
+              $('.tableWrapper1').css("height",firmenHeight);
+              $('#firmenTable').css("height",firmenHeight);
+              $('#firmenTable > .ht_master').css("height",firmenHeight);
+              $('#firmenTable > .ht_master > .wtHolder').css("height",firmenHeight);
+              $('#firmenTable > .ht_clone_left').css("height",firmenHeight);
+              $('#firmenTable > .ht_clone_left > .wtHolder').css("height",firmenHeight);
+              $('footer').css("min-height","76px");
+              $('footer').css("max-height","76px");
             },
             'error': function () {
               console.log("Loading error");
@@ -350,19 +364,19 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             rowHeaders: true,
             colHeaders: true,
             contextMenu: true,
-            colWidths: [100, 100, 320],
+            colWidths: [35, 120],
             columnSorting: true,
-            colHeaders: ['Kunden CID', 'Company'],
+            colHeaders: ['Kunde', 'Kunden CID'],
             columns: [
-             {data: 'kundenCID'},
-             {data: 'name'}
+              {data: 'name'},
+              {data: 'kundenCID'}
             ],
             stretchH: 'all',
             manualColumnResize: true,
             manualRowResize: true,
             comments: true,
             autoWrapRows: true,
-            height: 400,
+            preventOverflow: 'horizontal',
             filters: true,
             dropdownMenu: true,
             renderAllRows: true,
@@ -406,6 +420,16 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
            'success': function (res3) {
              hot3.loadData(res3);
              hot3.render();
+             var kundenHeight = $('#kundenTable > .ht_master > .wtHolder > .wtHider').css( "height" );
+             console.log('kundenHeight: ' + kundenHeight);
+             $('.tableWrapper1').css("height",kundenHeight);
+             $('#kundenTable').css("height",kundenHeight);
+             $('#kundenTable > .ht_master').css("height",kundenHeight);
+             $('#kundenTable > .ht_master > .wtHolder').css("height",kundenHeight);
+             $('#kundenTable > .ht_clone_left').css("height",kundenHeight);
+             $('#kundenTable > .ht_clone_left > .wtHolder').css("height",kundenHeight);
+             $('footer').css("min-height","76px");
+             $('footer').css("max-height","76px");
            },
            'error': function () {
              console.log("Loading error");
@@ -426,19 +450,19 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
              rowHeaders: true,
              colHeaders: true,
              contextMenu: true,
-             colWidths: [85, 100],
+             colWidths: [35, 120],
              columnSorting: true,
-             colHeaders: ['Deren CID', 'Lieferant'],
+             colHeaders: ['Lieferant', 'Deren CID'],
              columns: [
-              {data: 'derenCID'},
-              {data: 'name'}
+              {data: 'name'},
+              {data: 'derenCID'}
              ],
              stretchH: 'all',
              manualColumnResize: true,
              manualRowResize: true,
-             height: 400,
              comments: true,
              autoWrapRows: true,
+             height: 'auto',
              filters: true,
              renderAllRows: true,
              dropdownMenu: true,
@@ -481,11 +505,35 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
               'success': function (res2) {
                 hot2.loadData(res2);
                 hot2.render();
+                var lieferantenHeight = $('#lieferantenTable > .ht_master > .wtHolder > .wtHider').css( "height" );
+                console.log('lieferantenHeight: ' + lieferantenHeight);
+                $('.tableWrapper1').css("height",lieferantenHeight);
+                $('#lieferantenTable').css("height",lieferantenHeight);
+                $('#lieferantenTable > .ht_master').css("height",lieferantenHeight);
+                $('#lieferantenTable > .ht_master > .wtHolder').css("height",lieferantenHeight);
+                $('#lieferantenTable > .ht_clone_left').css("height",lieferantenHeight);
+                $('#lieferantenTable > .ht_clone_left > .wtHolder').css("height",lieferantenHeight);
+                $('footer').css("min-height","76px");
+                $('footer').css("max-height","76px");
               },
               'error': function () {
                 console.log("Loading error");
               }
             })
+          });
+
+          document.addEventListener("DOMContentLoaded", function() {
+            $(".mdl-layout__content").overlayScrollbars({
+              className:"os-theme-minimal-dark",
+              overflowBehavior : {
+                x: "hidden"
+              },
+              scrollbars : {
+                visibility       : "auto",
+                autoHide         : "move",
+                autoHideDelay    : 500
+              }
+            });
           });
         </script>
         <?php echo file_get_contents("views/footer.html"); ?>
@@ -496,6 +544,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
       <!-- material icons -->
       <link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" href="assets/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
 
       <!-- font awesome -->
       <link rel="preload stylesheet" as="style" href="assets/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">

@@ -478,6 +478,7 @@ global $dbhandle;
               <input type="hidden" value="" id="mailSentAt">
               <input type="hidden" value="<?php echo $_COOKIE['label'] ?>" id="gmailLabel">
               <input type="hidden" value="<?php echo $msgInfo[1] ?>" id="mailDomain">
+              <input type="hidden" value="<?php echo $activeID ?>" id="activeMID">
             </div>
             </form>
             </div>
@@ -572,7 +573,9 @@ $('#addCalbtn').click(function(){
   var selectedDCID = $( "#dcid3 option:selected" ).text();
   var selectedCompany = $('#company').val();
 
-  openInNewTab(`http://www.google.com/calendar/event?action=TEMPLATE&dates=${calSDTISO2}%2F${calEDTISO2}&src=newtelco.de_hkp98ambbvctcn966gjj3c7dlo@group.calendar.google.com&text=Maintenance%20- '${selectedCompany}'%20on%20'${selectedDCID}'&add=service@newtelco.de&details=Newtelco%20Maintenance%20for%20<b>${selectedCompany}</b>%20on%20deren%20CID:%20'<b>${selectedDCID}</b>'.&trp=false`);
+  var activeID = $('#activeMID').val();
+
+  openInNewTab(`http://www.google.com/calendar/event?action=TEMPLATE&dates=${calSDTISO2}%2F${calEDTISO2}&src=newtelco.de_hkp98ambbvctcn966gjj3c7dlo@group.calendar.google.com&text=Maintenance%20on%20 ${selectedCompany}%20on%20${selectedDCID}&add=service@newtelco.de&details=Maintenance%20for%20<b>${selectedCompany}</b>%20on%20deren%20CID:%20"<b>${selectedDCID}</b>".<br><br>Affected%20Newtelco%20CIDs:<br>[INSERT%20NT%20CIDs]<br><br>Source%20-%20<a href="https://maintenance.newtelco.de/addedit?mid=${activeID}">M${activeID}</a>&trp=false`);
 });
 
 const _t = (s) => {
@@ -814,11 +817,14 @@ var table4 = $('#dataTable4').DataTable( {
       }, {
           "targets": 0,
           "data": null,
-          "defaultContent": "<button style='margin-left:auto;margin-right:auto;text-align:center;' id='sendMailbtn' type='button' class='mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored'><span class='mdi mdi-send mdi-24px'></span></button><div class='mdl-tooltip  mdl-tooltip--bottom' data-mdl-for='sendMailbtn'> Send Notification </div>",
+          "defaultContent": "<button style='margin-left:3px;text-align:center;' id='sendMailbtn' type='button' class='mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored button40'><span class='mdi mdi-send mdi-24px'></span></button><div class='mdl-tooltip  mdl-tooltip--bottom' data-mdl-for='sendMailbtn'> Send Notification </div>",
           className: 'mdl-data-table__cell--non-numeric text-center'
       },{
           targets: [ 1, 2 ],
           className: 'mdl-data-table__cell--non-numeric'
+      },{
+          targets: [ 4 ],
+          className: 'mdl-typography--text-lowercase'
       },
       { responsivePriority: 1, targets: [ 0, 1, 2 ] }
     ],

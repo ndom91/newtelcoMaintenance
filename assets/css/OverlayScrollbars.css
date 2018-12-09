@@ -36,13 +36,7 @@ body.os-dragging * {
 }
 .os-host,
 .os-host-textarea {
-    position: relative;
-    overflow: visible !important;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-content: flex-start;
-    align-items: flex-start;
+
 }
 .os-host-flexbox {
     overflow: hidden !important;
@@ -397,9 +391,9 @@ html.os-html > .os-host > .os-scrollbar {
     overflow: hidden !important;
 }
 .os-host-overflow-x {
-} 
+}
 .os-host-overflow-y {
-} 
+}
 @-webkit-keyframes hs-resize-observer-dummy-animation {
     from {
         z-index: 0;

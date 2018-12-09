@@ -35,8 +35,8 @@ global $dbhandle;
   <script rel="preload" as="script" type="text/javascript" src="assets/js/flatpickr.min.js"></script>
 
   <!-- Datatables -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.material.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/jquery.dataTables.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.material.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.select.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.responsive.min.js"></script>
 
@@ -108,7 +108,6 @@ global $dbhandle;
               $omaintid = $mIDresult['id'];
               $omaileingang = $mIDresult['maileingang'];
               $oreceivedmail = $mIDresult['receivedmail'];
-              $olieferant = $mIDresult['lieferant'];
               $olieferantID = $mIDresult['lieferant'];
               $oderenCIDid = $mIDresult['derenCIDid'];
               $obearbeitetvon = $mIDresult['bearbeitetvon'];
@@ -171,181 +170,173 @@ global $dbhandle;
               }
 
               function stripHTML($html) {
+                $dom = new DOMDocument();
+                $dom->loadHTML($html);
+                $script = $dom->getElementsByTagName('script');
+                $html = $dom->getElementsByTagName('html');
+                $body1 = $dom->getElementsByTagName('body');
+                $table = $dom->getElementsByTagName('table');
+                $remove = [];
 
-                  $dom = new DOMDocument();
-                  $dom->loadHTML($html);
-                  $script = $dom->getElementsByTagName('script');
-                  $html = $dom->getElementsByTagName('html');
-                  $body1 = $dom->getElementsByTagName('body');
-                  $table = $dom->getElementsByTagName('table');
-                  $remove = [];
+                foreach($script as $item) {
+                  $remove[] = $item;
+                }
 
-                  foreach($script as $item) {
-                    $remove[] = $item;
+                foreach($table as $item) {
+                  $item->setAttribute("style","overflow: auto !important;");
+                  $item->parentNode->setAttribute("style", "display: table !important;");
+                }
+
+                foreach($html as $item) {
+                  //$remove[] = $item;
+                }
+
+                foreach($body1 as $item) {
+                  //$remove[] = $item;
+                }
+
+                foreach ($remove as $item) {
+                  $item->parentNode->removeChild($item);
+                }
+
+                $nodes = $dom->getElementsByTagName('*');
+
+                foreach($nodes as $node) {
+                  if ($node->hasAttribute('onload')) {
+                    $node->removeAttribute('onload');
                   }
-
-                  foreach($table as $item) {
-                    $item->setAttribute("style","overflow: auto !important;");
-                    $item->parentNode->setAttribute("style", "display: table !important;");
+                  if ($node->hasAttribute('onclick')) {
+                    $node->removeAttribute('onclick');
                   }
+                }
 
-                  foreach($html as $item) {
-                    //$remove[] = $item;
-                  }
+                $html = $dom->saveHTML();
+                $html = strip_tags($html, "<table>");
+                $inlineJS = "/\bon\w+=\S+(?=.*>)/";
 
-                  foreach($body1 as $item) {
-                    //$remove[] = $item;
-                  }
-
-                  foreach ($remove as $item) {
-                    $item->parentNode->removeChild($item);
-                  }
-
-                  $nodes = $dom->getElementsByTagName('*');
-
-
-                  foreach($nodes as $node)
-                  {
-                      if ($node->hasAttribute('onload')) {
-                          $node->removeAttribute('onload');
-                      }
-                      if ($node->hasAttribute('onclick')) {
-                          $node->removeAttribute('onclick');
-                      }
-                  }
-
-                  $html = $dom->saveHTML();
-                  $html = strip_tags($html, "<table>");
-                  $inlineJS = "/\bon\w+=\S+(?=.*>)/";
-
-                  //$html = preg_replace('/\bon\w+=\S+(?=.*>)/g', '', $html);
-                  return trim($html);
+                //$html = preg_replace('/\bon\w+=\S+(?=.*>)/g', '', $html);
+                return trim($html);
               }
 
               function getMessage2($service, $userId, $message_id) {
                 try {
-                      $msgArray = array();
+                  $msgArray = array();
 
-                      $optParamsGet2['format'] = 'full';
-                      $single_message = $service->users_messages->get($userId, $message_id,$optParamsGet2);
+                  $optParamsGet2['format'] = 'full';
+                  $single_message = $service->users_messages->get($userId, $message_id,$optParamsGet2);
 
-                      $payload = $single_message->getPayload();
-                      $headers = $payload->getHeaders();
-                      $snippet = $single_message->getSnippet();
-                      $date = getHeader($headers, 'Date');
-                      $subject = getHeader($headers, 'Subject');
-                      $from = getHeader($headers, 'From');
-                      $fromHTML = htmlentities($from);
-                      if (($pos = strpos($fromHTML, "@")) !== FALSE) {
-                        preg_match_all("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $fromHTML, $matches);
-                        $fromAddress = $matches[0];
-                        $domain = get_email_domain($matches[0]);
-                      }
-
-
-
-                      $msgArray[] = $date;
-                      $msgArray[] = $domain;
-                      $msgArray[] = $subject;
-                      $msgArray[] = $fromHTML;
-                      $msgArray[] = $date;
-
-                      // With no attachment, the payload might be directly in the body, encoded.
-                      $body = $payload->getBody();
-                      $FOUND_BODY = decodeBody($body['data']);
-
-                      // If we didn't find a body, let's look for the parts
-                      if(!$FOUND_BODY) {
-                          $parts = $payload->getParts();
-                          foreach ($parts  as $part) {
-                              if($part['body'] && $part['mimeType'] == 'text/html') {
-                                  $FOUND_BODY = decodeBody($part['body']->data);
-                                  break;
-                              }
-                          }
-                      } if(!$FOUND_BODY) {
-                          foreach ($parts  as $part) {
-                              // Last try: if we didn't find the body in the first parts,
-                              // let's loop into the parts of the parts (as @Tholle suggested).
-                              if($part['parts'] && !$FOUND_BODY) {
-                                  foreach ($part['parts'] as $p) {
-                                      // replace 'text/html' by 'text/plain' if you prefer
-                                      if($p['mimeType'] === 'text/plain' && $p['body']) {
-                                          $FOUND_BODY = decodeBody($p['body']->data);
-                                          break;
-                                      }
-                                  }
-                              }
-                              if($FOUND_BODY) {
-                                  break;
-                              }
-                          }
-                      }
-
-                      $msgArray[] = $FOUND_BODY;
-
-                  } catch (Exception $e) {
-                      echo $e->getMessage();
-                  }
-                    return $msgArray;
+                  $payload = $single_message->getPayload();
+                  $headers = $payload->getHeaders();
+                  $snippet = $single_message->getSnippet();
+                  $date = getHeader($headers, 'Date');
+                  $subject = getHeader($headers, 'Subject');
+                  $from = getHeader($headers, 'From');
+                  $fromHTML = htmlentities($from);
+                  if (($pos = strpos($fromHTML, "@")) !== FALSE) {
+                    preg_match_all("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $fromHTML, $matches);
+                    $fromAddress = $matches[0];
+                    $domain = get_email_domain($matches[0]);
                   }
 
-                  $msgInfo = getMessage2($service2, $user, $gmid);
+                  $msgArray[] = $date;
+                  $msgArray[] = $domain;
+                  $msgArray[] = $subject;
+                  $msgArray[] = $fromHTML;
+                  $msgArray[] = $date;
 
-                  $otitlestring = 'Edit';
-                  $omaileingang = $msgInfo[0];
-                  $oreceivedmail = $gmid;
+                  // With no attachment, the payload might be directly in the body, encoded.
+                  $body = $payload->getBody();
+                  $FOUND_BODY = decodeBody($body['data']);
 
-                  if (isset($_GET['mid'])) {
-                    $olieferantID = $olieferant;
-                    $lieferantNameQ =  mysqli_query($dbhandle, "SELECT companies.name, companies.id FROM companies WHERE companies.id LIKE '$olieferantID'");
-                    while ($row = mysqli_fetch_row($lieferantNameQ)) {
-                        $olieferant = $row[0];
-                        $olieferantID = $row[1];
+                  // If we didn't find a body, let's look for the parts
+                  if(!$FOUND_BODY) {
+                    $parts = $payload->getParts();
+                    foreach ($parts  as $part) {
+                      if($part['body'] && $part['mimeType'] == 'text/html') {
+                        $FOUND_BODY = decodeBody($part['body']->data);
+                        break;
+                      }
+                    }
+                  } if(!$FOUND_BODY) {
+                    foreach ($parts  as $part) {
+                      // Last try: if we didn't find the body in the first parts,
+                      // let's loop into the parts of the parts (as @Tholle suggested).
+                      if($part['parts'] && !$FOUND_BODY) {
+                        foreach ($part['parts'] as $p) {
+                          // replace 'text/html' by 'text/plain' if you prefer
+                          if($p['mimeType'] === 'text/plain' && $p['body']) {
+                            $FOUND_BODY = decodeBody($p['body']->data);
+                            break;
+                          }
+                        }
+                      }
+                      if($FOUND_BODY) {
+                        break;
+                      }
                     }
                   }
+                  $msgArray[] = $FOUND_BODY;
 
-                  if ($olieferant == '') {
-                    $olieferant = $msgInfo[1];
+                } catch (Exception $e) {
+                    echo $e->getMessage();
+                }
+                  return $msgArray;
+                }
+
+                $msgInfo = getMessage2($service2, $user, $gmid);
+
+                $otitlestring = 'Edit';
+                $omaileingang = $msgInfo[0];
+                $oreceivedmail = $gmid;
+                $olieferantDomain = $msgInfo[1];
+
+                if (isset($_GET['mid'])) {
+                  $lieferantNameQ =  mysqli_query($dbhandle, "SELECT companies.name, companies.id FROM companies WHERE companies.id LIKE '$olieferantID'");
+                  while ($row = mysqli_fetch_assoc($lieferantNameQ)) {
+                    $olieferant = $row['name'];
+                    $olieferantID = $row['id'];
                   }
-
-                  if (!isset($_GET['mid'])) {
-                    $lieferantNameQ =  mysqli_query($dbhandle, "SELECT companies.name, companies.id FROM companies WHERE companies.mailDomain LIKE '$olieferant'");
-                    while ($row = mysqli_fetch_row($lieferantNameQ)) {
-                        $olieferant = $row[0];
-                        $olieferantID = $row[1];
-                    }
+                } else {
+                  $lieferantNameQ =  mysqli_query($dbhandle, "SELECT companies.name, companies.id FROM companies WHERE companies.mailDomain LIKE '$olieferantDomain'");
+                  while ($row = mysqli_fetch_assoc($lieferantNameQ)) {
+                    $olieferant = $row['name'];
+                    $olieferantID = $row['id'];
                   }
-
-                  $msubject = $msgInfo[2];
-                  $mfrom = $msgInfo[3];
-                  $mdate = $msgInfo[4];
-                  $mbody = $msgInfo[5];
-
-
-                  $derenCIDQ =  mysqli_query($dbhandle, "SELECT companies.name, lieferantCID.derenCID, lieferantCID.id FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id WHERE lieferantCID.lieferant LIKE '$olieferantID'") or die(mysqli_error($dbhandle));
-
-
-
                 }
 
-                $emailBV = $token_data['email'];
-                if (($pos2 = strpos($emailBV, "@")) !== FALSE) {
-                  $domainBV = substr($emailBV, strpos($emailBV, "@"));
-                  $usernameBV = basename($emailBV, $domainBV);
+                $msubject = $msgInfo[2];
+                $mfrom = $msgInfo[3];
+                $mdate = $msgInfo[4];
+                $mbody = $msgInfo[5];
+
+              }
+
+              if (isset($_GET['mid'])) {
+                $lieferantNameQ =  mysqli_query($dbhandle, "SELECT companies.name, companies.id FROM companies WHERE companies.id LIKE '$olieferantID'");
+                while ($row = mysqli_fetch_assoc($lieferantNameQ)) {
+                  $olieferant = $row['name'];
+                  $olieferantID = $row['id'];
                 }
+              }
 
-                $workers = array();
-                $workers[] = "ndomino";
-                $workers[] = "fwaleska";
-                $workers[] = "alissitsin";
-                $workers[] = "sstergiou";
+              $derenCIDQ =  mysqli_query($dbhandle, "SELECT companies.name, lieferantCID.derenCID, lieferantCID.id FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id WHERE lieferantCID.lieferant LIKE '$olieferantID'") or die(mysqli_error($dbhandle));
 
-                if (($key = array_search($usernameBV, $workers)) !== false) {
-                    unset($workers[$key]);
-                    $workers = array_values($workers);
-                }
+              $emailBV = $token_data['email'];
+              if (($pos2 = strpos($emailBV, "@")) !== FALSE) {
+                $domainBV = substr($emailBV, strpos($emailBV, "@"));
+                $usernameBV = basename($emailBV, $domainBV);
+              }
 
+              $workers = array();
+              $workers[] = "ndomino";
+              $workers[] = "fwaleska";
+              $workers[] = "alissitsin";
+              $workers[] = "sstergiou";
+
+              if (($key = array_search($usernameBV, $workers)) !== false) {
+                unset($workers[$key]);
+                $workers = array_values($workers);
+              }
 
             ?>
 
@@ -380,13 +371,14 @@ global $dbhandle;
                   <input class="mdl-textfield__input"  style="width: 82% !important;" type="text" value="<?php echo $oreceivedmail ?>" id="rmail">
                   <label class="mdl-textfield__label" for="rmail">Incoming Mail ID</label>
 
-                <?php if (! empty($oreceivedmail)) { echo '<button style="position:absolute; right:0;" id="viewmailbtn" type="button" class=" mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab viewMail2">
-                                                             <i class="mdi mdi-24px mdi-email-search-outline mdi-dark"></i>
-                                                           </button>
+                <?php if (! empty($oreceivedmail)) { echo '
+                  <button style="position:absolute; right:0;" id="viewmailbtn" type="button" class=" mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab viewMail2">
+                    <i class="mdi mdi-24px mdi-email-search-outline mdi-dark"></i>
+                  </button>
 
-                                                           <div class="mdl-tooltip  mdl-tooltip--bottom" data-mdl-for="viewmailbtn">
-                                                             View Mail
-                                                           </div>'; } ?>
+                  <div class="mdl-tooltip  mdl-tooltip--bottom" data-mdl-for="viewmailbtn">
+                    View Mail
+                  </div>'; } ?>
                  </div>
                </div>
                <div class="mdl-cell mdl-cell--6-col">
@@ -476,9 +468,7 @@ global $dbhandle;
                 time_24hr: true,
                 wrap: true,
                 altInput: true,
-                //altFormat: 'Z'
                 altFormat: 'd M Y H:i:S'
-                //"plugins": [new confirmDatePlugin({})]
               });
 
               </script>
@@ -562,7 +552,6 @@ global $dbhandle;
                   </tr>
                 </thead>
               </table>
-
               </div>
             </div>
           </div>
@@ -572,18 +561,13 @@ global $dbhandle;
 
 $('#addCalbtn').click(function(){
 
-
-  //console.log('calSDT: ' + moment(calSDT).toISOString());
-
   var calSDT = $('#sdt').val();
   var calSDTISO = moment(calSDT).toISOString().replace(/[^a-z0-9\s]/gi, '');
   var calSDTISO2 = calSDTISO.replace('000Z','Z');
-  //console.log('calSDTISO: ' + calSDTISO2);
 
   var calEDT = $('#edt').val();
   var calEDTISO = moment(calEDT).toISOString().replace(/[^a-z0-9\s]/gi, '');;
   var calEDTISO2 = calEDTISO.replace('000Z','Z');
-  //console.log('calEDTISO: ' + calEDTISO2);
 
   var selectedDCID = $( "#dcid3 option:selected" ).text();
   var selectedCompany = $('#company').val();
@@ -595,7 +579,6 @@ const _t = (s) => {
   if (i18n !== void 0 && i18n[s]) {
     return i18n[s];
   }
-
   return s;
 };
 
@@ -756,8 +739,6 @@ const i18n = {
   "Pacific/Auckland": "Auckland, Wellington",
   "Pacific/Tongatapu": "Nuku'alofa"
 }
-//const dateTimeUtc = moment("2017-06-05T19:41:03Z").utc();
-//document.querySelector(".js-TimeUtc").innerHTML = dateTimeUtc.format("ddd, DD MMM YYYY HH:mm:ss");
 
 const selectorOptions = moment.tz.names()
   .filter(tz => {
@@ -783,11 +764,7 @@ const selectorOptions = moment.tz.names()
 document.querySelector("#timezoneSelector").innerHTML = selectorOptions;
 
 $("#timezoneSelector").on("change", e => {
-  //const timestamp = dateTimeUtc.unix();
-  //const offset = moment.tz(e.target.value).utcOffset() * 60;
-  //const dateTimeLocal = moment.unix(timestamp + offset).utc();
-
- // document.querySelector(".js-TimeLocal").innerHTML = dateTimeLocal.format("ddd, DD MMM YYYY HH:mm:ss");
+  // change on selection of new timezone
 });
 
 document.querySelector("#timezoneSelector").value = "Europe/Amsterdam";
@@ -895,12 +872,12 @@ $(document).ready(function() {
 $(document).ready(function() {
   if ($( "#dcid3 option:selected" ).text() != '') {
     $('#kundenCard').addClass('display').removeClass('hidden');
-    var value = $( "#dcid3 option:selected" ).val(); 
+    var value = $( "#dcid3 option:selected" ).val();
 
     $('#dcid3')
          .find('option:checked(' + value + ')')
          .prop('selected',true)
-         .trigger('change'); //trigger a change instead of click
+         .trigger('change');
 
     return false;
   }
@@ -912,8 +889,6 @@ $('#btnSave').on('click', function(e) {
 
   // Some formatting before we push to mysql
   var DateTime = luxon.DateTime;
-  //var makdtISO = DateTime.fromISO($('#makdt').val());
-  //var makdtUTC = makdtISO.toUTC();
 
   var medt = $('#medt').val();
   var medtUTC = moment.parseZone(medt).utc().format();
@@ -922,16 +897,10 @@ $('#btnSave').on('click', function(e) {
   var mdtTZ = $('#timezoneSelector').val();
 
   var mSDT = $('#sdt').val();
-  //var mSDT = moment(mSDT).format('YYYY-MM-DD HH:mm:ss');
-  //console.log('Initial: ' + mSDT);
   var mSDT = moment(mSDT).format('YYYY-MM-DD\THH:mm:ss');
   var zOffset = moment.tz(mdtTZ).format('Z');
-  //console.log('offset: ' + zOffset);
   var tzConcat = mSDT.concat(zOffset);
-  //console.log('tzConcat: ' + tzConcat);
   var sdtUTC = moment(tzConcat).utc().format();
-  //console.log('UTC: ' +  sdtUTC);
-
   var mEDT = $('#edt').val();
   var mEDT = moment(mEDT).format('YYYY-MM-DD\THH:mm:ss');
   var tzConcat2 = mEDT.concat(zOffset);
@@ -969,102 +938,101 @@ $('#btnSave').on('click', function(e) {
     "mailSentAt" : $('#mailSentAt').val(),
     "odone" : odone,
     "update" : $('#update').val(),
-    "updatedBy": $('.menu_username').text(),
+    "updatedBy": $('.menumail').text(),
     "gmailLabel" : $('#gmailLabel').val(),
     "mailDomain" : $('#mailDomain').val()
     }
 
     $.ajax({
 
-     type : "POST",
-     url : "api",
-     cache : "false",
-     dataType: "json",
-     data :  {data:TableData},
-     success : function(result1){
-       //console.log('result: ' + result1.exist);
-       var obj = JSON.stringify(result1);
-         //console.log('obj.exist: ' + obj.exist);
+    type : "POST",
+    url : "api",
+    cache : "false",
+    dataType: "json",
+    data :  {data:TableData},
+    success : function(result1){
+      var obj = JSON.stringify(result1);
 
-         if (result1.exist === 1) {
-            var snackbarContainer = document.querySelector('#sbMExists');
-            var midval = $('#rmail').val();
-            var handler = function(event) {
-              var aeURL = 'https://maintenance.newtelco.de/addedit?update=1&gmid=' + midval
-              window.location.href = aeURL;
-            };
-            var dataME = {
-              message: 'Maintenance Already Exists',
-              timeout: 4000,
-              actionHandler: handler,
-              actionText: 'OPEN'
-            };
-            snackbarContainer.MaterialSnackbar.showSnackbar(dataME);
-         } else if (result1.added === 1){
-           var snackbarContainer2 = document.querySelector('#sbMAS');
-           var dataME2 = {
-             message: 'Maintenance Successfully Saved',
-             timeout: 2000
-           };
-           snackbarContainer2.MaterialSnackbar.showSnackbar(dataME2);
-         } else if (result1.updated === 1){
-           var snackbarContainer2 = document.querySelector('#sbUpdated');
-           var dataME3 = {
-             message: 'Maintenance Successfully Updated',
-             timeout: 2000
-           };
-           snackbarContainer2.MaterialSnackbar.showSnackbar(dataME3);
-         } else {
-           alert('Invalid Response');
-         }
-
-     }
+      if (result1.exist === 1) {
+        var snackbarContainer = document.querySelector('#sbMExists');
+        var midval = $('#rmail').val();
+        var handler = function(event) {
+          var aeURL = 'https://maintenance.newtelco.de/addedit?update=1&gmid=' + midval
+          window.location.href = aeURL;
+        };
+        var dataME = {
+          message: 'Maintenance Already Exists',
+          timeout: 4000,
+          actionHandler: handler,
+          actionText: 'OPEN'
+        };
+        snackbarContainer.MaterialSnackbar.showSnackbar(dataME);
+      } else if (result1.added === 1){
+         var snackbarContainer2 = document.querySelector('#sbMAS');
+         var dataME2 = {
+          message: 'Maintenance Successfully Saved',
+          timeout: 2000
+         };
+         snackbarContainer2.MaterialSnackbar.showSnackbar(dataME2);
+      } else if (result1.updated === 1){
+        var snackbarContainer2 = document.querySelector('#sbUpdated');
+        var dataME3 = {
+          message: 'Maintenance Successfully Updated',
+          timeout: 2000
+        };
+        snackbarContainer2.MaterialSnackbar.showSnackbar(dataME3);
+      } else {
+        alert('Invalid Response');
+      }
+    }
     });
-
 }); // clicking orderSave button
 
-    </script>
-    <script>
-      if ($("#viewmailbtn").length > 0) {
+  </script>
+  <script>
+  if ($("#viewmailbtn").length > 0) {
 
-        var mailID = $('#rmail').val();
+    var mailID = $('#rmail').val();
 
-        $("#emailBodyFrame").attr('src',"msg/"+mailID+".html");
-        $("#emailBodyFrame").attr('src', function ( i, val ) { return val; });
+    $("#emailBodyFrame").attr('src',"msg/"+mailID+".html");
+    $("#emailBodyFrame").attr('src', function ( i, val ) { return val; });
 
-        var dialog = document.querySelector('#mailDialog');
-        var showDialogButton = document.querySelector('#viewmailbtn');
-        if (! dialog.showModal) {
-          dialogPolyfill.registerDialog(dialog);
-        }
-        showDialogButton.addEventListener('click', function() {
-          dialog.showModal();
-        });
-        dialog.querySelector('.close1').addEventListener('click', function() {
-          dialog.close();
-        });
+    var dialog = document.querySelector('#mailDialog');
+    var showDialogButton = document.querySelector('#viewmailbtn');
+    if (! dialog.showModal) {
+      dialogPolyfill.registerDialog(dialog);
+    }
+    showDialogButton.addEventListener('click', function() {
+      dialog.showModal();
+    });
+    dialog.querySelector('.close1').addEventListener('click', function() {
+      dialog.close();
+    });
 
-        document.addEventListener("DOMContentLoaded", function() {
-          //The first argument are the elements to which the plugin shall be initialized
-          //The second argument has to be at least a empty object or a object with your desired options
-          OverlayScrollbars(document.querySelectorAll("#mailDialog"), {
-            className       : "os-theme-dark",
-            resize          : "both",
-            sizeAutoCapable : true
-          });
-          OverlayScrollbars(document.querySelectorAll("#notes"), {
-            className       : "os-theme-dark",
-            resize          : "vertical",
-            sizeAutoCapable : true
-          });
-        });
-      }
-
-      $( document ).ready(function() {
-         setTimeout(function() {$('#loading').hide()},500);
+    document.addEventListener("DOMContentLoaded", function() {
+      OverlayScrollbars(document.querySelectorAll("#mailDialog"), {
+        className       : "os-theme-dark",
+        resize          : "both",
+        sizeAutoCapable : true
       });
-    </script>
-    </main>
+      OverlayScrollbars(document.querySelectorAll("#notes"), {
+        className       : "os-theme-dark",
+        resize          : "vertical",
+        sizeAutoCapable : true
+      });
+      OverlayScrollbars(document.querySelectorAll("#emailBodyFrame"), {
+        className       : "os-theme-dark",
+        resize          : "vertical",
+        sizeAutoCapable : true
+      });
+    });
+  }
+
+  $( document ).ready(function() {
+     setTimeout(function() {$('#loading').hide()},500);
+  });
+</script>
+</main>
     <?php echo file_get_contents("views/footer.html"); ?>
   </div>
 

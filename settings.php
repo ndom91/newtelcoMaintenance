@@ -32,8 +32,8 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
   <script rel="preload" as="script" type="text/javascript" src="assets/js/pace.js"></script>
 
   <style>
-    <?php echo file_get_contents("assets/css/style.031218.min.css"); ?>
-    <?php echo file_get_contents("assets/css/material.031218.min.css"); ?>
+    <?php echo file_get_contents("assets/css/style-ndo.min.css"); ?>
+    <?php echo file_get_contents("assets/css/material-ndo.min.css"); ?>
   </style>
 </head>
 <body>
@@ -52,16 +52,27 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             </button>
               <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
                   for="user-profile-menu">
-                <li class="mdl-menu__item">Some Action</li>
-                <li class="mdl-menu__item">Another Action</li>
-                <li disabled class="mdl-menu__item">Disabled Action</li>
+                <a class="usermenuhref" href="calendar">
+                  <li class="mdl-menu__item">
+                    Calendar
+                    <span class="mdi mdi-24px mdi-calendar-text mdi-dark mdi-inactive"></span>
+                  </li>
+                </a>
+                <a class="usermenuhref" href="settings">
+                  <li class="mdl-menu__item">
+                    Settings
+                    <span class="mdi mdi-24px mdi-settings-outline mdi-dark mdi-inactive"></span>
+                  </li>
+                </a>
+                <li>
+                  <div class="mailcHR3"></div>
+                </li>
                 <a class="usermenuhref" href="?logout">
                   <li class="mdl-menu__item">
-                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                        <path fill="#4e4e4e" d="M19,3H5C3.89,3 3,3.89 3,5V9H5V5H19V19H5V15H3V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M10.08,15.58L11.5,17L16.5,12L11.5,7L10.08,8.41L12.67,11H3V13H12.67L10.08,15.58Z" />
-                    </svg>
                     Logout
-                  </li></a>
+                    <span class="mdi mdi-24px mdi-logout mdi-dark mdi-inactive"></span>
+                  </li>
+                </a>
               </ul>
           </div>
 
@@ -69,8 +80,8 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
           <a id="emailsTab" href="#emailsTab" class="mdl-layout__tab is-active">Emails</a>
           <a id="firmenTab" href="#firmenTab" class="mdl-layout__tab">Firmen</a>
-          <a id="lieferantenTab" href="#lieferantenTab" class="mdl-layout__tab">Lieferanten CIDs</a>
-          <a id="kundenTab" href="#kundenTab" class="mdl-layout__tab">Kunden CIDs</a>
+          <a id="lieferantenTab" href="#lieferantenTab" class="mdl-layout__tab">Lieferanten</a>
+          <a id="kundenTab" href="#kundenTab" class="mdl-layout__tab">Kunden</a>
         </div>
       </header>
       <?php
@@ -156,7 +167,8 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
               <div class="mdl-cell mdl-cell--10-col mdl-cell--0-col-phone">
                 <div class="settingsFirmenHeader">
-                  <h4 class="selectGoogleLabel">Lieferanten Details</h4>
+                  <h4 class="selectGoogleLabel">Lieferanten Details</h4><br><br>
+                  <h6>Connection between companies and their connection ID's</h6>
                 </div>
                 <div class="tableWrapper1">
                   <div class="searchWrapper">
@@ -175,7 +187,8 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
               <div class="mdl-cell mdl-cell--10-col mdl-cell--0-col-phone">
                 <div class="settingsFirmenHeader">
-                  <h4 class="selectGoogleLabel">Kunden Details</h4>
+                  <h4 class="selectGoogleLabel">Kunden Details</h4><br><br>
+                  <h6>Connection between companies and our CID's</h6>
                 </div>
                 <div class="tableWrapper1">
                   <div class="searchWrapper">

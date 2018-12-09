@@ -129,7 +129,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                     </div>
                   </dialog>
                 </div>
-                <div class="mdl-cell mdl-cell--7-col mdl-cell--4-col-phone dataTables_wrapper mdl-2col">
+                <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone dataTables_wrapper mdl-2col">
             <?php
             $lieferant = '';
             $tdCID = '';
@@ -352,9 +352,9 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   //var_dump('fPreview: ' . $fPreview . '<br>');
                   //var_dump('fSnippet: ' . $snippet . '<br>');
 
-                  //if (!file_exists($mFile)) {
+                  if (!file_exists($mFile)) {
                     file_put_contents($mFile, $fContents);
-                  //}
+                  }
 
                   echo '
                   <script>
@@ -542,13 +542,13 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   }
                 }
                 //var_dump('label_results: ' . $results);
-
-                $q = 'label:' . $labelNameForSearch . ' newer_than:1d';
+                // $q = 'label:' . $labelNameForSearch . ' newer_than:1d';
+                $q = 'label:' . $labelNameForSearch . ' is:unread';
                 fetchMails($service, $q);
 
                 ?>
                 </div>
-                <div class="mdl-cell mdl-cell--5-col mdl-cell--4-col-phone mdl-2col table2">
+                <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone mdl-2col table2">
                   <table id="dataTable2" class="hidden mdl-data-table striped" style="width: 100%">
                     <thead>
                       <tr>
@@ -558,6 +558,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                         <th>Start Date/Time</th>
                         <th>Complete</th>
                         <th>ID</th>
+                        <th>Received Mail ID</th>
                       </tr>
                     </thead>
                   </table>
@@ -568,87 +569,88 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
         <script>
         $(document).ready(function() {
 
-            $.fn.dataTable.moment( 'ddd, DD MMM YYYY HH:mm:SS ZZ' );
+          $.fn.dataTable.moment( 'ddd, DD MMM YYYY HH:mm:SS ZZ' );
 
-             var table = $('#dataTable3').DataTable( {
-                  scrollx: true,
-                  select: true,
-                  stateSave: true,
-                  responsive: true,
-                  scrolly: false,
-                  columnDefs: [
-                      {
-                          "targets": [ 1, 4, 6, 7, 8, 9, 10, 11, 12, 13 ],
-                          "visible": false,
-                          "searchable": false
-                      },
-                      { responsivePriority: 1, targets: [ 0, 2, 5 ] },
-                      { responsivePriority: 2, targets: [ 3 ] },
-                      {
-                          targets: [2, 3, 5 ],
-                          className: 'mdl-data-table__cell--non-numeric'
-                      },
-                      {
-                          targets: [ 0, 3, 5 ],
-                          className: 'all'
-                      }
-                  ]
-              } );
+            var table = $('#dataTable3').DataTable( {
+              scrollx: true,
+              select: true,
+              stateSave: true,
+              responsive: true,
+              scrolly: false,
+              columnDefs: [
+                {
+                    "targets": [ 1, 4, 6, 7, 8, 9, 10, 11, 12, 13 ],
+                    "visible": false,
+                    "searchable": false
+                },
+                { responsivePriority: 1, targets: [ 0, 2, 5 ] },
+                { responsivePriority: 2, targets: [ 3 ] },
+                {
+                    targets: [2, 3, 5 ],
+                    className: 'mdl-data-table__cell--non-numeric'
+                },
+                {
+                    targets: [ 0, 3, 5 ],
+                    className: 'all'
+                }
+              ]
+            });
 
               table.on( 'select', function ( e, dt, type, indexes ) {
-                  if ( type === 'row' ) {
-                      var data2 = table.rows( { selected: true } ).data()[0][13]
-                            if ( $.fn.dataTable.isDataTable( '#dataTable2' ) ) {
-                                table2 = $('#dataTable2').DataTable();
-                                table2.destroy();
-                            }
-                            $('#dataTable2').addClass('display').removeClass('hidden');
-                            $('#dataTable2').DataTable( {
-                              ajax: {
-                                url: "api?liefName=" + data2,
-                                dataSrc: ""
-                              },
-                              columns: [
-                                  { title: "View" },
-                                  { data: "maileingang" },
-                                  { data: "bearbeitetvon" },
-                                  { data: "startDateTime" },
-                                  { data: "done" },
-                                  { data: "id" }
-                              ],
-                              columnDefs: [
-                                  {
-                                      "targets": [ 0 ],
-                                      "visible": true,
-                                      "searchable": false
-                                  },{
-                                      "targets": [ 5 ],
-                                      "visible": false,
-                                      "searchable": false
-                                  },{
-                                    targets: [4], render: function (a, b, data, d) {
-                                      if (data['done'] === '1'){
-                                        return '<span class="mdi mdi-24px mdi-check-decagram mdi-dark"></span>';
-                                      } else if (data['done'] === '0') {
-                                        return '<span class="mdi mdi-24px mdi-checkbox-blank-circle-outline mdi-dark mdi-inactive"></span>';
-                                      } else {
-                                        return '';
-                                      }
-                                    }
-                                  },{
-                                    targets: [0], render: function (a, b, data, d) {
-                                      if (data['id'] != ''){
-                                        return '<a href="addedit?mid='+data['id']+'"><button style=\'margin-left:auto;margin-right:auto;text-align:center;\' id=\'sendMailbtn\' type=\'button\' class=\'mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored\'><span class=\'mdi mdi-file-find mdi-24px\'></span></button></a>'
-                                      } else {
-                                        return '';
-                                      }
-                                    }
-                                  }
-                                ],
-                                responsive: true,
-                                order: [ 1, 'desc' ]
-                             } );
+                if ( type === 'row' ) {
+                  var data2 = table.rows( { selected: true } ).data()[0][13]
+                  if ( $.fn.dataTable.isDataTable( '#dataTable2' ) ) {
+                      table2 = $('#dataTable2').DataTable();
+                      table2.destroy();
                   }
+                  $('#dataTable2').addClass('display').removeClass('hidden');
+                  $('#dataTable2').DataTable( {
+                    ajax: {
+                      url: "api?liefName=" + data2,
+                      dataSrc: ""
+                    },
+                    columns: [
+                        { title: "View" },
+                        { data: "maileingang" },
+                        { data: "bearbeitetvon" },
+                        { data: "startDateTime" },
+                        { data: "done" },
+                        { data: "id" },
+                        { data: "receivedmail" }
+                    ],
+                    columnDefs: [
+                      {
+                          "targets": [ 0 ],
+                          "visible": true,
+                          "searchable": false
+                      },{
+                          "targets": [ 5, 6 ],
+                          "visible": false,
+                          "searchable": false
+                      },{
+                        targets: [4], render: function (a, b, data, d) {
+                          if (data['done'] === '1'){
+                            return '<span class="mdi mdi-24px mdi-check-decagram mdi-dark"></span>';
+                          } else if (data['done'] === '0') {
+                            return '<span class="mdi mdi-24px mdi-checkbox-blank-circle-outline mdi-dark mdi-inactive"></span>';
+                          } else {
+                            return '';
+                          }
+                        }
+                      },{
+                        targets: [0], render: function (a, b, data, d) {
+                          if (data['id'] != ''){
+                            return '<a href="addedit?mid='+data['id']+'&update=1&gmid='+data['receivedmail']+'"><button style=\'margin-left:auto;margin-right:auto;text-align:center;\' id=\'sendMailbtn\' type=\'button\' class=\'mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored\'><span class=\'mdi mdi-file-find mdi-24px\'></span></button></a>'
+                          } else {
+                            return '';
+                          }
+                        }
+                      }
+                    ],
+                    responsive: true,
+                    order: [ 1, 'desc' ]
+                  });
+                }
               })
             })
 

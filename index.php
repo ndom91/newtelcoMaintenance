@@ -87,13 +87,19 @@ require('authenticate_google.php');
 
                     </div>
                     <div class="mdl-card__actions mdl-card--border">
-                      <a href="incoming.php" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color-text--light-green-nt">
+                      <a href="incoming.php" id="btnIncoming" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color-text--light-green-nt">
                         Incoming
                       </a>
+                      <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="btnIncoming">
+                        View Incoming Maintenance Mails
+                      </div>
                       <div style="display: inline !important;" class="mdl-layout-spacer"></div>
-                      <a href="overview.php" style="float: right;" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
+                      <a href="overview.php" id="btnOverview" style="float: right;" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
                         Overview
                       </a>
+                      <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnOverview">
+                        View Maintenance History
+                      </div>
                     </div>
                   </div>
               </div>
@@ -108,6 +114,10 @@ require('authenticate_google.php');
         <!-- material design -->
         <link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css" onload="this.rel='stylesheet'">
         <link rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+
+        <!-- material icons -->
+        <link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css" onload="this.rel='stylesheet'">
+        <link rel="preload stylesheet" as="style" href="assets/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
 
         <!-- moment -->
         <script rel="preload" as="script" type="text/javascript" src="assets/js/moment/moment.min.js"></script>

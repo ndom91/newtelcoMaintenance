@@ -157,6 +157,13 @@ table {
   }
 }
 
+/* header -> menu */
+
+li .mdi {
+  right: 18px;
+  position: absolute;
+}
+
 /* Userhome */
 
 .mdl-dialog {
@@ -354,7 +361,7 @@ textarea.mdl-textfield__input {
 
 .mailcSelectHeader {
   height: 50px;
-  width: 98%;
+  width: 95%;
   padding: 25px;
   margin-bottom: 10px;
 }
@@ -364,10 +371,17 @@ textarea.mdl-textfield__input {
    width: 75%;
 }
 
+.mailcHR3 {
+   border-bottom: 1px solid rgba(103, 178, 70, 0.4);
+   width: 65%;
+   margin-right: auto;
+   margin-left: auto;
+}
+
 .mailcHR {
   overflow: hidden;
   text-align: center;
-  padding-top: 50px;
+  padding-top: 0px;
 }
 
 .mailcHR:before,
@@ -392,7 +406,7 @@ textarea.mdl-textfield__input {
 }
 
 .labelSelectLabel {
-  font-size: 1.9em !important;
+  font-size: 20px !important;
   display: inline;
   margin: 0;
 }
@@ -407,15 +421,15 @@ textarea.mdl-textfield__input {
   margin-top: 20px;  */
   top: 150px;
   position: absolute;
-  width: 90% !important;
-  height: 60% !important;
+  width: 92% !important;
+  height: 70% !important;
 }
 
 .mailWrapper1 {
   margin-left: auto !important;
   margin-right: auto !important;
   height: 100% !important;
-  width: 95% !important;
+  width: 100% !important;
 }
 
 .mailWrapper2 {
@@ -679,6 +693,16 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 	color:#fff;
 	font-size: 12px !important;
 	margin-left: 10px;
+}
+
+.ndl-calendar {
+  content: url('/assets/images/svg/calendar.svg');
+  position: relative;
+  top: 6px;
+  margin-right: 10px;
+  white-space:nowrap;
+  opacity: 0.8;
+  color: #67B246;
 }
 .ndl-ballot {
   content: url('/assets/images/svg/ballot.svg');

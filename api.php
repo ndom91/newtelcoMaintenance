@@ -105,27 +105,21 @@
     $result0 = mysqli_query($dbhandle, "SELECT companies.id FROM companies WHERE companies.mailDomain LIKE '$liefDomain'") or die(mysqli_error($dbhandle));
 
     if ($fetch = mysqli_fetch_array($result0)) {
-        //Found a company - now show all maintenances for company
-        $company_id = $fetch[0];
-        $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.done, maintenancedb.id FROM maintenancedb WHERE maintenancedb.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
-        //$result = mysqli_query($dbhandle, "SELECT lieferantCID.id, lieferantCID.derenCID, companies.name FROM lieferantCID LEFT JOIN companies ON companies.id = lieferantCID.lieferant WHERE lieferantCID.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
+      //Found a company - now show all maintenances for company
+      $company_id = $fetch[0];
+      $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.done, maintenancedb.id, maintenancedb.receivedmail FROM maintenancedb WHERE maintenancedb.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
+
+        $array2 = array();
+
+        while ($resultsrows = mysqli_fetch_assoc($result)) {
+          $array2[] = $resultsrows;
+        }
+        echo json_encode($array2);
+
     } else {
-      //echo json_encode(id:"no such company in DB");
       $jsonArrayObject = array(array('maileingang' => 'no such company in DB yet', 'bearbeitetvon' => '', 'startDateTime' => '', 'done' => '', 'id' => ''));
       echo json_encode($jsonArrayObject);
       exit;
-    }
-
-    if ($resultsrows = mysqli_fetch_assoc($result)) {
-      $array2 = array();
-      while  ($resultsrows = mysqli_fetch_assoc($result)) {
-        $array2[] = $resultsrows;
-      }
-      echo json_encode($array2);
-    } else {
-      //echo json_encode("id":"no CIDs for such supplier");
-      $jsonArrayObject = array(array('maileingang' => 'no maintenances for this lieferant in system.', 'bearbeitetvon' => '', 'startDateTime' => '', 'done' => '', 'id' => ''));
-      echo json_encode($jsonArrayObject);
     }
 
   } elseif (isset($_POST['data'])) {

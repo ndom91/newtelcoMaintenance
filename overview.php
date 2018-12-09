@@ -59,7 +59,7 @@ global $dbhandle;
 
         <main class="mdl-layout__content">
           <div id="loading">
-            <img id="loading-image" src="assets/images/Preloader_3.gif" alt="Loading..." />
+            <img id="loading-image" src="assets/images/Preloader_4.gif" alt="Loading..." />
           </div>
             <div class="mdl-grid">
               <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">

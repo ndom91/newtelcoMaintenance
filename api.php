@@ -107,7 +107,7 @@
     if ($fetch = mysqli_fetch_array($result0)) {
       //Found a company - now show all maintenances for company
       $company_id = $fetch[0];
-      $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.done, maintenancedb.id, maintenancedb.receivedmail FROM maintenancedb WHERE maintenancedb.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
+      $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.startDateTime, maintenancedb.done, maintenancedb.id, maintenancedb.receivedmail FROM maintenancedb WHERE maintenancedb.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
 
         $array2 = array();
 
@@ -117,7 +117,7 @@
         echo json_encode($array2);
 
     } else {
-      $jsonArrayObject = array(array('maileingang' => 'no such company in DB yet', 'bearbeitetvon' => '', 'startDateTime' => '', 'done' => '', 'id' => ''));
+      $jsonArrayObject = array(array('maileingang' => 'no such company in DB yet', 'startDateTime' => '', 'done' => '', 'id' => '', 'receivedmail' => ''));
       echo json_encode($jsonArrayObject);
       exit;
     }

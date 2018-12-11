@@ -5,7 +5,31 @@ require('authenticate_google.php');
 ?>
 <html lang="en">
 <head>
-<title>Newtelco Maintenance | Welcome</title>
+  <?php
+  if(isset($_POST['label']) || isset($_SESSION['label'])) {
+    if(! empty($_POST['label'])) {
+    $labelID = urldecode($_POST['label']);
+    $_SESSION['label'] = $labelID;
+    } else {
+      $labelID = $_SESSION['label'];
+    }
+  } else {
+    if(isset($_COOKIE['label'])) {
+
+      $labelID = urldecode($_COOKIE['label']);
+    } else {
+      $labelID = '0';
+    }
+  }
+
+  if ($labelID != '0') {
+    $service3 = new Google_Service_Gmail($clientService);
+    $results3 = $service3->users_labels->get($user,$labelID);
+    $results4 = $service3->users_labels->get($user,'Label_6022158568059110610');
+  }
+
+  ?>
+<title><?php if ($labelID != '0') { if ($results3['messagesUnread'] == 0) { echo "♥"; } else { echo $results3['messagesUnread']; }} else {  echo "♥"; } ?> | NT Maintenance</title>
 
   <?php echo file_get_contents("views/meta.html"); ?>
 
@@ -18,6 +42,7 @@ require('authenticate_google.php');
   <!-- jquery -->
   <script rel="preload" as="script" src="assets/js/jquery-3.3.1.min.js"></script>
 
+  <script src="assets/css/hamburger_menu.css"></script>
   <script>
   // Check that service workers are registered
   // if ('serviceWorker' in navigator) {
@@ -32,6 +57,12 @@ require('authenticate_google.php');
   <?php echo file_get_contents("assets/css/style-ndo.min.css"); ?>
   <?php echo file_get_contents("assets/css/material-ndo.min.css"); ?>
   </style>
+  <script>
+    var RELOAD_EVERY = 10;
+    setTimeout(function(){
+        location.reload();
+    }, RELOAD_EVERY * 60 * 1000);
+  </script>
 </head>
 <body>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header ">
@@ -41,11 +72,31 @@ require('authenticate_google.php');
       $content_header = ob_get_clean();
       echo $content_header;
 
-      ob_start();
-      include "views/menu.php";
-      $content_menu = ob_get_clean();
-      echo $content_menu;
       ?>
+
+      <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title"><img src="/assets/images/newtelco_black.png"/></span>
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" href="index.php"><span class="ndl-home"></span>  Home</a>
+          <!-- <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a> -->
+          <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
+          <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming<div class="material-icons mdl-badge mdl-badge--overlap menuSubLabel2" data-badge="<?php if ($labelID != '0') { if ($results3['messagesUnread'] == 0) { echo "♥"; } else { echo $results3['messagesUnread']; }} else {  echo "♥"; } ?>"></div></a></a>
+          <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>
+          <a class="mdl-navigation__link" href="groupservice.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">service</small></a>
+          <a class="mdl-navigation__link" href="calendar.php"><i class="ndl-calendar"></i></i>  Calendar</a>
+          <a class="mdl-navigation__link" href="crm_iframe.php"><i class="ndl-work"></i>  CRM</a>
+          <a class="mdl-navigation__link" href="settings.php"><i class="ndl-settings"></i>  Settings</a>
+          <div class="mdl-layout-spacer"></div>
+          <a class="mdl-navigation__link menu_logout" href="?logout">
+            <button id="menuLogout" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+              <span style="margin-left: 5px;" class="mdi mdi-24px mdi-logout mdi-light"></span>
+            </button>
+            <div class="mdl-tooltip  mdl-tooltip--top" data-mdl-for="menuLogout">
+              Logout
+            </div>
+          </a>
+        </nav>
+      </div>
 
         <main class="mdl-layout__content">
 
@@ -122,6 +173,12 @@ require('authenticate_google.php');
         <!-- moment -->
         <script rel="preload" as="script" type="text/javascript" src="assets/js/moment/moment.min.js"></script>
         <script rel="preload" as="script" type="text/javascript" src="assets/js/moment/moment-timezone-with-data.min.js"></script>
+
+        <!-- material hamburger menu -->
+
+        <script>materialDesignHamburger();</script>
+        <script rel="preload" as="script" src="assets/js/hamburger_menu.js"></script>
+
 
       </div>
 </body>

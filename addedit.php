@@ -501,7 +501,7 @@ global $dbhandle;
           <?php
           echo '<dialog id="mailDialog" class="mdl-dialog mailDialog1" style="">
                 <div class="mailcSelectHeader">
-                  <h4 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $msubject . '</h4><br>
+                  <h6 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $msubject . '</h6><br>
                   <h6 class="sublabelSelectLabel"><font color="#67B246">From:</font> ' . $mfrom . '</h6><br>
                   <h6 class="sublabelSelectLabel"><font color="#67B246">Date:</font> ' . $mdate . '</h6>
                   <button tabindex="-1" type="button" class="mailcSelectClose2 mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1">

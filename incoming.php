@@ -128,7 +128,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                     </div>
                   </dialog>
                 </div>
-                <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone dataTables_wrapper mdl-2col">
+                <div class="mdl-cell mdl-cell--8-col mdl-cell--4-col-phone dataTables_wrapper mdl-2col">
             <?php
             $lieferant = '';
             $tdCID = '';
@@ -170,7 +170,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                           <th style="width:20px!important"></th>
                           <th class="">id</th>
                           <th class="">Maileingang Date/Time</th>
-                          <th>Mail ID</th>
+                          <th>Subject</th>
                           <th>R Mail Content</th>
                           <th>Sender</th>
                           <th>Deren CID</th>
@@ -308,6 +308,9 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   }
 
 
+                  //$m = new \Moment\Moment($date);
+                  //$date2 =  $m->setTimezone('CET')->format('Y-m-d H:i');
+
                   // With no attachment, the payload might be directly in the body, encoded.
                   $body = $payload->getBody();
                   $FOUND_BODY = decodeBody($body['data']);
@@ -390,6 +393,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   });*/
                   </script>';
 
+                  /* INCOMING TABLE */
 
                   echo '<tr>
                           <td>
@@ -400,8 +404,9 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                             </a>
                           </td>
                           <td></td>
-                          <td>'. $date  . '</td>
-                          <td><a id="show-dialog2" data-target="' . $message_id . '">' . $message_id . '</a></td>
+                          <td>' . $date . '</td>
+                          <!--<td>' . $date .  '('. $date2 . ')' . '</td>-->
+                          <td><a id="show-dialog2" data-target="' . $message_id . '">' . $subject . '</a></td>
                           <td></td>
                           <td>'. $from . '('. $domain . ')' . '</td>
                           <td></td>
@@ -414,9 +419,11 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                           <td>' . $domain . '</td>
                         </tr>';
 
+                    /* MAIL PREVIEW */
+
                     echo '<dialog id="dialog_' . $message_id . '" class="mdl-dialog mailDialog1" style="width: 800px;">
                           <div class="mailcSelectHeader">
-                            <h4 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $subject . '</h4><br>
+                            <h6 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $subject . '</h6><br>
                             <h6 class="sublabelSelectLabel"><font color="#67B246">From:</font> ' . htmlentities($from) . '</h6><br>
                             <h6 class="sublabelSelectLabel"><font color="#67B246">Date:</font> ' . $date . '</h6>
                             <button tabindex="-1" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 mailcSelectClose">
@@ -549,13 +556,12 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
                 ?>
                 </div>
-                <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone mdl-2col table2">
+                <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone mdl-2col table2">
                   <table id="dataTable2" class="hidden mdl-data-table striped" style="width: 100%">
                     <thead>
                       <tr>
                         <th class=""></th>
                         <th class="">Maileingang</th>
-                        <th class="">Bearbeitet Von</th>
                         <th>Start Date/Time</th>
                         <th>Complete</th>
                         <th>ID</th>
@@ -584,15 +590,14 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                     "visible": false,
                     "searchable": false
                 },
-                { responsivePriority: 1, targets: [ 0, 2, 5 ] },
-                { responsivePriority: 2, targets: [ 3 ] },
+                { responsivePriority: 1, targets: [ 0, 2, 3, 5 ] },
                 {
                     targets: [2, 3, 5 ],
                     className: 'mdl-data-table__cell--non-numeric'
                 },
                 {
-                    targets: [ 0, 3, 5 ],
-                    className: 'all'
+                    targets: [ 0, ],
+                    className: 'control'
                 }
               ]
             });
@@ -613,7 +618,6 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                     columns: [
                         { title: "View" },
                         { data: "maileingang" },
-                        { data: "bearbeitetvon" },
                         { data: "startDateTime" },
                         { data: "done" },
                         { data: "id" },
@@ -625,11 +629,11 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                           "visible": true,
                           "searchable": false
                       },{
-                          "targets": [ 5, 6 ],
+                          "targets": [ 4, 5 ],
                           "visible": false,
                           "searchable": false
                       },{
-                        targets: [4], render: function (a, b, data, d) {
+                        targets: [3], render: function (a, b, data, d) {
                           if (data['done'] === '1'){
                             return '<span class="mdi mdi-24px mdi-check-decagram mdi-dark"></span>';
                           } else if (data['done'] === '0') {

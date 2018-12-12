@@ -133,6 +133,23 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                           </button>
                         </div>
                       </div>
+                      <div class="settingWrapper">
+                        <div class="mdl-cell mdl-cell--8-col mdl-cell--3-col-phone" style="line-height: 60px;">
+                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which user should the mail labels be based on?</font>
+                        </div>
+                        <div class="mdl-cell mdl-cell--4-col mdl-cell--1-col-phone">
+                          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="text" name="userEmail" id="userEmail">
+                            <label class="mdl-textfield__label" for="userEmail">Email Address</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mdl-layout-spacer"></div>
+                      <div class="mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
+                        <button id="settingSave" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect">
+                          <i class="material-icons">save</i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div class="mdl-card__actions mdl-card--border">
@@ -207,6 +224,10 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
           </div>
         </section>
       </main>
+      <div id="settingsOutput" class="mdl-js-snackbar mdl-snackbar">
+        <div class="mdl-snackbar__text"></div>
+        <button class="mdl-snackbar__action" type="button"></button>
+      </div>
       <dialog style="width: 900px;" id="dialog3" class="mdl-dialog">
         <div class="labelSelectHeader">
           <h6 class="mdl-dialog__title labelSelectLabel">Which label are your maintenance emails in?</h6>
@@ -220,8 +241,13 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             <?php
               $service = new Google_Service_Gmail($clientService);
 
-              // Print the labels in the user's account.
-              $user = 'ndomino@newtelco.de';
+
+              $serviceUser = mysqli_query($dbhandle, "SELECT serviceuser from persistence where id like 0");
+              if ($fetch = mysqli_fetch_array($serviceUser)) {
+                $user = $fetch[0];
+              }
+
+              //$user = 'ndomino@newtelco.de';
               $results = $service->users_labels->listUsersLabels($user);
 
               if (count($results->getLabels()) == 0) {
@@ -248,6 +274,34 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
         </dialog>
         <script>
 
+          $('#settingSave').on('click', function(e) {
+            var selectedUser = $('#userEmail').val();
+            $.ajax({
+              type: "GET",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              'url':'api?userMails=' + selectedUser,
+              'success': function(result2){
+                var obj = JSON.stringify(result2);
+                var snackbarContainer = document.querySelector('#settingsOutput');
+
+                if (result2.updated === 1) {
+                  var settingsOutput = {
+                    message: 'Successfully Saved',
+                    timeout: 4000
+                  };
+                } else if (result2.same === 1) {
+                  var settingsOutput = {
+                    message: 'User already selected',
+                    timeout: 4000
+                  };
+                }
+                snackbarContainer.MaterialSnackbar.showSnackbar(settingsOutput);
+              }
+            });
+          });
 
           var dialog = document.querySelector('#dialog3');
           var showDialogButton = document.querySelector('#showdialog2');

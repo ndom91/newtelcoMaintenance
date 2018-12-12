@@ -200,6 +200,26 @@
     }
     echo json_encode($addeditA);
 
+  } elseif (isset($_GET['userMails'])){
+    $selectedUser = $_GET['userMails'];
+    $selectedUserOutput = array();
+
+    $sUserQ = mysqli_query($dbhandle, "SELECT id, serviceuser FROM persistence WHERE id LIKE 0") or die(mysqli_error($dbhandle));
+
+    if ($fetchUQ = mysqli_fetch_array($sUserQ)) {
+      $existingSelectedUser = $fetchUQ[1];
+      if ($existingSelectedUser == $selectedUser) {
+        $selectedUserOutput['same'] = 1;
+      } else {
+        $sUserU = mysqli_query($dbhandle, "UPDATE persistence set serviceuser = '$selectedUser' where id like 0") or die(mysqli_error($dbhandle));
+        $selectedUserOutput['updated'] = 1;
+      }
+    } else {
+      $kundenIQ = mysqli_query($dbhandle, "INSERT INTO persistence (serviceuser) VALUES ('$selectedUser')") or die(mysqli_error($dbhandle));
+    }
+
+    echo json_encode($selectedUserOutput);
+
   } else {
 
     echo json_encode('fukc you');

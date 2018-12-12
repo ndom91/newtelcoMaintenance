@@ -101,8 +101,14 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                       <?php
                         $service = new Google_Service_Gmail($clientService);
 
+
+                        $serviceUser = mysqli_query($dbhandle, "SELECT serviceuser from persistence where id like 0");
+                        if ($fetch = mysqli_fetch_array($serviceUser)) {
+                          $user = $fetch[0];
+                        }
+
                         // Print the labels in the user's account.
-                        $user = 'ndomino@newtelco.de';
+                        //$user = 'ndomino@newtelco.de';
                         $results = $service->users_labels->listUsersLabels($user);
 
                         if (count($results->getLabels()) == 0) {
@@ -307,9 +313,12 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                     $domain = get_email_domain($matches[0]);
                   }
 
-
-                  //$m = new \Moment\Moment($date);
-                  //$date2 =  $m->setTimezone('CET')->format('Y-m-d H:i');
+                  $CET = new DateTimeZone('Europe/Berlin');
+                  $date2 = DateTime::createFromFormat("D, d M Y H:i:s O", $date);
+                  $timezone = $date2->getTimezone();
+                  $date2 = new DateTime($date, $timezone);
+                  $date2->setTimezone($CET);
+                  $date2 = $date2->format('Y-m-d  H:i:s');
 
                   // With no attachment, the payload might be directly in the body, encoded.
                   $body = $payload->getBody();
@@ -317,28 +326,28 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
                   // If we didn't find a body, let's look for the parts
                   if(!$FOUND_BODY) {
-                      $parts = $payload->getParts();
-                      foreach ($parts  as $part) {
-                          if($part['body'] && $part['mimeType'] == 'text/html') {
-                              $FOUND_BODY = decodeBody($part['body']->data);
-                              break;
-                          }
+                    $parts = $payload->getParts();
+                    foreach ($parts  as $part) {
+                      if($part['body'] && $part['mimeType'] == 'text/html') {
+                          $FOUND_BODY = decodeBody($part['body']->data);
+                          break;
                       }
+                    }
                   } if(!$FOUND_BODY) {
                       foreach ($parts  as $part) {
-                          // Last try: if we didn't find the body in the first parts,
-                          // let's loop into the parts of the parts (as @Tholle suggested).
-                          if($part['parts'] && !$FOUND_BODY) {
-                              foreach ($part['parts'] as $p) {
-                                  // replace 'text/html' by 'text/plain' if you prefer
-                                  if($p['mimeType'] === 'text/plain' && $p['body']) {
-                                      $FOUND_BODY = decodeBody($p['body']->data);
-                                      break;
-                                  }
+                        // Last try: if we didn't find the body in the first parts,
+                        // let's loop into the parts of the parts (as @Tholle suggested).
+                        if($part['parts'] && !$FOUND_BODY) {
+                            foreach ($part['parts'] as $p) {
+                              // replace 'text/html' by 'text/plain' if you prefer
+                              if($p['mimeType'] === 'text/plain' && $p['body']) {
+                                $FOUND_BODY = decodeBody($p['body']->data);
+                                break;
                               }
+                            }
                           }
                           if($FOUND_BODY) {
-                              break;
+                            break;
                           }
                       }
                   }
@@ -391,6 +400,8 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                      alert(\'Cannot inject dynamic contents into iframe.\');
                     }
                   });*/
+
+
                   </script>';
 
                   /* INCOMING TABLE */
@@ -404,7 +415,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                             </a>
                           </td>
                           <td></td>
-                          <td>' . $date . '</td>
+                          <td>' . $date2 . '</td>
                           <!--<td>' . $date .  '('. $date2 . ')' . '</td>-->
                           <td><a id="show-dialog2" data-target="' . $message_id . '">' . $subject . '</a></td>
                           <td></td>
@@ -539,7 +550,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                 }
 
                 $labelservice = new Google_Service_Gmail($clientService);
-                $user = 'ndomino@newtelco.de';
+                //$user = 'ndomino@newtelco.de';
                 $labelresults = $labelservice->users_labels->listUsersLabels($user);
                 foreach ($labelresults->getLabels() as $labelr) {
                   $labelid1 = $labelr->getId();
@@ -609,6 +620,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                       table2 = $('#dataTable2').DataTable();
                       table2.destroy();
                   }
+
                   $('#dataTable2').addClass('display').removeClass('hidden');
                   $('#dataTable2').DataTable( {
                     ajax: {
@@ -650,11 +662,15 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                             return '';
                           }
                         }
-                      }
+                      },
+                      { responsivePriority: 1, targets: [ 0, 3 ] },
+                      { responsivePriority: 2, targets: [ 1, 2 ] }
                     ],
                     responsive: true,
                     order: [ 1, 'desc' ]
                   });
+                  $('#dataTable2_filter').parent("div").css("width","calc(70% - 16px)");
+                  $('#dataTable2_length').parent("div").css("width","calc(30% - 16px)");
                 }
               })
             })

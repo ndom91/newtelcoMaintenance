@@ -9,14 +9,18 @@ include_once "base.php";
 
 putenv('GOOGLE_APPLICATION_CREDENTIALS=maintenanceapp-1dd9507b2c22.json');
 
-$user = 'ndomino@newtelco.de';
-
+$serviceUser = mysqli_query($dbhandle, "SELECT serviceuser from persistence where id like 0");
+if ($fetch = mysqli_fetch_array($serviceUser)) {
+  $user = $fetch[0];
+}
 function getGoogleClient() {
     return getServiceAccountClient();
 }
 
 function getServiceAccountClient() {
-  $user = 'ndomino@newtelco.de';
+  //$user = 'ndomino@newtelco.de';
+    global $user;
+    
     try {
         // Create and configure a new client object.
         $client2 = new Google_Client();

@@ -167,7 +167,6 @@ if(isset($_POST['endlabel'])) {
                             </div>
                           </div>
                       </div>
-
                     </div>
                   </div>
                   <div class="mdl-card__actions mdl-card--border">

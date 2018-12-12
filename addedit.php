@@ -225,7 +225,6 @@ global $dbhandle;
 
                   $optParamsGet2['format'] = 'full';
                   $single_message = $service->users_messages->get($userId, $message_id, $optParamsGet2);
-
                   $payload = $single_message->getPayload();
                   $headers = $payload->getHeaders();
                   $snippet = $single_message->getSnippet();
@@ -279,7 +278,8 @@ global $dbhandle;
                   $msgArray[] = $FOUND_BODY;
 
                 } catch (Exception $e) {
-                    echo $e->getMessage();
+                    //echo $e->getMessage();
+                    echo '<div style="width:100%;font-size: 18px;font-weight:200;margin-left:10px;margin-top:25px;">Maintenance Entry created from a different <b>base</b> Email Account (See Settings)</div>';
                 }
                   return $msgArray;
                 }

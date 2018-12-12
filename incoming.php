@@ -296,8 +296,16 @@ global $dbhandle;
             }
 
             $CET = new DateTimeZone('Europe/Berlin');
-            $date2 = DateTime::createFromFormat("D, d M Y H:i:s O", $date);
-            //$timezone = $date2->getTimezone();
+            //$date = 'Wed, 5 Dec 2018 11:51:41 +0000';
+            if ($domain == 'equinix.com') {
+              $date2 = DateTime::createFromFormat("D, d M Y H:i:s O P", $date);
+            } else {
+              $date2 = DateTime::createFromFormat("D, d M Y H:i:s O", $date);
+            }
+            //var_dump('date2: ' + $date2);
+            //var_dump('date: ' + $date);
+            //$tz = $date2->format('P');
+            $timezone = $date2->getTimezone();
             $date2 = new DateTime($date, $timezone);
             $date2->setTimezone($CET);
             $date2 = $date2->format('Y-m-d  H:i:s');
@@ -597,7 +605,7 @@ global $dbhandle;
                 },
                 {
                     targets: [ 0, ],
-                    className: 'control'
+                    className: 'all'
                 }
               ]
             });

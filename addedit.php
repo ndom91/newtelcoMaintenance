@@ -74,7 +74,8 @@ global $dbhandle;
           <div class="mdl-grid">
 
           <?php
-            // Default Values (empty)
+
+
             $otitlestring = 'Add';
             $omaileingang = '';
             $oreceivedmail = '';
@@ -90,7 +91,7 @@ global $dbhandle;
             $ocal = '';
             $odone = '';
             $update = '0';
-            $user = 'me';
+
 
             if(isset($_GET['update'])) {
               $update = '1';
@@ -223,7 +224,7 @@ global $dbhandle;
                   $msgArray = array();
 
                   $optParamsGet2['format'] = 'full';
-                  $single_message = $service->users_messages->get($userId, $message_id,$optParamsGet2);
+                  $single_message = $service->users_messages->get($userId, $message_id, $optParamsGet2);
 
                   $payload = $single_message->getPayload();
                   $headers = $payload->getHeaders();
@@ -282,6 +283,7 @@ global $dbhandle;
                 }
                   return $msgArray;
                 }
+
 
                 $msgInfo = getMessage2($service2, $user, $gmid);
 
@@ -912,8 +914,6 @@ $('#btnSave').on('click', function(e) {
   var tzConcat2 = mEDT.concat(zOffset);
   var edtUTC = moment(tzConcat2).utc().format();
 
-
-
   if($('#switch-2:checked').val() == 'on') {
     var odone = '1';
   } else {
@@ -989,6 +989,10 @@ $('#btnSave').on('click', function(e) {
         snackbarContainer2.MaterialSnackbar.showSnackbar(dataME3);
       } else {
         alert('Invalid Response');
+      }
+      if (result1.updatedID != '') {
+        var newID = result1.updatedID;
+        window.location.href = "https://maintenance.newtelco.de/addedit?gmid="+$('#rmail').val()+"&mid="+newID+"&update=1";
       }
     }
     });

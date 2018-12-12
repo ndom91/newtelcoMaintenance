@@ -20,7 +20,7 @@ function getGoogleClient() {
 function getServiceAccountClient() {
   //$user = 'ndomino@newtelco.de';
     global $user;
-    
+
     try {
         // Create and configure a new client object.
         $client2 = new Google_Client();
@@ -65,7 +65,10 @@ $clientService = getGoogleClient();
   * local access token in this case
   ************************************************/
  if (isset($_REQUEST['logout'])) {
+
    unset($_SESSION['access_token']);
+   $client->revokeToken();
+   header('Location: https://maintenance.newtelco.de');
  }
  /************************************************
   * If we have a code back from the OAuth 2.0 flow,
@@ -154,6 +157,7 @@ if($_COOKIE['rtoken']) {
 if($client->isAccessTokenExpired() && isset($rtoken)){
   $rtoken_insertquery = mysqli_query($dbhandle, "UPDATE authentication set refreshToken = '$rtoken' where email like '$tokenemail'");
 }
+
 $q = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' . $_SESSION['access_token']['access_token'];
 $json = file_get_contents($q);
 $token_data=json_decode($json,true);

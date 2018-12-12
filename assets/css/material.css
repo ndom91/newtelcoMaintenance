@@ -398,10 +398,10 @@ html {
  * Customize the background color to match your design.
  */
 ::-moz-selection {
-  background: rgba(103, 178, 70, 0.1);
+  background: rgba(103, 178, 70, 0.4);
   text-shadow: none; }
 ::selection {
-  background: rgba(103, 178, 70, 0.1);
+  background: rgba(103, 178, 70, 0.4);
   text-shadow: none; }
 
 /*

@@ -8,8 +8,13 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
   } else {
     $labelID2 = $_SESSION['label'];
   }
-
   setcookie("label", $labelID2, strtotime( '+30 days' ));
+}
+
+if(isset($_POST['endlabel'])) {
+  $labelID3 = $_POST['endlabel'];
+  $_SESSION['endlabel'] = $labelID3;
+  setcookie("endlabel", $labelID3, strtotime( '+30 days' ));
 }
 
 ?>
@@ -105,7 +110,7 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                 <!-- Square card -->
                 <style>
                 .demo-card-square.mdl-card {
-                  width: 575px;
+                  width: 775px;
                   height: auto;
                   margin-left: auto;
                   margin-right: auto;
@@ -124,38 +129,56 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   <div class="mdl-card__supporting-text">
                     <div class="mdl-grid">
                       <div class="settingWrapper">
-                        <div class="mdl-cell mdl-cell--9-col mdl-cell--3-col-phone" style="line-height: 60px;">
-                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which label contains the maintenance emails?</font>
+                        <div class="mdl-cell mdl-cell--10-col mdl-cell--3-col-phone" style="line-height: 60px;">
+                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which label contains the <b>incoming maintenance</b> emails?</font>
                         </div>
-                        <div class="mdl-cell mdl-cell--3-col mdl-cell--1-col-phone">
-                          <button id="showdialog2" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectLabelSettings">
+                        <div class="mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
+                          <button id="showdialog2" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectLabelSettings" style="margin-right:5px">
                             <i class="material-icons">mail</i>
                           </button>
-                        </div>
-                      </div>
-                      <div class="settingWrapper">
-                        <div class="mdl-cell mdl-cell--8-col mdl-cell--3-col-phone" style="line-height: 60px;">
-                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which user should the mail labels be based on?</font>
-                        </div>
-                        <div class="mdl-cell mdl-cell--4-col mdl-cell--1-col-phone">
-                          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="text" name="userEmail" id="userEmail">
-                            <label class="mdl-textfield__label" for="userEmail">Email Address</label>
+                          <div class="mdl-tooltip mdl-tooltip--left" for="showdialog2">
+                          Select your Maintenance Label
                           </div>
                         </div>
                       </div>
-                      <div class="mdl-layout-spacer"></div>
-                      <div class="mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
-                        <button id="settingSave" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect">
-                          <i class="material-icons">save</i>
-                        </button>
+                      <div class="settingWrapper">
+                        <div class="mdl-cell mdl-cell--10-col mdl-cell--3-col-phone" style="line-height: 60px;">
+                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which label should <b>completed maintenances be moved to</b>?</font>
+                        </div>
+                        <div class="mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
+                          <button id="showdialog22" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectLabelSettings" style="margin-right:5px">
+                            <i class="material-icons">mail</i>
+                          </button>
+                          <div class="mdl-tooltip mdl-tooltip--left" for="showdialog22">
+                          Select your Maintenance Label
+                          </div>
+                        </div>
                       </div>
+                      <div class="settingWrapper">
+                        <div class="mdl-cell mdl-cell--7-col mdl-cell--3-col-phone" style="margin-top:4%">
+                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which user should the incoming mail be based on?</font>
+                          <br>
+                          <font class="mdl-dialog__subtitle" style="font-size:10px;">This will determine much backend functionality like available labels, etc.</font>
+                        </div>
+                        <div class="mdl-cell mdl-cell--5-col mdl-cell--1-col-phone" style="margin-top:2%">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                              <input class="mdl-textfield__input userEmail" type="text" placeholder="@newtelco.de" id="userEmail">
+                              <label class="mdl-textfield__label" for="userEmail">Email Address</label>
+                            </div>
+                          </div>
+                      </div>
+
                     </div>
                   </div>
                   <div class="mdl-card__actions mdl-card--border">
-                    <!-- <a href="index.php" class="mdl-button mdl-button--colored mdl-color-text--light-green-nt mdl-js-button mdl-js-ripple-effect">
-                      Home
-                    </a> -->
+                    <div></div>
+                    <div class="mdl-layout-spacer"></div>
+                    <button id="settingSave" type="button" style="float: right;margin:5px;" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect">
+                      <i class="material-icons">save</i>
+                    </button>
+                    <div class="mdl-tooltip mdl-tooltip--left" for="settingSave">
+                    Save Settings
+                    </div>
                   </div>
                 </div>
 
@@ -225,9 +248,10 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
         </section>
       </main>
       <div id="settingsOutput" class="mdl-js-snackbar mdl-snackbar">
-        <div class="mdl-snackbar__text"></div>
-        <button class="mdl-snackbar__action" type="button"></button>
+        <div class="mdl-snackbar__text" style="text-align:center;width:100%"></div>
+        <button type="button" style="display:none" class="mdl-snackbar__action"></button>
       </div>
+
       <dialog style="width: 900px;" id="dialog3" class="mdl-dialog">
         <div class="labelSelectHeader">
           <h6 class="mdl-dialog__title labelSelectLabel">Which label are your maintenance emails in?</h6>
@@ -241,13 +265,6 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             <?php
               $service = new Google_Service_Gmail($clientService);
 
-
-              $serviceUser = mysqli_query($dbhandle, "SELECT serviceuser from persistence where id like 0");
-              if ($fetch = mysqli_fetch_array($serviceUser)) {
-                $user = $fetch[0];
-              }
-
-              //$user = 'ndomino@newtelco.de';
               $results = $service->users_labels->listUsersLabels($user);
 
               if (count($results->getLabels()) == 0) {
@@ -272,6 +289,45 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             </p>
           </div>
         </dialog>
+
+        <dialog style="width: 900px;" id="dialog32" class="mdl-dialog">
+          <div class="labelSelectHeader">
+            <h6 class="mdl-dialog__title labelSelectLabel">Which label should <b>completed maintenances be moved to</b>?</h6>
+          </div>
+          <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close2 labelSelectClose">
+            <i class="material-icons">close</i>
+          </button>
+          <div class="mdl-dialog__content">
+            <p>
+
+              <?php
+                $service = new Google_Service_Gmail($clientService);
+
+                $results = $service->users_labels->listUsersLabels($user);
+
+                if (count($results->getLabels()) == 0) {
+                 print "No labels found.\n";
+                } else {
+
+                  echo '<form action="settings" method="post">';
+                  echo '<div class="mdl-grid">';
+                  foreach ($results->getLabels() as $label) {
+                    $labelColor = $label->getColor();
+                    if ($labelColor['backgroundColor'] != '') {
+                      echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="">' . $label->getName() . '</div>';
+                    } else {
+                    echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="color: ' . $labelColor['textColor'] . ';">' . $label->getName() . '</div>';
+                    }
+                    echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" style="background-color: ' . $labelColor['backgroundColor'] . '" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="endlabel" data-value="' . $label->getId() . '" value="' . $label->getId() . '"><i class="material-icons">check</i></button></div>';
+                  }
+                  echo '</form></div>';
+                }
+
+                ?>
+              </p>
+            </div>
+          </dialog>
+
         <script>
 
           $('#settingSave').on('click', function(e) {
@@ -297,6 +353,11 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                     message: 'User already selected',
                     timeout: 4000
                   };
+                } else if (result2.empty === 1) {
+                  var settingsOutput = {
+                    message: 'Please enter Email Address',
+                    timeout: 4000
+                  };
                 }
                 snackbarContainer.MaterialSnackbar.showSnackbar(settingsOutput);
               }
@@ -315,6 +376,17 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             dialog.close();
           });
 
+          var dialog2 = document.querySelector('#dialog32');
+          var showDialogButton2 = document.querySelector('#showdialog22');
+          if (! dialog2.showModal) {
+            dialogPolyfill.registerDialog(dialog2);
+          }
+          showDialogButton2.addEventListener('click', function() {
+            dialog2.showModal();
+          });
+          dialog2.querySelector('.close2').addEventListener('click', function() {
+            dialog2.close();
+          });
 
          $('#firmenTab').click(function(){
 

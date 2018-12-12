@@ -1,19 +1,8 @@
 <!DOCTYPE html>
 <?php
 require('authenticate_google.php');
-require_once('config.php');
 
 global $dbhandle;
-
-if(isset($_POST['label']) || isset($_SESSION['label'])) {
-  if(isset($_POST['label'])) {
-    $labelID2 = $_POST['label'];
-  } else {
-    $labelID2 = $_SESSION['label'];
-  }
-
-  setcookie("label", $labelID2, strtotime( '+30 days' ));
-}
 
 ?>
 
@@ -101,14 +90,6 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                       <?php
                         $service = new Google_Service_Gmail($clientService);
 
-
-                        $serviceUser = mysqli_query($dbhandle, "SELECT serviceuser from persistence where id like 0");
-                        if ($fetch = mysqli_fetch_array($serviceUser)) {
-                          $user = $fetch[0];
-                        }
-
-                        // Print the labels in the user's account.
-                        //$user = 'ndomino@newtelco.de';
                         $results = $service->users_labels->listUsersLabels($user);
 
                         if (count($results->getLabels()) == 0) {
@@ -154,10 +135,10 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
               $lieferant_query = mysqli_query($dbhandle, "SELECT `id`,`name` FROM `companies` WHERE `name` LIKE '$lieferant_escape'");
 
               if ($fetch = mysqli_fetch_array($lieferant_query)) {
-                  //Found a companyn - now show all maintenances for company
-                  $lieferant_id = $fetch[0];
-                  $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
-                }
+                //Found a companyn - now show all maintenances for company
+                $lieferant_id = $fetch[0];
+                $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
+              }
 
             } elseif (! empty($_POST['tdCID'])){
               $tdCID = $_POST['tdCID'];
@@ -289,184 +270,185 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
             }
 
     function fetchMails($gmail, $q) {
+
+      global $user;
       try{
-          $list = $gmail->users_messages->listUsersMessages('me', array('q' => $q));
-          while ($list->getMessages() != null) {
+        $list = $gmail->users_messages->listUsersMessages($user, array('q' => $q));
+        while ($list->getMessages() != null) {
+          foreach ($list->getMessages() as $mlist) {
+            global $user;
+            $message_id = $mlist->id;
+            $optParamsGet2['format'] = 'full';
+            //$optParamsGet2['maxResults'] = 5; // Return Only 5 Messages
+            //$optParamsGet2['labelId'] = $labelID;
+            $single_message = $gmail->users_messages->get($user, $message_id, $optParamsGet2);
+            $payload = $single_message->getPayload();
+            $headers = $payload->getHeaders();
+            $snippet = $single_message->getSnippet();
+            $date = getHeader($headers, 'Date');
+            $subject = getHeader($headers, 'Subject');
+            $from = getHeader($headers, 'From');
+            $fromHTML = htmlentities($from);
+            if (($pos = strpos($fromHTML, "@")) !== FALSE) {
+              preg_match_all("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $fromHTML, $matches);
+              $fromAddress = $matches[0];
+              $domain = get_email_domain($matches[0]);
+            }
 
-              foreach ($list->getMessages() as $mlist) {
+            $CET = new DateTimeZone('Europe/Berlin');
+            $date2 = DateTime::createFromFormat("D, d M Y H:i:s O", $date);
+            //$timezone = $date2->getTimezone();
+            $date2 = new DateTime($date, $timezone);
+            $date2->setTimezone($CET);
+            $date2 = $date2->format('Y-m-d  H:i:s');
 
-                  $message_id = $mlist->id;
-                  $optParamsGet2['format'] = 'full';
-                  //$optParamsGet2['maxResults'] = 5; // Return Only 5 Messages
-                  //$optParamsGet2['labelId'] = $labelID;
-                  $single_message = $gmail->users_messages->get('me', $message_id, $optParamsGet2);
-                  $payload = $single_message->getPayload();
-                  $headers = $payload->getHeaders();
-                  $snippet = $single_message->getSnippet();
-                  $date = getHeader($headers, 'Date');
-                  $subject = getHeader($headers, 'Subject');
-                  $from = getHeader($headers, 'From');
-                  $fromHTML = htmlentities($from);
-                  if (($pos = strpos($fromHTML, "@")) !== FALSE) {
-                    preg_match_all("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $fromHTML, $matches);
-                    $fromAddress = $matches[0];
-                    $domain = get_email_domain($matches[0]);
-                  }
+            // With no attachment, the payload might be directly in the body, encoded.
+            $body = $payload->getBody();
+            $FOUND_BODY = decodeBody($body['data']);
 
-                  $CET = new DateTimeZone('Europe/Berlin');
-                  $date2 = DateTime::createFromFormat("D, d M Y H:i:s O", $date);
-                  $timezone = $date2->getTimezone();
-                  $date2 = new DateTime($date, $timezone);
-                  $date2->setTimezone($CET);
-                  $date2 = $date2->format('Y-m-d  H:i:s');
-
-                  // With no attachment, the payload might be directly in the body, encoded.
-                  $body = $payload->getBody();
-                  $FOUND_BODY = decodeBody($body['data']);
-
-                  // If we didn't find a body, let's look for the parts
-                  if(!$FOUND_BODY) {
-                    $parts = $payload->getParts();
-                    foreach ($parts  as $part) {
-                      if($part['body'] && $part['mimeType'] == 'text/html') {
-                          $FOUND_BODY = decodeBody($part['body']->data);
-                          break;
-                      }
-                    }
-                  } if(!$FOUND_BODY) {
-                      foreach ($parts  as $part) {
-                        // Last try: if we didn't find the body in the first parts,
-                        // let's loop into the parts of the parts (as @Tholle suggested).
-                        if($part['parts'] && !$FOUND_BODY) {
-                            foreach ($part['parts'] as $p) {
-                              // replace 'text/html' by 'text/plain' if you prefer
-                              if($p['mimeType'] === 'text/plain' && $p['body']) {
-                                $FOUND_BODY = decodeBody($p['body']->data);
-                                break;
-                              }
-                            }
-                          }
-                          if($FOUND_BODY) {
-                            break;
-                          }
-                      }
-                  }
-
-
-                  // Finally, print the message ID and the body
-                  $fContents = '';
-
-                  $mFile = "msg/" . $message_id . ".html";
-                  //$fContents .= stripHTML($FOUND_BODY);
-                  $fContents .= $FOUND_BODY;
-                  //$fPreview = substr($fContents, 0, 45);
-                  //var_dump('fPreview: ' . $fPreview . '<br>');
-                  //var_dump('fSnippet: ' . $snippet . '<br>');
-
-                  if (!file_exists($mFile)) {
-                    file_put_contents($mFile, $fContents);
-                  }
-
-                  echo '
-                  <script>
-                  /*var showMailModal = document.querySelector("#show-dialog2");
-                  showMailModal.addEventListener("click", function() {
-                  //$(document).ready(function() {
-                    var msgid1 = showMailModal.data("target");
-                    console.log("msgid1: " + msgid1);
-                    var iframe = document.getElementById(\'emailBody1_\'+msgid1\');
-                    iframe.src = "javascript:;";
-                    var iframedoc = iframe.document;
-
-                    console.log("begin framedoc");
-                    if (iframe.contentWindow){
-
-                      //console.log("contentWindow");
-                      iframedoc = iframe.contentWindow;
-                      //console.log("iframe has contentWindow");
-                    } else if (iframe.contentDocument){
-                     iframedoc = iframe.contentDocument.document;
-                     console.log("iframe has contentDocument.document");
-                    }
-
-                    if (iframedoc) {
-                      iframedoc.document.open();
-                      iframedoc.document.write("' . $FOUND_BODY . '");
-                      iframedoc.document.close();
-                      console.log("iframedoc written");
-                    } else {
-
-                      console.log("Cannot inject dynamic contents");
-                     alert(\'Cannot inject dynamic contents into iframe.\');
-                    }
-                  });*/
-
-
-                  </script>';
-
-                  /* INCOMING TABLE */
-
-                  echo '<tr>
-                          <td>
-                            <a class="editLink" href="addedit?gmid=' . $message_id . '">
-                              <button class="mdl-color-text--primary-contrast mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored button40">
-                                <span style="color:#fff !important; line-height: 41px !important;" class="mdi mdi-24px mdi-circle-edit-outline mdi-light">
-                              </button>
-                            </a>
-                          </td>
-                          <td></td>
-                          <td>' . $date2 . '</td>
-                          <!--<td>' . $date .  '('. $date2 . ')' . '</td>-->
-                          <td><a id="show-dialog2" data-target="' . $message_id . '">' . $subject . '</a></td>
-                          <td></td>
-                          <td>'. $from . '('. $domain . ')' . '</td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td>' . $domain . '</td>
-                        </tr>';
-
-                    /* MAIL PREVIEW */
-
-                    echo '<dialog id="dialog_' . $message_id . '" class="mdl-dialog mailDialog1" style="width: 800px;">
-                          <div class="mailcSelectHeader">
-                            <h6 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $subject . '</h6><br>
-                            <h6 class="sublabelSelectLabel"><font color="#67B246">From:</font> ' . htmlentities($from) . '</h6><br>
-                            <h6 class="sublabelSelectLabel"><font color="#67B246">Date:</font> ' . $date . '</h6>
-                            <button tabindex="-1" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 mailcSelectClose">
-                              <i class="material-icons">close</i>
-                            </button>
-                          </div>
-
-                          <div class="mdl-dialog__content">
-                            <p>
-                            <div class="mailcHR">NT</div>
-                              <div class="mailWrapper0">
-                                <div class="mdl-textfield mdl-js-textfield mailWrapper1">
-                                  <div style="display:inline-block !important;height: 100%;margin-top: 20px;" class=" mailWrapper2">
-                                    <iframe importance="low" class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0" src="msg/' . $message_id . '.html" id="emailBody1_' . $message_id . '"></iframe>
-                                  </div>
-                                </div>
-                              </div>
-
-                            </p>
-                          </div>
-                        </dialog>';
-
-                    }
-
-                    if ($list->getNextPageToken() != null) {
-                        $pageToken = $list->getNextPageToken();
-                        $list = $gmail->users_messages->listUsersMessages('me', array('pageToken' => $pageToken));
-                    } else {
-                        break;
-                    }
-
+            // If we didn't find a body, let's look for the parts
+            if(!$FOUND_BODY) {
+              $parts = $payload->getParts();
+              foreach ($parts  as $part) {
+                if($part['body'] && $part['mimeType'] == 'text/html') {
+                    $FOUND_BODY = decodeBody($part['body']->data);
+                    break;
                 }
+              }
+            } if(!$FOUND_BODY) {
+                foreach ($parts  as $part) {
+                  // Last try: if we didn't find the body in the first parts,
+                  // let's loop into the parts of the parts (as @Tholle suggested).
+                  if($part['parts'] && !$FOUND_BODY) {
+                    foreach ($part['parts'] as $p) {
+                      // replace 'text/html' by 'text/plain' if you prefer
+                      if($p['mimeType'] === 'text/plain' && $p['body']) {
+                        $FOUND_BODY = decodeBody($p['body']->data);
+                        break;
+                      }
+                    }
+                  }
+                  if($FOUND_BODY) {
+                    break;
+                  }
+                }
+              }
+
+
+            // Finally, print the message ID and the body
+            $fContents = '';
+
+            $mFile = "msg/" . $message_id . ".html";
+            //$fContents .= stripHTML($FOUND_BODY);
+            $fContents .= $FOUND_BODY;
+            //$fPreview = substr($fContents, 0, 45);
+            //var_dump('fPreview: ' . $fPreview . '<br>');
+            //var_dump('fSnippet: ' . $snippet . '<br>');
+
+            if (!file_exists($mFile)) {
+              file_put_contents($mFile, $fContents);
+            }
+
+            echo '
+            <script>
+            /*var showMailModal = document.querySelector("#show-dialog2");
+            showMailModal.addEventListener("click", function() {
+            //$(document).ready(function() {
+              var msgid1 = showMailModal.data("target");
+              console.log("msgid1: " + msgid1);
+              var iframe = document.getElementById(\'emailBody1_\'+msgid1\');
+              iframe.src = "javascript:;";
+              var iframedoc = iframe.document;
+
+              console.log("begin framedoc");
+              if (iframe.contentWindow){
+
+                //console.log("contentWindow");
+                iframedoc = iframe.contentWindow;
+                //console.log("iframe has contentWindow");
+              } else if (iframe.contentDocument){
+               iframedoc = iframe.contentDocument.document;
+               console.log("iframe has contentDocument.document");
+              }
+
+              if (iframedoc) {
+                iframedoc.document.open();
+                iframedoc.document.write("' . $FOUND_BODY . '");
+                iframedoc.document.close();
+                console.log("iframedoc written");
+              } else {
+
+                console.log("Cannot inject dynamic contents");
+               alert(\'Cannot inject dynamic contents into iframe.\');
+              }
+            });*/
+
+
+            </script>';
+
+            /* INCOMING TABLE */
+
+            echo '<tr>
+                    <td>
+                      <a class="editLink" href="addedit?gmid=' . $message_id . '">
+                        <button class="mdl-color-text--primary-contrast mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored button40">
+                          <span style="color:#fff !important; line-height: 41px !important;" class="mdi mdi-24px mdi-circle-edit-outline mdi-light">
+                        </button>
+                      </a>
+                    </td>
+                    <td></td>
+                    <td>' . $date2 . '</td>
+                    <!--<td>' . $date .  '('. $date2 . ')' . '</td>-->
+                    <td><a id="show-dialog2" data-target="' . $message_id . '">' . $subject . '</a></td>
+                    <td></td>
+                    <td>' . $domain . '</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>' . $domain . '</td>
+                  </tr>';
+
+              /* MAIL PREVIEW */
+
+              echo '<dialog id="dialog_' . $message_id . '" class="mdl-dialog mailDialog1" style="width: 800px;">
+                    <div class="mailcSelectHeader">
+                      <h6 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $subject . '</h6><br>
+                      <h6 class="sublabelSelectLabel"><font color="#67B246">From:</font> ' . $fromHTML . '</h6><br>
+                      <h6 class="sublabelSelectLabel"><font color="#67B246">Date:</font> ' . $date . '</h6>
+                      <button tabindex="-1" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 mailcSelectClose">
+                        <i class="material-icons">close</i>
+                      </button>
+                    </div>
+
+                    <div class="mdl-dialog__content">
+                      <p>
+                      <div class="mailcHR">NT</div>
+                        <div class="mailWrapper0">
+                          <div class="mdl-textfield mdl-js-textfield mailWrapper1">
+                            <div style="display:inline-block !important;height: 100%;margin-top: 20px;" class=" mailWrapper2">
+                              <iframe importance="low" class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0" src="msg/' . $message_id . '.html" id="emailBody1_' . $message_id . '"></iframe>
+                            </div>
+                          </div>
+                        </div>
+
+                      </p>
+                    </div>
+                  </dialog>';
+
+              }
+
+              if ($list->getNextPageToken() != null) {
+                  $pageToken = $list->getNextPageToken();
+                  $list = $gmail->users_messages->listUsersMessages($user, array('pageToken' => $pageToken));
+              } else {
+                  break;
+              }
+
+            }
 
                 echo '</tbody>
                 </table>';
@@ -503,24 +485,24 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   var mailID2 = \'\';
 
                   $("#dataTable3").click(function() {
-                      var mailID2 = $(event.target).attr(\'data-target\');
-                      console.log(mailID2);
-                      str1 = "emailBody";
-                      var mailIDcc = str1.concat(mailID2);
-                      $("#"+mailIDcc).attr(\'src\',"msggg/"+mailID2+".html");
-                      $("#"+mailIDcc).attr(\'src\', function ( i, val ) { return val; });
+                    var mailID2 = $(event.target).attr(\'data-target\');
+                    console.log(mailID2);
+                    str1 = "emailBody";
+                    var mailIDcc = str1.concat(mailID2);
+                    $("#"+mailIDcc).attr(\'src\',"msggg/"+mailID2+".html");
+                    $("#"+mailIDcc).attr(\'src\', function ( i, val ) { return val; });
 
-                      var dialog2 = document.querySelector(\'#dialog_\' + mailID2);
-                      var showDialogButton2 = document.querySelector(\'[data-target="\' + mailID2 + \'"]\');
-                      if (! dialog2.showModal) {
-                        dialogPolyfill.registerDialog(dialog);
-                      }
-                      showDialogButton2.addEventListener(\'click\', function() {
-                        dialog2.showModal();
-                      });
-                      dialog2.querySelector(\'.close1\').addEventListener(\'click\', function() {
-                        dialog2.close();
-                      });
+                    var dialog2 = document.querySelector(\'#dialog_\' + mailID2);
+                    var showDialogButton2 = document.querySelector(\'[data-target="\' + mailID2 + \'"]\');
+                    if (! dialog2.showModal) {
+                      dialogPolyfill.registerDialog(dialog);
+                    }
+                    showDialogButton2.addEventListener(\'click\', function() {
+                      dialog2.showModal();
+                    });
+                    dialog2.querySelector(\'.close1\').addEventListener(\'click\', function() {
+                      dialog2.close();
+                    });
                   });
                 </script>';
 
@@ -545,10 +527,11 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   if(isset($_COOKIE['label'])) {
                     $labelID = $_COOKIE['label'];
                   } else {
-                    $labelID = '0';
+                    $labelID = '';
                   }
                 }
 
+                $labelNameForSearch = '';
                 $labelservice = new Google_Service_Gmail($clientService);
                 //$user = 'ndomino@newtelco.de';
                 $labelresults = $labelservice->users_labels->listUsersLabels($user);
@@ -559,6 +542,12 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
                   if ($labelid1 == $labelID) {
                     $labelNameForSearch = $labelname;
                   }
+                }
+                if ($labelNameForSearch == '') {
+                  echo '<script language="javascript">';
+                  echo 'alert("No Label Selected - Please go to Settings.")';
+                  echo '</script>';
+                  $labelNameForSearch = 'aaaaaaa';
                 }
                 //var_dump('label_results: ' . $results);
                 // $q = 'label:' . $labelNameForSearch . ' newer_than:1d';

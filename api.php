@@ -153,7 +153,13 @@
     $updatedBy = $fields[0]['updatedBy'];
     $gmailLabelRemove = $fields[0]['gmailLabel'];
     $gmailLabelRemove_ar = ["$gmailLabelRemove"];
-    $gmailLabelAdd = "Label_6022158568059110610";
+    if (isset($_SESSION['endlabel'])) {
+      $gmailLabelAdd = $_SESSION['endlabel'];
+    } else if(isset($_COOKIE['endlabel'])){
+      $gmailLabelAdd = $_COOKIE['endlabel'];
+    } else {
+      $gmailLabelAdd = 'Choose \"complete\" label in settings!';
+    }
     $gmailLabelAdd_ar = ["$gmailLabelAdd"];
 
     // label lookup: https://developers.google.com/gmail/api/v1/reference/users/labels/list
@@ -166,15 +172,24 @@
     if ($update == '1') {
       $resultx = mysqli_query($dbhandle, "UPDATE maintenancedb SET maileingang = '$omaileingang', receivedmail = '$oreceivedmail', bearbeitetvon = '$obearbeitetvon', lieferant = '$olieferantid', derenCIDid = '$oderenCIDid', startDateTime = '$ostartdatetime', endDateTime = '$oenddatetime', postponed = '$opostponed', notes = '$onotes', mailSentAt = '$mailSentAt', updatedBy = '$updatedBy', done = '$odone' WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
 
+      $resultx2 = mysqli_query($dbhandle, "SELECT id FROM maintenancedb WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
+
+      if ($fetchID1 = mysqli_fetch_array($resultx2)) {
+        $oupdatedID = $fetchID1[0];
+      }
+
       if ($resultx == 'TRUE'){
           $addeditA['updated'] = 1;
+          $addeditA['updatedID'] = $oupdatedID;
       } else {
           $addeditA['updated'] = 0;
+          $addeditA['updatedID'] = '';
       }
     } else {
       $existingrmailQ =  mysqli_query($dbhandle, "SELECT receivedmail, derenCIDid FROM maintenancedb WHERE receivedmail LIKE '$oreceivedmail'") or die(mysqli_error($dbhandle));
       if (mysqli_fetch_array($existingrmailQ)) {
         $addeditA['exist'] = 1;
+        $addeditA['updatedID'] = '';
       } else {
         $lastIDQ =  mysqli_query($dbhandle, "SELECT MAX(id) FROM maintenancedb") or die(mysqli_error($dbhandle));
         $fetchID = mysqli_fetch_array($lastIDQ);
@@ -192,8 +207,10 @@
 
         if ($resultx == 'TRUE'){
             $addeditA['added'] = 1;
+            $addeditA['updatedID'] = $lastID;
         } else {
             $addeditA['added'] = 0;
+            $addeditA['updatedID'] = '';
         }
 
       }
@@ -204,18 +221,22 @@
     $selectedUser = $_GET['userMails'];
     $selectedUserOutput = array();
 
-    $sUserQ = mysqli_query($dbhandle, "SELECT id, serviceuser FROM persistence WHERE id LIKE 0") or die(mysqli_error($dbhandle));
+    if ($selectedUser != '') {
+      $sUserQ = mysqli_query($dbhandle, "SELECT id, serviceuser FROM persistence WHERE id LIKE 0") or die(mysqli_error($dbhandle));
 
-    if ($fetchUQ = mysqli_fetch_array($sUserQ)) {
-      $existingSelectedUser = $fetchUQ[1];
-      if ($existingSelectedUser == $selectedUser) {
-        $selectedUserOutput['same'] = 1;
+      if ($fetchUQ = mysqli_fetch_array($sUserQ)) {
+        $existingSelectedUser = $fetchUQ[1];
+        if ($existingSelectedUser == $selectedUser) {
+          $selectedUserOutput['same'] = 1;
+        } else {
+          $sUserU = mysqli_query($dbhandle, "UPDATE persistence set serviceuser = '$selectedUser' where id like 0") or die(mysqli_error($dbhandle));
+          $selectedUserOutput['updated'] = 1;
+        }
       } else {
-        $sUserU = mysqli_query($dbhandle, "UPDATE persistence set serviceuser = '$selectedUser' where id like 0") or die(mysqli_error($dbhandle));
-        $selectedUserOutput['updated'] = 1;
+        $kundenIQ = mysqli_query($dbhandle, "INSERT INTO persistence (serviceuser) VALUES ('$selectedUser')") or die(mysqli_error($dbhandle));
       }
     } else {
-      $kundenIQ = mysqli_query($dbhandle, "INSERT INTO persistence (serviceuser) VALUES ('$selectedUser')") or die(mysqli_error($dbhandle));
+      $selectedUserOutput['empty'] = 1;
     }
 
     echo json_encode($selectedUserOutput);

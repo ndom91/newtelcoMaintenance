@@ -10,7 +10,10 @@ if(isset($_POST['label']) || isset($_SESSION['label'])) {
   }
   setcookie("label", $labelID2, strtotime( '+30 days' ));
 }
-
+if(isset($_POST['label_name'])) {
+  $labelID5 = $_POST['label_name'];
+  setcookie("label_name", $labelID5, strtotime( '+30 days' ));
+}
 if(isset($_POST['endlabel'])) {
   $labelID3 = $_POST['endlabel'];
   $_SESSION['endlabel'] = $labelID3;
@@ -137,35 +140,41 @@ if(isset($_POST['endlabel'])) {
                             <i class="material-icons">mail</i>
                           </button>
                           <div class="mdl-tooltip mdl-tooltip--left" for="showdialog2">
-                          Select your Maintenance Label
+                          Select your Incoming Label
                           </div>
                         </div>
                       </div>
                       <div class="settingWrapper">
                         <div class="mdl-cell mdl-cell--10-col mdl-cell--3-col-phone" style="line-height: 60px;">
-                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which label should <b>completed maintenances be moved to</b>?</font>
+                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which label should <b>completed maintenances</b> be moved to?</font>
                         </div>
                         <div class="mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
                           <button id="showdialog22" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectLabelSettings" style="margin-right:5px">
                             <i class="material-icons">mail</i>
                           </button>
                           <div class="mdl-tooltip mdl-tooltip--left" for="showdialog22">
-                          Select your Maintenance Label
+                          Select your Completed Label
                           </div>
                         </div>
                       </div>
                       <div class="settingWrapper">
                         <div class="mdl-cell mdl-cell--7-col mdl-cell--3-col-phone" style="margin-top:4%">
-                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which user should the incoming mail be based on?</font>
-                          <br>
-                          <font class="mdl-dialog__subtitle" style="font-size:10px;">This will determine much backend functionality like available labels, etc.</font>
+                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which account should the incoming mail be <b>based</b> on?</font>
                         </div>
-                        <div class="mdl-cell mdl-cell--5-col mdl-cell--1-col-phone" style="margin-top:2%">
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                              <input class="mdl-textfield__input userEmail" type="text" placeholder="@newtelco.de" id="userEmail">
-                              <label class="mdl-textfield__label" for="userEmail">Email Address</label>
-                            </div>
+                        <div class="mdl-cell mdl-cell--4-col mdl-cell--1-col-phone" style="margin-top:2%">
+                          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input userEmail" type="text" placeholder="@newtelco.de" id="userEmail">
+                            <label class="mdl-textfield__label" for="userEmail">Email Address</label>
                           </div>
+                        </div>
+                        <div class="mdl-cell mdl-cell--1-col mdl-cell--1-col-phone" style="margin-top:5%">
+                          <span id="emailUserHelp" class="mdi mdi-24px mdi-help-circle mdi-dark mdi-inactive"></span>
+                          <div class="mdl-tooltip mdl-tooltip--left" for="emailUserHelp">
+                            This is valid for ALL users.<br><br>
+                            This will determine much backend functionality like available labels, etc. So please do not change this back and forth.<br><br>
+                            Once one user is set, the mail IDs will be based on their account and will not be available if switched to another account.</font>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -193,6 +202,12 @@ if(isset($_POST['endlabel'])) {
               <div class="mdl-cell mdl-cell--10-col mdl-cell--0-col-phone">
                 <div class="settingsFirmenHeader">
                   <h4 class="selectGoogleLabel">Firmen Details</h4>
+                  <button id="btnUpdate" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important; float:right;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+                    <i class="material-icons">save</i>
+                  </button>
+                  <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnUpdate">
+                    Save Changes
+                  </div>
                 </div>
                 <div class="tableWrapper1">
                   <div class="searchWrapper">
@@ -250,7 +265,10 @@ if(isset($_POST['endlabel'])) {
         <div class="mdl-snackbar__text" style="text-align:center;width:100%"></div>
         <button type="button" style="display:none" class="mdl-snackbar__action"></button>
       </div>
-
+      <div id="firmenUpdated" class="mdl-js-snackbar mdl-snackbar">
+        <div class="mdl-snackbar__text"></div>
+        <button class="mdl-snackbar__action" type="button"></button>
+      </div>
       <dialog style="width: 900px;" id="dialog3" class="mdl-dialog">
         <div class="labelSelectHeader">
           <h6 class="mdl-dialog__title labelSelectLabel">Which label are your maintenance emails in?</h6>
@@ -269,19 +287,19 @@ if(isset($_POST['endlabel'])) {
               if (count($results->getLabels()) == 0) {
                print "No labels found.\n";
               } else {
-
                 echo '<form action="settings" method="post">';
                 echo '<div class="mdl-grid">';
                 foreach ($results->getLabels() as $label) {
                   $labelColor = $label->getColor();
                   if ($labelColor['backgroundColor'] != '') {
-                    echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="">' . $label->getName() . '</div>';
+                    echo '<div class="mdl-cell mdl-cell--3-col labelColors">' . $label->getName() . '</div>';
                   } else {
-                  echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="color: ' . $labelColor['textColor'] . ';">' . $label->getName() . '</div>';
+                    echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="color: ' . $labelColor['textColor'] . ';">' . $label->getName() . '</div>';
                   }
-                  echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" style="background-color: ' . $labelColor['backgroundColor'] . '" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" data-value="' . $label->getId() . '" value="' . $label->getId() . '"><i class="material-icons">check</i></button></div>';
+                  echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" style="background-color: ' . $labelColor['backgroundColor'] . '" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getId() . '"><i class="material-icons">check</i></button></div>
+                  <input type="hidden" value="' . $label->getName() . '" name="label_name">';
                 }
-                echo '</form></div>';
+                echo '</div></form>';
               }
 
               ?>
@@ -400,10 +418,11 @@ if(isset($_POST['endlabel'])) {
              rowHeaders: true,
              colHeaders: true,
              contextMenu: true,
-             colWidths: [100, 100, 320],
+             colWidths: [25, 100, 100, 320],
              columnSorting: true,
-             colHeaders: ['Name', 'Mail Domain', 'Maintenance Recipient'],
+             colHeaders: ['ID', 'Name', 'Mail Domain', 'Maintenance Recipient'],
              columns: [
+              {data: 'id', editor:false},
               {data: 'name'},
               {data: 'mailDomain'},
               {data: 'maintenanceRecipient'}
@@ -425,22 +444,55 @@ if(isset($_POST['endlabel'])) {
 
           hot.addHook('afterChange', function(change,source) {
           const commentsPlugin = hot.getPlugin('comments');
-            commentsPlugin.setRange({from: {row: 0, col: 1}});
+            commentsPlugin.setRange({from: {row: 0, col: 3}});
             commentsPlugin.setComment('Multiple recipients should be separated by semicolon (";")');
             commentsPlugin.show();
-                $.ajax('save?firmen=1', 'GET', JSON.stringify({changes: change}), function (res) {
-                  var response = JSON.parse(res.response);
-                  if (response.result === 'ok') {
-                     console.log("Data saved");
-                  }
-                  else {
-                     console.log("Saving error");
-                  }
-             });
+             //    $.ajax('save?firmen=1', 'GET', JSON.stringify({changes: change}), function (res) {
+             //      var response = JSON.parse(res.response);
+             //      if (response.result === 'ok') {
+             //         console.log("Data saved");
+             //      }
+             //      else {
+             //         console.log("Saving error");
+             //      }
+             // });
           });
 
-          searchField = document.getElementById('firmenSearch');
+          // Save
+          $("#btnUpdate").click(function () {
+            var tableData = JSON.stringify(hot.getData());
+            $.ajax({
+              type: 'POST',
+              url: "api?sfirmen=1",
+              data: tableData,
+              contentType: "application/json; charset=utf-8",
+              dataType: 'json',
+              success: function (res1) {
+                if (res1.updated < 0) {
+                  var snackbarContainer3 = document.querySelector('#firmenUpdated');
+                  var dataFirmenUpdated2 = {
+                    message: 'No Changes Made',
+                    timeout: 2000
+                  };
+                  snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
+                } else if (res1.updated > 0) {
+                    var snackbarContainer2 = document.querySelector('#firmenUpdated');
+                    var dataFirmenUpdated = {
+                      message: 'Successfully Updated ' + res1.updated + ' entries',
+                      timeout: 2000
+                    };
+                    snackbarContainer2.MaterialSnackbar.showSnackbar(dataFirmenUpdated);
+                }
+              },
+              error: function (xhr) {
+                  alert(xhr.responseText);
+              }
+            });
+            $("#btnUpdate").blur();
+          });
 
+          // Search
+          searchField = document.getElementById('firmenSearch');
           Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
             var search = hot.getPlugin('search');
             var queryResult = search.query(this.value);
@@ -449,7 +501,7 @@ if(isset($_POST['endlabel'])) {
             hot.render();
           });
 
-          // For Loading
+          // Load
           $.ajax({
             type: "GET",
             headers: {
@@ -473,7 +525,7 @@ if(isset($_POST['endlabel'])) {
             'error': function () {
               console.log("Loading error");
             }
-          })
+          });
         });
 
         $('#kundenTab').click(function(){

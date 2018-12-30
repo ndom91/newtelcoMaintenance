@@ -88,6 +88,7 @@ global $dbhandle;
             $oenddatetime = '';
             $opostponed = '';
             $onotes = '';
+            $omailSentAt = '';
             $ocal = '';
             $odone = '';
             $update = '0';
@@ -117,6 +118,7 @@ global $dbhandle;
               $oenddatetime = $mIDresult['endDateTime'];
               $opostponed = $mIDresult['postponed'];
               $onotes = $mIDresult['notes'];
+              $omailSentAt = $mIDresult['mailSentAt'];
               $oupdatedBy = $mIDresult['updatedBy'];
               $oupdatedAt = $mIDresult['updatedAt'];
               //$ocal = $mIDresult['cal'];
@@ -476,8 +478,8 @@ global $dbhandle;
               </script>
               <br>
 
-              <input type="hidden" value=" <?php echo $update ?>" id="update">
-              <input type="hidden" value="" id="mailSentAt">
+              <input type="hidden" value="<?php echo $update ?>" id="update">
+              <input type="hidden" value="<?php echo $omailSentAt ?>" id="mailSentAt">
               <input type="hidden" value="<?php echo $_COOKIE['label'] ?>" id="gmailLabel">
               <input type="hidden" value="<?php echo $msgInfo[1] ?>" id="mailDomain">
               <input type="hidden" value="<?php echo $activeID ?>" id="activeMID">
@@ -540,8 +542,19 @@ global $dbhandle;
           </div>
           <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
             <div id="kundenCard" class="demo-card-wide mdl-card mdl-shadow--2dp hidden">
-              <div class="mdl-card__title">
+              <div id="addEditKundenTitle" class="mdl-card__title">
                 <h2 class="mdl-card__title-text">Kunden Circuits</h2>
+                <div class="mdl-layout-spacer"></div>
+                <?php
+                  if ($omailSentAt != '') {
+                    echo '<button id="btnShowSent" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+                      <i class="material-icons">search</i>
+                    </button>
+                    <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnShowSent">
+                      Show Sent Mails
+                    </div>';
+                  }
+                ?>
               </div>
               <div class="mdl-card__supporting-text">
               <table id="dataTable4" class="mdl-data-table striped" style="width: 100%">
@@ -562,6 +575,22 @@ global $dbhandle;
 
       <script>
 
+$('#btnShowSent').click(function(){
+
+  var jMailSentAt = $("#mailSentAt").val();
+  var DateTime = luxon.DateTime;
+  var jMailSentAtDate = DateTime.fromSQL(jMailSentAt).toFormat("y-MM-d");
+  // var jMailSentAtDate2 = jMailSentAtDate.local();
+  var jMailSentAtDate3 = DateTime.fromISO(jMailSentAtDate).plus({ days: 1 }).toISODate();
+      // .add(1, 'days');
+      // .plus({ days: 1 });
+  console.log(jMailSentAtDate3);
+
+  // before:${jMailSentAtDate3}
+  var activeUser = $(".menumail").html();
+  openInNewTab(`https://mail.google.com/mail/ca/u/0/#search/in:sent+after:${jMailSentAtDate}+before:${jMailSentAtDate3}+from:${activeUser.trim()}+Planned+Work+Notification`);
+});
+
 $('#addCalbtn').click(function(){
 
   var calSDT = $('#sdt').val();
@@ -577,7 +606,11 @@ $('#addCalbtn').click(function(){
 
   var activeID = $('#activeMID').val();
 
-  openInNewTab(`http://www.google.com/calendar/event?action=TEMPLATE&dates=${calSDTISO2}%2F${calEDTISO2}&src=newtelco.de_hkp98ambbvctcn966gjj3c7dlo@group.calendar.google.com&text=Maintenance%20on%20 ${selectedCompany}%20on%20${selectedDCID}&add=service@newtelco.de&details=Maintenance%20for%20<b>${selectedCompany}</b>%20on%20deren%20CID:%20"<b>${selectedDCID}</b>".<br><br>Affected%20Newtelco%20CIDs:<br>[INSERT%20NT%20CIDs]<br><br>Source%20-%20<a href="https://maintenance.newtelco.de/addedit?mid=${activeID}">M${activeID}</a>&trp=false`);
+  table4 = $('#dataTable4').DataTable();
+  var data = table4.row( $('tr') ).data();
+  // console.log('data: ' + data['kundenCID']);
+
+  openInNewTab(`http://www.google.com/calendar/event?action=TEMPLATE&dates=${calSDTISO2}%2F${calEDTISO2}&src=newtelco.de_hkp98ambbvctcn966gjj3c7dlo@group.calendar.google.com&text=Maintenance%20on%20 ${selectedCompany}%20on%20${selectedDCID}&add=service@newtelco.de&details=Maintenance%20for%20<b>${selectedCompany}</b>%20on%20deren%20CID:%20"<b>${selectedDCID}</b>".<br><br>Affected%20Newtelco%20CIDs:<br>${data['kundenCID']}<br><br>Source%20-%20<a href="https://maintenance.newtelco.de/addedit?mid=${activeID}">M${activeID}</a>&trp=false`);
 });
 
 const _t = (s) => {
@@ -859,8 +892,8 @@ $(document).ready(function() {
     openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head><style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:151}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624}</style></head><body style="{padding:0;margin:0;}"><div><p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + startLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + endLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">Planned maintenance on the network infrastructure to avoid unplanned outage in near future</span></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">' + impactTime + ' minutes during the maintenance window</span></span></p></td></tr></table><p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us.</span></p></body>');
 
     var DateTime = luxon.DateTime;
-    var now = DateTime.local();
-    $("#mailSentAt").val(moment.utc().toISOString());
+    var now = DateTime.local().toFormat("y-MM-dd HH:mm");
+    $("#mailSentAt").val(now);
   } );
 
   /*************************************************************************************************

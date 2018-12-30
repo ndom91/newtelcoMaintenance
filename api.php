@@ -6,13 +6,13 @@
 
   header('Content-Type: application/json');
 
-  function modifyMessage($service, $userId, $messageId, $labelsToAdd, $labelsToRemove) {
+  function modifyMessage($clientService, $userId, $messageId, $labelsToAdd, $labelsToRemove) {
     $mods = new Google_Service_Gmail_ModifyMessageRequest();
     //$mods = new Google_Service_Gmail_ModifyThreadRequest();
     $mods->setAddLabelIds($labelsToAdd);
     $mods->setRemoveLabelIds($labelsToRemove);
     try {
-      $message = $service->users_messages->modify($userId, $messageId, $mods);
+      $message = $clientService->users_messages->modify($userId, $messageId, $mods);
     } catch (Exception $e) {
       print 'An error occurred: ' . $e->getMessage();
     }
@@ -21,7 +21,7 @@
   if (isset($_GET['kunden'])) {
 
     /**********************
-     *  SETTINGS - KUNDEN
+     * SETTINGS - KUNDEN
      *********************/
 
      //var_dump($dbhandle);
@@ -43,7 +43,7 @@
   } elseif (isset($_GET['lieferanten'])) {
 
     /***************************
-     *  SETTINGS - LIEFERANTEN
+     * SETTINGS - LIEFERANTEN
      **************************/
 
     $lieferantenQ = mysqli_query($dbhandle, "SELECT companies.name, lieferantCID.derenCID  FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id") or die(mysqli_error($dbhandle));
@@ -62,11 +62,11 @@
 
   } elseif (isset($_GET['firmen'])) {
 
-    /**********************
-     *  SETTINGS - FIRMEN
-     *********************/
+    /**************************
+     * LOAD SETTINGS - FIRMEN
+     *************************/
 
-    $firmenQ = mysqli_query($dbhandle, "SELECT * FROM companies;") or die(mysqli_error($dbhandle));          //query
+    $firmenQ = mysqli_query($dbhandle, "SELECT * FROM companies;") or die(mysqli_error($dbhandle));
 
     $firmenArray = array();
 
@@ -75,6 +75,60 @@
     }
 
     echo json_encode($firmenArray);
+
+  } elseif (isset($_GET['sfirmen'])) {
+
+    /**************************
+     * SAVE SETTINGS - FIRMEN
+     *************************/
+
+    // get existing state from DB
+    $firmenQ1 = mysqli_query($dbhandle, "SELECT * FROM companies;") or die(mysqli_error($dbhandle));
+    $firmenArray2 = array();
+    while($firmenResults = mysqli_fetch_array($firmenQ1)) {
+      $firmenArray2[] = $firmenResults;
+    }
+
+    // get new state from xhr request
+    $request_body = file_get_contents('php://input');
+    $data = array();
+    $data = json_decode($request_body, true);
+    $arraySize = sizeof($data);
+
+    $updateArray = array();
+
+    // loop through all rows (based on xhr row size) to compare db state to xhr data
+    for ($row = 0; $row < $arraySize; $row++) {
+      $idToSearch = $firmenArray2[$row][0];
+      $keys = array_search($idToSearch, array_column($data, '0'));
+
+      // check each row for changes, mark rows that have changes in $updateArray
+      for ($col = 0; $col < 4; $col++) {
+        $needsUpdate = 0;
+        if ($firmenArray2[$row][$col] != $data[$keys][$col]) {
+          array_push($updateArray,$data[$keys][0]);
+        }
+      }
+    }
+
+    // check if $updateArray has any queued changes, if so - commit them
+    $arraySize2 = sizeof($updateArray);
+    $updateFirmen = array();
+    if ($arraySize2 > 0) {
+      for ($i = 0; $i < $arraySize2; $i++) {
+        $row = $updateArray[$i];
+        $row2 = array_search($row, array_column($data, '0'));
+        $updateQ = 'UPDATE companies SET name = "' . $data[$row2][1] . '",  mailDomain = "' . $data[$row2][2] . '", maintenanceRecipient = "' . $data[$row2][3] . '" WHERE id LIKE "' . $data[$row2][0] . '"';
+        $firmenQ2 = mysqli_query($dbhandle, $updateQ) or die(mysqli_error($dbhandle));
+        if ($firmenQ2 == 'TRUE'){
+          $updateFirmen['updated'] = $updateFirmen['updated'] + 1;
+        }
+      }
+      echo json_encode($updateFirmen);
+    } else {
+      $updateFirmen['updated'] = -1;
+      echo json_encode($updateFirmen);
+    }
 
   } elseif (isset($_GET['dCID'])) {
 
@@ -85,6 +139,22 @@
     $dCID = $_GET['dCID'];
 
     $result = mysqli_query($dbhandle, "SELECT kundenCID.kundenCID, companies.name, kundenCID.kunde, companies.maintenanceRecipient FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id LEFT JOIN lieferantCID ON lieferantCID.id = kundenCID.lieferantCID WHERE lieferantCID.derenCID LIKE '$dCID'") or die(mysqli_error($dbhandle));
+
+    $array2 = array();
+
+    while($resultsrows = mysqli_fetch_assoc($result)) {
+      $array2[] = $resultsrows;
+    }
+
+    echo json_encode($array2);
+
+  } elseif (isset($_GET['timeline'])) {
+
+    /*****************************************
+     * OVERVIEW - get timeline data
+     *****************************************/
+
+    $result = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.startDateTime as 'start', maintenancedb.endDateTime as 'end', companies.name as 'content', maintenancedb.notes as 'title' FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.done = '1'") or die(mysqli_error($dbhandle));
 
     $array2 = array();
 
@@ -165,8 +235,12 @@
     // label lookup: https://developers.google.com/gmail/api/v1/reference/users/labels/list
 
     if ($odone == '1') {
-      $service3 = new Google_Service_Gmail($clientService);
-      modifyMessage($service3, 'ndomino@newtelco.de', $oreceivedmail, [$gmailLabelAdd], [$gmailLabelRemove]);
+      $sUserQ2 = mysqli_query($dbhandle, "SELECT id, serviceuser FROM persistence WHERE id LIKE 0") or die(mysqli_error($dbhandle));
+      if ($fetchUQ = mysqli_fetch_array($sUserQ2)) {
+        $existingSelectedUser = $fetchUQ[1];
+        $service3 = new Google_Service_Gmail($clientService);
+        modifyMessage($service3, $existingSelectedUser, $oreceivedmail, [$gmailLabelAdd], [$gmailLabelRemove]);
+      }
     }
 
     if ($update == '1') {
@@ -218,6 +292,11 @@
     echo json_encode($addeditA);
 
   } elseif (isset($_GET['userMails'])){
+
+    /***************************
+     * SETTINGS - SERVICE USER
+     **************************/
+
     $selectedUser = $_GET['userMails'];
     $selectedUserOutput = array();
 

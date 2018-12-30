@@ -32,6 +32,9 @@ global $dbhandle;
   <!-- pace -->
   <script rel="preload" as="script" type="text/javascript" src="assets/js/pace.js"></script>
 
+  <!-- vis.js -->
+  <script rel="preload" as="script" type="text/javascript" src="assets/js/vis.js"></script>
+
   <!-- OverlayScrollbars -->
   <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
   <link type="text/css" href="assets/css/os-theme-minimal-dark.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
@@ -68,48 +71,6 @@ global $dbhandle;
                     <h4 class="selectGoogleLabel">Maintenance History</h4>
                   </div>
                 </div>
-                <!--
-                <div class="mdl-grid tableSearchGrid">
-                  <!-- <div class="mdl-cell mdl-cell--1-col">
-                    <div class="searchHeaderLabel">
-                      Search
-                    </div>
-                  </div>
-                  <div class="mdl-cell mdl-cell--2-col">
-                    <form action="overview" method="post">
-                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" name="tLieferant" id="tLieferant">
-                        <label class="mdl-textfield__label" for="tLieferant">Lieferant</label>
-                      </div>
-                  </div>
-                  <div class="mdl-cell mdl-cell--2-col">
-                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" name="tdCID" id="tdCID">
-                        <label class="mdl-textfield__label" for="tdCID">deren CID</label>
-                      </div>
-                  </div>
-                  <div class="mdl-cell mdl-cell--4-col"></div>
-                  <!--
-                  <div class="mdl-cell mdl-cell--2-col">
-                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" name="tKunde" id="tKunde">
-                        <label class="mdl-textfield__label" for="tKunde">Kunde</label>
-                      </div>
-                  </div>
-                  <div class="mdl-cell mdl-cell--2-col">
-                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" name="tuCID" id="tuCID">
-                        <label class="mdl-textfield__label" for="tuCID">unsere CID</label>
-                      </div>
-                  </div>
-                  <div class="mdl-cell mdl-cell--2-col"></div>
-                  <div class="mdl-cell mdl-cell--2-col mdl-typography--text-right">
-                    <button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--light-green-nt ">
-                      <i class="material-icons">search</i>
-                    </button>
-                    </form>
-                  </div>
-                </div>-->
                 <?php
                 $lieferant = '';
                 $tdCID = '';
@@ -122,18 +83,13 @@ global $dbhandle;
                   $lieferant = $_POST['tLieferant'];
                   $query = $lieferant;
 
-                  // DEBUG
-                  //echo '<b>Debug:</b><br>';
-                  //echo '<pre>';
-                  // END DEBUG
-
                   $lieferant_escape = mysqli_real_escape_string($dbhandle, $query);
                   $lieferant_escape = '%' . $lieferant_escape . '%';
                   // search first for existance of company
                   $lieferant_query = mysqli_query($dbhandle, "SELECT `id`,`name` FROM `companies` WHERE `name` LIKE '$lieferant_escape'");
 
                   if ($fetch = mysqli_fetch_array($lieferant_query)) {
-                      //Found a companyn - now show all maintenances for company
+                    //Found a company - now show all maintenances for company
                     $lieferant_id = $fetch[0];
                     $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
                   }
@@ -146,16 +102,6 @@ global $dbhandle;
 
                   $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM lieferantCID WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
                 }
-
-                // DEBUG
-                //echo("Error description: " . mysqli_error($dbhandle));
-                //echo '</pre>';
-                // END DEBUG
-
-                // class - mdl-data-table--selectable for select buttons on rows
-
-                // mdl table class - class="mdl-data-table mdl-js-data-table  mdl-shadow--4dp" style="width: 100%"
-                // non-numeric columns: class="mdl-data-table__cell--non-numeric"
 
                 echo '<div class="dataTables_wrapper">
                 <table id="dataTable1" class="mdl-data-table striped" style="width: 100%">
@@ -181,12 +127,8 @@ global $dbhandle;
 
                   while ($rowx = mysqli_fetch_assoc($resultx)) {
                     echo '<tr>';
-                    // button - class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab"
-                        echo '<td><a class="editLink" href="addedit.php?update=1&mid=' . $rowx['id'] . '&gmid=' . $rowx['receivedmail'] . '"><button class="mdl-color-text--primary-contrast mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored button40" style="margin-left:3px">
-
-                                  <span style="color:#fff !important; line-height: 41px !important;" class="mdi mdi-24px mdi-circle-edit-outline mdi-light">
-
-                              </button></a></td>';
+                    echo '<td><a class="editLink" href="addedit.php?update=1&mid=' . $rowx['id'] . '&gmid=' . $rowx['receivedmail'] . '"><button class="mdl-color-text--primary-contrast mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored button40" style="margin-left:3px">
+                    <span style="color:#fff !important; line-height: 41px !important;" class="mdi mdi-24px mdi-circle-edit-outline mdi-light"></button></a></td>';
 
                     while (list($key, $value) = each($rowx)) {
 
@@ -242,6 +184,9 @@ global $dbhandle;
                   </div>';
 
                 ?>
+                <div class="timelinewrapper">
+                  <div id="timelinevis"></div>
+                </div>
               </div>
             </div>
         </main>
@@ -301,6 +246,58 @@ global $dbhandle;
             	}
              });
           });
+
+
+          $( document ).ready(function() {
+            // load data via an ajax request. When the data is in, load the timeline
+            $.ajax({
+              url: 'api?timeline=1',
+              success: function (data) {
+
+                // DOM element where the Timeline will be attached
+                var container = document.getElementById('timelinevis');
+
+                // DEBUG
+                str2 = JSON.stringify(data, null, 4);
+                console.log(str2);
+
+                // Create a DataSet (allows two way data-binding)
+                var items = new vis.DataSet(data);
+
+                // Create a DataSet (allows two way data-binding)
+                // var items = new vis.DataSet([
+                //   {id: 1, content: 'item 1', start: '2018-12-20'},
+                //   {id: 2, content: 'item 2', start: '2018-12-14'},
+                //   {id: 3, content: 'item 3', start: '2018-12-18'},
+                //   {id: 4, content: 'item 4', start: '2018-12-16', end: '2018-12-19'},
+                //   {id: 5, content: 'item 5', start: '2018-12-25'},
+                //   {id: 6, content: 'item 6', start: '2018-12-27'}
+                // ]);
+
+                // Configuration for the Timeline
+                var options = {
+                  tooltip: {
+                    followMouse: true,
+                    overflowMethod: 'cap'
+                  }
+                };
+
+                // Create a Timeline
+                var timeline = new vis.Timeline(container, items, options);
+              },
+              error: function (err) {
+                console.log('Error', err);
+                if (err.status === 0) {
+                  alert('Failed to load data.\nPlease run this example on a server.');
+                }
+                else {
+                  alert('Failed to load data.');
+                }
+              }
+            });
+          });
+
+
         </script>
         <?php echo file_get_contents("views/footer.html"); ?>
       </div>
@@ -317,7 +314,10 @@ global $dbhandle;
       <link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css" onload="this.rel='stylesheet'">
       <link rel="preload stylesheet" as="style" href="assets/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
 
-      <!-- Google font-->
+      <!-- vis.js -->
+      <link prefetch rel="preload stylesheet" as="style" href="assets/css/vis-timeline.min.css" type="text/css" onload="this.rel='stylesheet'">
+
+      <!-- Google font -->
       <link prefetch rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
 
 </body>

@@ -297,11 +297,13 @@ global $dbhandle;
 
             $CET = new DateTimeZone('Europe/Berlin');
             //$date = 'Wed, 5 Dec 2018 11:51:41 +0000';
-            if ($domain == 'equinix.com') {
-              $date2 = DateTime::createFromFormat("D, d M Y H:i:s O P", $date);
-            } else {
-              $date2 = DateTime::createFromFormat("D, d M Y H:i:s O", $date);
-            }
+
+            // if ($domain == 'equinix.com') {
+            //   $date2 = DateTime::createFromFormat("D, d M Y H:i:s O P", $date);
+            // } else {
+            //   $date2 = DateTime::createFromFormat("D, d M Y H:i:s O", $date);
+            // }
+            $date2 = new DateTime($date);
             //var_dump('date2: ' + $date2);
             //var_dump('date: ' + $date);
             //$tz = $date2->format('P');

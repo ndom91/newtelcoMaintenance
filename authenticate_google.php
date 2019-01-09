@@ -173,6 +173,10 @@ if ($_SESSION['access_token']['id_token'] === NULL):
 
 <!DOCTYPE html>
 <html lang="en">
+<style>
+<?php echo file_get_contents("assets/css/style.031218.min.css"); ?>
+<?php echo file_get_contents("assets/css/material.031218.min.css"); ?>
+</style>
 <div class="loginBG">
 <head>
     <title>Newtelco Maintenance | Login</title>
@@ -185,10 +189,6 @@ if ($_SESSION['access_token']['id_token'] === NULL):
     <!-- material design -->
     <script rel="preload" as="script" src="assets/js/material.min.js"></script>
 
-    <style>
-    <?php echo file_get_contents("assets/css/style.031218.min.css"); ?>
-    <?php echo file_get_contents("assets/css/material.031218.min.css"); ?>
-    </style>
   </head>
 
   <body>
@@ -232,11 +232,11 @@ border="0" alt=""/></a>
 </body>
 </div>
 
-    <!-- Google font-->
-    <link prefetch rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+<!-- Google font-->
+<link prefetch rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
 
-    <!-- material design -->
-    <link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css">
+<!-- material design -->
+<link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css">
 
 </html>
 

@@ -24,8 +24,8 @@ require('authenticate_google.php');
   <script rel="preload" as="script" type="text/javascript" src="assets/js/OverlayScrollbars.min.js"></script>
 
   <style>
-    <?php echo file_get_contents("assets/css/style-ndo.min.css"); ?>
-    <?php echo file_get_contents("assets/css/material-ndo.min.css"); ?>
+    <?php echo file_get_contents("assets/css/style.min.css"); ?>
+    <?php echo file_get_contents("assets/css/material.min.css"); ?>
   </style>
 </head>
 <body>

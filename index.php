@@ -51,25 +51,16 @@ require('authenticate_google.php');
   <script rel="preload" as="script" src="assets/js/jquery-3.3.1.min.js"></script>
 
   <script>
-  // Check that service workers are registered
-  // if ('serviceWorker' in navigator) {
-  //   // Use the window load event to keep the page load performant
-  //   window.addEventListener('load', () => {
-  //     navigator.serviceWorker.register('/sw.js');
-  //   });
-  // }
-
-  </script>
-  <style>
-  <?php echo file_get_contents("assets/css/style-ndo.min.css"); ?>
-  <?php echo file_get_contents("assets/css/material-ndo.min.css"); ?>
-  </style>
-  <script>
     var RELOAD_EVERY = 10;
     setTimeout(function(){
         location.reload();
     }, RELOAD_EVERY * 60 * 1000);
   </script>
+
+  <style>
+    <?php echo file_get_contents("assets/css/style.min.css"); ?>
+    <?php echo file_get_contents("assets/css/material.min.css"); ?>
+  </style>
 </head>
 <body>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header ">

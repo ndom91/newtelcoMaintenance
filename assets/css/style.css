@@ -851,7 +851,47 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
   display: flex;
   align-items: stretch;
 }
+.innerHide {
+  height: 70px;
+  position: relative;
+}
+.innerHide1 {
+  background: rgba(87, 87, 87, 0.72);
+  opacity: 0.9;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: absolute;
+}
+.innerHide2 {
+  position: absolute;
+  height: 70px;
+  width: 100%;
+}
+.warningWrapper {
+  z-index: 998;
+  width: 100%;
+}
+#hideWarningIcon {
+  margin: 0 auto;
+}
+#hideBasedOnWarning {
+  margin: 0 auto;
+  width: 50px;
+  left: 45%;
+  top: 20%;
+  width: 100px;
+}
+#emailUserHelp {
+  margin-left: 23%;
+  margin-top: 27px;
+}
 
+#emailUserHelp2 {
+  margin-left: 23%;
+  margin-top: 27px;
+}
 .userEmail::placeholder {
   color: rgba(0,0,0,0.3);
   font-size: 12px;

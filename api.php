@@ -40,6 +40,26 @@
 
     echo json_encode($kundenArray);
 
+  } elseif (isset($_GET['mRead'])) {
+
+    /***************************
+     * INCOMING - MARK AS READ
+     **************************/
+
+    $mID_read = $_GET['mRead'];
+
+    $gmailLabelRemove1 = 'UNREAD';
+
+    $service4 = new Google_Service_Gmail($clientService);
+
+    $sUserQ3 = mysqli_query($dbhandle, "SELECT id, serviceuser FROM persistence WHERE id LIKE 0") or die(mysqli_error($dbhandle));
+    if ($fetchUQ1 = mysqli_fetch_array($sUserQ3)) {
+      $existingSelectedUser1 = $fetchUQ1[1];
+      modifyMessage($service4, $existingSelectedUser1, $mID_read, [], [$gmailLabelRemove1]);
+    } 
+
+    echo json_encode('Done?');
+
   } elseif (isset($_GET['lieferanten'])) {
 
     /***************************
@@ -137,8 +157,11 @@
      *****************************************/
 
     $dCID = $_GET['dCID'];
+    //var_dump($dCID);
+    //$dCID = preg_replace("/#.*?\n/", "\n", $dCID);
+    $dCID = str_replace(",","','",$dCID);
 
-    $result = mysqli_query($dbhandle, "SELECT kundenCID.kundenCID, companies.name, kundenCID.kunde, companies.maintenanceRecipient FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id LEFT JOIN lieferantCID ON lieferantCID.id = kundenCID.lieferantCID WHERE lieferantCID.derenCID LIKE '$dCID'") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT kundenCID.kundenCID, companies.name, kundenCID.kunde, companies.maintenanceRecipient FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id LEFT JOIN lieferantCID ON lieferantCID.id = kundenCID.lieferantCID WHERE lieferantCID.id IN ('$dCID')") or die(mysqli_error($dbhandle));
 
     $array2 = array();
 
@@ -154,7 +177,7 @@
      * OVERVIEW - get timeline data
      *****************************************/
 
-    $result = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.startDateTime as 'start', maintenancedb.endDateTime as 'end', companies.name as 'content', maintenancedb.notes as 'title' FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.done = '1'") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.startDateTime as 'start', maintenancedb.endDateTime as 'end', companies.name as 'content', maintenancedb.notes as 'title' FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.done = '1' AND maintenancedb.active = '1';") or die(mysqli_error($dbhandle));
 
     $array2 = array();
 
@@ -177,7 +200,7 @@
     if ($fetch = mysqli_fetch_array($result0)) {
       //Found a company - now show all maintenances for company
       $company_id = $fetch[0];
-      $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.startDateTime, maintenancedb.done, maintenancedb.id, maintenancedb.receivedmail FROM maintenancedb WHERE maintenancedb.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
+      $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.startDateTime, maintenancedb.done, maintenancedb.id, maintenancedb.receivedmail, companies.name FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
 
         $array2 = array();
 
@@ -187,7 +210,7 @@
         echo json_encode($array2);
 
     } else {
-      $jsonArrayObject = array(array('maileingang' => 'no such company in DB yet', 'startDateTime' => '', 'done' => '', 'id' => '', 'receivedmail' => ''));
+      $jsonArrayObject = array(array('maileingang' => 'no such company in DB yet', 'startDateTime' => '', 'done' => '', 'id' => '', 'receivedmail' => '', 'name' => ''));
       echo json_encode($jsonArrayObject);
       exit;
     }

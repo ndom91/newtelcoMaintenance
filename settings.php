@@ -2,22 +2,22 @@
 <?php
 require('authenticate_google.php');
 
-if(isset($_POST['label']) || isset($_SESSION['label'])) {
-  if(isset($_POST['label'])) {
+if (isset($_POST['label']) || isset($_SESSION['label'])) {
+  if (isset($_POST['label'])) {
     $labelID2 = $_POST['label'];
   } else {
     $labelID2 = $_SESSION['label'];
   }
-  setcookie("label", $labelID2, strtotime( '+30 days' ));
+  setcookie("label", $labelID2, strtotime('+30 days'));
 }
-if(isset($_POST['label_name'])) {
+if (isset($_POST['label_name'])) {
   $labelID5 = $_POST['label_name'];
-  setcookie("label_name", $labelID5, strtotime( '+30 days' ));
+  setcookie("label_name", $labelID5, strtotime('+30 days'));
 }
-if(isset($_POST['endlabel'])) {
+if (isset($_POST['endlabel'])) {
   $labelID3 = $_POST['endlabel'];
   $_SESSION['endlabel'] = $labelID3;
-  setcookie("endlabel", $labelID3, strtotime( '+30 days' ));
+  setcookie("endlabel", $labelID3, strtotime('+30 days'));
 }
 
 ?>
@@ -45,8 +45,8 @@ if(isset($_POST['endlabel'])) {
   <script rel="preload" as="script" type="text/javascript" src="assets/js/OverlayScrollbars.min.js"></script>
 
   <style>
-    <?php echo file_get_contents("assets/css/style-ndo.min.css"); ?>
-    <?php echo file_get_contents("assets/css/material-ndo.min.css"); ?>
+    <?php echo file_get_contents("assets/css/style.min.css"); ?>
+    <?php echo file_get_contents("assets/css/material.min.css"); ?>
   </style>
 </head>
 <body>
@@ -98,10 +98,10 @@ if(isset($_POST['endlabel'])) {
         </div>
       </header>
       <?php
-        ob_start();
-        include "views/menu.php";
-        $content_menu = ob_get_clean();
-        echo $content_menu;
+      ob_start();
+      include "views/menu.php";
+      $content_menu = ob_get_clean();
+      echo $content_menu;
       ?>
       <main class="mdl-layout__content">
         <section class="mdl-layout__tab-panel is-active" id="emailsTab">
@@ -158,22 +158,47 @@ if(isset($_POST['endlabel'])) {
                         </div>
                       </div>
                       <div class="settingWrapper">
-                        <div class="mdl-cell mdl-cell--7-col mdl-cell--3-col-phone" style="margin-top:4%">
-                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which account should the incoming mail be <b>based</b> on?</font>
-                        </div>
-                        <div class="mdl-cell mdl-cell--4-col mdl-cell--1-col-phone" style="margin-top:2%">
-                          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input userEmail" type="text" placeholder="@newtelco.de" id="userEmail">
-                            <label class="mdl-textfield__label" for="userEmail">Email Address</label>
+                      <div class="warningWrapper">
+                        
+
+                        <div class="hoverHide">
+                          <div class="innerHide">
+                            <div class="innerHide1">
+                              <button id="hideBasedOnWarning" type="button" style="margin:5px;" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect">
+                              <span id="hideWarningIcon" class="mdi mdi-24px mdi-eye mdi-inactive"></span>
+                              </button>
+                              <div class="mdl-tooltip mdl-tooltip--right" for="hideBasedOnWarning">
+                              Hide Warning
+                              </div>
+                              <span id="emailUserHelp2" class="mdi mdi-36px mdi-help-circle mdi-inactive"></span>
+                                <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--left" for="emailUserHelp2">
+                                  This is valid for ALL users.<br><br>
+                                  This will determine much backend functionality like available labels, etc. So please do not change this back and forth.<br><br>
+                                  Once one user is set, the mail IDs will be based on their account and will not be available if switched to another account.</font>
+                                </div>
+                            </div>
+                            <div class="innerHide2">
+                              <div class="mdl-cell mdl-cell--7-col mdl-cell--3-col-phone" style="margin-top:4%; display: inline-block">
+                                <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which account should the incoming mail be <b>based</b> on?</font>
+                              </div>
+                              <div class="mdl-cell mdl-cell--3-col mdl-cell--1-col-phone" style="margin-top:2%; display: inline-block">
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                  <input class="mdl-textfield__input userEmail" type="text" placeholder="@newtelco.de" id="userEmail">
+                                  <label class="mdl-textfield__label" for="userEmail">Email Address</label>
+                                </div>
+                              </div>
+                              <div class="mdl-cell mdl-cell--1-col mdl-cell--1-col-phone" style="margin-top:5%; display: inline-block">
+                                <span id="emailUserHelp" class="mdi mdi-24px mdi-help-circle mdi-dark mdi-inactive"></span>
+                                <div class="mdl-tooltip mdl-tooltip--left" for="emailUserHelp">
+                                  This is valid for ALL users.<br><br>
+                                  This will determine much backend functionality like available labels, etc. So please do not change this back and forth.<br><br>
+                                  Once one user is set, the mail IDs will be based on their account and will not be available if switched to another account.</font>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        <div class="mdl-cell mdl-cell--1-col mdl-cell--1-col-phone" style="margin-top:5%">
-                          <span id="emailUserHelp" class="mdi mdi-24px mdi-help-circle mdi-dark mdi-inactive"></span>
-                          <div class="mdl-tooltip mdl-tooltip--left" for="emailUserHelp">
-                            This is valid for ALL users.<br><br>
-                            This will determine much backend functionality like available labels, etc. So please do not change this back and forth.<br><br>
-                            Once one user is set, the mail IDs will be based on their account and will not be available if switched to another account.</font>
-                          </div>
+
                         </div>
                       </div>
                     </div>
@@ -280,29 +305,29 @@ if(isset($_POST['endlabel'])) {
           <p>
 
             <?php
-              $service = new Google_Service_Gmail($clientService);
+            $service = new Google_Service_Gmail($clientService);
 
-              $results = $service->users_labels->listUsersLabels($user);
+            $results = $service->users_labels->listUsersLabels($user);
 
-              if (count($results->getLabels()) == 0) {
-               print "No labels found.\n";
-              } else {
-                echo '<form action="settings" method="post">';
-                echo '<div class="mdl-grid">';
-                foreach ($results->getLabels() as $label) {
-                  $labelColor = $label->getColor();
-                  if ($labelColor['backgroundColor'] != '') {
-                    echo '<div class="mdl-cell mdl-cell--3-col labelColors">' . $label->getName() . '</div>';
-                  } else {
-                    echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="color: ' . $labelColor['textColor'] . ';">' . $label->getName() . '</div>';
-                  }
-                  echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" style="background-color: ' . $labelColor['backgroundColor'] . '" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getId() . '"><i class="material-icons">check</i></button></div>
-                  <input type="hidden" value="' . $label->getName() . '" name="label_name">';
+            if (count($results->getLabels()) == 0) {
+              print "No labels found.\n";
+            } else {
+              echo '<form action="settings" method="post">';
+              echo '<div class="mdl-grid">';
+              foreach ($results->getLabels() as $label) {
+                $labelColor = $label->getColor();
+                if ($labelColor['backgroundColor'] != '') {
+                  echo '<div class="mdl-cell mdl-cell--3-col labelColors">' . $label->getName() . '</div>';
+                } else {
+                  echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="color: ' . $labelColor['textColor'] . ';">' . $label->getName() . '</div>';
                 }
-                echo '</div></form>';
+                echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" style="background-color: ' . $labelColor['backgroundColor'] . '" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getId() . '"><i class="material-icons">check</i></button></div>
+                  <input type="hidden" value="' . $label->getName() . '" name="label_name">';
               }
+              echo '</div></form>';
+            }
 
-              ?>
+            ?>
             </p>
           </div>
         </dialog>
@@ -318,34 +343,38 @@ if(isset($_POST['endlabel'])) {
             <p>
 
               <?php
-                $service = new Google_Service_Gmail($clientService);
+              $service = new Google_Service_Gmail($clientService);
 
-                $results = $service->users_labels->listUsersLabels($user);
+              $results = $service->users_labels->listUsersLabels($user);
 
-                if (count($results->getLabels()) == 0) {
-                 print "No labels found.\n";
-                } else {
+              if (count($results->getLabels()) == 0) {
+                print "No labels found.\n";
+              } else {
 
-                  echo '<form action="settings" method="post">';
-                  echo '<div class="mdl-grid">';
-                  foreach ($results->getLabels() as $label) {
-                    $labelColor = $label->getColor();
-                    if ($labelColor['backgroundColor'] != '') {
-                      echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="">' . $label->getName() . '</div>';
-                    } else {
+                echo '<form action="settings" method="post">';
+                echo '<div class="mdl-grid">';
+                foreach ($results->getLabels() as $label) {
+                  $labelColor = $label->getColor();
+                  if ($labelColor['backgroundColor'] != '') {
+                    echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="">' . $label->getName() . '</div>';
+                  } else {
                     echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="color: ' . $labelColor['textColor'] . ';">' . $label->getName() . '</div>';
-                    }
-                    echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" style="background-color: ' . $labelColor['backgroundColor'] . '" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="endlabel" data-value="' . $label->getId() . '" value="' . $label->getId() . '"><i class="material-icons">check</i></button></div>';
                   }
-                  echo '</form></div>';
+                  echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" style="background-color: ' . $labelColor['backgroundColor'] . '" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="endlabel" data-value="' . $label->getId() . '" value="' . $label->getId() . '"><i class="material-icons">check</i></button></div>';
                 }
+                echo '</form></div>';
+              }
 
-                ?>
+              ?>
               </p>
             </div>
           </dialog>
 
         <script>
+
+          $('#hideBasedOnWarning').on('click', function(e) {
+            $('.innerHide1').hide(500);
+          });
 
           $('#settingSave').on('click', function(e) {
             var selectedUser = $('#userEmail').val();

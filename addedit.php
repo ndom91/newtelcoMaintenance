@@ -34,6 +34,9 @@ global $dbhandle;
   <!-- flatpickr -->
   <script rel="preload" as="script" type="text/javascript" src="assets/js/flatpickr.min.js"></script>
 
+  <!-- materialize (multiselect) -->
+  <script rel="preload" as="script" type="text/javascript" src="assets/js/materialize.min.js"></script>
+
   <!-- Datatables -->
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/jquery.dataTables.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.material.min.js"></script>
@@ -47,8 +50,8 @@ global $dbhandle;
   <script rel="preload" as="script" type="text/javascript" src="assets/js/pace.js"></script>
 
   <style>
-  <?php echo file_get_contents("assets/css/style-ndo.min.css"); ?>
-  <?php echo file_get_contents("assets/css/material-ndo.min.css"); ?>
+  <?php echo file_get_contents("assets/css/style.min.css"); ?>
+  <?php echo file_get_contents("assets/css/material.min.css"); ?>
   </style>
 </head>
 <body>
@@ -392,7 +395,42 @@ global $dbhandle;
               </div>
               </div>
               <div class="mdl-cell mdl-cell--6-col">
-                <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+
+              <div>
+                <label class="mdl-selectfield--floating-label" >Deren CID</label>
+                <div class="multiselect-wrapper">
+                <select id="dcid3" multiple class="select_all">                  
+                  <?php
+                      while ($row = mysqli_fetch_row($derenCIDQ)) {
+                        if ((isset($_GET['mid'])) && ($row[2] == $oderenCIDid)) {
+                          echo '<option selected value="' . $row[2] . '">' . $row[1] . '</option>';
+                        } else {
+                          echo '<option value="' . $row[2] . '">' . $row[1] . '</option>';
+                        }
+                      }
+                    ?>
+                </select>     
+
+                </div>         
+              </div>  
+                  <script>
+                    $(document).ready(function() {
+                        // $('select').val([1]);
+                        $('#dcid3').formSelect();
+                        $('select.select_all').siblings('ul').prepend('<li id=sm_select_all><span>Select All</span></li>');
+                        $('li#sm_select_all').on('click', function () {
+                          var jq_elem = $(this), 
+                              jq_elem_span = jq_elem.find('span'),
+                              select_all = jq_elem_span.text() == 'Select All',
+                              set_text = select_all ? 'Select None' : 'Select All';
+                          jq_elem_span.text(set_text);
+                          jq_elem.siblings('li').filter(function() {
+                            return $(this).find('input').prop('checked') != select_all;
+                          }).click();
+                        });
+                    })
+                  </script>
+                <!-- <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
                   <select id="dcid3" name="dcid3" class="mdl-selectfield__select">
                     <option value=""></option>
                     <?php
@@ -407,7 +445,7 @@ global $dbhandle;
                   </select>
                   <label class="mdl-selectfield__label" for="dcid3">Deren CID</label>
                   <span class="mdl-selectfield__error">Select a value</span>
-                </div>
+                </div> -->
               </div>
               <div class="mdl-cell mdl-cell--6-col">
                 <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
@@ -519,7 +557,7 @@ global $dbhandle;
                     <div class="mailWrapper0">
                       <div class="mdl-textfield mdl-js-textfield mailWrapper1">
                         <div style="display:inline-block !important;height: 100%;margin-top: 20px;" class=" mailWrapper2">
-                          <iframe class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0"  id="emailBodyFrame" src="msg/' . $oreceivedmail . '.html"></iframe>
+                          <iframe class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0"  id="emailBodyFrame" src="https://maintenance.newtelco.de/msg/' . $oreceivedmail . '.html"></iframe>
                         </div>
                       </div>
                     </div>
@@ -829,7 +867,10 @@ if ( $.fn.dataTable.isDataTable( '#dataTable4' ) ) {
     table3 = $('#dataTable4').DataTable();
     table3.destroy();
 }
-var data3 = $( "#dcid3 option:selected" ).text();
+//var data3 = $( "#dcid3 option:selected" ).text();
+//console.log('data3: ' + data3);
+//console.log($('#dcid3').val());
+var data3 = $('#dcid3').val();
 $('#kundenCard').addClass('display').removeClass('hidden');
 //filter by selected value on second column
 var table4 = $('#dataTable4').DataTable( {
@@ -870,6 +911,11 @@ var table4 = $('#dataTable4').DataTable( {
 
 
 $(document).ready(function() {
+
+  $('iframe').on('load', function() {
+        $('this').contents().find('html:first').css('white-space', 'pre-wrap');
+    });
+
   $('#dataTable4').on( 'click', '#sendMailbtn', function () {
     table3 = $('#dataTable4').DataTable();
     var data = table3.row( $(this).parents('tr') ).data();
@@ -889,7 +935,7 @@ $(document).ready(function() {
     var d = moment.duration(ms);
     var impactTime = d.format("mm");
 
-    openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head><style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:151}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624}</style></head><body style="{padding:0;margin:0;}"><div><p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + startLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + endLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">Planned maintenance on the network infrastructure to avoid unplanned outage in near future</span></span></p></td></tr><tr><td class="tdSizing"><p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"><p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">' + impactTime + ' minutes during the maintenance window</span></span></p></td></tr></table><p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us.</span></p></body>');
+    openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head> <style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:131px}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624px}</style></head><body style="{padding:0;margin:0;}"> <div> <p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"> <tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"> <p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + startLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + endLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">' + impactTime + ' minutes during the maintenance window</span></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Location:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT LOCATION HERE]</span></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT REASON HERE]</span></span></p></td></tr></table> <p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us.</span></p></body>');
 
     var DateTime = luxon.DateTime;
     var now = DateTime.local().toFormat("y-MM-dd HH:mm");
@@ -1103,6 +1149,9 @@ $('#btnSave').on('click', function(e) {
 
   <!-- font awesome -->
   <link rel="preload stylesheet" as="style" href="assets/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
+
+  <!-- materialize (multi select) -->
+  <link rel="preload stylesheet" as="style" href="assets/css/materialize.min.css" onload="this.rel='stylesheet'">
 
   <!-- overlay scrollbars css -->
   <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">

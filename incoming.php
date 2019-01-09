@@ -38,10 +38,11 @@ global $dbhandle;
 
   <!-- pace -->
   <script rel="preload" as="script" type="text/javascript" src="assets/js/pace.js"></script>
-
+<!-- mdl modal -->
+<script rel="preload" as="script" type="text/javascript" src="assets/js/mdl-jquery-modal-dialog.js"></script>
   <style>
-    <?php echo file_get_contents("assets/css/style-ndo.min.css"); ?>
-    <?php echo file_get_contents("assets/css/material-ndo.min.css"); ?>
+    <?php echo file_get_contents("assets/css/style.min.css"); ?>
+    <?php echo file_get_contents("assets/css/material.min.css"); ?>
   </style>
 </head>
 <body>
@@ -157,9 +158,9 @@ global $dbhandle;
                           <th style="width:20px!important"></th>
                           <th class="">id</th>
                           <th class="">Maileingang Date/Time</th>
-                          <th>Subject</th>
-                          <th>R Mail Content</th>
                           <th>Sender</th>
+                          <th>R Mail Content</th>
+                          <th>Subject</th>
                           <th>Deren CID</th>
                           <th>Bearbeitet Von</th>
                           <th>Start Date/Time</th>
@@ -167,6 +168,7 @@ global $dbhandle;
                           <th>Postponed</th>
                           <th>Notes</th>
                           <th>Complete</th>
+                          <th>Delete</th>
                           <th>Domain</th>
                         </tr>
                       </thead>
@@ -326,25 +328,29 @@ global $dbhandle;
                 }
               }
             } if(!$FOUND_BODY) {
-                foreach ($parts  as $part) {
-                  // Last try: if we didn't find the body in the first parts,
-                  // let's loop into the parts of the parts (as @Tholle suggested).
-                  if($part['parts'] && !$FOUND_BODY) {
-                    foreach ($part['parts'] as $p) {
-                      // replace 'text/html' by 'text/plain' if you prefer
-                      if($p['mimeType'] === 'text/plain' && $p['body']) {
-                        $FOUND_BODY = decodeBody($p['body']->data);
-                        break;
-                      }
+              foreach ($parts  as $part) {
+                // Last try: if we didn't find the body in the first parts,
+                // let's loop into the parts of the parts (as @Tholle suggested).
+                if($part['parts'] && !$FOUND_BODY) {
+                  foreach ($part['parts'] as $p) {
+                    // replace 'text/html' by 'text/plain' if you prefer
+                    if($p['mimeType'] === 'text/plain' && $p['body']) {
+                      $FOUND_BODY = decodeBody($p['body']->data);
+                      break;
                     }
                   }
-                  if($FOUND_BODY) {
-                    break;
-                  }
+                }
+                if($FOUND_BODY) {
+                  break;
                 }
               }
+            }
 
-
+            if (strpos($FOUND_BODY, 'html') == false) {
+              $FOUND_BODY .= "</pre>";
+              $FOUND_BODY = "<pre>" . $FOUND_BODY;
+            }
+           
             // Finally, print the message ID and the body
             $fContents = '';
 
@@ -384,10 +390,9 @@ global $dbhandle;
               if (iframedoc) {
                 iframedoc.document.open();
                 iframedoc.document.write("' . $FOUND_BODY . '");
-                iframedoc.document.close();
+                iframedoc.document.close();e
                 console.log("iframedoc written");
               } else {
-
                 console.log("Cannot inject dynamic contents");
                alert(\'Cannot inject dynamic contents into iframe.\');
               }
@@ -408,17 +413,21 @@ global $dbhandle;
                     </td>
                     <td></td>
                     <td>' . $date2 . '</td>
-                    <!--<td>' . $date .  '('. $date2 . ')' . '</td>-->
-                    <td><a id="show-dialog2" data-target="' . $message_id . '">' . $subject . '</a></td>
+                    <td><a id="show-dialog2" data-target="' . $message_id . '">' . $domain . '</a></td>
                     <td></td>
-                    <td>' . $domain . '</td>
-                    <td></td>
+                    <td>' . $subject . '</td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
+                    <td>
+                      <button data-button="' . $message_id . '" class="btnDelMail mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect">
+                        <span style="color:#fff !important;position: unset;" class="mdi mdi-24px mdi-delete mdi-light">
+                      </button>
+                    </td>
                     <td>' . $domain . '</td>
                   </tr>';
 
@@ -499,7 +508,7 @@ global $dbhandle;
                     console.log(mailID2);
                     str1 = "emailBody";
                     var mailIDcc = str1.concat(mailID2);
-                    $("#"+mailIDcc).attr(\'src\',"msggg/"+mailID2+".html");
+                    $("#"+mailIDcc).attr(\'src\',"msg/"+mailID2+".html");
                     $("#"+mailIDcc).attr(\'src\', function ( i, val ) { return val; });
 
                     var dialog2 = document.querySelector(\'#dialog_\' + mailID2);
@@ -573,9 +582,10 @@ global $dbhandle;
                         <th class=""></th>
                         <th class="">Maileingang</th>
                         <th>Start Date/Time</th>
-                        <th>Complete</th>
                         <th>ID</th>
                         <th>Received Mail ID</th>
+                        <th>Company</th>
+                        <th>Complete</th>
                       </tr>
                     </thead>
                   </table>
@@ -596,11 +606,12 @@ global $dbhandle;
               scrolly: false,
               columnDefs: [
                 {
-                    "targets": [ 1, 4, 6, 7, 8, 9, 10, 11, 12, 13 ],
+                    "targets": [ 1, 4, 6, 7, 8, 9, 10, 11, 12, 14 ],
                     "visible": false,
                     "searchable": false
                 },
-                { responsivePriority: 1, targets: [ 0, 2, 3, 5 ] },
+                { responsivePriority: 1, targets: [ 0, 3, 5 ] },
+                { responsivePriority: 2, targets: [ 0, 2, 13 ] },
                 {
                     targets: [2, 3, 5 ],
                     className: 'mdl-data-table__cell--non-numeric'
@@ -608,13 +619,24 @@ global $dbhandle;
                 {
                     targets: [ 0, ],
                     className: 'all'
+                },{
+                    targets: [5], render: function (a, b, data, d) {
+                      var subject = data[5];
+                      if (subject.length > 70) {
+                        subject = subject.substring(0,70);
+                        subject += ' ...';
+                        return subject;
+                      } else {
+                        return subject;
+                      }
+                    }
                 }
               ]
             });
 
               table.on( 'select', function ( e, dt, type, indexes ) {
                 if ( type === 'row' ) {
-                  var data2 = table.rows( { selected: true } ).data()[0][13]
+                  var data2 = table.rows( { selected: true } ).data()[0][14]
                   if ( $.fn.dataTable.isDataTable( '#dataTable2' ) ) {
                       table2 = $('#dataTable2').DataTable();
                       table2.destroy();
@@ -630,9 +652,10 @@ global $dbhandle;
                         { title: "View" },
                         { data: "maileingang" },
                         { data: "startDateTime" },
-                        { data: "done" },
                         { data: "id" },
-                        { data: "receivedmail" }
+                        { data: "receivedmail" },
+                        { data: "name" },
+                        { data: "done" }
                     ],
                     columnDefs: [
                       {
@@ -640,11 +663,11 @@ global $dbhandle;
                           "visible": true,
                           "searchable": false
                       },{
-                          "targets": [ 4, 5 ],
+                          "targets": [ 3, 4 ],
                           "visible": false,
                           "searchable": false
                       },{
-                        targets: [3], render: function (a, b, data, d) {
+                        targets: [6], render: function (a, b, data, d) {
                           if (data['done'] === '1'){
                             return '<span class="mdi mdi-24px mdi-check-decagram mdi-dark"></span>';
                           } else if (data['done'] === '0') {
@@ -662,8 +685,8 @@ global $dbhandle;
                           }
                         }
                       },
-                      { responsivePriority: 1, targets: [ 0, 3 ] },
-                      { responsivePriority: 2, targets: [ 1, 2 ] }
+                      { responsivePriority: 1, targets: [ 0, 6 ] },
+                      { responsivePriority: 2, targets: [ 2, 5 ] }
                     ],
                     responsive: true,
                     order: [ 1, 'desc' ]
@@ -674,6 +697,32 @@ global $dbhandle;
               })
             })
 
+              $(".btnDelMail").click(function(){
+                var mailId = $(this).attr('data-button');
+                showDialog({
+                  title: 'Delete Incoming Maintenance Notification',
+                  text: 'Are you sure you want to delete this Maintenance Inbox Entry?.',
+                  negative: {
+                      title: 'No, take me back'
+                  },
+                  positive: {
+                      title: 'Yes. Delete!',
+                      onClick: function(e) {
+                        console.log(e);
+                        $.ajax({
+                          url: 'api?mRead='+mailId,
+                          success: function (data) {
+
+                          },
+                          error: function (err) {
+                            console.log('Error', err);
+                          }
+                        });
+                      }
+                  },
+                  cancelable: true
+                 }); 
+              }); 
         </script>
         <script>
           /* COMMENTED BECAUSE HIDDEN SELECT LABEL DIALOG ON INCOMING PAGE
@@ -715,6 +764,9 @@ global $dbhandle;
         </script>
         <?php echo file_get_contents("views/footer.html"); ?>
       </div>
+
+      <!-- mdl modal -->
+      <link prefetch rel="preload stylesheet" as="style" href="assets/css/mdl-jquery-modal-dialog.css" type="text/css" onload="this.rel='stylesheet'">
 
       <!-- datatables css -->
       <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/responsive.dataTables.min.css" onload="this.rel='stylesheet'">

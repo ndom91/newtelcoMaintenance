@@ -3,6 +3,9 @@
 require('authenticate_google.php');
 require_once('config.php');
 
+require 'vendor/autoload.php';
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
 global $dbhandle;
 
 ?>
@@ -13,45 +16,49 @@ global $dbhandle;
   <?php echo file_get_contents("views/meta.html"); ?>
 
   <!-- moment -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/moment/luxon.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/moment/moment.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/moment/moment-duration-format.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/moment/moment-timezone-with-data.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/luxon.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment-duration-format.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment-timezone-with-data.min.js"></script>
 
   <!-- jquery -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/jquery-3.3.1.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/jquery-3.3.1.min.js"></script>
 
   <!-- select2 -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/select2_4.0.6-rc1.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/select2_4.0.6-rc1.min.js"></script>
 
   <!-- material design -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/material.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/material.min.js"></script>
   <!-- <link rel="stylesheet" href="https://storage.googleapis.com/non-spec-apps/mio-icons/latest/twotone.css"> -->
 
   <!--getmdl-select-->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/mdl-selectfield.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/mdl-selectfield.min.js"></script>
 
   <!-- flatpickr -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/flatpickr.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/flatpickr.min.js"></script>
 
   <!-- materialize (multiselect) -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/materialize.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/materialize.min.js"></script>
 
   <!-- Datatables -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/jquery.dataTables.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.material.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.select.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.responsive.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/dataTables/jquery.dataTables.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/dataTables/dataTables.material.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/dataTables/dataTables.select.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/dataTables/dataTables.responsive.min.js"></script>
 
   <!-- OverlayScrollbars -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/OverlayScrollbars.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/OverlayScrollbars.min.js"></script>
 
   <!-- pace -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/pace.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/pace.js"></script>
+
+  <!-- SheetJS -->
+  <script rel="preload" as="script" type="text/javascript" lang="javascript" src="dist/js/xlsx.full.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" lang="javascript" src="https://unpkg.com/canvas-datagrid/dist/canvas-datagrid.js"></script>
 
   <style>
-  <?php echo file_get_contents("assets/css/style.min.css"); ?>
-  <?php echo file_get_contents("assets/css/material.min.css"); ?>
+  <?php echo file_get_contents("dist/css/style.min.css"); ?>
+  <?php echo file_get_contents("dist/css/material.min.css"); ?>
   </style>
 </head>
 <body>
@@ -72,7 +79,7 @@ global $dbhandle;
 
         <main class="mdl-layout__content">
           <div id="loading">
-            <img id="loading-image" src="assets/images/Preloader_4.gif" alt="Loading..." />
+            <img id="loading-image" src="dist/images/Preloader_4.gif" alt="Loading..." />
           </div>
           <div class="mdl-grid">
 
@@ -223,11 +230,12 @@ global $dbhandle;
                 //$html = preg_replace('/\bon\w+=\S+(?=.*>)/g', '', $html);
                 return trim($html);
               }
-
+              
+              
               function getMessage2($service, $userId, $message_id) {
                 try {
                   $msgArray = array();
-
+                  $attachmentParts = array();
                   $optParamsGet2['format'] = 'full';
                   $single_message = $service->users_messages->get($userId, $message_id, $optParamsGet2);
                   $payload = $single_message->getPayload();
@@ -256,12 +264,17 @@ global $dbhandle;
                   // If we didn't find a body, let's look for the parts
                   if(!$FOUND_BODY) {
                     $parts = $payload->getParts();
-                    foreach ($parts  as $part) {
-                      if($part['body'] && $part['mimeType'] == 'text/html') {
+                    foreach ($parts as $part) {
+                      if($part['partId'] > '0' && $part['mimeType'] !== 'text/plain') {
+                        //array_push($attachmentParts,$part['partId'],$part['filename']);
+                        $attachmentParts[] = array($part['partId'],$part['filename']);
+                      }
+                      if($part['body'] && $part['mimeType'] == 'text/plain' ||  $part['mimeType'] == 'text/html') {
                         $FOUND_BODY = decodeBody($part['body']->data);
-                        break;
+                        // break;
                       }
                     }
+                    $msgArray[] = $attachmentParts;
                   } if(!$FOUND_BODY) {
                     foreach ($parts  as $part) {
                       // Last try: if we didn't find the body in the first parts,
@@ -314,7 +327,7 @@ global $dbhandle;
                 $msubject = $msgInfo[2];
                 $mfrom = $msgInfo[3];
                 $mdate = $msgInfo[4];
-                $mbody = $msgInfo[5];
+                $mbody = $msgInfo[6];
 
               }
 
@@ -402,10 +415,23 @@ global $dbhandle;
                 <select id="dcid3" multiple class="select_all">                  
                   <?php
                       while ($row = mysqli_fetch_row($derenCIDQ)) {
-                        if ((isset($_GET['mid'])) && ($row[2] == $oderenCIDid)) {
-                          echo '<option selected value="' . $row[2] . '">' . $row[1] . '</option>';
+                        if (strpos($oderenCIDid, ',') !== false) {
+                          // comma in string, now split
+                          $dCIDarray = explode(',', $oderenCIDid);
+                          foreach ($dCIDarray as $value) {
+                            if ($row[2] == $value) {
+                              echo '<option selected value="' . $value . '">' . $row[1] . '</option>';
+                            } 
+                          }
+                          if (!in_array($row[2],$dCIDarray)) {
+                            echo '<option value="' . $row[2] . '">' . $row[1] . '</option>';
+                          }
                         } else {
-                          echo '<option value="' . $row[2] . '">' . $row[1] . '</option>';
+                          if ((isset($_GET['mid'])) && ($row[2] == $oderenCIDid)) {
+                            echo '<option selected value="' . $row[2] . '">' . $row[1] . '</option>';
+                          } else {
+                            echo '<option value="' . $row[2] . '">' . $row[1] . '</option>';
+                          }
                         }
                       }
                     ?>
@@ -548,12 +574,25 @@ global $dbhandle;
                   <h6 class="sublabelSelectLabel"><font color="#67B246">Date:</font> ' . $mdate . '</h6>
                   <button tabindex="-1" type="button" class="mailcSelectClose2 mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1">
                     <i class="material-icons">close</i>
-                  </button>
-                </div>
+                  </button>';
 
-                <div class="mdl-dialog__content">
-                  <p>
-                    <div class="mailcHR">NT</div>
+
+
+                $attachmentParts2 = $msgInfo[5];
+                if ($attachmentParts2 !== '') {
+                  echo '<div style="float:right;text-align:right;z-index:1000;position:relative;">
+                  <font style="color:#4c4c4c">Attachments:</font><br>';
+                  foreach ($attachmentParts2 as $part) {
+                    echo '<a class="attachmentLink" target="_blank" href="attachments?messageId='.$oreceivedmail.'&part_id='.$part[0].'">'.$part[1].'</a><br>';
+                    }
+
+                  }
+                  echo '</div>';
+                
+                 echo '<br><br></div>
+                 <div class="mdl-dialog__content">
+                 <p>
+                 <div class="mailcHR">NT</div>
                     <div class="mailWrapper0">
                       <div class="mdl-textfield mdl-js-textfield mailWrapper1">
                         <div style="display:inline-block !important;height: 100%;margin-top: 20px;" class=" mailWrapper2">
@@ -589,7 +628,7 @@ global $dbhandle;
                       <i class="material-icons">search</i>
                     </button>
                     <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnShowSent">
-                      Show Sent Mails
+                      Show Related Mails
                     </div>';
                   }
                 ?>
@@ -600,6 +639,7 @@ global $dbhandle;
                   <tr>
                     <th>Unserer CID</th>
                     <th class="">Unsere CID</th>
+                    <th>Protected</th>
                     <th>Kunde</th>
                     <th>Maintenancee Recipient</th>
                     <th>Maintenance Recipient</th>
@@ -611,6 +651,32 @@ global $dbhandle;
           </div>
         </div>
 
+        <dialog id="xlsDialog" class="mdl-dialog">
+          <h4 id="xlsTitle" class="mdl-dialog__title"></h4>
+          <div class="mdl-dialog__actions">
+            <button tabindex="-1" type="button" class="close2 mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+              <i class="material-icons">close</i>
+            </button>
+          </div>
+          <div class="mdl-dialog__content">
+            
+            <p>
+              <div id="gridctr"></div>
+            </p>
+          </div>
+
+          <div class="mdl-dialog__actions">
+            <a class="xlsDownload" href="">
+              <button tabindex="-1" type="button" id="btnDownloadXLS" class="greenRoundBtn mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+                <i class="material-icons">cloud_download</i>
+              </button>
+              <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnDownloadXLS">
+                Download Attachment
+              </div>
+            </a>
+          </div>
+        </dialog>
+        
       <script>
 
 $('#btnShowSent').click(function(){
@@ -622,11 +688,20 @@ $('#btnShowSent').click(function(){
   var jMailSentAtDate3 = DateTime.fromISO(jMailSentAtDate).plus({ days: 1 }).toISODate();
       // .add(1, 'days');
       // .plus({ days: 1 });
-  console.log(jMailSentAtDate3);
+  //console.log(jMailSentAtDate3);
+
+  table4 = $('#dataTable4').DataTable();
+  var kUnsereCIDs = table4
+        .columns( 1 )
+        .data()
+        .eq( 0 )      // Reduce the 2D array into a 1D array of data
+        .sort()       // Sort data alphabetically
+        .unique()     // Reduce to unique values
+        .join( ',' );
 
   // before:${jMailSentAtDate3}
   var activeUser = $(".menumail").html();
-  openInNewTab(`https://mail.google.com/mail/ca/u/0/#search/in:sent+after:${jMailSentAtDate}+before:${jMailSentAtDate3}+from:${activeUser.trim()}+Planned+Work+Notification`);
+  openInNewTab(`https://mail.google.com/mail/ca/u/0/#search/in:sent+after:${jMailSentAtDate}+before:${jMailSentAtDate3}+from:maintenance@newtelco.de+Planned+Work+Notification+${kUnsereCIDs}`);
 });
 
 $('#addCalbtn').click(function(){
@@ -648,7 +723,18 @@ $('#addCalbtn').click(function(){
   var data = table4.row( $('tr') ).data();
   // console.log('data: ' + data['kundenCID']);
 
-  openInNewTab(`http://www.google.com/calendar/event?action=TEMPLATE&dates=${calSDTISO2}%2F${calEDTISO2}&src=newtelco.de_hkp98ambbvctcn966gjj3c7dlo@group.calendar.google.com&text=Maintenance%20on%20 ${selectedCompany}%20on%20${selectedDCID}&add=service@newtelco.de&details=Maintenance%20for%20<b>${selectedCompany}</b>%20on%20deren%20CID:%20"<b>${selectedDCID}</b>".<br><br>Affected%20Newtelco%20CIDs:<br>${data['kundenCID']}<br><br>Source%20-%20<a href="https://maintenance.newtelco.de/addedit?mid=${activeID}">M${activeID}</a>&trp=false`);
+  // concat all visible 'unsere CIDs' from kunden table aka selected 'deren CIDs'
+  var kIDsconcat = table4
+        .columns( 1 )
+        .data()
+        .eq( 0 )      // Reduce the 2D array into a 1D array of data
+        .sort()       // Sort data alphabetically
+        .unique()     // Reduce to unique values
+        .join( ',' )
+  ;
+
+
+  openInNewTab(`http://www.google.com/calendar/event?action=TEMPLATE&dates=${calSDTISO2}%2F${calEDTISO2}&src=newtelco.de_hkp98ambbvctcn966gjj3c7dlo@group.calendar.google.com&text=Maintenance%20${selectedCompany}%20CID%20${kIDsconcat}&add=service@newtelco.de&details=Maintenance%20for%20<b>${selectedCompany}</b>%20on%20deren%20CID:%20"<b>${selectedDCID}</b>".<br><br>Affected%20Newtelco%20CIDs:%20<b>${kIDsconcat}</b><br><br>Source%20-%20<a href="https://maintenance.newtelco.de/addedit?mid=${activeID}">NT-M_${activeID}</a>&trp=false`);
 });
 
 const _t = (s) => {
@@ -881,13 +967,14 @@ var table4 = $('#dataTable4').DataTable( {
   columns: [
       { title: "Notification" },
       { data: "kundenCID" },
+      { data: "protected" },
       { data: "name" },
       { data: "kunde" },
       { data: "maintenanceRecipient" }
   ],
   columnDefs: [
       {
-          "targets": [ 3 ],
+          "targets": [ 4 ],
           "visible": false,
           "searchable": false
       }, {
@@ -896,13 +983,13 @@ var table4 = $('#dataTable4').DataTable( {
           "defaultContent": "<button style='margin-left:3px;text-align:center;' id='sendMailbtn' type='button' class='mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored button40'><span class='mdi mdi-send mdi-24px'></span></button><div class='mdl-tooltip  mdl-tooltip--bottom' data-mdl-for='sendMailbtn'> Send Notification </div>",
           className: 'mdl-data-table__cell--non-numeric text-center'
       },{
-          targets: [ 1, 2 ],
+          targets: [ 1, 3 ],
           className: 'mdl-data-table__cell--non-numeric'
       },{
-          targets: [ 4 ],
+          targets: [ 5 ],
           className: 'mdl-typography--text-lowercase'
       },
-      { responsivePriority: 1, targets: [ 0, 1, 2 ] }
+      { responsivePriority: 1, targets: [ 0, 1, 3 ] }
     ],
     responsive: true
 });
@@ -935,7 +1022,7 @@ $(document).ready(function() {
     var d = moment.duration(ms);
     var impactTime = d.format("mm");
 
-    openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head> <style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:131px}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624px}</style></head><body style="{padding:0;margin:0;}"> <div> <p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"> <tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"> <p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + startLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + endLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">' + impactTime + ' minutes during the maintenance window</span></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Location:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT LOCATION HERE]</span></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT REASON HERE]</span></span></p></td></tr></table> <p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us.</span></p></body>');
+    openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head> <style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:131px}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624px}</style></head><body style="{padding:0;margin:0;}"> <div> <p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"> <tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"> <p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + startLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + endLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT IMPACT HERE]</span></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Location:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT LOCATION HERE]</span></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT REASON HERE]</span></span></p></td></tr></table> <p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us at maintenance@newtelco.de.</span></p><style>.sig{font-family: Century Gothic, sans-serif;font-size: 9pt;color: #636266 !important;}b{color: #4ca702;}.gray{color: #636266 !important;}a{text-decoration: none;color: #636266 !important;}</style><div class="sig"><br><div>Best regards | Mit freundlichen Grüßen</div><br><div><b class="gray">Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b>|</b> Mainzer Landstr. 351-353 <b>|</b> 60326 Frankfurt a.M. <b>|</b> DE <br>www.newtelco.com <b>|</b> 24/7 NOC +49 69 75 00 27 30 <b>|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" alt="" height="29" width="516"></div></div></body>');
 
     var DateTime = luxon.DateTime;
     var now = DateTime.local().toFormat("y-MM-dd HH:mm");
@@ -999,11 +1086,29 @@ $('#btnSave').on('click', function(e) {
     var odone = '0';
   }
 
-  if($('#dcid3').val() == ''){
-    var dcid = '0';
-  } else {
-    var dcid = $('#dcid3').val();
+  table4 = $('#dataTable4').DataTable();
+  var kCompaniesConcat = table4
+        .columns( 2 )
+        .data()
+        .eq( 0 )      // Reduce the 2D array into a 1D array of data
+        .sort()       // Sort data alphabetically
+        .unique()     // Reduce to unique values
+        .join( ',' );
+
+  //console.log(kCompaniesConcat);
+  // if($('#dcid3').val() == ''){
+  //   var dcid = '0';
+  // } else {
+  //   var dcid = $('#dcid3').val();
+  // }
+
+  var getSelected = $('#dcid3').val();
+  var selectedNums = [];
+  for (var i = 0; i < getSelected.length; i++) {
+    selectedNums.push(getSelected[i]);
   }
+  var dcid = selectedNums.join(',');
+
   var TableData = new Array();
 
   TableData[0] = {
@@ -1012,7 +1117,7 @@ $('#btnSave').on('click', function(e) {
     "oreceivedmail" : $('#rmail').val(),
     "olieferant" : $('#company').val(),
     "olieferantid" : $("#company").data('val'),
-    "oderenCIDid" : dcid, //jquery data-val
+    "oderenCIDid" : dcid, 
     "obearbeitetvon" : $('#bearbeitet').val(),
     "omaintenancedate" : $('#mdt').val(),
     "ostartdatetime" : sdtUTC,
@@ -1025,7 +1130,8 @@ $('#btnSave').on('click', function(e) {
     "update" : $('#update').val(),
     "updatedBy": $('.menumail').text(),
     "gmailLabel" : $('#gmailLabel').val(),
-    "mailDomain" : $('#mailDomain').val()
+    "mailDomain" : $('#mailDomain').val(),
+    "kundenCompanies": kCompaniesConcat
     }
 
     $.ajax({
@@ -1086,6 +1192,7 @@ $('#btnSave').on('click', function(e) {
     $("#emailBodyFrame").attr('src',"msg/"+mailID+".html");
     $("#emailBodyFrame").attr('src', function ( i, val ) { return val; });
 
+    // Mail preview modal
     var dialog = document.querySelector('#mailDialog');
     var showDialogButton = document.querySelector('#viewmailbtn');
     if (! dialog.showModal) {
@@ -1096,6 +1203,31 @@ $('#btnSave').on('click', function(e) {
     });
     dialog.querySelector('.close1').addEventListener('click', function() {
       dialog.close();
+    });
+
+      // xls(x) preview modal
+    var dialog2 = document.querySelector('#xlsDialog');
+    var showDialogButton2 = document.querySelectorAll('.attachmentLink');
+    if (! dialog2.showModal) {
+      dialogPolyfill.registerDialog(dialog2);
+    }
+    for (var i = 0; i < showDialogButton2.length; i++) {
+      var link = showDialogButton2[i];
+      if (link.innerHTML.indexOf('xls') >= 0) {
+        console.log(link.innerHTML);
+        showDialogButton2.forEach(function(elem) {
+          elem.addEventListener('click', function(e) {
+            var targetText = $(e.target).text();
+            if (targetText.indexOf("xls") >= 0) {
+              dialog2.showModal();
+            };
+          });
+        });
+      };
+    }
+    
+    dialog2.querySelector('.close2').addEventListener('click', function() {
+      dialog2.close();
     });
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -1117,43 +1249,79 @@ $('#btnSave').on('click', function(e) {
     });
   }
 
-  $( document ).ready(function() {
+  $('.attachmentLink').on('click', function(e) {
+    //console.log($(this).text());
+    var targetText = $(e.target).text();
+    var title = $(this).text();
+    if (targetText.indexOf("xls") >= 0) {
+      e.preventDefault();
+
+      $('#xlsTitle').text($(this).text());
+
+      var url = $(this).attr('href');
+      $('.xlsDownload').attr('href', url);
+      var req = new XMLHttpRequest();
+      req.open("GET", url, true);
+      req.responseType = "arraybuffer";
+
+      req.onload = function(e) {
+        /* parse the data when it is received */
+        var data = new Uint8Array(req.response);
+        var workbook = XLSX.read(data, {type:"array"});
+        /* DO SOMETHING WITH workbook HERE */
+        //console.log(workbook);
+        var grid = canvasDatagrid({
+          parentNode: document.getElementById('gridctr'),
+          data: []
+        });
+        var ws = workbook.Sheets[workbook.SheetNames[0]];
+        grid.data = XLSX.utils.sheet_to_json(ws, {header:1});
+        grid.style.height = '150%';
+        grid.style.width = '100%';
+        $('#gridctr').height('180px');
+      };
+      req.send();
+    }
+  });
+
+  $( window ).on('load',function() {
      setTimeout(function() {$('#loading').hide()},500);
   });
+
 </script>
 </main>
     <?php echo file_get_contents("views/footer.html"); ?>
   </div>
 
   <!-- Google font-->
-  <link rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" href="dist/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
 
   <!-- mdl-selectfield css -->
-  <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/mdl-selectfield.min.css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/mdl-selectfield.min.css" onload="this.rel='stylesheet'">
 
   <!-- select 2 css -->
-  <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/select2.min.css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/select2.min.css" onload="this.rel='stylesheet'">
 
   <!-- flatpickr -->
-  <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/flatpickr.min.css" onload="this.rel='stylesheet'">
-  <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/flatpickr_green.css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/flatpickr.min.css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/flatpickr_green.css" onload="this.rel='stylesheet'">
 
   <!-- material icons -->
-  <link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css" onload="this.rel='stylesheet'">
-  <link rel="preload stylesheet" as="style" href="assets/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" href="dist/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
 
   <!-- datatables css -->
-  <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/responsive.dataTables.min.css" onload="this.rel='stylesheet'">
-  <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/select.dataTables.min.css" onload="this.rel='stylesheet'">
-  <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/dataTables.material.min.css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/dataTables/responsive.dataTables.min.css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/dataTables/select.dataTables.min.css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/dataTables/dataTables.material.min.css" onload="this.rel='stylesheet'">
 
   <!-- font awesome -->
-  <link rel="preload stylesheet" as="style" href="assets/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" href="dist/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
 
   <!-- materialize (multi select) -->
-  <link rel="preload stylesheet" as="style" href="assets/css/materialize.min.css" onload="this.rel='stylesheet'">
+  <link rel="preload stylesheet" as="style" href="dist/css/materialize.min.css" onload="this.rel='stylesheet'">
 
   <!-- overlay scrollbars css -->
-  <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+  <link type="text/css" href="dist/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
 </body>
 </html>

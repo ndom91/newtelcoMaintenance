@@ -28,25 +28,25 @@ if (isset($_POST['endlabel'])) {
   <?php echo file_get_contents("views/meta.html"); ?>
 
   <!-- handsontable -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/handsontable.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/handsontable.min.js"></script>
 
   <!-- material design -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/material.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/material.min.js"></script>
 
   <!-- jquery -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/jquery-3.3.1.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/jquery-3.3.1.min.js"></script>
 
   <!-- pace -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/pace.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/pace.js"></script>
 
   <!-- OverlayScrollbars -->
-  <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
-  <link type="text/css" href="assets/css/os-theme-minimal-dark.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/OverlayScrollbars.min.js"></script>
+  <link type="text/css" href="dist/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+  <link type="text/css" href="dist/css/os-theme-minimal-dark.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/OverlayScrollbars.min.js"></script>
 
   <style>
-    <?php echo file_get_contents("assets/css/style.min.css"); ?>
-    <?php echo file_get_contents("assets/css/material.min.css"); ?>
+    <?php echo file_get_contents("dist/css/style.min.css"); ?>
+    <?php echo file_get_contents("dist/css/material.min.css"); ?>
   </style>
 </head>
 <body>
@@ -54,7 +54,7 @@ if (isset($_POST['endlabel'])) {
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header ">
       <header class="mdl-layout__header mdl-color--light-green-nt">
         <div class="mdl-layout__header-row">
-          <a href="index.php"><img style="margin-right: 10px" src="assets/images/nt_square32_2_light2.png"/></a>
+          <a href="index.php"><img style="margin-right: 10px" src="dist/images/nt_square32_2_light2.png"/></a>
           <span class="mdl-layout-title">Maintenance</span>
           <div class="mdl-layout-spacer"></div>
           <div class="menu_userdetails">
@@ -133,7 +133,7 @@ if (isset($_POST['endlabel'])) {
                     <div class="mdl-grid">
                       <div class="settingWrapper">
                         <div class="mdl-cell mdl-cell--10-col mdl-cell--3-col-phone" style="line-height: 60px;">
-                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which label contains the <b>incoming maintenance</b> emails?</font>
+                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which label contains the <b>incoming maintenance</b> emails?<span style="color:red"> *</span></font>
                         </div>
                         <div class="mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
                           <button id="showdialog2" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectLabelSettings" style="margin-right:5px">
@@ -146,7 +146,7 @@ if (isset($_POST['endlabel'])) {
                       </div>
                       <div class="settingWrapper">
                         <div class="mdl-cell mdl-cell--10-col mdl-cell--3-col-phone" style="line-height: 60px;">
-                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which label should <b>completed maintenances</b> be moved to?</font>
+                          <font class="mdl-dialog__subtitle labelSelectLabelSettings">Which label should <b>completed maintenances</b> be moved to?<span style="color:red"> *</span></font>
                         </div>
                         <div class="mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
                           <button id="showdialog22" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectLabelSettings" style="margin-right:5px">
@@ -159,19 +159,17 @@ if (isset($_POST['endlabel'])) {
                       </div>
                       <div class="settingWrapper">
                       <div class="warningWrapper">
-                        
-
                         <div class="hoverHide">
                           <div class="innerHide">
                             <div class="innerHide1">
                               <button id="hideBasedOnWarning" type="button" style="margin:5px;" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect">
                               <span id="hideWarningIcon" class="mdi mdi-24px mdi-eye mdi-inactive"></span>
                               </button>
-                              <div class="mdl-tooltip mdl-tooltip--right" for="hideBasedOnWarning">
+                              <div class="mdl-tooltip mdl-tooltip--left" for="hideBasedOnWarning">
                               Hide Warning
                               </div>
                               <span id="emailUserHelp2" class="mdi mdi-36px mdi-help-circle mdi-inactive"></span>
-                                <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--left" for="emailUserHelp2">
+                                <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--right" for="emailUserHelp2">
                                   This is valid for ALL users.<br><br>
                                   This will determine much backend functionality like available labels, etc. So please do not change this back and forth.<br><br>
                                   Once one user is set, the mail IDs will be based on their account and will not be available if switched to another account.</font>
@@ -227,10 +225,10 @@ if (isset($_POST['endlabel'])) {
               <div class="mdl-cell mdl-cell--10-col mdl-cell--0-col-phone">
                 <div class="settingsFirmenHeader">
                   <h4 class="selectGoogleLabel">Firmen Details</h4>
-                  <button id="btnUpdate" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important; float:right;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+                  <button id="btnUpdateF" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important; float:right;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
                     <i class="material-icons">save</i>
                   </button>
-                  <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnUpdate">
+                  <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnUpdateF">
                     Save Changes
                   </div>
                 </div>
@@ -253,6 +251,12 @@ if (isset($_POST['endlabel'])) {
                 <div class="settingsFirmenHeader">
                   <h4 class="selectGoogleLabel">Lieferanten Details</h4><br><br>
                   <h6>Connection between companies and their connection ID's</h6>
+                  <button id="btnUpdateL" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important; float:right;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+                    <i class="material-icons">save</i>
+                  </button>
+                  <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnUpdateL">
+                    Save Changes
+                  </div>
                 </div>
                 <div class="tableWrapper1">
                   <div class="searchWrapper">
@@ -273,6 +277,12 @@ if (isset($_POST['endlabel'])) {
                 <div class="settingsFirmenHeader">
                   <h4 class="selectGoogleLabel">Kunden Details</h4><br><br>
                   <h6>Connection between companies and our CID's</h6>
+                  <button id="btnUpdateK" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important; float:right;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+                    <i class="material-icons">save</i>
+                  </button>
+                  <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnUpdateK">
+                    Save Changes
+                  </div>
                 </div>
                 <div class="tableWrapper1">
                   <div class="searchWrapper">
@@ -488,7 +498,7 @@ if (isset($_POST['endlabel'])) {
           });
 
           // Save
-          $("#btnUpdate").click(function () {
+          $("#btnUpdateF").click(function () {
             var tableData = JSON.stringify(hot.getData());
             $.ajax({
               type: 'POST',
@@ -570,11 +580,13 @@ if (isset($_POST['endlabel'])) {
             rowHeaders: true,
             colHeaders: true,
             contextMenu: true,
-            colWidths: [35, 120],
+            colWidths: [10, 35, 15, 120],
             columnSorting: true,
-            colHeaders: ['Kunde', 'Kunden CID'],
+            colHeaders: ['ID', 'Kunde', 'Protected', 'Kunden CID'],
             columns: [
+              {data: 'id', editor:false},
               {data: 'name'},
+              {data: 'protected'},
               {data: 'kundenCID'}
             ],
             stretchH: 'all',
@@ -656,11 +668,30 @@ if (isset($_POST['endlabel'])) {
              rowHeaders: true,
              colHeaders: true,
              contextMenu: true,
-             colWidths: [35, 120],
+             colWidths: [10, 35, 120],
              columnSorting: true,
-             colHeaders: ['Lieferant', 'Deren CID'],
+             colHeaders: ['ID', 'Lieferant', 'Deren CID'],
              columns: [
-              {data: 'name'},
+              {data: 'id', editor:false},
+              {data: 'name', type: 'dropdown', source: function (query, process) {
+                $.ajax({
+                  //url: 'php/cars.php', // commented out because our website is hosted as a set of static pages
+                  url: 'api?companies=1',
+                  dataType: 'json',
+                  data: {
+                    query: query
+                  },
+                  success: function (response) {
+                    console.log("response", response);
+                    //process(JSON.parse(response.data)); // JSON.parse takes string as a argument
+                    //process(JSON.parse(response[1]));
+                    process(JSON.parse(response));
+
+
+                  }
+                });
+                }
+              },
               {data: 'derenCID'}
              ],
              stretchH: 'all',
@@ -700,6 +731,40 @@ if (isset($_POST['endlabel'])) {
             hot2.render();
           });
 
+
+          // For Saving
+          $("#btnUpdateL").click(function () {
+            var tableData = JSON.stringify(hot2.getData());
+            $.ajax({
+              type: 'POST',
+              url: "api?sfirmen=2",
+              data: tableData,
+              contentType: "application/json; charset=utf-8",
+              dataType: 'json',
+              success: function (res1) {
+                if (res1.updated < 0) {
+                  var snackbarContainer3 = document.querySelector('#firmenUpdated');
+                  var dataFirmenUpdated2 = {
+                    message: 'No Changes Made',
+                    timeout: 2000
+                  };
+                  snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
+                } else if (res1.updated > 0) {
+                    var snackbarContainer2 = document.querySelector('#firmenUpdated');
+                    var dataFirmenUpdated = {
+                      message: 'Successfully Updated ' + res1.updated + ' entries',
+                      timeout: 2000
+                    };
+                    snackbarContainer2.MaterialSnackbar.showSnackbar(dataFirmenUpdated);
+                }
+              },
+              error: function (xhr) {
+                  alert(xhr.responseText);
+              }
+            });
+            $("#btnUpdate").blur();
+          });
+
             // For Loading
             $.ajax({
               type: "GET",
@@ -712,7 +777,7 @@ if (isset($_POST['endlabel'])) {
                 hot2.loadData(res2);
                 hot2.render();
                 var lieferantenHeight = $('#lieferantenTable > .ht_master > .wtHolder > .wtHider').css( "height" );
-                console.log('lieferantenHeight: ' + lieferantenHeight);
+                //console.log('lieferantenHeight: ' + lieferantenHeight);
                 $('.tableWrapper1').css("height",lieferantenHeight);
                 $('#lieferantenTable').css("height",lieferantenHeight);
                 $('#lieferantenTable > .ht_master').css("height",lieferantenHeight);
@@ -727,6 +792,7 @@ if (isset($_POST['endlabel'])) {
               }
             })
           });
+
 
           document.addEventListener("DOMContentLoaded", function() {
             $(".mdl-layout__content").overlayScrollbars({
@@ -746,16 +812,16 @@ if (isset($_POST['endlabel'])) {
       </div>
 
       <!-- Google font-->
-      <link prefetch rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+      <link prefetch rel="preload stylesheet" as="style" href="dist/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
 
       <!-- material icons -->
-      <link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css" onload="this.rel='stylesheet'">
-      <link rel="preload stylesheet" as="style" href="assets/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" href="dist/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
 
       <!-- font awesome -->
-      <link rel="preload stylesheet" as="style" href="assets/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" href="dist/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
 
       <!-- handsontable -->
-      <link href="assets/css/handsontable.min.css" rel="preload stylesheet" as="style" media="screen" onload="this.rel='stylesheet'">
+      <link href="dist/css/handsontable.min.css" rel="preload stylesheet" as="style" media="screen" onload="this.rel='stylesheet'">
 </body>
 </html>

@@ -12,37 +12,37 @@ global $dbhandle;
   <?php echo file_get_contents("views/meta.html"); ?>
 
   <!-- material design -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/material.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/material.min.js"></script>
 
   <!-- material animations UNUSED
   <script src="node_modules/@material/animation/dist/mdc.animation.min.js"></script>
-  <link rel="stylesheet" href="assets/css/material_animation.min.css"> -->
+  <link rel="stylesheet" href="dist/css/material_animation.min.css"> -->
 
   <!-- jquery -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/jquery-3.3.1.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/jquery-3.3.1.min.js"></script>
 
   <!-- Datatables -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/jquery.dataTables.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.material.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.select.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/dataTables/dataTables.responsive.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/dataTables/jquery.dataTables.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/dataTables/dataTables.material.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/dataTables/dataTables.select.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/dataTables/dataTables.responsive.min.js"></script>
 
   <!-- moment -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/moment/moment.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/moment/datetime-moment.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/datetime-moment.min.js"></script>
 
   <!-- OverlayScrollbars -->
-  <link type="text/css" href="assets/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
-  <link type="text/css" href="assets/css/os-theme-minimal-dark.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/OverlayScrollbars.min.js"></script>
+  <link type="text/css" href="dist/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+  <link type="text/css" href="dist/css/os-theme-minimal-dark.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/OverlayScrollbars.min.js"></script>
 
   <!-- pace -->
-  <script rel="preload" as="script" type="text/javascript" src="assets/js/pace.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/pace.js"></script>
 <!-- mdl modal -->
-<script rel="preload" as="script" type="text/javascript" src="assets/js/mdl-jquery-modal-dialog.js"></script>
+<script rel="preload" as="script" type="text/javascript" src="dist/js/mdl-jquery-modal-dialog.js"></script>
   <style>
-    <?php echo file_get_contents("assets/css/style.min.css"); ?>
-    <?php echo file_get_contents("assets/css/material.min.css"); ?>
+    <?php echo file_get_contents("dist/css/style.min.css"); ?>
+    <?php echo file_get_contents("dist/css/material.min.css"); ?>
   </style>
 </head>
 <body>
@@ -63,7 +63,7 @@ global $dbhandle;
     <main class="mdl-layout__content">
         <div id="loading">
 
-          <img id="loading-image" src="assets/images/Preloader_4.gif" alt="Loading..." />
+          <img id="loading-image" src="dist/images/Preloader_4.gif" alt="Loading..." />
         </div>
         <div class="mdl-grid">
           <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
@@ -118,38 +118,38 @@ global $dbhandle;
                 </div>
                 <div class="mdl-cell mdl-cell--8-col mdl-cell--4-col-phone dataTables_wrapper mdl-2col">
             <?php
-            $lieferant = '';
-            $tdCID = '';
+            // $lieferant = '';
+            // $tdCID = '';
 
-            if (! empty($_POST['tLieferant'])){
-              $lieferant = $_POST['tLieferant'];
-              $query = $lieferant;
+            // if (! empty($_POST['tLieferant'])){
+            //   $lieferant = $_POST['tLieferant'];
+            //   $query = $lieferant;
 
-              // DEBUG
-              //echo '<b>Debug:</b><br>';
-              //echo '<pre>';
-              // END DEBUG
+            //   // DEBUG
+            //   //echo '<b>Debug:</b><br>';
+            //   //echo '<pre>';
+            //   // END DEBUG
 
-              $lieferant_escape = mysqli_real_escape_string($dbhandle, $query);
-              $lieferant_escape = '%' . $lieferant_escape . '%';
-              // search first for existance of company
-              $lieferant_query = mysqli_query($dbhandle, "SELECT `id`,`name` FROM `companies` WHERE `name` LIKE '$lieferant_escape'");
+            //   $lieferant_escape = mysqli_real_escape_string($dbhandle, $query);
+            //   $lieferant_escape = '%' . $lieferant_escape . '%';
+            //   // search first for existance of company
+            //   $lieferant_query = mysqli_query($dbhandle, "SELECT `id`,`name` FROM `companies` WHERE `name` LIKE '$lieferant_escape'");
 
-              if ($fetch = mysqli_fetch_array($lieferant_query)) {
-                //Found a companyn - now show all maintenances for company
-                $lieferant_id = $fetch[0];
-                $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
-              }
+            //   if ($fetch = mysqli_fetch_array($lieferant_query)) {
+            //     //Found a companyn - now show all maintenances for company
+            //     $lieferant_id = $fetch[0];
+            //     $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
+            //   }
 
-            } elseif (! empty($_POST['tdCID'])){
-              $tdCID = $_POST['tdCID'];
-              $query = $tdCID;
+            // } elseif (! empty($_POST['tdCID'])){
+            //   $tdCID = $_POST['tdCID'];
+            //   $query = $tdCID;
 
-              $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
-              $dCID_escape = '%' . $dCID_escape . '%';
+            //   $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
+            //   $dCID_escape = '%' . $dCID_escape . '%';
 
-              $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
-            }
+            //   $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
+            // }
 
               echo '
               <table id="dataTable3" class="mdl-data-table striped" style="width: 100%">
@@ -300,15 +300,7 @@ global $dbhandle;
             $CET = new DateTimeZone('Europe/Berlin');
             //$date = 'Wed, 5 Dec 2018 11:51:41 +0000';
 
-            // if ($domain == 'equinix.com') {
-            //   $date2 = DateTime::createFromFormat("D, d M Y H:i:s O P", $date);
-            // } else {
-            //   $date2 = DateTime::createFromFormat("D, d M Y H:i:s O", $date);
-            // }
             $date2 = new DateTime($date);
-            //var_dump('date2: ' + $date2);
-            //var_dump('date: ' + $date);
-            //$tz = $date2->format('P');
             $timezone = $date2->getTimezone();
             $date2 = new DateTime($date, $timezone);
             $date2->setTimezone($CET);
@@ -322,7 +314,8 @@ global $dbhandle;
             if(!$FOUND_BODY) {
               $parts = $payload->getParts();
               foreach ($parts  as $part) {
-                if($part['body'] && $part['mimeType'] == 'text/html') {
+                
+                if($part['body'] && $part['mimeType'] == 'text/plain' ||  $part['mimeType'] == 'text/html') {
                     $FOUND_BODY = decodeBody($part['body']->data);
                     break;
                 }
@@ -431,7 +424,6 @@ global $dbhandle;
                     <td>' . $domain . '</td>
                   </tr>';
 
-              /* MAIL PREVIEW */
 
               echo '<dialog id="dialog_' . $message_id . '" class="mdl-dialog mailDialog1" style="width: 800px;">
                     <div class="mailcSelectHeader">
@@ -442,7 +434,6 @@ global $dbhandle;
                         <i class="material-icons">close</i>
                       </button>
                     </div>
-
                     <div class="mdl-dialog__content">
                       <p>
                       <div class="mailcHR">NT</div>
@@ -582,6 +573,7 @@ global $dbhandle;
                         <th class=""></th>
                         <th class="">Maileingang</th>
                         <th>Start Date/Time</th>
+                        <th>End Date/Time</th>
                         <th>ID</th>
                         <th>Received Mail ID</th>
                         <th>Company</th>
@@ -652,6 +644,7 @@ global $dbhandle;
                         { title: "View" },
                         { data: "maileingang" },
                         { data: "startDateTime" },
+                        { data: "endDateTime" },
                         { data: "id" },
                         { data: "receivedmail" },
                         { data: "name" },
@@ -663,11 +656,11 @@ global $dbhandle;
                           "visible": true,
                           "searchable": false
                       },{
-                          "targets": [ 3, 4 ],
+                          "targets": [ 4, 5 ],
                           "visible": false,
                           "searchable": false
                       },{
-                        targets: [6], render: function (a, b, data, d) {
+                        targets: [7], render: function (a, b, data, d) {
                           if (data['done'] === '1'){
                             return '<span class="mdi mdi-24px mdi-check-decagram mdi-dark"></span>';
                           } else if (data['done'] === '0') {
@@ -679,14 +672,14 @@ global $dbhandle;
                       },{
                         targets: [0], render: function (a, b, data, d) {
                           if (data['id'] != ''){
-                            return '<a href="addedit?mid='+data['id']+'&update=1&gmid='+data['receivedmail']+'"><button style=\'margin-left:auto;margin-right:auto;text-align:center;\' id=\'sendMailbtn\' type=\'button\' class=\'mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored\'><span class=\'mdi mdi-file-find mdi-24px\'></span></button></a>'
+                            return '<a href="addedit?mid='+data['id']+'&update=1&gmid='+data['receivedmail']+'"><button style=\'margin-left:auto;margin-right:auto;margin-top: -3px;text-align:center;\' id=\'sendMailbtn\' type=\'button\' class=\'mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored\'><span class=\'mdi mdi-file-find mdi-24px\'></span></button></a>'
                           } else {
                             return '';
                           }
                         }
                       },
-                      { responsivePriority: 1, targets: [ 0, 6 ] },
-                      { responsivePriority: 2, targets: [ 2, 5 ] }
+                      { responsivePriority: 1, targets: [ 0, 7 ] },
+                      { responsivePriority: 2, targets: [ 2, 3, 6 ] }
                     ],
                     responsive: true,
                     order: [ 1, 'desc' ]
@@ -766,22 +759,22 @@ global $dbhandle;
       </div>
 
       <!-- mdl modal -->
-      <link prefetch rel="preload stylesheet" as="style" href="assets/css/mdl-jquery-modal-dialog.css" type="text/css" onload="this.rel='stylesheet'">
+      <link prefetch rel="preload stylesheet" as="style" href="dist/css/mdl-jquery-modal-dialog.css" type="text/css" onload="this.rel='stylesheet'">
 
       <!-- datatables css -->
-      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/responsive.dataTables.min.css" onload="this.rel='stylesheet'">
-      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/select.dataTables.min.css" onload="this.rel='stylesheet'">
-      <link rel="preload stylesheet" as="style" type="text/css" href="assets/css/dataTables/dataTables.material.min.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/dataTables/responsive.dataTables.min.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/dataTables/select.dataTables.min.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/dataTables/dataTables.material.min.css" onload="this.rel='stylesheet'">
 
       <!-- font awesome -->
-      <link rel="preload stylesheet" as="style" href="assets/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" href="dist/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
 
       <!-- material icons -->
-      <link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css" onload="this.rel='stylesheet'">
-      <link rel="preload stylesheet" as="style" href="assets/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css" onload="this.rel='stylesheet'">
+      <link rel="preload stylesheet" as="style" href="dist/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
 
       <!-- Google font-->
-      <link prefetch rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+      <link prefetch rel="preload stylesheet" as="style" href="dist/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
 
 </body>
 </html>

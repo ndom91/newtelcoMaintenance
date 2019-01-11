@@ -14,37 +14,37 @@
     "prefer_related_applications": false,
     "icons": [
         {
-            "src": "assets/images/favicon/favicon-32x32.png",
+            "src": "dist/images/favicon/favicon-32x32.png",
             "type": "image/png",
             "sizes": "32x32"
         },
         {
-            "src": "assets/images/favicon/favicon-96x96.png",
+            "src": "dist/images/favicon/favicon-96x96.png",
             "type": "image/png",
             "sizes": "96x96"
         },
         {
-            "src": "assets/images/favicon/favicon-16x16.png",
+            "src": "dist/images/favicon/favicon-16x16.png",
             "type": "image/png",
             "sizes": "16x16"
         },
         {
-            "src": "assets/images/favicon/apple-icon-114x114.png",
+            "src": "dist/images/favicon/apple-icon-114x114.png",
             "type": "image/png",
             "sizes": "114x114"
         },
         {
-            "src": "assets/images/favicon/apple-icon-120x120.png",
+            "src": "dist/images/favicon/apple-icon-120x120.png",
             "type": "image/png",
             "sizes": "120x120"
         },
         {
-            "src": "assets/images/favicon/apple-icon-152x152.png",
+            "src": "dist/images/favicon/apple-icon-152x152.png",
             "type": "image/png",
             "sizes": "152x152"
         },
         {
-            "src": "assets/images/favicon/android-icon-192x192.png",
+            "src": "dist/images/favicon/android-icon-192x192.png",
             "type": "image/png",
             "sizes": "192x192"
         }

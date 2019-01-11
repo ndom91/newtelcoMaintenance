@@ -26,7 +26,7 @@
 
      //var_dump($dbhandle);
 
-    $kundenQ = mysqli_query($dbhandle, "SELECT kundenCID.kundenCID, companies.name FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id") or die(mysqli_error($dbhandle));
+    $kundenQ = mysqli_query($dbhandle, "SELECT kundenCID.id, kundenCID.kundenCID, kundenCID.protected, companies.name FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id") or die(mysqli_error($dbhandle));
 
     //var_dump($kundenQ);
 
@@ -66,7 +66,7 @@
      * SETTINGS - LIEFERANTEN
      **************************/
 
-    $lieferantenQ = mysqli_query($dbhandle, "SELECT companies.name, lieferantCID.derenCID  FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id") or die(mysqli_error($dbhandle));
+    $lieferantenQ = mysqli_query($dbhandle, "SELECT lieferantCID.id, companies.name, lieferantCID.derenCID  FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id") or die(mysqli_error($dbhandle));
 
     $lieferantenArray = array();
 
@@ -101,55 +101,108 @@
     /**************************
      * SAVE SETTINGS - FIRMEN
      *************************/
+    if ($_GET['sfirmen'] == 1) {
+      // sfirmen = 1 - FIRMEN
 
-    // get existing state from DB
-    $firmenQ1 = mysqli_query($dbhandle, "SELECT * FROM companies;") or die(mysqli_error($dbhandle));
-    $firmenArray2 = array();
-    while($firmenResults = mysqli_fetch_array($firmenQ1)) {
-      $firmenArray2[] = $firmenResults;
-    }
+      // get existing state from DB
+      $firmenQ1 = mysqli_query($dbhandle, "SELECT * FROM companies;") or die(mysqli_error($dbhandle));
+      $firmenArray2 = array();
+      while($firmenResults = mysqli_fetch_array($firmenQ1)) {
+        $firmenArray2[] = $firmenResults;
+      }
 
-    // get new state from xhr request
-    $request_body = file_get_contents('php://input');
-    $data = array();
-    $data = json_decode($request_body, true);
-    $arraySize = sizeof($data);
+      // get new state from xhr request
+      $request_body = file_get_contents('php://input');
+      $data = array();
+      $data = json_decode($request_body, true);
+      $arraySize = sizeof($data);
 
-    $updateArray = array();
+      $updateArray = array();
 
-    // loop through all rows (based on xhr row size) to compare db state to xhr data
-    for ($row = 0; $row < $arraySize; $row++) {
-      $idToSearch = $firmenArray2[$row][0];
-      $keys = array_search($idToSearch, array_column($data, '0'));
+      // loop through all rows (based on xhr row size) to compare db state to xhr data
+      for ($row = 0; $row < $arraySize; $row++) {
+        $idToSearch = $firmenArray2[$row][0];
+        $keys = array_search($idToSearch, array_column($data, '0'));
 
-      // check each row for changes, mark rows that have changes in $updateArray
-      for ($col = 0; $col < 4; $col++) {
-        $needsUpdate = 0;
-        if ($firmenArray2[$row][$col] != $data[$keys][$col]) {
-          array_push($updateArray,$data[$keys][0]);
+        // check each row for changes, mark rows that have changes in $updateArray
+        for ($col = 0; $col < 4; $col++) {
+          $needsUpdate = 0;
+          if ($firmenArray2[$row][$col] != $data[$keys][$col]) {
+            array_push($updateArray,$data[$keys][0]);
+          }
         }
       }
-    }
 
-    // check if $updateArray has any queued changes, if so - commit them
-    $arraySize2 = sizeof($updateArray);
-    $updateFirmen = array();
-    if ($arraySize2 > 0) {
-      for ($i = 0; $i < $arraySize2; $i++) {
-        $row = $updateArray[$i];
-        $row2 = array_search($row, array_column($data, '0'));
-        $updateQ = 'UPDATE companies SET name = "' . $data[$row2][1] . '",  mailDomain = "' . $data[$row2][2] . '", maintenanceRecipient = "' . $data[$row2][3] . '" WHERE id LIKE "' . $data[$row2][0] . '"';
-        $firmenQ2 = mysqli_query($dbhandle, $updateQ) or die(mysqli_error($dbhandle));
-        if ($firmenQ2 == 'TRUE'){
-          $updateFirmen['updated'] = $updateFirmen['updated'] + 1;
+      // check if $updateArray has any queued changes, if so - commit them
+      $arraySize2 = sizeof($updateArray);
+      $updateFirmen = array();
+      if ($arraySize2 > 0) {
+        for ($i = 0; $i < $arraySize2; $i++) {
+          $row = $updateArray[$i];
+          $row2 = array_search($row, array_column($data, '0'));
+          $updateQ = 'UPDATE companies SET name = "' . $data[$row2][1] . '",  mailDomain = "' . $data[$row2][2] . '", maintenanceRecipient = "' . $data[$row2][3] . '" WHERE id LIKE "' . $data[$row2][0] . '"';
+          $firmenQ2 = mysqli_query($dbhandle, $updateQ) or die(mysqli_error($dbhandle));
+          if ($firmenQ2 == 'TRUE'){
+            $updateFirmen['updated'] = $updateFirmen['updated'] + 1;
+          }
+        }
+        echo json_encode($updateFirmen);
+      } else {
+        $updateFirmen['updated'] = -1;
+        echo json_encode($updateFirmen);
+      }
+    } elseif ($_GET['sfirmen'] == 2) {
+      // sfirmen = 2 - LIEFERANTEN
+
+      // get existing state from DB
+      $lieferantQ1 = mysqli_query($dbhandle, "SELECT lieferantCID.id, companies.name, lieferantCID.derenCID FROM lieferantCID LEFT JOIN companies  ON lieferantCID.lieferant = companies.id;") or die(mysqli_error($dbhandle));
+      $lieferantArray2 = array();
+      while($lieferantResults = mysqli_fetch_array($lieferantQ1)) {
+        $lieferantArray2[] = $lieferantResults;
+      }
+      // get new state from xhr request
+      $request_body = file_get_contents('php://input');
+      $data = array();
+      $data = json_decode($request_body, true);
+      $arraySize = sizeof($data);
+
+      $updateArray = array();
+
+      // loop through all rows (based on xhr row size) to compare db state to xhr data
+      for ($row = 0; $row < $arraySize; $row++) {
+        $idToSearch = $lieferantArray2[$row][0];
+        $keys = array_search($idToSearch, array_column($data, '0'));
+
+        // check each row for changes, mark rows that have changes in $updateArray
+        for ($col = 0; $col < 3; $col++) {
+          $needsUpdate = 0;
+          if ($lieferantArray2[$row][$col] != $data[$keys][$col]) {
+            array_push($updateArray,$data[$keys][0]);
+          }
         }
       }
-      echo json_encode($updateFirmen);
-    } else {
-      $updateFirmen['updated'] = -1;
-      echo json_encode($updateFirmen);
-    }
 
+      // check if $updateArray has any queued changes, if so - commit them
+      $arraySize2 = sizeof($updateArray);
+      $updateLieferant = array();
+      if ($arraySize2 > 0) {
+        for ($i = 0; $i < $arraySize2; $i++) {
+          $row = $updateArray[$i];
+          $row2 = array_search($row, array_column($data, '0'));
+          //$updateQ = 'UPDATE lieferantCID SET name = "' . $data[$row2][1] . '",  mailDomain = "' . $data[$row2][2] . '", maintenanceRecipient = "' . $data[$row2][3] . '" WHERE id LIKE "' . $data[$row2][0] . '"';
+          //$lieferantQ2 = mysqli_query($dbhandle, $updateQ) or die(mysqli_error($dbhandle));
+          //if ($lieferantQ2 == 'TRUE'){
+          //  $updateLieferant['updated'] = $updateLieferant['updated'] + 1;
+          //}
+        echo json_encode('lief updated: ' . $data[$row2][0]);
+        }
+      } else {
+        $updateLieferant['updated'] = -1;
+        echo json_encode('lief NOT updated: ' . $data);
+      }
+
+
+    }
   } elseif (isset($_GET['dCID'])) {
 
     /*****************************************
@@ -161,7 +214,7 @@
     //$dCID = preg_replace("/#.*?\n/", "\n", $dCID);
     $dCID = str_replace(",","','",$dCID);
 
-    $result = mysqli_query($dbhandle, "SELECT kundenCID.kundenCID, companies.name, kundenCID.kunde, companies.maintenanceRecipient FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id LEFT JOIN lieferantCID ON lieferantCID.id = kundenCID.lieferantCID WHERE lieferantCID.id IN ('$dCID')") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT kundenCID.kundenCID, kundenCID.protected, companies.name, kundenCID.kunde, companies.maintenanceRecipient FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id LEFT JOIN lieferantCID ON lieferantCID.id = kundenCID.lieferantCID WHERE lieferantCID.id IN ('$dCID')") or die(mysqli_error($dbhandle));
 
     $array2 = array();
 
@@ -187,6 +240,22 @@
 
     echo json_encode($array2);
 
+  } elseif (isset($_GET['companies'])) {
+
+    /********************************************
+     * SETTINGS - load companies column dropdown
+     ********************************************/
+
+    $result = mysqli_query($dbhandle, "SELECT companies.id, companies.name FROM companies;") or die(mysqli_error($dbhandle));
+
+    $array2 = array();
+
+    while($resultsrows = mysqli_fetch_assoc($result)) {
+      $array2[] = $resultsrows;
+    }
+
+    echo json_encode($array2);
+
   } elseif (isset($_GET['liefName'])) {
 
     /**************************************
@@ -200,7 +269,7 @@
     if ($fetch = mysqli_fetch_array($result0)) {
       //Found a company - now show all maintenances for company
       $company_id = $fetch[0];
-      $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.startDateTime, maintenancedb.done, maintenancedb.id, maintenancedb.receivedmail, companies.name FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
+      $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.done, maintenancedb.id, maintenancedb.receivedmail, companies.name FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
 
         $array2 = array();
 
@@ -242,6 +311,8 @@
     $odone = mysqli_real_escape_string($dbhandle, $fields[0]['odone']);
     $mailSentAt = mysqli_real_escape_string($dbhandle, $fields[0]['mailSentAt']);
     $mailDomain = mysqli_real_escape_string($dbhandle, $fields[0]['mailDomain']);
+    $kundenCompanies = mysqli_real_escape_string($dbhandle, $fields[0]['kundenCompanies']);
+
     $update = $fields[0]['update'];
     $updatedBy = $fields[0]['updatedBy'];
     $gmailLabelRemove = $fields[0]['gmailLabel'];
@@ -267,7 +338,7 @@
     }
 
     if ($update == '1') {
-      $resultx = mysqli_query($dbhandle, "UPDATE maintenancedb SET maileingang = '$omaileingang', receivedmail = '$oreceivedmail', bearbeitetvon = '$obearbeitetvon', lieferant = '$olieferantid', derenCIDid = '$oderenCIDid', startDateTime = '$ostartdatetime', endDateTime = '$oenddatetime', postponed = '$opostponed', notes = '$onotes', mailSentAt = '$mailSentAt', updatedBy = '$updatedBy', done = '$odone' WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
+      $resultx = mysqli_query($dbhandle, "UPDATE maintenancedb SET maileingang = '$omaileingang', receivedmail = '$oreceivedmail', bearbeitetvon = '$obearbeitetvon', lieferant = '$olieferantid', derenCIDid = '$oderenCIDid', startDateTime = '$ostartdatetime', endDateTime = '$oenddatetime', postponed = '$opostponed', notes = '$onotes', mailSentAt = '$mailSentAt', updatedBy = '$updatedBy', betroffeneKunden = '$kundenCompanies', done = '$odone' WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
 
       $resultx2 = mysqli_query($dbhandle, "SELECT id FROM maintenancedb WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
 
@@ -299,8 +370,8 @@
           $kundenIQ = mysqli_query($dbhandle, "INSERT INTO companies (name, mailDomain) VALUES ('$olieferant', '$mailDomain')") or die(mysqli_error($dbhandle));
         }
 
-        $resultx = mysqli_query($dbhandle, "INSERT INTO maintenancedb (id, maileingang, receivedmail, bearbeitetvon, lieferant, derenCIDid, startDateTime, endDateTime, postponed, notes, mailSentAt, updatedBy, done)
-        VALUES ('$lastID', '$omaileingang', '$oreceivedmail', '$obearbeitetvon', '$olieferantid', '$oderenCIDid', '$ostartdatetime', '$oenddatetime', '$opostponed', '$onotes', '$mailSentAt', '$updatedBy', '$odone')")  or die(mysqli_error($dbhandle));
+        $resultx = mysqli_query($dbhandle, "INSERT INTO maintenancedb (id, maileingang, receivedmail, bearbeitetvon, lieferant, derenCIDid, startDateTime, endDateTime, postponed, notes, mailSentAt, updatedBy, betroffeneKunden, done)
+        VALUES ('$lastID', '$omaileingang', '$oreceivedmail', '$obearbeitetvon', '$olieferantid', '$oderenCIDid', '$ostartdatetime', '$oenddatetime', '$opostponed', '$onotes', '$mailSentAt', '$updatedBy', '$kundenCompanies', '$odone')")  or die(mysqli_error($dbhandle));
 
         if ($resultx == 'TRUE'){
             $addeditA['added'] = 1;

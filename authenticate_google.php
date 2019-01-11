@@ -174,20 +174,20 @@ if ($_SESSION['access_token']['id_token'] === NULL):
 <!DOCTYPE html>
 <html lang="en">
 <style>
-<?php echo file_get_contents("assets/css/style.031218.min.css"); ?>
-<?php echo file_get_contents("assets/css/material.031218.min.css"); ?>
+<?php echo file_get_contents("dist/css/style.031218.min.css"); ?>
+<?php echo file_get_contents("dist/css/material.031218.min.css"); ?>
 </style>
 <div class="loginBG">
 <head>
     <title>Newtelco Maintenance | Login</title>
     <?php echo file_get_contents("views/meta.html"); ?>
-    <link rel="icon" href="assets/images/favicon/favicon.ico">
+    <link rel="icon" href="dist/images/favicon/favicon.ico">
 
     <!-- jquery -->
-    <script rel="preload" as="script" src="assets/js/jquery-3.3.1.min.js"></script>
+    <script rel="preload" as="script" src="dist/js/jquery-3.3.1.min.js"></script>
 
     <!-- material design -->
-    <script rel="preload" as="script" src="assets/js/material.min.js"></script>
+    <script rel="preload" as="script" src="dist/js/material.min.js"></script>
 
   </head>
 
@@ -199,7 +199,7 @@ if ($_SESSION['access_token']['id_token'] === NULL):
 
             <div class="demo-card-wide2 mdl-card mdl-shadow--6dp">
               <div class="mdl-card__title mdl-card__title__login">
-                <h2 class="mdl-card__title-text"><img height="27px" width="200px" src="assets/images/newtelco_full2_lightgray2.png"/></h2>
+                <h2 class="mdl-card__title-text"><img height="27px" width="200px" src="dist/images/newtelco_full2_lightgray2.png"/></h2>
               </div>
               <div class="mdl-card__supporting-text">
               <!-- login form -->
@@ -212,9 +212,9 @@ if ($_SESSION['access_token']['id_token'] === NULL):
                 <div class="signin_box">
                 <?php if (isset($authUrl)): ?>
                   <div class="request">
-                    <a class='login' href='<?= $authUrl ?>' data-onsuccess="onSignIn"><img class="signin_btn" src="assets/images/btn_google_signin_light_normal_web.png"
-onmouseover="this.src='assets/images/btn_google_signin_light_focus_web.png'"
-onmouseout="this.src='assets/images/btn_google_signin_light_normal_web.png'"
+                    <a class='login' href='<?= $authUrl ?>' data-onsuccess="onSignIn"><img class="signin_btn" src="dist/images/btn_google_signin_light_normal_web.png"
+onmouseover="this.src='dist/images/btn_google_signin_light_focus_web.png'"
+onmouseout="this.src='dist/images/btn_google_signin_light_normal_web.png'"
 border="0" alt=""/></a>
                   </div>
                 <?php
@@ -233,10 +233,10 @@ border="0" alt=""/></a>
 </div>
 
 <!-- Google font-->
-<link prefetch rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+<link prefetch rel="preload stylesheet" as="style" href="dist/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
 
 <!-- material design -->
-<link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css">
+<link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css">
 
 </html>
 

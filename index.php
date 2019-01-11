@@ -42,13 +42,13 @@ require('authenticate_google.php');
   <?php echo file_get_contents("views/meta.html"); ?>
 
   <!-- material design -->
-  <script rel="preload" as="script" src="assets/js/material.min.js"></script>
+  <script rel="preload" as="script" src="dist/js/material.min.js"></script>
 
   <!-- pace -->
-  <script rel="preload" as="script" src="assets/js/pace.js"></script>
+  <script rel="preload" as="script" src="dist/js/pace.js"></script>
 
   <!-- jquery -->
-  <script rel="preload" as="script" src="assets/js/jquery-3.3.1.min.js"></script>
+  <script rel="preload" as="script" src="dist/js/jquery-3.3.1.min.js"></script>
 
   <script>
     var RELOAD_EVERY = 10;
@@ -58,8 +58,8 @@ require('authenticate_google.php');
   </script>
 
   <style>
-    <?php echo file_get_contents("assets/css/style.min.css"); ?>
-    <?php echo file_get_contents("assets/css/material.min.css"); ?>
+    <?php echo file_get_contents("dist/css/style.min.css"); ?>
+    <?php echo file_get_contents("dist/css/material.min.css"); ?>
   </style>
 </head>
 <body>
@@ -110,7 +110,7 @@ require('authenticate_google.php');
                       <?php else : ?>
                         <br>You have <b><?php echo $results3['messagesUnread'] ?></b> maintenance mails open.</h6>
                         <br><br>And <b><?php echo $results4['messagesTotal'] ?></b> maintenances completed!
-                        <br><br>Good luck <img style="height:16px;width:16px;" src="assets/images/google_smiley.png"/>
+                        <br><br>Good luck <img style="height:16px;width:16px;" src="dist/images/google_smiley.png"/>
                         <br><br>
                       <?php endif; ?>
 
@@ -138,19 +138,19 @@ require('authenticate_google.php');
         <?php echo file_get_contents("views/footer.html"); ?>
 
         <!-- font awesome -->
-        <link rel="preload stylesheet" as="style" href="assets/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
+        <link rel="preload stylesheet" as="style" href="dist/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
 
         <!-- material design -->
-        <link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css" onload="this.rel='stylesheet'">
-        <link rel="preload stylesheet" as="style" href="assets/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+        <link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css" onload="this.rel='stylesheet'">
+        <link rel="preload stylesheet" as="style" href="dist/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
 
         <!-- material icons -->
-        <link rel="preload stylesheet" as="style" href="assets/fonts/materialicons400.css" onload="this.rel='stylesheet'">
-        <link rel="preload stylesheet" as="style" href="assets/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
+        <link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css" onload="this.rel='stylesheet'">
+        <link rel="preload stylesheet" as="style" href="dist/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
 
         <!-- moment -->
-        <script rel="preload" as="script" type="text/javascript" src="assets/js/moment/moment.min.js"></script>
-        <script rel="preload" as="script" type="text/javascript" src="assets/js/moment/moment-timezone-with-data.min.js"></script>
+        <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment.min.js"></script>
+        <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment-timezone-with-data.min.js"></script>
 
       </div>
 </body>

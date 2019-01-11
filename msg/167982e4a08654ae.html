@@ -1,0 +1,189 @@
+Dear Nikola
+
+ 
+
+If you use double tagged frames with outer tag 1305 then you will get encapsulation with orange
+
+ 
+
+Just change configuration on your port, and write “vlan tags outer 1305 inner 205” instead of “vlan-id 1305’
+
+ 
+
+And you will have vlan 205 facing Orange
+
+ 
+
+Best regards | Mit freundlichen Grüßen
+
+ 
+
+Nodar Saldadze
+
+​Deputy Head of Technical Department
+
+ 
+
+NewTelco GmbH|Mainzer Landstr. 351-353|60326 Frankfurt a. M.|DE
+
+T: +49 69 75 00 27 39|M: +49 ​173 86 96 174 | <mailto:orogova@newtelco.de> ​nsaldadze@newtelco.de
+
+ <http://www.newtelco.com/> www.newtelco.com|24/7 NOC +49 69 75 00 27 30| <mailto:service@newtelco.de> service@newtelco.de
+
+ 
+
+
+
+
+
+ 
+
+From: service@newtelco.de <service@newtelco.de> On Behalf Of Nikola Krpan
+Sent: Monday, 10 December 2018 13:19
+To: service@newtelco.de
+Cc: 'khatia khatiashvili' <khatia.khatiashvili@europeer.de>
+Subject: Re: Orange
+
+ 
+
+Hi Nodar,
+
+Thanks for reply.
+
+They said that they have encapsulation configured on their side.
+I have requested port configuration from Orange and will let you know when I have something from them
+
+Kind regards,
+Nikola
+
+On 12/10/18 1:03 PM, service@newtelco.de <mailto:service@newtelco.de>  wrote:
+
+Dear Nikola
+
+ 
+
+There are no connection with Vodafona on Vlan 205, 
+
+ 
+
+with Europeer  we have only Vlan 1301-1305, from which only Vlan 1305 is Orange.
+
+ 
+
+If you need configuration change we won’t be able to fulfill your request because ordering contact is Veon and request should be initialized from them.
+
+ 
+
+But, if you use secondary Vlan (C-vlan), then your will be transported transparently till Oragne:
+
+ 
+
+On your side circuit will be looking next way:
+
+ 
+
+Europeer ß Outer Vlan: 1305, Inner Vlan: 205 à NewTelco ß Vlan 205 à Orange
+
+ 
+
+ 
+
+ 
+
+Best regards | Mit freundlichen Grüßen
+
+ 
+
+Nodar Saldadze
+
+​Deputy Head of Technical Department
+
+ 
+
+NewTelco GmbH|Mainzer Landstr. 351-353|60326 Frankfurt a. M.|DE
+
+T: +49 69 75 00 27 39|M: +49 ​173 86 96 174 | <mailto:orogova@newtelco.de> ​nsaldadze@newtelco.de
+
+ <http://www.newtelco.com/> www.newtelco.com|24/7 NOC +49 69 75 00 27 30| <mailto:service@newtelco.de> service@newtelco.de
+
+ 
+
+
+
+
+
+ 
+
+From: service@newtelco.de <mailto:service@newtelco.de>   <mailto:service@newtelco.de> <service@newtelco.de> On Behalf Of Nikola Krpan
+Sent: Wednesday, 5 December 2018 12:38
+To: Service NewTelco  <mailto:service@newtelco.de> <service@newtelco.de>
+Cc: khatia khatiashvili  <mailto:khatia.khatiashvili@europeer.de> <khatia.khatiashvili@europeer.de>
+Subject: Orange
+
+ 
+
+Dear NewTelco,
+
+Can you please confirm that ports are configured on your side for connection between Europeer and Orange CID 012946.
+
+And could you also tell what is port configuration on Orange side, is it access or trunk (vlan 205).
+
+-- 
+
+Best regards
+
+Nikola Krpan
+
+Europeer Exchange
+
+mail: nikola.krpan@europeer.de <mailto:nikol.krpan@europeer.de> 
+
+ 
+
+
+
+
+
+
+
+
+CONFIDENTIAL:
+
+This e-mail, which contains confidential information, is solely for the use of the intended recipient.
+
+If you have received this e-mail in error, please notify the sender and delete this e-mail immediately from your system.
+
+Any unauthorized copying, disclosure or distribution of the material in this e-mail is strictly prohibited.
+
+ 
+
+ 
+
+-- 
+
+Best regards
+
+Nikola Krpan
+
+Europeer Exchange
+
+mail: nikola.krpan@europeer.de <mailto:nikol.krpan@europeer.de> 
+
+ 
+
+
+
+
+
+
+
+CONFIDENTIAL:
+
+This e-mail, which contains confidential information, is solely for the use of the intended recipient.
+
+If you have received this e-mail in error, please notify the sender and delete this e-mail immediately from your system.
+
+Any unauthorized copying, disclosure or distribution of the material in this e-mail is strictly prohibited.
+
+ 
+

@@ -1,0 +1,153 @@
+Dear Rubin,
+
+
+
+please check again.
+
+
+
+Seems there was a short interruption.
+
+
+
+Best regards | Mit freundlichen Grüßen
+
+
+
+*Andreas Lissitsin*
+
+Transmission Service Engineer
+
+
+
+NewTelco GmbH *|* Mainzer Landstr. 351-353 *|* 60326 Frankfurt a. M. *|* DE
+
+T: +49 69 75 00 27 58 *| *M: +49 173 344 11 36  *|* alissitsin@newtelco.de
+
+www.newtelco.com <www.newtelco.com%20> *|* 24/7 NOC +49 69 75 00 27 30 *|*
+service@newtelco.de
+
+
+
+[image: 15.05_200]
+
+
+
+*Von:* service@newtelco.de <service@newtelco.de> *Im Auftrag von *Rubin
+Shafiev
+*Gesendet:* Mittwoch, 28. November 2018 03:38
+*An:* Service@newtelco.de
+*Cc:* noc@variti.com
+*Betreff:* Network is unavailable
+
+
+
+Hello
+
+
+Rack Rebstöcker Strasse 25-31, Building B, Room B 4.01, rack 0439
+Our network - 94.249.161.64/29 - ghostnet
+
+Right now network is unavailable.
+
+Please, check.
+
+Thank you.
+
+
+
+# traceroute -I 94.249.161.68
+
+traceroute to 94.249.161.68 (94.249.161.68), 30 hops max, 60 byte packets
+
+ 1  192.168.240.135 (192.168.240.135)  0.132 ms  0.111 ms  0.108 ms
+
+ 2  192.168.240.6 (192.168.240.6)  0.164 ms  0.165 ms  0.177 ms
+
+ 3  85-143-254-217.customer.comfortel.pro (85.143.254.217)  0.610 ms  0.616
+ms  0.628 ms
+
+ 4  * * *
+
+ 5  * * *
+
+ 6  * * *
+
+ 7  * * *
+
+ 8  * * *
+
+ 9  *^C
+
+
+
+
+
+Nodeping:
+
+
+
+Time    Location          Run Time        Response        Result
+
+2018/11/28 5:35:49 AM        RO      5000    timeout / Timeout       FAIL
+
+2018/11/28 5:34:49 AM        RO      5000    timeout / Timeout       FAIL
+
+2018/11/28 5:33:49 AM        UK LD RO     1119    error / Error: Error:
+connect ENETUNREACH 94.249.161.69:1194    FAIL
+
+2018/11/28 5:32:16 AM        UK      101      Connected      PASS
+
+2018/11/28 5:31:11 AM        RO LD UK     22        Connected      PASS
+
+2018/11/28 5:29:51 AM        RO      5001    timeout / Timeout       FAIL
+
+2018/11/28 5:28:51 AM        RO      5000    timeout / Timeout       FAIL
+
+2018/11/28 5:27:51 AM        PL NL RO      149      error / Error: Error:
+connect EHOSTUNREACH 94.249.161.69:1194    FAIL
+
+2018/11/28 5:26:07 AM        PL       26        Connected      PASS
+
+2018/11/28 5:25:07 AM        PL       24        Connected      PASS
+
+2018/11/28 5:24:07 AM        PL       26        Connected      PASS
+
+2018/11/28 5:23:07 AM        PL       27        Connected      PASS
+
+2018/11/28 5:22:07 AM        PL       26        Connected      PASS
+
+2018/11/28 5:21:07 AM        PL       26        Connected      PASS
+
+2018/11/28 5:20:07 AM        FR NL PL       24        Connected      PASS
+
+2018/11/28 5:18:43 AM        FR       4999    timeout / Timeout       FAIL
+
+2018/11/28 5:17:43 AM        FR       5000    timeout / Timeout       FAIL
+
+2018/11/28 5:16:43 AM        FR       5001    timeout / Timeout       FAIL
+
+2018/11/28 5:15:43 AM        FR       5000    timeout / Timeout       FAIL
+
+2018/11/28 5:14:43 AM        FR       4999    timeout / Timeout       FAIL
+
+2018/11/28 5:13:43 AM        FR       5000    timeout / Timeout       FAIL
+
+2018/11/28 5:12:43 AM        FR       5000    timeout / Timeout       FAIL
+
+2018/11/28 5:11:43 AM        RO UK FR     90        error / Error: Error:
+connect EHOSTUNREACH 94.249.161.69:1194    FAIL
+
+2018/11/28 5:10:13 AM        RO      75        Connected      PASS
+
+
+
+
+
+-- 
+
+Regards,
+
+Rubin Shafiev
+
+rubinsh@variti.com

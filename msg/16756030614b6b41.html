@@ -1,0 +1,99 @@
+Hi,
+
+The IP 123.206.49.29 has just been banned by Fail2Ban after
+3 attempts against apache-noscript.
+
+
+Here is more information about 123.206.49.29 :
+
+% [whois.apnic.net]
+% Whois data copyright terms    http://www.apnic.net/db/dbcopyright.html
+
+% Information related to '123.206.0.0 - 123.207.255.255'
+
+% Abuse contact for '123.206.0.0 - 123.207.255.255' is 'ipas@cnnic.cn'
+
+inetnum:        123.206.0.0 - 123.207.255.255
+netname:        TencentCloud
+descr:          Tencent cloud computing (Beijing) Co., Ltd.
+descr:          Floor 6, Yinke Building,38 Haidian St,
+descr:          Haidian District Beijing
+admin-c:        JT1125-AP
+tech-c:         JX1747-AP
+country:        CN
+mnt-by:         MAINT-CNNIC-AP
+mnt-lower:      MAINT-CNNIC-AP
+mnt-routes:     MAINT-CNNIC-AP
+mnt-irt:        IRT-CNNIC-CN
+status:         ALLOCATED PORTABLE
+last-modified:  2015-01-29T06:14:03Z
+source:         APNIC
+
+irt:            IRT-CNNIC-CN
+address:        Beijing, China
+e-mail:         ipas@cnnic.cn
+abuse-mailbox:  ipas@cnnic.cn
+admin-c:        IP50-AP
+tech-c:         IP50-AP
+auth:           # Filtered
+remarks:        Please note that CNNIC is not an ISP and is not
+remarks:        empowered to investigate complaints of network abuse.
+remarks:        Please contact the tech-c or admin-c of the network.
+mnt-by:         MAINT-CNNIC-AP
+last-modified:  2017-11-01T08:57:39Z
+source:         APNIC
+
+person:         James Tian
+address:        9F, FIYTA Building, Gaoxinnanyi Road,Southern
+address:        District of Hi-tech Park, Shenzhen
+country:        CN
+phone:          +86-755-86013388-84952
+e-mail:         harveyduan@tencent.com
+nic-hdl:        JT1125-AP
+mnt-by:         MAINT-CNNIC-AP
+last-modified:  2016-10-31T07:10:47Z
+source:         APNIC
+
+person:         Jimmy Xiao
+address:        9F, FIYTA Building, Gaoxinnanyi Road,Southern
+address:        District of Hi-tech Park, Shenzhen
+country:        CN
+phone:          +86-755-86013388-80224
+e-mail:         harveyduan@tencent.com
+nic-hdl:        JX1747-AP
+mnt-by:         MAINT-CNNIC-AP
+last-modified:  2016-11-04T05:51:38Z
+source:         APNIC
+
+% Information related to '123.206.0.0/15AS45090'
+
+route:          123.206.0.0/15
+descr:          TencentCloud
+descr:          Tencent cloud computing (Beijing) Co., Ltd.
+country:        CN
+origin:         AS45090
+notify:         jimmyxiao@tencent.com
+mnt-by:         MAINT-CNNIC-AP
+last-modified:  2016-01-21T09:24:01Z
+source:         APNIC
+
+% This query was served by the APNIC Whois Service version 1.88.15-46 (WHOIS-UK3)
+
+
+Lines containing failures of 123.206.49.29
+/var/log/apache2/error.log:[Tue Nov 27 17:31:11.140202 2018] [rewrite:trace1] [pid 23950] mod_rewrite.c(482): [client 123.206.49.29:61244] 123.206.49.29 - - [localhost/sid#7f2dd7df4418][rid#7f2db96920a0/initial] pass through /
+/var/log/apache2/error.log:[Tue Nov 27 17:31:11.140314 2018] [rewrite:trace1] [pid 23950] mod_rewrite.c(482): [client 123.206.49.29:61244] 123.206.49.29 - - [localhost/sid#7f2dd7df4418][rid#7f2db968e0a0/subreq] pass through /index.html
+/var/log/apache2/error.log:[Tue Nov 27 17:31:11.140381 2018] [rewrite:trace1] [pid 23950] mod_rewrite.c(482): [client 123.206.49.29:61244] 123.206.49.29 - - [localhost/sid#7f2dd7df4418][rid#7f2db96900a0/subreq] pass through /index.cgi
+/var/log/apache2/error.log:[Tue Nov 27 17:31:11.140430 2018] [rewrite:trace1] [pid 23950] mod_rewrite.c(482): [client 123.206.49.29:61244] 123.206.49.29 - - [localhost/sid#7f2dd7df4418][rid#7f2db96860a0/subreq] pass through /index.pl
+/var/log/apache2/error.log:[Tue Nov 27 17:31:11.140478 2018] [rewrite:trace1] [pid 23950] mod_rewrite.c(482): [client 123.206.49.29:61244] 123.206.49.29 - - [localhost/sid#7f2dd7df4418][rid#7f2db968e0a0/subreq] pass through /index.php
+/var/log/apache2/error.log:[Tue Nov 27 17:31:11.140529 2018] [rewrite:trace1] [pid 23950] mod_rewrite.c(482): [client 123.206.49.29:61244] 123.206.49.29 - - [localhost/sid#7f2dd7df4418][rid#7f2db96900a0/subreq] pass through /index.xhtml
+/var/log/apache2/error.log:[Tue Nov 27 17:31:11.140593 2018] [rewrite:trace1] [pid 23950] mod_rewrite.c(482): [client 123.206.49.29:61244] 123.206.49.29 - - [localhost/sid#7f2dd7df4418][rid#7f2db96860a0/subreq] pass through /index.htm
+/var/log/apache2/error.log:[Tue Nov 27 17:31:11.568076 2018] [rewrite:trace1] [pid 2300] mod_rewrite.c(482): [client 123.206.49.29:61261] 123.206.49.29 - - [94.249.131.5/sid#7f2dd7df4418][rid#7f2db95710a0/initial] pass through /webdav/
+/var/log/apache2/error.log:[Tue Nov 27 17:31:12.040373 2018] [rewrite:trace1] [pid 548] mod_rewrite.c(482): [client 123.206.49.29:61273] 123.206.49.29 - - [94.249.131.5/sid#7f2dd7df4418][rid#7f2db96860a0/initial] pass through /help.php
+/var/log/apache2/error.log:[Tue Nov 27 17:31:30.194124 2018] [rewrite:trace1] [pid 2300] mod_rewrite.c(482): [client 123.206.49.29:61689] 123.206.49.29 - - [94.249.131.5/sid#7f2dd7df4418][rid#7f2db96900a0/initial] pass through /_query.php
+/var/log/apache2/error.log:[Tue Nov 27 17:31:34.141586 2018] [rewrite:trace1] [pid 2300] mod_rewrite.c(482): [client 123.206.49.29:61689] 123.206.49.29 - - [94.249.131.5/sid#7f2dd7df4418][rid#7f2db95710a0/initial] pass through /test.php
+
+
+Regards,
+
+Fail2Ban

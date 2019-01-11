@@ -1,0 +1,12 @@
+@import "../../node_modules/@material/animation/_functions.scss";
+
+#btnSave {
+  transition: mdc-animation-exit-permanent(/* $name: */ opacity, /* $duration: */ 175ms, /* $delay: */ 150ms);
+  opacity: 0;
+  will-change: opacity;
+
+  &--animating {
+    transition: mdc-animation-enter(/* $name: */ opacity, /* $duration: */ 175ms);
+    opacity: 1;
+  }
+}

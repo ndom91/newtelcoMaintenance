@@ -230,7 +230,7 @@
      * OVERVIEW - get timeline data
      *****************************************/
 
-    $result = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.startDateTime as 'start', maintenancedb.endDateTime as 'end', companies.name as 'content', maintenancedb.notes as 'title' FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.done = '1' AND maintenancedb.active = '1';") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.startDateTime as 'start', maintenancedb.endDateTime as 'end', companies.name as 'content', maintenancedb.betroffeneKunden as 'title' FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.done = '1' AND maintenancedb.active = '1';") or die(mysqli_error($dbhandle));
 
     $array2 = array();
 
@@ -239,6 +239,22 @@
     }
 
     echo json_encode($array2);
+
+  }  elseif (isset($_GET['completedLine'])) {
+
+    /*****************************************
+     * INDEX - get line chart data
+     *****************************************/
+
+    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(mailSentAt) as day FROM maintenancedb WHERE DATE(mailSentAt) NOT LIKE '0000-00-00' AND DATE(mailSentAt) >= curdate() - INTERVAL DAYOFWEEK(curdate())+6 DAY ORDER BY day desc") or die(mysqli_error($dbhandle));
+
+    $array3 = array();
+
+    while($resultsrows = mysqli_fetch_assoc($result)) {
+      $array3[] = $resultsrows;
+    }
+
+    echo json_encode($array3);
 
   } elseif (isset($_GET['companies'])) {
 

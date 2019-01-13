@@ -54,6 +54,13 @@ if (isset($_POST['endlabel'])) {
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header ">
       <header class="mdl-layout__header mdl-color--light-green-nt">
         <div class="mdl-layout__header-row">
+          <div class="col">
+            <div class="con">
+              <div class="bar arrow-top"></div>
+              <div class="bar arrow-middle"></div>
+              <div class="bar arrow-bottom"></div>
+            </div>
+          </div>
           <a href="index.php"><img style="margin-right: 10px" src="dist/images/nt_square32_2_light2.png"/></a>
           <span class="mdl-layout-title">Maintenance</span>
           <div class="mdl-layout-spacer"></div>
@@ -820,6 +827,9 @@ if (isset($_POST['endlabel'])) {
 
       <!-- font awesome -->
       <link rel="preload stylesheet" as="style" href="dist/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
+      
+      <!-- hover css -->
+      <link type="text/css" rel="stylesheet" href="dist/css/hover.css" />
 
       <!-- handsontable -->
       <link href="dist/css/handsontable.min.css" rel="preload stylesheet" as="style" media="screen" onload="this.rel='stylesheet'">

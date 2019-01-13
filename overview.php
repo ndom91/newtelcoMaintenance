@@ -29,6 +29,10 @@ global $dbhandle;
   <script rel="preload" as="script" type="text/javascript" src="dist/js/dataTables/dataTables.responsive.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="dist/js/dataTables/dataTables.select.min.js"></script>
 
+  <!-- moment -->
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/luxon.min.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment.min.js"></script>
+
   <!-- pace -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/pace.js"></script>
 
@@ -192,8 +196,9 @@ global $dbhandle;
             </div>
         </main>
         <script>
-        $(document).ready(function() {
-             var table = $('#dataTable1').DataTable( {
+          $( document ).ready(function() {
+            // Initialize Primary Overview Datatable
+            var table = $('#dataTable1').DataTable( {
                   scrollx: true,
                   //stateSave: true,
                   scrollY: false,
@@ -250,13 +255,12 @@ global $dbhandle;
                         //console.log(data);
                   }
               } );
-          } );
 
-          $( document ).ready(function() {
-             setTimeout(function() {$('#loading').hide()},500);
-          });
 
-          document.addEventListener("DOMContentLoaded", function() {
+            // Hide Loader
+            setTimeout(function() {$('#loading').hide()},500);
+
+            // Pretty Scrollbars
             $(".mdl-layout__content").overlayScrollbars({
               className:"os-theme-minimal-dark",
               overflowBehavior : {
@@ -268,10 +272,7 @@ global $dbhandle;
             		autoHideDelay    : 500
             	}
              });
-          });
 
-
-          $( document ).ready(function() {
             // load data via an ajax request. When the data is in, load the timeline
             $.ajax({
               url: 'api?timeline=1',
@@ -284,6 +285,12 @@ global $dbhandle;
                 str2 = JSON.stringify(data, null, 4);
                 // console.log(str2);
 
+                var DateTime = luxon.DateTime;
+                var now = DateTime.local();
+                var m14days = now.minus({days: 14});
+                m14days = m14days.toISODate();
+                var p14days = now.plus({days: 21});
+                p14days = p14days.toISODate();
                 // Create a DataSet (allows two way data-binding)
                 var items = new vis.DataSet(data);
 
@@ -302,7 +309,9 @@ global $dbhandle;
                   tooltip: {
                     followMouse: true,
                     overflowMethod: 'cap'
-                  }
+                  },
+                  start: m14days,
+                  end: p14days
                 };
 
                 // Create a Timeline
@@ -339,6 +348,9 @@ global $dbhandle;
 
       <!-- vis.js -->
       <link prefetch rel="preload stylesheet" as="style" href="dist/css/vis-timeline.min.css" type="text/css" onload="this.rel='stylesheet'">
+      
+      <!-- hover css -->
+      <link type="text/css" rel="stylesheet" href="dist/css/hover.css" />
 
       <!-- Google font -->
       <link prefetch rel="preload stylesheet" as="style" href="dist/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">

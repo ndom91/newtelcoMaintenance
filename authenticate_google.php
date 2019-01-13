@@ -174,8 +174,8 @@ if ($_SESSION['access_token']['id_token'] === NULL):
 <!DOCTYPE html>
 <html lang="en">
 <style>
-<?php echo file_get_contents("dist/css/style.031218.min.css"); ?>
-<?php echo file_get_contents("dist/css/material.031218.min.css"); ?>
+<?php echo file_get_contents("dist/css/style.min.css"); ?>
+<?php echo file_get_contents("dist/css/material.min.css"); ?>
 </style>
 <div class="loginBG">
 <head>
@@ -189,14 +189,16 @@ if ($_SESSION['access_token']['id_token'] === NULL):
     <!-- material design -->
     <script rel="preload" as="script" src="dist/js/material.min.js"></script>
 
+    <!-- particle.js -->
+    <script rel="preload" as="script" src="dist/js/particle.js"></script>
+
   </head>
 
   <body>
     <!-- Always shows a header, even in smaller screens. -->
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header ">
 
-        <main class="mdl-layout__content">
-
+        <main id="particles-js" class="mdl-layout__content">
             <div class="demo-card-wide2 mdl-card mdl-shadow--6dp">
               <div class="mdl-card__title mdl-card__title__login">
                 <h2 class="mdl-card__title-text"><img height="27px" width="200px" src="dist/images/newtelco_full2_lightgray2.png"/></h2>
@@ -224,8 +226,6 @@ border="0" alt=""/></a>
                 </div>
               </div>
             </div>
-            </form>
-
         </main>
         <?php echo file_get_contents("views/footer.html"); ?>
       </div>
@@ -238,6 +238,91 @@ border="0" alt=""/></a>
 <!-- material design -->
 <link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css">
 
+<!-- hover css -->
+<link type="text/css" rel="stylesheet" href="dist/css/hover.css" />
+
+<script>
+
+
+particlesJS("particles-js", {
+  "particles": {
+    "number": {
+      "value": 200,
+      "density": {
+        "enable": true,
+        "value_area": 800
+      }
+    },
+    "color": {
+      "value": "#67B246"
+    },
+    "shape": {
+      "type": "circle",
+      "stroke": {
+        "width": 1,
+        "color": "#67B246"
+      },
+      "polygon": {
+        "nb_sides": 5
+      },
+      "image": {
+        "src": "img/github.svg",
+        "width": 100,
+        "height": 100
+      }
+    },
+    "opacity": {
+      "value": 0.6,
+      "random": false,
+      "anim": {
+        "enable": false,
+        "speed": 1,
+        "opacity_min": 0.1,
+        "sync": false
+      }
+    },
+    "size": {
+      "value": 3,
+      "random": true,
+      "anim": {
+        "enable": false,
+        "speed": 40,
+        "size_min": 0.1,
+        "sync": false
+      }
+    },
+    "line_linked": {
+      "enable": true,
+      "distance": 150,
+      "color": "#67B246",
+      "opacity": 0.6,
+      "width": 1
+    },
+    "move": {
+      "enable": true,
+      "speed": 2,
+      "direction": "none",
+      "random": false,
+      "straight": false,
+      "out_mode": "out",
+      "bounce": false,
+      "attract": {
+        "enable": false,
+        "rotateX": 600,
+        "rotateY": 1200
+      }
+    }
+  },
+  "retina_detect": true
+});
+
+$(document).on('load', function() {
+  particlesJS.load('particles-js', 'assets/particles.json', function() {
+    console.log('callback - particles.js config loaded');
+  });
+})
+
+</script>
 </html>
 
 <?php

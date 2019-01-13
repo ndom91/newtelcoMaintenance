@@ -84,6 +84,9 @@ require('authenticate_google.php');
 
       <!-- font awesome -->
       <link rel="preload stylesheet" as="style" href="dist/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
+      
+      <!-- hover css -->
+      <link type="text/css" rel="stylesheet" href="dist/css/hover.css" />
 
       <!-- material icons -->
       <link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css" onload="this.rel='stylesheet'">

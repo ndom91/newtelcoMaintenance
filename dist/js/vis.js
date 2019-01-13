@@ -9647,12 +9647,12 @@ Core.prototype._create = function (container) {
 
   if (this.dom.centerContainer.addEventListener) {
     // IE9, Chrome, Safari, Opera
-    this.dom.centerContainer.addEventListener("mousewheel", onMouseWheel.bind(this), false);
+    this.dom.centerContainer.addEventListener("mousewheel", onMouseWheel.bind(this), false, {passive: true});
     // Firefox
-    this.dom.centerContainer.addEventListener("DOMMouseScroll", onMouseWheel.bind(this), false);
+    this.dom.centerContainer.addEventListener("DOMMouseScroll", onMouseWheel.bind(this), false, {passive: true});
   } else {
     // IE 6/7/8
-    this.dom.centerContainer.attachEvent("onmousewheel", onMouseWheel.bind(this));
+    this.dom.centerContainer.attachEvent("onmousewheel", onMouseWheel.bind(this), {passive: true});
   }
 
   /**
@@ -9670,8 +9670,8 @@ Core.prototype._create = function (container) {
     }
   }
 
-  this.dom.left.parentNode.addEventListener('scroll', onMouseScrollSide.bind(this));
-  this.dom.right.parentNode.addEventListener('scroll', onMouseScrollSide.bind(this));
+  this.dom.left.parentNode.addEventListener('scroll', onMouseScrollSide.bind(this), {passive: true});
+  this.dom.right.parentNode.addEventListener('scroll', onMouseScrollSide.bind(this), {passive: true});
 
   var itemAddedToTimeline = false;
 
@@ -17744,7 +17744,7 @@ ItemSet.prototype._create = function () {
   // right-click on timeline 
   this.body.dom.centerContainer.addEventListener('contextmenu', this._onDragEnd.bind(this));
 
-  this.body.dom.centerContainer.addEventListener('mousewheel', this._onMouseWheel.bind(this));
+  this.body.dom.centerContainer.addEventListener('mousewheel', this._onMouseWheel.bind(this), {passive: true});
 
   // attach to the DOM
   this.show();

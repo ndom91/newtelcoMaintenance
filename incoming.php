@@ -14,10 +14,6 @@ global $dbhandle;
   <!-- material design -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/material.min.js"></script>
 
-  <!-- material animations UNUSED
-  <script src="node_modules/@material/animation/dist/mdc.animation.min.js"></script>
-  <link rel="stylesheet" href="dist/css/material_animation.min.css"> -->
-
   <!-- jquery -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/jquery-3.3.1.min.js"></script>
 
@@ -38,8 +34,10 @@ global $dbhandle;
 
   <!-- pace -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/pace.js"></script>
-<!-- mdl modal -->
-<script rel="preload" as="script" type="text/javascript" src="dist/js/mdl-jquery-modal-dialog.js"></script>
+
+  <!-- mdl modal -->
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/mdl-jquery-modal-dialog.js"></script>
+
   <style>
     <?php echo file_get_contents("dist/css/style.min.css"); ?>
     <?php echo file_get_contents("dist/css/material.min.css"); ?>
@@ -62,7 +60,6 @@ global $dbhandle;
 
     <main class="mdl-layout__content">
         <div id="loading">
-
           <img id="loading-image" src="dist/images/Preloader_4.gif" alt="Loading..." />
         </div>
         <div class="mdl-grid">
@@ -70,118 +67,43 @@ global $dbhandle;
               <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone incomingHeaderWrapper">
                 <div class="userHomeHeader">
                   <h4 class="selectGoogleLabel">Incoming Maintenance E-Mail</h4>
-                  <!-- <button id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect selectGoogleButton">
-                    <i class="material-icons">mail</i>
-                  </button>
-                  <div class="mdl-tooltip" for="show-dialog">
-                  Select your Maintenance Label
-                  </div>-->
                 </div>
-                <dialog style="width: 900px;" id="dialog1" class="mdl-dialog">
-                  <div class="labelSelectHeader">
-                    <h6 class="mdl-dialog__title labelSelectLabel">Which label are your maintenance emails in?</h6>
-
-                      <button tabindex="-1" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1 labelSelectClose">
-                        <i class="material-icons">close</i>
-                      </button>
-                  </div>
-                  <div class="mdl-dialog__content">
-                    <p>
-
-                      <?php
-                        $service = new Google_Service_Gmail($clientService);
-
-                        $results = $service->users_labels->listUsersLabels($user);
-
-                        if (count($results->getLabels()) == 0) {
-                         print "No labels found.\n";
-                        } else {
-
-                          echo '<form action="incoming" method="post">';
-                          echo '<div class="mdl-grid">';
-                          foreach ($results->getLabels() as $label) {
-                            $labelColor = $label->getColor();
-                            if ($labelColor['backgroundColor'] != '') {
-                              echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="color: ' . $labelColor['textColor'] . '; background-color: ' . $labelColor['backgroundColor'] . '; box-shadow: 0px 0px 55px ' . $labelColor['backgroundColor'] . '">' . $label->getName() . '</div>';
-                            } else {
-                            echo '<div class="mdl-cell mdl-cell--3-col labelColors" style="color: ' . $labelColor['textColor'] . '; background-color: ' . $labelColor['backgroundColor'] . ';">' . $label->getName() . '</div>';
-                            }
-                            echo '<div class="mdl-cell mdl-cell--1-col"><button type="submit" style="background-color: ' . $labelColor['backgroundColor'] . '" class="labelSelectBtn mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" name="label" value="' . $label->getId() . '"><i class="material-icons">check</i></button></div>';
-                          }
-                          echo '</form></div>';
-                        }
-
-                        ?>
-                      </p>
-                    </div>
-                  </dialog>
-                </div>
-                <div class="mdl-cell mdl-cell--8-col mdl-cell--4-col-phone dataTables_wrapper mdl-2col">
+              </div>
+            <div class="mdl-cell mdl-cell--8-col mdl-cell--4-col-phone dataTables_wrapper mdl-2col">
             <?php
-            // $lieferant = '';
-            // $tdCID = '';
-
-            // if (! empty($_POST['tLieferant'])){
-            //   $lieferant = $_POST['tLieferant'];
-            //   $query = $lieferant;
-
-            //   // DEBUG
-            //   //echo '<b>Debug:</b><br>';
-            //   //echo '<pre>';
-            //   // END DEBUG
-
-            //   $lieferant_escape = mysqli_real_escape_string($dbhandle, $query);
-            //   $lieferant_escape = '%' . $lieferant_escape . '%';
-            //   // search first for existance of company
-            //   $lieferant_query = mysqli_query($dbhandle, "SELECT `id`,`name` FROM `companies` WHERE `name` LIKE '$lieferant_escape'");
-
-            //   if ($fetch = mysqli_fetch_array($lieferant_query)) {
-            //     //Found a companyn - now show all maintenances for company
-            //     $lieferant_id = $fetch[0];
-            //     $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
-            //   }
-
-            // } elseif (! empty($_POST['tdCID'])){
-            //   $tdCID = $_POST['tdCID'];
-            //   $query = $tdCID;
-
-            //   $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
-            //   $dCID_escape = '%' . $dCID_escape . '%';
-
-            //   $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, kunden.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailankunde, maintenancedb.done FROM maintenancedb  LEFT JOIN kunden ON maintenancedb.derenCIDid = kunden.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM kunden WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
-            // }
-
+              $service = new Google_Service_Gmail($clientService);
+              $results = $service->users_labels->listUsersLabels($user);
               echo '
               <table id="dataTable3" class="mdl-data-table striped" style="width: 100%">
-                      <thead>
-                        <tr>
-                          <th style="width:20px!important"></th>
-                          <th class="">id</th>
-                          <th class="">Maileingang Date/Time</th>
-                          <th>Sender</th>
-                          <th>R Mail Content</th>
-                          <th>Subject</th>
-                          <th>Deren CID</th>
-                          <th>Bearbeitet Von</th>
-                          <th>Start Date/Time</th>
-                          <th>End Date/Time</th>
-                          <th>Postponed</th>
-                          <th>Notes</th>
-                          <th>Complete</th>
-                          <th>Delete</th>
-                          <th>Domain</th>
-                        </tr>
-                      </thead>
-                      <tbody>';
+                <thead>
+                  <tr>
+                    <th style="width:20px!important"></th>
+                    <th class="">id</th>
+                    <th class="">Maileingang Date/Time</th>
+                    <th>Sender</th>
+                    <th>R Mail Content</th>
+                    <th>Subject</th>
+                    <th>Deren CID</th>
+                    <th>Bearbeitet Von</th>
+                    <th>Start Date/Time</th>
+                    <th>End Date/Time</th>
+                    <th>Postponed</th>
+                    <th>Notes</th>
+                    <th>Complete</th>
+                    <th>Delete</th>
+                    <th>Domain</th>
+                  </tr>
+                </thead>
+                <tbody>';
                 if ((! empty($_POST['tdCID'])) || (! empty($_POST['tLieferant']))) {
                   while ($rowx = mysqli_fetch_assoc($resultx)) {
                     echo '<tr>';
-                    // button - class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab"
-                        echo '<td><a class="editLink" href="addedit.php?mid=' . $rowx['id'] . '">
-                                    <button class="mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
-                                      <i class="material-icons">edit</i>
-                                    </button>
-                                  </a></td>';
+                    echo '<td>
+                          <a class="editLink" href="addedit.php?mid=' . $rowx['id'] . '">
+                            <button class="mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+                              <i class="material-icons">edit</i>
+                            </button>
+                          </a></td>';
                     foreach($rowx as $field) {
                         if ($rowx['maileingang']) {
                           echo '<td>' . $field . '</td>';
@@ -190,8 +112,8 @@ global $dbhandle;
                         }
                     }
                     echo '</tr>';
+                  }
                 }
-              }
 
             // https://stackoverflow.com/questions/32655874/cannot-get-the-body-of-email-with-gmail-php-api
 
@@ -223,10 +145,6 @@ global $dbhandle;
 
                 $dom = new DOMDocument();
                 $dom->loadHTML($html);
-                //$script = $dom->getElementsByTagName('script');
-                //$html = $dom->getElementsByTagName('html');
-                //$body1 = $dom->getElementsByTagName('body');
-                //$table = $dom->getElementsByTagName('table');
                 $remove = [];
 
                 foreach($script as $item) {
@@ -238,36 +156,13 @@ global $dbhandle;
                   $item->parentNode->setAttribute("style", "display: table !important;");
                 }
 
-                // foreach($html as $item) {
-                //   //$remove[] = $item;
-                // }
-                //
-                // foreach($body1 as $item) {
-                //   //$remove[] = $item;
-                // }
-
                 foreach ($remove as $item) {
                   $item->parentNode->removeChild($item);
                 }
 
                 $nodes = $dom->getElementsByTagName('*');
-
-
-                // foreach($nodes as $node)
-                // {
-                //     if ($node->hasAttribute('onload')) {
-                //         $node->removeAttribute('onload');
-                //     }
-                //     if ($node->hasAttribute('onclick')) {
-                //         $node->removeAttribute('onclick');
-                //     }
-                // }
-
                 $html = $dom->saveHTML();
-                //$html = strip_tags($html, "<table>");
                 $inlineJS = "/\bon\w+=\S+(?=.*>)/";
-
-                //$html = preg_replace('/\bon\w+=\S+(?=.*>)/g', '', $html);
                 return trim($html);
             }
 
@@ -343,70 +238,32 @@ global $dbhandle;
               $FOUND_BODY .= "</pre>";
               $FOUND_BODY = "<pre>" . $FOUND_BODY;
             }
-           
+
+            $FOUND_BODY = str_replace("http:","https:",$FOUND_BODY);
+
             // Finally, print the message ID and the body
             $fContents = '';
-
             $mFile = "msg/" . $message_id . ".html";
-            //$fContents .= stripHTML($FOUND_BODY);
             $fContents .= $FOUND_BODY;
-            //$fPreview = substr($fContents, 0, 45);
-            //var_dump('fPreview: ' . $fPreview . '<br>');
-            //var_dump('fSnippet: ' . $snippet . '<br>');
 
+            // write html file for mail
             if (!file_exists($mFile)) {
               file_put_contents($mFile, $fContents);
             }
-
-            echo '
-            <script>
-            /*var showMailModal = document.querySelector("#show-dialog2");
-            showMailModal.addEventListener("click", function() {
-            //$(document).ready(function() {
-              var msgid1 = showMailModal.data("target");
-              console.log("msgid1: " + msgid1);
-              var iframe = document.getElementById(\'emailBody1_\'+msgid1\');
-              iframe.src = "javascript:;";
-              var iframedoc = iframe.document;
-
-              console.log("begin framedoc");
-              if (iframe.contentWindow){
-
-                //console.log("contentWindow");
-                iframedoc = iframe.contentWindow;
-                //console.log("iframe has contentWindow");
-              } else if (iframe.contentDocument){
-               iframedoc = iframe.contentDocument.document;
-               console.log("iframe has contentDocument.document");
-              }
-
-              if (iframedoc) {
-                iframedoc.document.open();
-                iframedoc.document.write("' . $FOUND_BODY . '");
-                iframedoc.document.close();e
-                console.log("iframedoc written");
-              } else {
-                console.log("Cannot inject dynamic contents");
-               alert(\'Cannot inject dynamic contents into iframe.\');
-              }
-            });*/
-
-
-            </script>';
 
             /* INCOMING TABLE */
 
             echo '<tr>
                     <td>
-                      <a class="editLink" href="addedit?gmid=' . $message_id . '">
-                        <button class="mdl-color-text--primary-contrast mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored button40">
-                          <span style="color:#fff !important; line-height: 41px !important;" class="mdi mdi-24px mdi-circle-edit-outline mdi-light">
+                      <a class="hvr-icon-spin editLink" href="addedit?gmid=' . $message_id . '">
+                        <button class="hvr-icon-spin mdl-color-text--primary-contrast mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored button40">
+                          <span style="color:#fff !important; line-height: 41px !important;" class="hvr-icon mdi mdi-24px mdi-circle-edit-outline mdi-light">
                         </button>
                       </a>
                     </td>
                     <td></td>
                     <td>' . $date2 . '</td>
-                    <td><a id="show-dialog2" data-target="' . $message_id . '">' . $domain . '</a></td>
+                    <td><a id="show-dialog2" class="hvr-underline-from-left" data-target="' . $message_id . '">' . $domain . '</a></td>
                     <td></td>
                     <td>' . $subject . '</td>
                     <td></td>
@@ -509,6 +366,11 @@ global $dbhandle;
                     }
                     showDialogButton2.addEventListener(\'click\', function() {
                       dialog2.showModal();
+                      OverlayScrollbars(document.querySelectorAll(".mdl-dialog"), {
+                        className       : "os-theme-dark",
+                        resize          : "vertical",
+                        sizeAutoCapable : true
+                      });
                     });
                     dialog2.querySelector(\'.close1\').addEventListener(\'click\', function() {
                       dialog2.close();
@@ -516,74 +378,88 @@ global $dbhandle;
                   });
                 </script>';
 
-
                 } catch (Exception $e) {
                     echo $e->getMessage();
                 }
 
-                }
+              }
 
 
-                if(isset($_POST['label']) || isset($_SESSION['label'])) {
+            if(isset($_POST['label']) || isset($_SESSION['label'])) {
 
-                  if(! empty($_POST['label'])) {
-                  $labelID = $_POST['label'];
-                  $_SESSION['label'] = $labelID;
-                  } else {
-                    $labelID = $_SESSION['label'];
-                    //var_dump('labelid1: ' . $labelID);
-                  }
-                } else {
-                  if(isset($_COOKIE['label'])) {
-                    $labelID = $_COOKIE['label'];
-                  } else {
-                    $labelID = '';
-                  }
-                }
+              if(! empty($_POST['label'])) {
+              $labelID = $_POST['label'];
+              $_SESSION['label'] = $labelID;
+              } else {
+                $labelID = $_SESSION['label'];
+                //var_dump('labelid1: ' . $labelID);
+              }
+            } else {
+              if(isset($_COOKIE['label'])) {
+                $labelID = $_COOKIE['label'];
+              } else {
+                $labelID = '';
+              }
+            }
 
-                $labelNameForSearch = '';
-                $labelservice = new Google_Service_Gmail($clientService);
-                //$user = 'ndomino@newtelco.de';
-                $labelresults = $labelservice->users_labels->listUsersLabels($user);
-                foreach ($labelresults->getLabels() as $labelr) {
-                  $labelid1 = $labelr->getId();
-                  $labelname = $labelr->getName();
+            $labelNameForSearch = '';
+            $labelservice = new Google_Service_Gmail($clientService);
+            //$user = 'ndomino@newtelco.de';
+            $labelresults = $labelservice->users_labels->listUsersLabels($user);
+            foreach ($labelresults->getLabels() as $labelr) {
+              $labelid1 = $labelr->getId();
+              $labelname = $labelr->getName();
 
-                  if ($labelid1 == $labelID) {
-                    $labelNameForSearch = $labelname;
-                  }
-                }
-                if ($labelNameForSearch == '') {
-                  echo '<script language="javascript">';
-                  echo 'alert("No Label Selected - Please go to Settings.")';
-                  echo '</script>';
-                  $labelNameForSearch = 'aaaaaaa';
-                }
-                //var_dump('label_results: ' . $results);
-                // $q = 'label:' . $labelNameForSearch . ' newer_than:1d';
-                $q = 'label:' . $labelNameForSearch . ' is:unread';
-                fetchMails($service, $q);
+              if ($labelid1 == $labelID) {
+                $labelNameForSearch = $labelname;
+              }
+            }
+            if ($labelNameForSearch == '') {
+              // echo '<script language="javascript">';
+              // echo 'alert("No Label Selected - Please go to Settings.")';
+              // echo '</script>';
+              echo'<script>
+              showDialog({
+                title: \'No Mailbox Labels Selected\',
+                text: \'You will not see any incoming mail until you set your label preferences<br>Please go to Settings and select your <b>incoming</b> and <b>completed</b> labels.\',
+                negative: {
+                    title: \'Home\',
+                    onClick: function() {window.location.replace("https://maintenance.newtelco.de/index")}
+                },
+                positive: {
+                    title: \'Settings\',
+                    onClick: function() {window.location.replace("https://maintenance.newtelco.de/settings")}
+                },
+                cancelable: true
+                }); 
+                </script>';
+              $labelNameForSearch = 'aaaaaaa';
+            }
+            //var_dump('label_results: ' . $results);
+            // $q = 'label:' . $labelNameForSearch . ' newer_than:1d';
+            $q = 'label:' . $labelNameForSearch . ' is:unread';
+            fetchMails($service, $q);
 
-                ?>
-                </div>
-                <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone mdl-2col table2">
-                  <table id="dataTable2" class="hidden mdl-data-table striped" style="width: 100%">
-                    <thead>
-                      <tr>
-                        <th class=""></th>
-                        <th class="">Maileingang</th>
-                        <th>Start Date/Time</th>
-                        <th>End Date/Time</th>
-                        <th>ID</th>
-                        <th>Received Mail ID</th>
-                        <th>Company</th>
-                        <th>Complete</th>
-                      </tr>
-                    </thead>
-                  </table>
-                </div>
+            ?>
+              </div>
+              <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone mdl-2col table2">
+                <table id="dataTable2" class="hidden mdl-data-table striped" style="width: 100%">
+                  <thead>
+                    <tr>
+                      <th class=""></th>
+                      <th class="">Maileingang</th>
+                      <th>Start Date/Time</th>
+                      <th>End Date/Time</th>
+                      <th>ID</th>
+                      <th>Received Mail ID</th>
+                      <th>Company</th>
+                      <th>Complete</th>
+                    </tr>
+                  </thead>
+                </table>
               </div>
             </div>
+          </div>
         </main>
         <script>
         $(document).ready(function() {
@@ -688,55 +564,8 @@ global $dbhandle;
                   $('#dataTable2_length').parent("div").css("width","calc(30% - 16px)");
                 }
               })
-            })
 
-              $(".btnDelMail").click(function(){
-                var mailId = $(this).attr('data-button');
-                showDialog({
-                  title: 'Delete Incoming Maintenance Notification',
-                  text: 'Are you sure you want to delete this Maintenance Inbox Entry?.',
-                  negative: {
-                      title: 'No, take me back'
-                  },
-                  positive: {
-                      title: 'Yes. Delete!',
-                      onClick: function(e) {
-                        console.log(e);
-                        $.ajax({
-                          url: 'api?mRead='+mailId,
-                          success: function (data) {
-
-                          },
-                          error: function (err) {
-                            console.log('Error', err);
-                          }
-                        });
-                      }
-                  },
-                  cancelable: true
-                 }); 
-              }); 
-        </script>
-        <script>
-          /* COMMENTED BECAUSE HIDDEN SELECT LABEL DIALOG ON INCOMING PAGE
-          var dialog = document.querySelector('#dialog1');
-          var showDialogButton = document.querySelector('#show-dialog');
-          if (! dialog.showModal) {
-            dialogPolyfill.registerDialog(dialog);
-          }
-          showDialogButton.addEventListener('click', function() {
-            dialog.showModal();
-          });
-          dialog.querySelector('.close1').addEventListener('click', function() {
-            dialog.close();
-          }); */
-
-          document.addEventListener("DOMContentLoaded", function() {
-            OverlayScrollbars(document.querySelectorAll(".mdl-dialog"), {
-              className       : "os-theme-dark",
-              resize          : "vertical",
-              sizeAutoCapable : true
-            });
+            // Pretty Scrollbars
             $(".mdl-layout__content").overlayScrollbars({
               className:"os-theme-minimal-dark",
               overflowBehavior : {
@@ -748,11 +577,37 @@ global $dbhandle;
             		autoHideDelay    : 500
             	}
             });
+
+            // Hide Loader
+            setTimeout(function() {$('#loading').hide()},1000);
           });
 
-          $( document ).ready(function() {
-             setTimeout(function() {$('#loading').hide()},500);
-          });
+          $(".btnDelMail").click(function(){
+            var mailId = $(this).attr('data-button');
+            showDialog({
+              title: 'Delete Incoming Maintenance Notification',
+              text: 'Are you sure you want to delete this Maintenance Inbox Entry?.',
+              negative: {
+                  title: 'No, take me back'
+              },
+              positive: {
+                  title: 'Yes. Delete!',
+                  onClick: function(e) {
+                    console.log(e);
+                    $.ajax({
+                      url: 'api?mRead='+mailId,
+                      success: function (data) {
+                        window.location.replace("https://maintenance.newtelco.de/incoming");
+                      },
+                      error: function (err) {
+                        console.log('Error', err);
+                      }
+                    });
+                  }
+              },
+              cancelable: true
+              }); 
+          }); 
 
         </script>
         <?php echo file_get_contents("views/footer.html"); ?>
@@ -772,6 +627,9 @@ global $dbhandle;
       <!-- material icons -->
       <link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css" onload="this.rel='stylesheet'">
       <link rel="preload stylesheet" as="style" href="dist/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
+
+      <!-- hover css -->
+      <link type="text/css" rel="stylesheet" href="dist/css/hover.css" />
 
       <!-- Google font-->
       <link prefetch rel="preload stylesheet" as="style" href="dist/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">

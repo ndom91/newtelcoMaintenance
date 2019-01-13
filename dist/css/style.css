@@ -107,7 +107,45 @@ table {
 .headerWelcome {
   margin: 5px 10px;
 }
-
+.unread {
+  display: inline-block;
+  position: relative;
+}
+.unreadCounter {
+  position: absolute;
+  z-index: 2;
+  display: inline-block;
+  margin: 55px 60px;
+  font-size: 142px;
+  color: #67B246;
+  font-weight: 500;
+}
+.unreadIcon {
+  right: -215px;
+  top: 20px;
+  zoom: 200%;
+  opacity: .4;
+  z-index: -1;
+  text-align: right;
+  position: absolute;
+}
+.unreadLabel {
+  position: absolute;
+  width: 475px;
+  height: 150px;
+  z-index: 1;
+  font-size: 68px;
+  font-weight: 100;
+  color: #4e4e4e;
+  line-height: 0.7;
+  text-align: right;
+  top: 100px;
+  left: -50px;
+}
+#completedChart {
+  margin-top: 240px;
+  margin-bottom: 20px;
+}
 /* Login */
 
 .signin_box {
@@ -132,6 +170,11 @@ table {
   .mdl-card__supporting-text {
     text-align: center;
   }
+}
+
+.particle-js-canvas-el {
+  top: 0;
+  position: absolute;
 }
 
 /* header */
@@ -162,6 +205,95 @@ table {
     float: left;
   }
 }
+
+.mdl-layout-title {
+  margin-top: 5px;
+}
+
+.mdl-layout-title2 > img:hover {
+  cursor: pointer;
+}
+
+/* Hamburger -> Arrow Animation */
+
+.con {
+  cursor: pointer;
+  display: inline-block;
+  zoom: 40%;
+}
+
+.bar {
+  display: block;
+  height: 5px;
+  width: 50px;
+  background: #fff;
+  margin: 10px auto;
+}
+
+.con {
+  width: auto;
+  margin: 54px auto;
+  -webkit-transition: all .4s ease;
+  -moz-transition: all .4s ease;
+  -ms-transition: all .4s ease;
+  -o-transition: all .4s ease;
+  transition: all .4s ease;
+}
+
+.con:hover .bar,.special-con:hover .bar {
+ background-color: #fff;
+}
+
+.col {
+  display: inline-block;
+  width: 6%;
+  text-align: center;
+  height: auto;
+  position: absolute;
+}
+
+.middle {
+  margin: 0 auto;
+}
+
+.bar {
+  -webkit-transition: all .4s ease;
+  -moz-transition: all .4s ease;
+  -ms-transition: all .4s ease;
+  -o-transition: all .4s ease;
+  transition: all .4s ease;
+}
+
+.con:hover .arrow-top {
+  -webkit-transform: rotateZ(45deg) translateY(11px);
+  -moz-transform: rotateZ(45deg) translateY(11px);
+  -ms-transform: rotateZ(45deg) translateY(11px);
+  -o-transform: rotateZ(45deg) translateY(11px);
+  transform: rotateZ(45deg) translateY(11px);
+  width: 25px;
+}
+
+.con:hover .arrow-middle {
+  -webkit-transform: translateX(-25px);
+  -moz-transform: translateX(-25px);
+  -ms-transform: translateX(-25px);
+  -o-transform: translateX(-25px);
+  transform: translateX(-25px);
+}
+
+.con:hover .arrow-bottom {
+  -webkit-transform: rotateZ(-45deg) translateY(-11px);
+  -moz-transform: rotateZ(-45deg) translateY(-11px);
+  -ms-transform: rotateZ(-45deg) translateY(-11px);
+  -o-transform: rotateZ(-45deg) translateY(-11px);
+  transform: rotateZ(-45deg) translateY(-11px);
+  width: 25px;
+}
+
+
+/* End Hamburger -> Arrow Animation */
+
+
 
 /* header -> menu */
 
@@ -212,9 +344,17 @@ li .mdi {
 }
 
 .demo-card-wide.mdl-card {
+  width: 475px;
+  min-width: 475px;
+  max-width: 475px;
+  margin-top: 3%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.demo-card-wide3.mdl-card {
   width: 100%;
-  min-width: 450px;
-  max-width: 100%;
+  min-width: 475px;
   margin-top: 3%;
   margin-left: auto;
   margin-right: auto;
@@ -232,13 +372,16 @@ li .mdi {
   background: url('/dist/images/bg4.jpg') center / cover !important;
 }
 
-.demo-card-wide > .mdl-card__title {
+.mdl-card__title-text {
+  color: #fff !important;
+}
+.mdl-card__title {
   color: #fff;
   height: 65px;
   background: #4d4d4d;
 }
 
-.demo-card-wide > .mdl-card__menu {
+.mdl-card__menu {
   color: #fff;
 }
 
@@ -615,6 +758,9 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
   color: #67B246;
 }
 
+.vis-current-time {
+  background-color: #67B246 !important;
+}
 /* addedit */
 
 #timezoneSelector {
@@ -974,12 +1120,16 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 
 .footera {
 	text-decoration: none;
-	color: #67B246 !important;
+  color: #fff !important;
+  font-family: Roboto,Helvetica,Arial,sans-serif;
+  font-weight: 100;
 }
 
 .footera:hover {
 	text-decoration: none;
-	color: #67B246 !important;
+  color: #fff !important;
+  font-family: Roboto,Helvetica,Arial,sans-serif;
+  font-weight: 100;
 }
 
 .love {

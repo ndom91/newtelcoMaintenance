@@ -18,7 +18,6 @@ global $dbhandle;
   <!-- moment -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/luxon.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment.min.js"></script>
-  <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment-duration-format.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment-timezone-with-data.min.js"></script>
 
   <!-- jquery -->
@@ -29,7 +28,6 @@ global $dbhandle;
 
   <!-- material design -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/material.min.js"></script>
-  <!-- <link rel="stylesheet" href="https://storage.googleapis.com/non-spec-apps/mio-icons/latest/twotone.css"> -->
 
   <!--getmdl-select-->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/mdl-selectfield.min.js"></script>
@@ -364,7 +362,7 @@ global $dbhandle;
 
         <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone" id="addEditDetails">
 
-        <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div class="demo-card-wide3 mdl-card mdl-shadow--2dp">
           <div class="mdl-card__title">
             <h2 class="mdl-card__title-text"><?php echo $otitlestring ?> Maintenance Entry</h2>
             <div class="mdl-layout-spacer"></div>
@@ -456,22 +454,6 @@ global $dbhandle;
                         });
                     })
                   </script>
-                <!-- <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-                  <select id="dcid3" name="dcid3" class="mdl-selectfield__select">
-                    <option value=""></option>
-                    <?php
-                      while ($row = mysqli_fetch_row($derenCIDQ)) {
-                        if ((isset($_GET['mid'])) && ($row[2] == $oderenCIDid)) {
-                          echo '<option selected value="' . $row[2] . '">' . $row[1] . '</option>';
-                        } else {
-                          echo '<option value="' . $row[2] . '">' . $row[1] . '</option>';
-                        }
-                      }
-                    ?>
-                  </select>
-                  <label class="mdl-selectfield__label" for="dcid3">Deren CID</label>
-                  <span class="mdl-selectfield__error">Select a value</span>
-                </div> -->
               </div>
               <div class="mdl-cell mdl-cell--6-col">
                 <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
@@ -553,7 +535,7 @@ global $dbhandle;
             <div class="mdl-card__actions mdl-card--border">
               <div style="display: inline;">
                 <label style="display: inline; margin-right: 5px; float: right;width: 150px; line-height: 2.8em;" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2">
-                  <span style="color: #6e6e6e;" class="mdl-switch__label">Completed</span>
+                  <span style="color: #6e6e6e;line-height: 44px !important;" class="mdl-switch__label">Completed</span>
                   <input type="checkbox" id="switch-2" class="mdl-switch__input" <?php echo $odone ?>>
                 </label>
                 <div class="mdl-layout-spacer"></div>
@@ -618,7 +600,7 @@ global $dbhandle;
             <button class="mdl-snackbar__action" type="button"></button>
           </div>
           <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
-            <div id="kundenCard" class="demo-card-wide mdl-card mdl-shadow--2dp hidden">
+            <div id="kundenCard" class="demo-card-wide3 mdl-card mdl-shadow--2dp hidden">
               <div id="addEditKundenTitle" class="mdl-card__title">
                 <h2 class="mdl-card__title-text">Kunden Circuits</h2>
                 <div class="mdl-layout-spacer"></div>
@@ -730,8 +712,7 @@ $('#addCalbtn').click(function(){
         .eq( 0 )      // Reduce the 2D array into a 1D array of data
         .sort()       // Sort data alphabetically
         .unique()     // Reduce to unique values
-        .join( ',' )
-  ;
+        .join( ',' );
 
 
   openInNewTab(`http://www.google.com/calendar/event?action=TEMPLATE&dates=${calSDTISO2}%2F${calEDTISO2}&src=newtelco.de_hkp98ambbvctcn966gjj3c7dlo@group.calendar.google.com&text=Maintenance%20${selectedCompany}%20CID%20${kIDsconcat}&add=service@newtelco.de&details=Maintenance%20for%20<b>${selectedCompany}</b>%20on%20deren%20CID:%20"<b>${selectedDCID}</b>".<br><br>Affected%20Newtelco%20CIDs:%20<b>${kIDsconcat}</b><br><br>Source%20-%20<a href="https://maintenance.newtelco.de/addedit?mid=${activeID}">NT-M_${activeID}</a>&trp=false`);
@@ -924,38 +905,22 @@ const selectorOptions = moment.tz.names()
   }, "");
 
 document.querySelector("#timezoneSelector").innerHTML = selectorOptions;
-
-$("#timezoneSelector").on("change", e => {
-  // change on selection of new timezone
-});
-
 document.querySelector("#timezoneSelector").value = "Europe/Amsterdam";
 
 const event = new Event("change");
 document.querySelector("#timezoneSelector").dispatchEvent(event);
 
-$(document).ready(function() {
-  var mEingangVal =  moment($('#medt').val()).format("DD MMM YYYY HH:mm:SS ZZ");
-  $('#medt').val(mEingangVal);
-
-  var updatedAtLabel = moment($('#updatedAtLabel').html()).format("DD MMM YYYY HH:mm:SS ZZ");
-  $('#updatedAtLabel').html(updatedAtLabel);
-
-  $("#timezoneSelector").select2({
-    placeholder: "Select a Timezone"
-  });
-
-});
 // note: timezone selector - https://codepen.io/matallo/pen/WEjKqG?editors=1010#0
+
+// TODO: Check this on change event handler firing once per selected
+//       dCID onLoad. Making many unnecessary db calls!
 
 $("#dcid3").change(function() {
 if ( $.fn.dataTable.isDataTable( '#dataTable4' ) ) {
     table3 = $('#dataTable4').DataTable();
     table3.destroy();
 }
-//var data3 = $( "#dcid3 option:selected" ).text();
-//console.log('data3: ' + data3);
-//console.log($('#dcid3').val());
+
 var data3 = $('#dcid3').val();
 $('#kundenCard').addClass('display').removeClass('hidden');
 //filter by selected value on second column
@@ -997,66 +962,6 @@ var table4 = $('#dataTable4').DataTable( {
 });
 
 
-$(document).ready(function() {
-
-  $('iframe').on('load', function() {
-        $('this').contents().find('html:first').css('white-space', 'pre-wrap');
-    });
-
-  $('#dataTable4').on( 'click', '#sendMailbtn', function () {
-    table3 = $('#dataTable4').DataTable();
-    var data = table3.row( $(this).parents('tr') ).data();
-
-    var start = moment($('#sdt').val());
-    var end = moment($('#edt').val());
-
-    var startLabel = start.format("DD MMM YYYY HH:mm:SS");
-    var endLabel = end.format("DD MMM YYYY HH:mm:SS");
-
-    var tzSuffix = $("#timezoneSelector option:selected").text();
-    var regExp = /\(([^)]+)\)/;
-    var matches = regExp.exec(tzSuffix);
-    var tzSuffixRAW = matches[1];
-
-    var ms = moment(end).diff(moment(start));
-    var d = moment.duration(ms);
-    var impactTime = d.format("mm");
-
-    openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head> <style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:131px}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624px}</style></head><body style="{padding:0;margin:0;}"> <div> <p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"> <tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"> <p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + startLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + endLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT IMPACT HERE]</span></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Location:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT LOCATION HERE]</span></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT REASON HERE]</span></span></p></td></tr></table> <p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us at maintenance@newtelco.de.</span></p><style>.sig{font-family: Century Gothic, sans-serif;font-size: 9pt;color: #636266 !important;}b{color: #4ca702;}.gray{color: #636266 !important;}a{text-decoration: none;color: #636266 !important;}</style><div class="sig"><br><div>Best regards | Mit freundlichen Grüßen</div><br><div><b class="gray">Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b>|</b> Mainzer Landstr. 351-353 <b>|</b> 60326 Frankfurt a.M. <b>|</b> DE <br>www.newtelco.com <b>|</b> 24/7 NOC +49 69 75 00 27 30 <b>|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" alt="" height="29" width="516"></div></div></body>');
-
-    var DateTime = luxon.DateTime;
-    var now = DateTime.local().toFormat("y-MM-dd HH:mm");
-    $("#mailSentAt").val(now);
-  } );
-
-  /*************************************************************************************************
-   *
-   *   Gmail HTML Paste Extension:
-   *   https://chrome.google.com/webstore/detail/gmail-append-html/dnfikahmfhcjfcmbgbkklecekfeijmda
-   *
-   *************************************************************************************************/
-
-  function openInNewTab2(url) {
-    var win = window.open(url, '_blank');
-    win.focus();
-  };
-
-});
-
-$(document).ready(function() {
-  if ($( "#dcid3 option:selected" ).text() != '') {
-    $('#kundenCard').addClass('display').removeClass('hidden');
-    var value = $( "#dcid3 option:selected" ).val();
-
-    $('#dcid3')
-         .find('option:checked(' + value + ')')
-         .prop('selected',true)
-         .trigger('change');
-
-    return false;
-  }
-});
-
 $('#btnSave').on('click', function(e) {
 
   e.preventDefault();
@@ -1095,12 +1000,6 @@ $('#btnSave').on('click', function(e) {
         .unique()     // Reduce to unique values
         .join( ',' );
 
-  //console.log(kCompaniesConcat);
-  // if($('#dcid3').val() == ''){
-  //   var dcid = '0';
-  // } else {
-  //   var dcid = $('#dcid3').val();
-  // }
 
   var getSelected = $('#dcid3').val();
   var selectedNums = [];
@@ -1229,24 +1128,6 @@ $('#btnSave').on('click', function(e) {
     dialog2.querySelector('.close2').addEventListener('click', function() {
       dialog2.close();
     });
-
-    document.addEventListener("DOMContentLoaded", function() {
-      OverlayScrollbars(document.querySelectorAll("#mailDialog"), {
-        className       : "os-theme-dark",
-        resize          : "both",
-        sizeAutoCapable : true
-      });
-      OverlayScrollbars(document.querySelectorAll("#notes"), {
-        className       : "os-theme-dark",
-        resize          : "vertical",
-        sizeAutoCapable : true
-      });
-      OverlayScrollbars(document.querySelectorAll("#emailBodyFrame"), {
-        className       : "os-theme-dark",
-        resize          : "vertical",
-        sizeAutoCapable : true
-      });
-    });
   }
 
   $('.attachmentLink').on('click', function(e) {
@@ -1282,6 +1163,100 @@ $('#btnSave').on('click', function(e) {
       };
       req.send();
     }
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+
+    // Adjusting Timezones and Date/Time Format
+    var mEingangVal =  moment($('#medt').val()).format("DD MMM YYYY HH:mm:SS ZZ");
+    $('#medt').val(mEingangVal);
+
+    var updatedAtLabel = moment($('#updatedAtLabel').html()).format("DD MMM YYYY HH:mm:SS ZZ");
+    $('#updatedAtLabel').html(updatedAtLabel);
+
+    $("#timezoneSelector").select2({
+      placeholder: "Select a Timezone"
+    });
+
+    // Loading 'Kunden Circuits' content
+    $('iframe').on('load', function() {
+        $('this').contents().find('html:first').css('white-space', 'pre-wrap');
+    });
+
+    $('#dataTable4').on( 'click', '#sendMailbtn', function () {
+      table3 = $('#dataTable4').DataTable();
+      var data = table3.row( $(this).parents('tr') ).data();
+
+      var start = moment($('#sdt').val());
+      var end = moment($('#edt').val());
+
+      var startLabel = start.format("DD MMM YYYY HH:mm:SS");
+      var endLabel = end.format("DD MMM YYYY HH:mm:SS");
+
+      var tzSuffix = $("#timezoneSelector option:selected").text();
+      var regExp = /\(([^)]+)\)/;
+      var matches = regExp.exec(tzSuffix);
+      var tzSuffixRAW = matches[1];
+
+      var ms = moment(end).diff(moment(start));
+      var d = moment.duration(ms);
+      var impactTime = d.format("mm");
+
+      openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=<head> <style>.grayText10{font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:131px}.tdSizing2{width:467.8pt;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624px}</style></head><body style="{padding:0;margin:0;}"> <div> <p><span class="grayText10">Dear Colleagues,</span></p><p><span class="grayText10">We would like to inform you about planned work on the CID ' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"> <tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"> <p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + startLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Finish date and time:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + endLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span> <span class="grayText10">Impact:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT IMPACT HERE]</span></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Location:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT LOCATION HERE]</span></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span class="grayText10">Reason:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT REASON HERE]</span></span></p></td></tr></table> <p><span class="grayText10">We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span class="grayText10">If you have any questions feel free to contact us at maintenance@newtelco.de.</span></p><style>.sig{font-family: Century Gothic, sans-serif;font-size: 9pt;color: #636266 !important;}b{color: #4ca702;}.gray{color: #636266 !important;}a{text-decoration: none;color: #636266 !important;}</style><div class="sig"><br><div>Best regards | Mit freundlichen Grüßen</div><br><div><b class="gray">Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b>|</b> Mainzer Landstr. 351-353 <b>|</b> 60326 Frankfurt a.M. <b>|</b> DE <br>www.newtelco.com <b>|</b> 24/7 NOC +49 69 75 00 27 30 <b>|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" alt="" height="29" width="516"></div></div></body>');
+
+      var DateTime = luxon.DateTime;
+      var now = DateTime.local().toFormat("y-MM-dd HH:mm");
+      $("#mailSentAt").val(now);
+    } );
+
+    /*************************************************************************************************
+     *
+     *   Gmail HTML Paste Extension:
+     *   https://chrome.google.com/webstore/detail/gmail-append-html/dnfikahmfhcjfcmbgbkklecekfeijmda
+     *
+     *************************************************************************************************/
+
+    function openInNewTab2(url) {
+      var win = window.open(url, '_blank');
+      win.focus();
+    };
+    
+
+    // Show 'Kunden Circuits' if loading with selected Deren CIDs
+    if ($( "#dcid3 option:selected" ).text() != '') {
+      $('#kundenCard').addClass('display').removeClass('hidden');
+      var value = $( "#dcid3 option:selected" ).val();
+
+      $('#dcid3')
+          .find('option:checked(' + value + ')')
+          .prop('selected',true)
+          .trigger('change');
+
+      return false;
+    }
+
+    // Pretty Scrollbars
+    $(".mdl-layout__content").overlayScrollbars({
+      className:"os-theme-minimal-dark",
+      overflowBehavior : {
+        x: "hidden"
+      },
+      scrollbars : {
+        visibility       : "auto",
+        autoHide         : "move",
+        autoHideDelay    : 500
+      }
+      });
+      OverlayScrollbars(document.getElementById("mailDialog"), {
+        className       : "os-theme-dark",
+        resize          : "both",
+        sizeAutoCapable : true
+      });
+      OverlayScrollbars(document.getElementById("notes"), {
+        className       : "os-theme-dark",
+        resize          : "vertical",
+        sizeAutoCapable : true
+      });
   });
 
   $( window ).on('load',function() {
@@ -1320,6 +1295,9 @@ $('#btnSave').on('click', function(e) {
 
   <!-- materialize (multi select) -->
   <link rel="preload stylesheet" as="style" href="dist/css/materialize.min.css" onload="this.rel='stylesheet'">
+
+  <!-- hover css -->
+  <link type="text/css" rel="stylesheet" href="dist/css/hover.css" />
 
   <!-- overlay scrollbars css -->
   <link type="text/css" href="dist/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">

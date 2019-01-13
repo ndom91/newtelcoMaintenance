@@ -105,6 +105,9 @@ require('authenticate_google.php');
       <!-- material icons -->
       <link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css" onload="this.rel='stylesheet'">
       <link rel="preload stylesheet" as="style" href="dist/css/materialdesignicons.min.css" onload="this.rel='stylesheet'">
+      
+      <!-- hover css -->
+      <link type="text/css" rel="stylesheet" href="dist/css/hover.css" />
 
       <!-- Google font-->
       <link prefetch rel="preload stylesheet" as="style" href="dist/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">

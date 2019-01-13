@@ -7420,6 +7420,7 @@ input.mdl-button[type="submit"] {
   position: relative;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-size: 20px;
+  cursor: pointer;
   font-weight: 500;
   line-height: 1;
   letter-spacing: 0.02em;

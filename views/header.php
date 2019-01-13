@@ -1,7 +1,21 @@
 <header class="mdl-layout__header mdl-color--light-green-nt">
   <div class="mdl-layout__header-row">
-    <a href="index.php"><img style="margin-right: 10px" src="dist/images/nt_square32_2_light2.png"/></a>
+    <div class="mdl-layout-title2 hvr-wobble-bottom">
+    <img style="margin-right: 10px" src="dist/images/nt_square32_2_light2.png"/>
     <span class="mdl-layout-title">Maintenance</span>
+    </div>
+    <script>
+      $(".mdl-layout-title2").click(function(){
+        window.location.replace("https://maintenance.newtelco.de/index");
+      });
+    </script>
+    <div class="col">
+      <div class="con">
+        <div class="bar arrow-top"></div>
+        <div class="bar arrow-middle"></div>
+        <div class="bar arrow-bottom"></div>
+      </div>
+    </div>
     <div class="mdl-layout-spacer"></div>
     <div class="menu_userdetails">
       <button id="user-profile-menu" class="mdl-button mdl-js-button mdl-userprofile-button">

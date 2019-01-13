@@ -39,7 +39,6 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
   <span class="mdl-layout-title"><img src="/dist/images/newtelco_black.png"/></span>
   <nav class="mdl-navigation">
     <a class="mdl-navigation__link" href="index.php"><span class="ndl-home"></span>  Home</a>
-    <!-- <a class="mdl-navigation__link" href="userhome.php"><i class="ndl-face"></i>  <?php echo $token_data['name'] ?></a> -->
     <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
     <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming<div class="material-icons mdl-badge mdl-badge--overlap menuSubLabel2" data-badge="<?php if ($labelID != '0') { if ($results3['messagesUnread'] == 0) { echo "♥"; } else { echo $results3['messagesUnread']; }} else {  echo "♥"; } ?>"></div></a></a>
     <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>

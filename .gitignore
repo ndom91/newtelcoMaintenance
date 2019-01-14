@@ -1,6 +1,6 @@
 oauth-credentials*
 maintenanceapp-*
-/msg
-/node_modules
-/vendor
-/logs
+msg/
+node_modules/
+vendor/
+logs/

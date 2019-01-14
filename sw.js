@@ -25,6 +25,7 @@ var STATIC_FILES = [
   "dist/images/svg/home.svg",
   "dist/fonts/Roboto_Latin500.woff2",
   "dist/fonts/Roboto_Latin700.woff2",
+  "dist/fonts/Roboto_Latin400.woff2",
   "dist/fonts/Roboto_Latin100.woff2",
   "dist/fonts/MaterialIcons_400.woff2",
   "dist/fonts/fa-solid-900.woff2",

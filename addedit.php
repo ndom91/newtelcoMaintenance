@@ -953,8 +953,17 @@ var table4 = $('#dataTable4').DataTable( {
       },{
           targets: [ 5 ],
           className: 'mdl-typography--text-lowercase'
-      },
-      { responsivePriority: 1, targets: [ 0, 1, 3 ] }
+      },{
+          targets: [2], render: function (a, b, data, d) {
+            if (data['protected'] === 0 ){
+              return 'Unprotected'
+            } else if (data['protected'] === 1 ){
+              return 'Protected';
+            } else {
+              return '?';
+            }
+          }
+      },{ responsivePriority: 1, targets: [ 0, 1, 3 ] }
     ],
     responsive: true
 });

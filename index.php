@@ -139,7 +139,7 @@ require('authenticate_google.php');
                       </script> -->
 
                       <?php if ($labelID == '0'): ?>
-                        <br>If this is your first visit, <b>please set your prefered Maintenance Mail label</b> in the <a class="hvr-underline-from-left" href="settings.php">settings</a><br><br>
+                        <br>If this is your first visit, <b>please set your prefered Maintenance Mail label</b> in the <a class="hvr-underline-from-left" style="text-decoration:none;" href="settings.php">settings</a><br><br>
                       <?php else : ?>
                         <!-- <br>You have <b><?php echo $results3['messagesUnread'] ?></b> maintenance mails open.</h6>
                         <br><br>And <b><?php echo $results4['messagesTotal'] ?></b> maintenances completed!

@@ -1,0 +1,15 @@
+{
+  "name": "newtelco-maintenance-management",
+  "description": "Newtelco GmbH - Technik - Maintenance Management System",
+  "version": "0.8.0",
+  "main": "index.php",
+  "repository": {
+    "type": "git",
+    "url": "https://git.newtelco.de/ndomino/maintenancedb.git"
+  },
+  "keywords": [],
+  "author": "ndom91",
+  "license": "GNU GPL",
+  "homepage": "https://maintenance.newtelco.de"
+}
+

@@ -1,15 +1,21 @@
-## Newtelco Maintenance Web App
----
-#### Author: [ndomino](https://github.com/ndom91)
+![Newtelco](./dist/images/newtelco_full_300w.png)  
 
-### [https://maintenance.newtelco.de](https://maintenance.newtelco.de)
+[![newtelco](https://img.shields.io/badge/Version-0.8.0_beta-green.svg?style=flat-square)](https://crm.newtelco.de) 
+[![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m781781334-0112a59d100b992b0132080d.svg?style=flat-square&colorB=green&label=Uptime)](https://uptime.newtelco.de/) 
+[![newtelco](https://img.shields.io/badge/Contact%20Us-%40-green.svg?style=flat-square)](mailto:ndomino@newtelco.de) 
 
-![Login Screenshot](./dist/images/maintenanceScreenshot1.png)   
-![Login Screenshot](./dist/images/maintenanceScreenshot2.png)
+
+#### Maintenance Web App
+Author: [ndomino@newtelco.de](mailto:ndomino@newtelco.de)  
+URL: [https://maintenance.newtelco.de](https://maintenance.newtelco.de)
 
 ### Intro
 
 Newtelco Maintenance Web Application, designed and developed in-house, to replace Excel Tables + Emails back and forth.
+
+### Screenshots  
+![Login Screenshot](./dist/images/maintenanceScreenshot1.png)   
+![Login Screenshot](./dist/images/maintenanceScreenshot2.png)
 
 ### Requirements
 

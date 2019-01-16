@@ -43,6 +43,8 @@ require('authenticate_google.php');
 
   <?php echo file_get_contents("views/meta.html"); ?>
 
+  <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet">
+  
   <!-- jquery -->
   <script rel="preload" as="script" src="dist/js/jquery-3.3.1.min.js"></script>
 
@@ -139,7 +141,9 @@ require('authenticate_google.php');
                       </script> -->
 
                       <?php if ($labelID == '0'): ?>
-                        <br>If this is your first visit, <b>please set your prefered Maintenance Mail label</b> in the <a class="hvr-underline-from-left" style="text-decoration:none;" href="settings.php">settings</a><br><br>
+                        <div class="settingsNudge">
+                        <br>No label selection made, please visit <a class="hvr-underline-from-left" style="font-weight: 500;text-decoration:none;" href="settings.php">settings</a> and set your preferences.<br><br>
+                        </div>
                       <?php else : ?>
                         <!-- <br>You have <b><?php echo $results3['messagesUnread'] ?></b> maintenance mails open.</h6>
                         <br><br>And <b><?php echo $results4['messagesTotal'] ?></b> maintenances completed!
@@ -149,7 +153,7 @@ require('authenticate_google.php');
                             <?php echo $results3['messagesUnread'] ?>
                           </div>
                           <!-- <div class="material-icons unreadIcon">email</div> -->
-                          <span class="mdi mdi-48px mdi-email mdi-dark mdi-inactive unreadIcon"></span>
+                          <span class="hvr-grow-rotate mdi mdi-48px mdi-email mdi-green mdi-dark mdi-inactive unreadIcon"></span>
                           <div class="unreadLabel">
                             Unread Maintenances
                           </div>
@@ -166,7 +170,7 @@ require('authenticate_google.php');
                       </div>
                       <div style="display: inline !important;" class="mdl-layout-spacer"></div>
                       <a href="overview.php" id="btnOverview" style="float: right;" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--light-green-nt">
-                        Overview
+                        History
                       </a>
                       <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnOverview">
                         View Maintenance History
@@ -209,15 +213,12 @@ require('authenticate_google.php');
                 var sst = [];
                 var ali = [];
                 var fwa = [];
-                var ndo = [];
 
                 for ( var i = 0; i < data.length; i++ ) {
                   if (data[i]['bearbeitetvon'] == 'fwaleska') {
                     fwa.push(data[i]['day']);
                   } else if (data[i]['bearbeitetvon'] == 'alissitsin') {
                     ali.push(data[i]['day']);
-                  } else if (data[i]['bearbeitetvon'] == 'ndomino') {
-                    ndo.push(data[i]['day']);
                   } else if (data[i]['bearbeitetvon'] == 'sstergiou') {
                     sst.push(data[i]['day']);
                   }
@@ -253,13 +254,7 @@ require('authenticate_google.php');
                         backgroundColor: 'rgba(36,122,219,0.4)',
                         borderColor: 'rgba(36,122,219,0.8)',
                         data: [countDays(sst,func_m6), countDays(sst,func_m5), countDays(sst,func_m4), countDays(sst,func_m3), countDays(sst,func_m2), countDays(sst,func_m1), countDays(sst,func_m0)]
-                    },{
-                        // NDOMINO
-                        label: 'ndomino',
-                        backgroundColor: 'rgba(36,219,141,0.4)',
-                        borderColor: 'rgba(36,219,141,0.8)',
-                        data: [countDays(ndo,func_m6), countDays(ndo,func_m5), countDays(ndo,func_m4), countDays(ndo,func_m3), countDays(ndo,func_m2), countDays(ndo,func_m1), countDays(ndo,func_m0)]
-                      }
+                    }
                     ]
                   },
                   options: {

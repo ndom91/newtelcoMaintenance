@@ -224,13 +224,31 @@
 
     echo json_encode($array2);
 
-  } elseif (isset($_GET['timeline'])) {
+  } elseif (isset($_GET['hider'])) {
 
+    /*****************************************
+     * OVERVIEW - maintenance hider
+     *****************************************/
+
+    $mid = $_GET['mid'];
+    
+    $result = mysqli_query($dbhandle, "UPDATE maintenancedb SET maintenancedb.active = '0' WHERE maintenancedb.id LIKE '$mid'") or die(mysqli_error($dbhandle));
+
+    if ($result == 'TRUE'){
+      $hideResults['updated'] = 1;
+    } else {
+      $hideResults['updated'] = 0;
+    }
+
+    echo json_encode($hideResults);
+
+  } elseif (isset($_GET['timeline'])) {
+    
     /*****************************************
      * OVERVIEW - get timeline data
      *****************************************/
 
-    $result = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.startDateTime as 'start', maintenancedb.endDateTime as 'end', companies.name as 'content', maintenancedb.betroffeneKunden as 'title' FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.done = '1' AND maintenancedb.active = '1';") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.startDateTime as 'start', maintenancedb.endDateTime as 'end', companies.name as 'content', maintenancedb.betroffeneKunden as 'title' FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.done = '1' AND maintenancedb.cancelled = '0' AND maintenancedb.active = '1';") or die(mysqli_error($dbhandle));
 
     $array2 = array();
 
@@ -325,9 +343,11 @@
     //$omailankunde = mysqli_real_escape_string($dbhandle, $fields[0]['omailankunde']);
     //$ocal = mysqli_real_escape_string($dbhandle, $fields[0]['ocal']);
     $odone = mysqli_real_escape_string($dbhandle, $fields[0]['odone']);
+    $cancelled = mysqli_real_escape_string($dbhandle, $fields[0]['cancelled']);
     $mailSentAt = mysqli_real_escape_string($dbhandle, $fields[0]['mailSentAt']);
     $mailDomain = mysqli_real_escape_string($dbhandle, $fields[0]['mailDomain']);
     $kundenCompanies = mysqli_real_escape_string($dbhandle, $fields[0]['kundenCompanies']);
+    $kundenCIDs = mysqli_real_escape_string($dbhandle, $fields[0]['kundenCIDs']);
 
     $update = $fields[0]['update'];
     $updatedBy = $fields[0]['updatedBy'];
@@ -354,7 +374,7 @@
     }
 
     if ($update == '1') {
-      $resultx = mysqli_query($dbhandle, "UPDATE maintenancedb SET maileingang = '$omaileingang', receivedmail = '$oreceivedmail', bearbeitetvon = '$obearbeitetvon', lieferant = '$olieferantid', derenCIDid = '$oderenCIDid', startDateTime = '$ostartdatetime', endDateTime = '$oenddatetime', postponed = '$opostponed', notes = '$onotes', mailSentAt = '$mailSentAt', updatedBy = '$updatedBy', betroffeneKunden = '$kundenCompanies', done = '$odone' WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
+      $resultx = mysqli_query($dbhandle, "UPDATE maintenancedb SET maileingang = '$omaileingang', receivedmail = '$oreceivedmail', bearbeitetvon = '$obearbeitetvon', lieferant = '$olieferantid', derenCIDid = '$oderenCIDid', startDateTime = '$ostartdatetime', endDateTime = '$oenddatetime', postponed = '$opostponed', notes = '$onotes', mailSentAt = '$mailSentAt', updatedBy = '$updatedBy', betroffeneKunden = '$kundenCompanies', betroffeneCIDs = '$kundenCIDs', done = '$odone', cancelled = '$cancelled' WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
 
       $resultx2 = mysqli_query($dbhandle, "SELECT id FROM maintenancedb WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
 
@@ -386,8 +406,8 @@
           $kundenIQ = mysqli_query($dbhandle, "INSERT INTO companies (name, mailDomain) VALUES ('$olieferant', '$mailDomain')") or die(mysqli_error($dbhandle));
         }
 
-        $resultx = mysqli_query($dbhandle, "INSERT INTO maintenancedb (id, maileingang, receivedmail, bearbeitetvon, lieferant, derenCIDid, startDateTime, endDateTime, postponed, notes, mailSentAt, updatedBy, betroffeneKunden, done)
-        VALUES ('$lastID', '$omaileingang', '$oreceivedmail', '$obearbeitetvon', '$olieferantid', '$oderenCIDid', '$ostartdatetime', '$oenddatetime', '$opostponed', '$onotes', '$mailSentAt', '$updatedBy', '$kundenCompanies', '$odone')")  or die(mysqli_error($dbhandle));
+        $resultx = mysqli_query($dbhandle, "INSERT INTO maintenancedb (id, maileingang, receivedmail, bearbeitetvon, lieferant, derenCIDid, startDateTime, endDateTime, postponed, notes, mailSentAt, updatedBy, betroffeneKunden, betroffeneCIDs, done, cancelled)
+        VALUES ('$lastID', '$omaileingang', '$oreceivedmail', '$obearbeitetvon', '$olieferantid', '$oderenCIDid', '$ostartdatetime', '$oenddatetime', '$opostponed', '$onotes', '$mailSentAt', '$updatedBy', '$kundenCompanies', '$kundenCIDs', '$odone', '$cancelled')")  or die(mysqli_error($dbhandle));
 
         if ($resultx == 'TRUE'){
             $addeditA['added'] = 1;

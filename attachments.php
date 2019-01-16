@@ -49,7 +49,7 @@ function getAttachment($messageId, $partId, $userId) {
     }
 
     if (isset($_GET['messageId']) && $_GET['part_id']){ // This is After Clicking an Attachment
-        $attachment = getAttachment($_GET['messageId'], $_GET['part_id'], $user);
+        $attachment = getAttachment($_GET['messageId'], $_GET['part_id'], 'fwaleska@newtelco.de');
         $content_type = "";
         foreach ($attachment['data']['headers'] as $key => $value) {
             if($value->name == 'Content-Type'){ $content_type = $value->value; }

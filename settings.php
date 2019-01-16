@@ -61,14 +61,17 @@ if (isset($_POST['endlabel'])) {
               <div class="bar arrow-bottom"></div>
             </div>
           </div>
-          <a href="index.php"><img style="margin-right: 10px" src="dist/images/nt_square32_2_light2.png"/></a>
-          <span class="mdl-layout-title">Maintenance</span>
+          <div class="mdl-layout-title2 hvr-grow">
+            <a href="index.php"><img style="margin-right: 10px" src="dist/images/nt_square32_2_light2.png"/></a>
+            <span class="mdl-layout-title">Maintenance</span>
+          </div>
           <div class="mdl-layout-spacer"></div>
           <div class="menu_userdetails">
             <button id="user-profile-menu" class="mdl-button mdl-js-button mdl-userprofile-button">
-              <img class="menu_userphoto" src="<?php echo $token_data['picture'] ?>"/>
-              <span class="mdl-layout-subtitle menumail"> <?php echo $token_data['email'] ?></span>
-              <i class="fas fa-angle-down menuangle"></i>
+              <img class="hvr-rotate menu_userphoto" src="<?php echo $token_data['picture'] ?>"/>
+              <span class="hvr-sink mdl-layout-subtitle menumail"> <?php echo $token_data['email'] ?>
+                <i class="fas fa-angle-down menuangle"></i>
+              </span>              
             </button>
               <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
                   for="user-profile-menu">
@@ -176,7 +179,7 @@ if (isset($_POST['endlabel'])) {
                               Hide Warning
                               </div>
                               <span id="emailUserHelp2" class="mdi mdi-36px mdi-help-circle mdi-inactive"></span>
-                                <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--right" for="emailUserHelp2">
+                                <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--left" for="emailUserHelp2">
                                   This is valid for ALL users.<br><br>
                                   This will determine much backend functionality like available labels, etc. So please do not change this back and forth.<br><br>
                                   Once one user is set, the mail IDs will be based on their account and will not be available if switched to another account.</font>

@@ -38,14 +38,14 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
 <div class="mdl-layout__drawer">
   <span class="mdl-layout-title"><img src="/dist/images/newtelco_black.png"/></span>
   <nav class="mdl-navigation">
-    <a class="mdl-navigation__link" href="index.php"><span class="ndl-home"></span>  Home</a>
-    <a class="mdl-navigation__link" href="overview.php"><i class="ndl-overview"></i>  Overview</a>
-    <a class="mdl-navigation__link" href="incoming.php"><i class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"></i>  Incoming<div class="material-icons mdl-badge mdl-badge--overlap menuSubLabel2" data-badge="<?php if ($labelID != '0') { if ($results3['messagesUnread'] == 0) { echo "♥"; } else { echo $results3['messagesUnread']; }} else {  echo "♥"; } ?>"></div></a></a>
-    <a class="mdl-navigation__link" href="group.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">maintenance</small></a>
-    <a class="mdl-navigation__link" href="groupservice.php"><i class="ndl-group"></i>  Group <small class="menuSubLabel">service</small></a>
-    <a class="mdl-navigation__link" href="calendar.php"><i class="ndl-calendar"></i></i>  Calendar</a>
-    <a class="mdl-navigation__link" href="crm_iframe.php"><i class="ndl-work"></i>  CRM</a>
-    <a class="mdl-navigation__link" href="settings.php"><i class="ndl-settings"></i>  Settings</a>
+    <a class="mdl-navigation__link homeLink" href="index.php"><img src="/dist/images/svg/home.svg" class="ndl-home"/>  Home</a>
+    <a class="mdl-navigation__link historyLink" href="overview.php"><img src="/dist/images/svg/overview.svg" class="ndl-overview"/>  History</a>
+    <a class="mdl-navigation__link incomingLink" href="incoming.php"><img src="/dist/images/svg/ballot.svg" class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"/>  Incoming<div class="material-icons mdl-badge mdl-badge--overlap menuSubLabel2" data-badge="<?php if ($labelID != '0') { if ($results3['messagesUnread'] == 0) { echo "♥"; } else { echo $results3['messagesUnread']; }} else {  echo "♥"; } ?>"></div></a></a>
+    <a class="mdl-navigation__link group1Link" href="group.php"><img src="/dist/images/svg/group.svg" class="ndl-group1"/>  Group <small class="menuSubLabel">maintenance</small></a>
+    <a class="mdl-navigation__link group2Link" href="groupservice.php"><img src="/dist/images/svg/group.svg" class="ndl-group2"/>  Group <small class="menuSubLabel">service</small></a>
+    <a class="mdl-navigation__link calendarLink" href="calendar.php"><img src="/dist/images/svg/calendar.svg" class="ndl-calendar"/>  Calendar</a>
+    <a class="mdl-navigation__link crmLink" href="crm_iframe.php"><img src="/dist/images/svg/work.svg" class="ndl-work"/>  CRM</a>
+    <a class="mdl-navigation__link settingsLink" href="settings.php"><img src="/dist/images/svg/settings.svg" class="ndl-settings"/>  Settings</a>
     <div class="mdl-layout-spacer"></div>
     <a class="mdl-navigation__link menu_logout" href="?logout">
       <button id="menuLogout" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
@@ -56,4 +56,69 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
       </div>
     </a>
   </nav>
+  <script>
+    $('.homeLink').hover( function() {
+        $('.ndl-home').toggleClass('hvr-grow2');
+    });
+    $('.historyLink').hover( function() {
+        $('.ndl-overview').toggleClass('hvr-grow2');
+    });
+    $('.incomingLink').hover( function() {
+        $('.ndl-ballot').toggleClass('hvr-grow2');
+    });
+    $('.group1Link').hover( function() {
+        $('.ndl-group1').toggleClass('hvr-grow2');
+    });
+    $('.group2Link').hover( function() {
+        $('.ndl-group2').toggleClass('hvr-grow2');
+    });
+    $('.calendarLink').hover( function() {
+        $('.ndl-calendar').toggleClass('hvr-grow2');
+    });
+    $('.crmLink').hover( function() {
+        $('.ndl-work').toggleClass('hvr-grow2');
+    });
+    $('.settingsLink').hover( function() {
+        $('.ndl-settings').toggleClass('hvr-grow2');
+    }); 
+
+    // alt + r - open menu
+    var codeset = { 82: false, 18: false };
+    // alt + h - open history directly
+    var codeset3 = { 72: false, 18: false };
+    // alt + i - open incoming directly
+    var codeset4 = { 73: false, 18: false };
+    $(document).on('keydown', function (e) {
+      console.log(e.keyCode);
+      if (e.keyCode in codeset) {
+        codeset[e.keyCode] = true;
+        if (codeset[82] && codeset[18]) {
+          $('.mdl-layout__drawer').toggleClass('is-visible');
+          $('.mdl-layout__obfuscator').toggleClass('is-visible');
+        }
+      } else if (e.keyCode in codeset3) {
+        codeset3[e.keyCode] = true;
+        if (codeset3[72] && codeset3[18]) {
+          // alt + h
+          
+          window.location.href = 'https://maintenance.newtelco.de/overview';
+        }
+      } else if (e.keyCode in codeset4) {
+        codeset4[e.keyCode] = true;
+        if (codeset4[73] && codeset4[18]) {
+          // alt + i
+          window.location.href = 'https://maintenance.newtelco.de/incoming';
+        }
+      }
+    }).on('keyup', function (e) {
+      if (e.keyCode in codeset) {
+        codeset[e.keyCode] = false;
+      } else if (e.keyCode in codeset3) {
+        codeset3[e.keyCode] = false;
+      } else if (e.keyCode in codeset4) {
+        codeset4[e.keyCode] = false;
+      }
+    });
+
+  </script>
 </div>

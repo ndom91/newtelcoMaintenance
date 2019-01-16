@@ -1,6 +1,6 @@
 <header class="mdl-layout__header mdl-color--light-green-nt">
   <div class="mdl-layout__header-row">
-    <div class="mdl-layout-title2 hvr-wobble-bottom">
+    <div class="mdl-layout-title2 hvr-grow">
     <img style="margin-right: 10px" src="dist/images/nt_square32_2_light2.png"/>
     <span class="mdl-layout-title">Maintenance</span>
     </div>
@@ -19,9 +19,10 @@
     <div class="mdl-layout-spacer"></div>
     <div class="menu_userdetails">
       <button id="user-profile-menu" class="mdl-button mdl-js-button mdl-userprofile-button">
-        <img class="menu_userphoto" src="<?php echo $token_data['picture'] ?>"/>
-        <span class="mdl-layout-subtitle menumail"> <?php echo $token_data['email'] ?></span>
-        <i class="fas fa-angle-down menuangle"></i>
+        <img class="hvr-rotate menu_userphoto" src="<?php echo $token_data['picture'] ?>"/>
+        <span class="hvr-sink mdl-layout-subtitle menumail"> <?php echo $token_data['email'] ?>
+          <i class="fas fa-angle-down menuangle"></i>
+        </span>        
       </button>
         <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
             for="user-profile-menu">

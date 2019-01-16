@@ -125,7 +125,7 @@ table {
   top: 20px;
   zoom: 200%;
   opacity: .4;
-  z-index: -1;
+  z-index: 2;
   text-align: right;
   position: absolute;
 }
@@ -146,6 +146,12 @@ table {
   margin-top: 240px;
   margin-bottom: 20px;
 }
+.settingsNudge {
+  font-size: 28px;
+  line-height:1.2;
+  font-weight: 100;
+}
+
 /* Login */
 
 .signin_box {
@@ -761,17 +767,39 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 .vis-current-time {
   background-color: #67B246 !important;
 }
+
+tr.strikeout td:before {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  border-bottom: 1px solid #111;
+  width: 100%;
+}
+
 /* addedit */
 
 #timezoneSelector {
   width: 100%;
 }
 
+#switch-3 > .mdl-switch__track {
+  right: 0;
+  float: right;
+  margin-left: 260px;
+}
+
+#switch-3 > .mdl-switch__thumb {
+  right: 0;
+  float: right;
+  margin-left: 260px;
+}
+
 #notes {
   border-radius: 5px !important;
   border: 1px solid rgba(78, 78, 78, 0.2) !important;
   padding: 10px !important;
-  margin-top: 50px !important;
+  margin-top: 10px !important;
 }
 
 @media only screen and (max-width: 700px) {
@@ -892,7 +920,6 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 .ndl-calendar {
   content: url('/dist/images/svg/calendar.svg');
   position: relative;
-  top: 6px;
   margin-right: 10px;
   white-space:nowrap;
   opacity: 0.8;
@@ -901,7 +928,6 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 .ndl-ballot {
   content: url('/dist/images/svg/ballot.svg');
   position: relative;
-  top: 6px;
   margin-right: 10px;
   white-space:nowrap;
   opacity: 0.8;
@@ -923,10 +949,16 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
   white-space:nowrap;
   opacity: 0.8;
 }
-.ndl-group {
+.ndl-group1 {
   content: url('/dist/images/svg/group.svg');
   position: relative;
-  top: 6px;
+  margin-right: 10px;
+  white-space:nowrap;
+  opacity: 0.8;
+}
+.ndl-group2 {
+  content: url('/dist/images/svg/group.svg');
+  position: relative;
   margin-right: 10px;
   white-space:nowrap;
   opacity: 0.8;
@@ -934,7 +966,6 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 .ndl-home {
   content: url('/dist/images/svg/home.svg');
   position: relative;
-  top: 6px;
   margin-right: 10px;
   white-space:nowrap;
   opacity: 0.8;
@@ -942,7 +973,6 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 .ndl-overview {
   content: url('/dist/images/svg/overview.svg');
   position: relative;
-  top: 6px;
   margin-right: 10px;
   white-space:nowrap;
   opacity: 0.8;
@@ -966,7 +996,6 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 .ndl-work {
   content: url('/dist/images/svg/work.svg');
   position: relative;
-  top: 6px;
   margin-right: 10px;
   white-space:nowrap;
   opacity: 0.8;
@@ -974,7 +1003,6 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 .ndl-settings {
   content: url('/dist/images/svg/settings.svg');
   position: relative;
-  top: 6px;
   margin-right: 10px;
   white-space:nowrap;
   opacity: 0.8;
@@ -1068,7 +1096,7 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 }
 
 #emailUserHelp2 {
-  margin-left: -13%;
+  margin-left: 60%;
   margin-top: 27px;
 }
 .userEmail::placeholder {

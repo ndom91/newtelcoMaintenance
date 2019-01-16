@@ -44,6 +44,8 @@ global $dbhandle;
   <link type="text/css" href="dist/css/os-theme-minimal-dark.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
   <script rel="preload" as="script" type="text/javascript" src="dist/js/OverlayScrollbars.min.js"></script>
 
+  <!-- mdl modal -->
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/mdl-jquery-modal-dialog.js"></script>
   <style>
     <?php echo file_get_contents("dist/css/style.min.css"); ?>
     <?php echo file_get_contents("dist/css/material.min.css"); ?>
@@ -76,36 +78,10 @@ global $dbhandle;
                   </div>
                 </div>
                 <?php
-                // $lieferant = '';
-                // $tdCID = '';
 
                 if (empty($_POST['tLieferant']) && empty($_POST['tdCID'])) {
-                  $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.betroffeneKunden, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.done FROM maintenancedb LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.active = 1");
+                  $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.betroffeneKunden, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.betroffeneCIDs, maintenancedb.done, maintenancedb.cancelled FROM maintenancedb LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.active = 1");
                 }
-
-                // if (! empty($_POST['tLieferant'])){
-                //   $lieferant = $_POST['tLieferant'];
-                //   $query = $lieferant;
-
-                //   $lieferant_escape = mysqli_real_escape_string($dbhandle, $query);
-                //   $lieferant_escape = '%' . $lieferant_escape . '%';
-                //   // search first for existance of company
-                //   $lieferant_query = mysqli_query($dbhandle, "SELECT `id`,`name` FROM `companies` WHERE `name` LIKE '$lieferant_escape'");
-
-                //   if ($fetch = mysqli_fetch_array($lieferant_query)) {
-                //     //Found a company - now show all maintenances for company
-                //     $lieferant_id = $fetch[0];
-                //     $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE lieferant LIKE '$lieferant_id'");
-                //   }
-                // } elseif (! empty($_POST['tdCID'])){
-                //   $tdCID = $_POST['tdCID'];
-                //   $query = $tdCID;
-
-                //   $dCID_escape = mysqli_real_escape_string($dbhandle, $query);
-                //   $dCID_escape = '%' . $dCID_escape . '%';
-
-                //   $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt,maintenancedb.done FROM maintenancedb  LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.derenCIDid IN (SELECT id FROM lieferantCID WHERE derenCID LIKE '$dCID_escape' GROUP BY derenCID)");
-                // }
 
                 echo '<div class="dataTables_wrapper">
                 <table id="dataTable1" class="mdl-data-table striped" style="width: 100%">
@@ -125,13 +101,18 @@ global $dbhandle;
                             <th>Notes</th>
                             <th>Mail Sent At</th>
                             <th>Updated At</th>
+                            <th>Betroffene CIDs</th>
                             <th>Complete</th>
                           </tr>
                         </thead>
                         <tbody>';
 
                   while ($rowx = mysqli_fetch_assoc($resultx)) {
-                    echo '<tr>';
+                    if ($rowx['cancelled'] == '1') {
+                      echo '<tr class="strikeout">';
+                    } else {
+                      echo '<tr>';
+                    }
                     echo '<td><a class="editLink" href="addedit.php?update=1&mid=' . $rowx['id'] . '&gmid=' . $rowx['receivedmail'] . '"><button class="mdl-color-text--primary-contrast mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored button40" style="margin-left:3px">
                     <span style="color:#fff !important; line-height: 41px !important;" class="mdi mdi-24px mdi-circle-edit-outline mdi-light"></button></a></td>';
 
@@ -194,8 +175,75 @@ global $dbhandle;
                 </div>
               </div>
             </div>
+            <div id="hideComplete" class="mdl-js-snackbar mdl-snackbar">
+              <div class="mdl-snackbar__text"></div>
+              <button class="mdl-snackbar__action" type="button"></button>
+            </div>
         </main>
         <script>
+
+          // ALT + H set INACTIVE ROW
+          var codeset2 = { 72: false, 18: false };
+          $(document).on('keydown', function (e) {
+            if (e.keyCode in codeset2) {
+              codeset2[e.keyCode] = true;
+              if (codeset2[72] && codeset2[18]) {
+                var table3 = $('#dataTable1').DataTable();
+                // alert( table3.rows('.selected').data().length +' row(s) selected' );
+                console.log(e.keyCode + ' keydown1');
+                var mid = table3.row('.selected').data();
+                showDialog({
+                title: 'Hide Maintenance',
+                text: 'Do you really wish to hide the selected maintenance:<br><br><b>' + mid[4] + ' - ' + mid[5] + '</b><br>Bearbeitet von: <b>' + mid[6] + '</b><br>' + mid[8] + ' to ' + mid[9] + '<br><br>from the history table? There will be <b>no</b> reversing this decision.',
+                negative: {
+                  title: 'Cancel',
+                },
+                positive: {
+                  title: 'Hide',
+                  onClick: function() {$.ajax({
+                    url: 'api?hider=1&mid='+mid[1],
+                    success: function(result1){
+                        var obj = JSON.stringify(result1);
+                        if (result1.updated === 1) {
+                          var snackbarContainer = document.querySelector('#hideComplete');
+                          var dataSB1 = {
+                            message: 'Maintenance Successfully Hidden',
+                            timeout: 2000
+                          };
+                          snackbarContainer.MaterialSnackbar.showSnackbar(dataSB1);
+                          setTimeout(function(){ window.location.href = 'https://maintenance.newtelco.de/overview'; }, 1000);
+                        }
+                    },
+                    error: function (err) {
+
+                      console.log('Error', err);
+                      if (err.status === 0) {
+                        alert('Failed to load data.\nPlease run this example on a server.');
+                      }
+                      else {
+                        alert('Failed to load data.');
+                      }
+                    }
+                  });}
+                },
+                cancelable: true
+                }); 
+                
+              }
+            }
+          }).on('keyup', function (e) {
+            if (e.keyCode in codeset2) {
+              // console.log('codeset2[2]' + codeset2[2]);
+              // console.log('codeset2[1]' + codeset2[1]);
+              // console.log(e.keyCode + 'keydown2');
+              codeset2[72] = false;
+              codeset2[18] = false;
+              // console.log(e.keyCode + 'keydown3');
+              // console.log('codeset2[0]' + codeset2[0]);
+              // console.log('codeset2[1]' + codeset2[1]);
+            }
+          });
+
           $( document ).ready(function() {
             // Initialize Primary Overview Datatable
             var table = $('#dataTable1').DataTable( {
@@ -220,11 +268,13 @@ global $dbhandle;
                     // 11 - Notes
                     // 12 - Mail Sent At
                     // 13 - Updated At
-                    // 14 - Complete
+                    // 14 - BetroffeneCIDs
+                    // 15 - Complete
+                    // 16 - Cancelled
 
                   columnDefs: [
                       {
-                          "targets": [ 1 ],
+                          "targets": [ 1, 16 ],
                           "visible": false,
                           "searchable": false
                       },
@@ -241,9 +291,9 @@ global $dbhandle;
                       { responsivePriority: 1, targets: [ 0, 2, 3, 4, 5, 6, 13 ] },
                       { responsivePriority: 2, targets: [ -1 ] },
                       { responsivePriority: 5, targets: [ 7, 8, 12 ] },
-                      { responsivePriority: 10, targets: [ 11, 9, 10 ] },
+                      { responsivePriority: 10, targets: [ 11, 9, 10, 14 ] },
                       {
-                          targets: [ 0, 1, 3, 5, 6, 7, 10, 11, 14 ],
+                          targets: [ 0, 1, 3, 5, 6, 7, 10, 11, 15 ],
                           className: 'mdl-data-table__cell--non-numeric'
                       }
                   ]
@@ -330,9 +380,13 @@ global $dbhandle;
           });
 
 
+
         </script>
         <?php echo file_get_contents("views/footer.html"); ?>
       </div>
+
+      <!-- mdl modal -->
+      <link prefetch rel="preload stylesheet" as="style" href="dist/css/mdl-jquery-modal-dialog.css" type="text/css" onload="this.rel='stylesheet'">
 
       <!-- font awesome -->
       <link rel="preload stylesheet" as="style" href="dist/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">

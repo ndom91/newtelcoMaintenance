@@ -1,8 +1,13 @@
 <footer class="mdl-mini-footer mdl-grid">
     <div class="mdl-mini-footer__left-section mdl-cell mdl-cell--8-col mdl-cell--middle">
       <span class="mdl-logo">
-        <img width="120px" height="" src="dist/images/newtelco_full2_lightgray2_og.png"/>
+        <img width="120px" class="hvr-bounce-in" src="dist/images/newtelco_full2_lightgray2_og.png"/>
       </span>
+      <script>
+        $('.mdl-logo>img').on('click', function() {
+          window.open('https://newtelco.com','_blank');
+        })
+      </script>
       <!-- <ul class="mdl-mini-footer__link-list">
         <li><a href="#">Help</a></li>
         <li><a href="#">Privacy & Terms</a></li>
@@ -11,8 +16,6 @@
   <div class="mdl-layout-spacer"></div>
     <div class="mdl-mini-footer__right-section mdl-cell mdl-cell--4-col mdl-cell--middle mdl-typography--text-right">
       <div class="footertext">
-        <!-- built with <span class="love">&hearts;</span> by <a target="_blank" class="footera" rel="noreferrer" href="https://github.com/ndom91">ndom91</a> &copy; -->
-
         <span class="love">&hearts;</span><a target="_blank" class="footera hvr-underline-from-left" rel="noreferrer" href="https://github.com/ndom91"> ndom91 &copy;</a>
       </div>
     </div>

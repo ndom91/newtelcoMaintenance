@@ -4,3 +4,4 @@ msg/
 node_modules/
 vendor/
 logs/
+db_backup/

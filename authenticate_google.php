@@ -181,7 +181,6 @@ if ($_SESSION['access_token']['id_token'] === NULL):
 <head>
     <title>Newtelco Maintenance | Login</title>
     <?php echo file_get_contents("views/meta.html"); ?>
-    <link rel="icon" href="dist/images/favicon/favicon.ico">
 
     <!-- jquery -->
     <script rel="preload" as="script" src="dist/js/jquery-3.3.1.min.js"></script>
@@ -214,7 +213,7 @@ if ($_SESSION['access_token']['id_token'] === NULL):
                 <div class="signin_box">
                 <?php if (isset($authUrl)): ?>
                   <div class="request">
-                    <a class='login' href='<?= $authUrl ?>' data-onsuccess="onSignIn"><img class="signin_btn" src="dist/images/btn_google_signin_light_normal_web.png"
+                    <a class='login' href='<?= $authUrl ?>' data-onsuccess="onSignIn"><img class="hvr-grow signin_btn" src="dist/images/btn_google_signin_light_normal_web.png"
 onmouseover="this.src='dist/images/btn_google_signin_light_focus_web.png'"
 onmouseout="this.src='dist/images/btn_google_signin_light_normal_web.png'"
 border="0" alt=""/></a>

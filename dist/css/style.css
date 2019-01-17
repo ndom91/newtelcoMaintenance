@@ -104,6 +104,47 @@ table {
 
 /* Index */
 
+.indexWrapper {
+  margin-top: 30px;
+}
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 320px;
+}
+.column {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
+}
+.indexCounterBox {
+  background-color: rgba(0,0,0,0.1);
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+  border-radius: 18px;
+  height: 250px;
+  max-width: 440px;
+  padding: 10px;
+  margin-bottom: 60px;
+}
+.lineWrapper {
+  max-width: 440px;
+}
+#line-chart {
+  max-width: 440px;
+  float:right;
+}
+.chart1 {
+  max-width: 440px;
+  margin-bottom: 120px;
+  margin-top: -210px;
+}
+.chart2 {
+  max-width: 440px;
+}
+
 .headerWelcome {
   margin: 5px 10px;
 }
@@ -121,7 +162,7 @@ table {
   font-weight: 500;
 }
 .unreadIcon {
-  right: -215px;
+  right: -210px;
   top: 20px;
   zoom: 200%;
   opacity: .4;
@@ -152,6 +193,20 @@ table {
   font-weight: 100;
 }
 
+@media only screen and (max-width: 700px) {
+
+  .unreadCounter {
+    margin: 55px -220px;
+  }
+
+  .unreadIcon {
+    right: -100px;
+  }
+  .unreadLabel {
+    left: -280px;
+  }
+
+}
 /* Login */
 
 .signin_box {
@@ -237,7 +292,8 @@ table {
 }
 
 .con {
-  width: auto;
+  width: 130px;
+  height: 90px;
   margin: 54px auto;
   -webkit-transition: all .4s ease;
   -moz-transition: all .4s ease;
@@ -252,7 +308,7 @@ table {
 
 .col {
   display: inline-block;
-  width: 6%;
+  width: 70px;
   text-align: center;
   height: auto;
   position: absolute;
@@ -1029,7 +1085,26 @@ tr.strikeout td:before {
 .mdl-layout__drawer  {
   overflow-y: unset !important;
 }
-
+.helperText {
+  color:rgba(61,106,42,0.6);
+  font-size: 14px;
+}
+.helperTitle {
+  vertical-align: top;
+  cursor: default;
+}
+.helperBG {
+  background-color: rgba(126, 185, 100, 0.2);
+  border-radius: 5px;
+  margin: 25px 45px 10px 25px;
+  padding: 15px;
+}
+.helperTable {
+  margin-top: 2px;
+  color:rgba(61,106,42,0.5);
+  font-size: 12px;
+  cursor: default;
+}
 /* Settings */
 
 .settingsFirmenHeader {

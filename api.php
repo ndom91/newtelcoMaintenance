@@ -274,6 +274,22 @@
 
     echo json_encode($array3);
 
+  }  elseif (isset($_GET['completedLine1'])) {
+
+    /*****************************************
+     * INDEX - get line chart data
+     *****************************************/
+
+    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(mailSentAt) as day FROM maintenancedb WHERE DATE(mailSentAt) NOT LIKE '0000-00-00';") or die(mysqli_error($dbhandle));
+
+    $array3 = array();
+
+    while($resultsrows = mysqli_fetch_assoc($result)) {
+      $array3[] = $resultsrows;
+    }
+
+    echo json_encode($array3);
+
   } elseif (isset($_GET['companies'])) {
 
     /********************************************
@@ -303,7 +319,7 @@
     if ($fetch = mysqli_fetch_array($result0)) {
       //Found a company - now show all maintenances for company
       $company_id = $fetch[0];
-      $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.done, maintenancedb.id, maintenancedb.receivedmail, companies.name FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.lieferant LIKE '$company_id'") or die(mysqli_error($dbhandle));
+      $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.done, maintenancedb.id, maintenancedb.receivedmail, companies.name FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.lieferant LIKE '$company_id' AND maintenancedb.active = '1';") or die(mysqli_error($dbhandle));
 
         $array2 = array();
 

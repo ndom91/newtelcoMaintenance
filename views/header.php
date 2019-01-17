@@ -27,26 +27,35 @@
         <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
             for="user-profile-menu">
           <a class="usermenuhref" href="calendar">
-            <li class="mdl-menu__item">
+            <li id="submenuCal" class="mdl-menu__item">
               Calendar
               <span class="mdi mdi-24px mdi-calendar-text mdi-dark mdi-inactive"></span>
             </li>
           </a>
+          <div class="mdl-tooltip mdl-tooltip--bottom" data-mdl-for="submenuCal">
+            <span class='mdi mdi-24px mdi-keyboard'></span> <span style="vertical-align:top;font-size:12px;">(c)</span>
+          </div>
           <a class="usermenuhref" href="settings">
-            <li class="mdl-menu__item">
+            <li id="submenuSettings" class="mdl-menu__item">
               Settings
               <span class="mdi mdi-24px mdi-settings-outline mdi-dark mdi-inactive"></span>
             </li>
           </a>
+          <div class="mdl-tooltip mdl-tooltip--left" style="z-index:10 !important;" data-mdl-for="submenuSettings">
+            <span class='mdi mdi-24px mdi-keyboard'></span> <span style="vertical-align:top;font-size:12px;">(s)</span>
+          </div>
           <li>
             <div class="mailcHR3"></div>
           </li>
           <a class="usermenuhref" href="?logout">
-            <li class="mdl-menu__item">
+            <li id="submenuLogout" class="mdl-menu__item">
               Logout
               <span class="mdi mdi-24px mdi-logout mdi-dark mdi-inactive"></span>
             </li>
           </a>
+          <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="submenuLogout">
+            <span class='mdi mdi-24px mdi-keyboard'></span> <span style="vertical-align:top;font-size:12px;">(l)</span>
+          </div>
         </ul>
     </div>
   </div>

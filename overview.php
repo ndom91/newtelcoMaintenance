@@ -181,16 +181,10 @@ global $dbhandle;
             </div>
         </main>
         <script>
-
-          // ALT + H set INACTIVE ROW
-          var codeset2 = { 72: false, 18: false };
-          $(document).on('keydown', function (e) {
-            if (e.keyCode in codeset2) {
-              codeset2[e.keyCode] = true;
-              if (codeset2[72] && codeset2[18]) {
-                var table3 = $('#dataTable1').DataTable();
-                // alert( table3.rows('.selected').data().length +' row(s) selected' );
-                console.log(e.keyCode + ' keydown1');
+          
+          key('alt+shift+l', function(){ 
+            
+            var table3 = $('#dataTable1').DataTable();
                 var mid = table3.row('.selected').data();
                 showDialog({
                 title: 'Hide Maintenance',
@@ -228,21 +222,8 @@ global $dbhandle;
                 },
                 cancelable: true
                 }); 
-                
-              }
-            }
-          }).on('keyup', function (e) {
-            if (e.keyCode in codeset2) {
-              // console.log('codeset2[2]' + codeset2[2]);
-              // console.log('codeset2[1]' + codeset2[1]);
-              // console.log(e.keyCode + 'keydown2');
-              codeset2[72] = false;
-              codeset2[18] = false;
-              // console.log(e.keyCode + 'keydown3');
-              // console.log('codeset2[0]' + codeset2[0]);
-              // console.log('codeset2[1]' + codeset2[1]);
-            }
-          });
+            
+            return false });
 
           $( document ).ready(function() {
             // Initialize Primary Overview Datatable
@@ -252,7 +233,7 @@ global $dbhandle;
                   scrollY: false,
                   select: true,
                   responsive: true,
-                  order: [ 8, 'desc' ],
+                  order: [ 13, 'desc' ],
 
                     // 0? - Buttons
                     // 1 (H) - ID

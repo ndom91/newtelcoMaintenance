@@ -47,15 +47,39 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
     <a class="mdl-navigation__link crmLink" href="crm_iframe.php"><img src="/dist/images/svg/work.svg" class="ndl-work"/>  CRM</a>
     <a class="mdl-navigation__link settingsLink" href="settings.php"><img src="/dist/images/svg/settings.svg" class="ndl-settings"/>  Settings</a>
     <div class="mdl-layout-spacer"></div>
-    <a class="mdl-navigation__link menu_logout" href="?logout">
+    <div class="helperBG">
+      <div class="helperText">
+        <span class='mdi mdi-24px mdi-keyboard'></span>  <span class="helperTitle"> Getting Started</span><br>
+        <table class="helperTable" width="100%">
+          <tr>
+            <td width="40px"><b>alt + r</b></td> <td>open menu</td>
+          </tr>
+          <tr>
+            <td width="40px"><b>alt + h</b></td> <td>home</td>
+          </tr>
+          <tr>
+            <td width="40px"><b>alt + i</b></td>  <td>incoming</td>
+          </tr>
+          <tr>
+            <td width="40px"><b>alt + o</b></td>  <td>overview</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="mdl-layout-spacer"></div>
+    <!-- <a class="mdl-navigation__link menu_logout" href="?logout">
       <button id="menuLogout" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
         <span style="margin-left: 5px;" class="mdi mdi-24px mdi-logout mdi-light"></span>
       </button>
       <div class="mdl-tooltip  mdl-tooltip--top" data-mdl-for="menuLogout">
         Logout
       </div>
-    </a>
+    </a> -->
   </nav>
+  <!-- keymaster.js -->
+  <script rel="preload" as="script" src="dist/js/keymaster.js"></script>
+  <!-- favicon.js -->
+  <script rel="preload" as="script" src="dist/js/favicon.js"></script>
   <script>
     $('.homeLink').hover( function() {
         $('.ndl-home').toggleClass('hvr-grow2');
@@ -82,41 +106,22 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
         $('.ndl-settings').toggleClass('hvr-grow2');
     }); 
 
-    // alt + r - open menu
-    var codeset = { 82: false, 18: false };
-    // alt + h - open history directly
-    var codeset3 = { 72: false, 18: false };
-    // alt + i - open incoming directly
-    var codeset4 = { 73: false, 18: false };
-    $(document).on('keydown', function (e) {
-      console.log(e.keyCode);
-      if (e.keyCode in codeset) {
-        codeset[e.keyCode] = true;
-        if (codeset[82] && codeset[18]) {
-          $('.mdl-layout__drawer').toggleClass('is-visible');
-          $('.mdl-layout__obfuscator').toggleClass('is-visible');
-        }
-      } else if (e.keyCode in codeset3) {
-        codeset3[e.keyCode] = true;
-        if (codeset3[72] && codeset3[18]) {
-          // alt + h
-          
-          window.location.href = 'https://maintenance.newtelco.de/overview';
-        }
-      } else if (e.keyCode in codeset4) {
-        codeset4[e.keyCode] = true;
-        if (codeset4[73] && codeset4[18]) {
-          // alt + i
-          window.location.href = 'https://maintenance.newtelco.de/incoming';
-        }
-      }
-    }).on('keyup', function (e) {
-      if (e.keyCode in codeset) {
-        codeset[e.keyCode] = false;
-      } else if (e.keyCode in codeset3) {
-        codeset3[e.keyCode] = false;
-      } else if (e.keyCode in codeset4) {
-        codeset4[e.keyCode] = false;
+    key('alt+r', function(){ $('.mdl-layout__drawer').toggleClass('is-visible'); $('.mdl-layout__obfuscator').toggleClass('is-visible'); return false });
+    key('alt+h', function(){ window.location.href = 'https://maintenance.newtelco.de/index'; return false });
+    key('alt+o', function(){ window.location.href = 'https://maintenance.newtelco.de/overview'; return false });
+    key('alt+i', function(){ window.location.href = 'https://maintenance.newtelco.de/incoming'; return false });
+    key('alt+m', function(){ $('.mdl-menu__container').toggleClass('is-visible'); return false });
+
+
+    $(document).ready(function() {
+    // dynamic favicon
+    var unreadCounter = $('.menuSubLabel2').attr('data-badge');
+    if(unreadCounter !== '♥') {
+        var favNumber = unreadCounter;
+        var favicon=new Favico({
+            animation:'slide'
+        });
+        favicon.badge(favNumber);
       }
     });
 

@@ -705,7 +705,7 @@ $('#addCalbtn').click(function(){
   var calEDTISO = moment(calEDT).toISOString().replace(/[^a-z0-9\s]/gi, '');;
   var calEDTISO2 = calEDTISO.replace('000Z','Z');
 
-  var selectedDCID = $( "#dcid3 option:selected" ).text();
+  var selectedDCID = $( "#dcid3 option:selected" ).text().trim();
   var selectedCompany = $('#company').val();
 
   var activeID = $('#activeMID').val();

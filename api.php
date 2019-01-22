@@ -24,18 +24,12 @@
      * SETTINGS - KUNDEN
      *********************/
 
-     //var_dump($dbhandle);
-
     $kundenQ = mysqli_query($dbhandle, "SELECT kundenCID.id, kundenCID.kundenCID, kundenCID.protected, companies.name FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id") or die(mysqli_error($dbhandle));
-
-    //var_dump($kundenQ);
 
     $kundenArray = array();
 
-
     while($kundenResults = mysqli_fetch_assoc($kundenQ)) {
       $kundenArray[] = $kundenResults;
-      //var_dump($kundenArray);
     }
 
     echo json_encode($kundenArray);
@@ -59,6 +53,26 @@
     } 
 
     echo json_encode('Done?');
+
+  } elseif (isset($_GET['doneEvent'])) {
+
+    /***************************
+     * ADDEDIT - DONE SLIDER
+     **************************/
+
+    $doneVal = $_GET['d'];
+    $msaVal = $_GET['msa'];
+    $mid = $_GET['id'];
+
+    $result = mysqli_query($dbhandle, "UPDATE maintenancedb SET maintenancedb.done = '" . $doneVal . "', maintenancedb.mailSentAt = '" . $msaVal . "' WHERE maintenancedb.id LIKE '$mid'") or die(mysqli_error($dbhandle));
+
+    if ($result == 'TRUE'){
+      $doneResult['updated'] = 1;
+    } else {
+      $doneResult['updated'] = 0;
+    }
+
+    echo json_encode($doneResult);
 
   } elseif (isset($_GET['lieferanten'])) {
 
@@ -264,7 +278,7 @@
      * INDEX - get line chart data
      *****************************************/
 
-    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(mailSentAt) as day FROM maintenancedb WHERE DATE(mailSentAt) NOT LIKE '0000-00-00' AND DATE(mailSentAt) >= curdate() - INTERVAL DAYOFWEEK(curdate())+6 DAY ORDER BY day desc") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(mailSentAt) as day FROM maintenancedb WHERE DATE(mailSentAt) NOT LIKE '0000-00-00' AND DATE(mailSentAt) >= curdate() - INTERVAL DAYOFWEEK(curdate())+14 DAY ORDER BY day desc") or die(mysqli_error($dbhandle));
 
     $array3 = array();
 
@@ -280,7 +294,7 @@
      * INDEX - get line chart data
      *****************************************/
 
-    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(mailSentAt) as day FROM maintenancedb WHERE DATE(mailSentAt) NOT LIKE '0000-00-00';") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(mailSentAt) as day FROM maintenancedb WHERE DATE(mailSentAt) NOT LIKE '0000-00-00' AND maintenancedb.active LIKE '1';") or die(mysqli_error($dbhandle));
 
     $array3 = array();
 

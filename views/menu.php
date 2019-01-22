@@ -67,14 +67,6 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
       </div>
     </div>
     <div class="mdl-layout-spacer"></div>
-    <!-- <a class="mdl-navigation__link menu_logout" href="?logout">
-      <button id="menuLogout" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-        <span style="margin-left: 5px;" class="mdi mdi-24px mdi-logout mdi-light"></span>
-      </button>
-      <div class="mdl-tooltip  mdl-tooltip--top" data-mdl-for="menuLogout">
-        Logout
-      </div>
-    </a> -->
   </nav>
   <!-- keymaster.js -->
   <script rel="preload" as="script" src="dist/js/keymaster.js"></script>
@@ -114,6 +106,7 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
 
 
     $(document).ready(function() {
+
     // dynamic favicon
     var unreadCounter = $('.menuSubLabel2').attr('data-badge');
     if(unreadCounter !== '♥') {

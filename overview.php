@@ -80,7 +80,8 @@ global $dbhandle;
                 <?php
 
                 if (empty($_POST['tLieferant']) && empty($_POST['tdCID'])) {
-                  $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.betroffeneKunden, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.betroffeneCIDs, maintenancedb.done, maintenancedb.cancelled FROM maintenancedb LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.active = 1");
+                  $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, lcompanies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.betroffeneKunden, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.betroffeneCIDs, maintenancedb.done, maintenancedb.cancelled, lcompanies.mailDomain AS LmailDomain, kcompanies.mailDomain AS KmailDomain FROM maintenancedb LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies AS lcompanies ON maintenancedb.lieferant = lcompanies.id LEFT JOIN companies AS kcompanies ON maintenancedb.betroffeneKunden = kcompanies.name WHERE maintenancedb.active = 1");
+
                 }
 
                 echo '<div class="dataTables_wrapper">
@@ -158,6 +159,14 @@ global $dbhandle;
                           echo '<span class="mdi mdi-24px mdi-checkbox-blank-circle-outline mdi-dark mdi-inactive"></span>';
                         }
                         echo '</td>';
+                      } elseif ($key == 'name') {
+                        $mailDomain = $rowx['LmailDomain'];
+                        echo "<td>$value <img src='https://www.google.com/s2/favicons?domain=$mailDomain'></td>";
+                        
+                      } elseif ($key == 'betroffeneKunden') {
+                        $mailDomain2 = $rowx['KmailDomain'];
+                        echo "<td>$value <img src='https://www.google.com/s2/favicons?domain=$mailDomain2'></td>";
+                        
                       } else {
                         echo "<td>$value</td>";
                       }
@@ -252,10 +261,12 @@ global $dbhandle;
                     // 14 - BetroffeneCIDs
                     // 15 - Complete
                     // 16 - Cancelled
+                    // 17 - L Mail Domain
+                    // 18 - K Mail Domain
 
                   columnDefs: [
                       {
-                          "targets": [ 1, 16 ],
+                          "targets": [ 1, 16, 17, 18 ],
                           "visible": false,
                           "searchable": false
                       },
@@ -274,7 +285,7 @@ global $dbhandle;
                       { responsivePriority: 5, targets: [ 7, 8, 12 ] },
                       { responsivePriority: 10, targets: [ 11, 9, 10, 14 ] },
                       {
-                          targets: [ 0, 1, 3, 5, 6, 7, 10, 11, 15 ],
+                          targets: [ 0, 1, 3, 5, 6, 10, 11, 15 ],
                           className: 'mdl-data-table__cell--non-numeric'
                       }
                   ]

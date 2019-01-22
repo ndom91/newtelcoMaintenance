@@ -43,9 +43,9 @@ require('authenticate_google.php');
 
   <?php echo file_get_contents("views/meta.html"); ?>
 
-  <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet">
-  
-  <!-- jquery -->
+  <!--  <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet"> -->
+  <link href="https://fonts.googleapis.com/css?family=ZCOOL+QingKe+HuangYou" rel="stylesheet">
+
   <script rel="preload" as="script" src="dist/js/jquery-3.3.1.min.js"></script>
 
   <!-- material design -->
@@ -65,7 +65,7 @@ require('authenticate_google.php');
 
 
   <script>
-    var RELOAD_EVERY = 5;
+    var RELOAD_EVERY = 8;
     setTimeout(function(){
         location.reload();
     }, RELOAD_EVERY * 60 * 1000);
@@ -108,323 +108,130 @@ require('authenticate_google.php');
       echo $content_menu;
       ?>
 
-        <main class="mdl-layout__content">
-            <div class="mdl-grid">
-              <div class="mdl-cell mdl-cell--2-col mdl-cell--0-col-phone"></div>
-              <div class="mdl-cell mdl-cell--8-col mdl-cell--4-col-phone">
-                 <div class="indexWrapper"> 
-                  <!-- <div class="col1"> 
-                    <div class="indexCounterBox">
+        <main style="background-color: #e9e9e9;" class="mdl-layout__content">
+
+            <div style="height:calc(100vh - 100px);" class="mdl-grid">
+              <div class="mdl-cell--stretch mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
+                <div class="mdl-grid">
+                  <div class="mdl-cell mdl-cell--4-5-col mdl-cell--4-col-phone">
                       <?php if ($labelID == '0'): ?>
                         <div class="settingsNudge">
-                          <br>No <b>label</b> selection made, please visit <a class="hvr-underline-from-left" style="font-weight: 500;text-decoration:none;" href="settings.php">settings</a> and set your preferences.
+                          <br>No <b>label</b> <span class="mdi mdi-email-mark-as-unread mdi-green"></span> selection made<br><br>Please visit the <a class="hvr-underline-from-left" style="font-weight: 500;text-decoration:none;" href="settings.php">settings</a> <br>and set your preferences.
                           <br><br>
-                          <font style="font-weight: 400 !important;">Getting Started</font>:<br>
-                          <table  width="100%">
-                            <tr>
-                              <td width="80px"><b style="color: #67B246">alt+r</b></td> <td>open menu</td>
-                            </tr>
-                            <tr>
-                              <td width="80px"><b style="color: #67B246">alt+h</b></td> <td>home</td>
-                            </tr>
-                            <tr>
-                              <td width="80px"><b style="color: #67B246">alt+i</b></td>  <td>incoming</td>
-                            </tr>
-                            <tr>
-                              <td width="80px"><b style="color: #67B246">alt+o</b></td>  <td>overview</td>
-                            </tr>
-                          </table>
                           <br>
                         </div>
                       <?php else : ?>
-                        <div class="unread">
-                          <div class="hvr-bounce-in2 unreadCounter">
-                            <?php echo $results3['messagesUnread'] ?>
-                          </div>
-                          <span class="hvr-grow-rotate mdi mdi-48px mdi-email mdi-green mdi-dark mdi-inactive unreadIcon"></span>
-                          <div class="unreadLabel">
-                            Unread Maintenances
-                          </div>
-                        </div>
-                      <?php endif; ?>
-                    </div>
-                    <div class="lineWrapper">
-                      <canvas id="line-chart"></canvas>
-                    </div>
-                    </div>
-                     <div class="col2">
-                      <div class="chart1">
-                          <canvas id="completedChart"></canvas>
-                      </div>
-                      <div class="chart2">
-                          <canvas id="polar-chart"></canvas>
-                      </div>
-                    </div> -->
-
-
-                      <div class='row'>
-                        <div class='column'>
-                          <div class="indexCounterBox">
-                            <?php if ($labelID == '0'): ?>
-                            <div class="settingsNudge">
-                              <br>No <b>label</b> selection made, please visit <a class="hvr-underline-from-left" style="font-weight: 500;text-decoration:none;" href="settings.php">settings</a> and set your preferences.
-                              <br><br>
-                              <font style="font-weight: 400 !important;">Getting Started</font>:<br>
-                              <table  width="100%">
-                                <tr>
-                                  <td width="80px"><b style="color: #67B246">alt+r</b></td> <td>open menu</td>
-                                </tr>
-                                <tr>
-                                  <td width="80px"><b style="color: #67B246">alt+h</b></td> <td>home</td>
-                                </tr>
-                                <tr>
-                                  <td width="80px"><b style="color: #67B246">alt+i</b></td>  <td>incoming</td>
-                                </tr>
-                                <tr>
-                                  <td width="80px"><b style="color: #67B246">alt+o</b></td>  <td>overview</td>
-                                </tr>
-                              </table>
-                              <br>
-                            </div>
-                          <?php else : ?>
+                        <div class="card">
+                          <div class="card-body">
                             <div class="unread">
+                              <!-- <span class="hvr-grow-rotate mdi mdi-48px mdi-email mdi-green unreadIcon"></span> -->
+                              <div class="mdl-layout-spacer"></div>
+                              <div class="unreadLabel">
+                                Maintenance Unread
+                              </div>
                               <div class="hvr-bounce-in2 unreadCounter">
                                 <?php echo $results3['messagesUnread'] ?>
                               </div>
-                              <span class="hvr-grow-rotate mdi mdi-48px mdi-email mdi-green unreadIcon"></span>
-                              <div class="unreadLabel">
-                                Unread Maintenances
-                              </div>
                             </div>
-                          <?php endif; ?>
+                            <div class="chart-wrapper">
+                              <canvas height="120" class="chart" id="line-chart"></canvas>
+                            </div>
+                            </div>
                         </div>
+                      <?php endif; ?>
+                  </div>
+                  <div class="mdl-cell mdl-cell--2-5-col mdl-cell--4-col-phone">
+                    <div class="fwaWrapper">
+                      <canvas width="15" id="doughnutchart1"></canvas>
+                      <div class="fwaCounter"></div>
+                      <div class="fwaLineWrapper">
+                        <canvas width="10" id="fwaLine"></canvas>
                       </div>
-                      <div class='column'>
-                        <div class="chart1">
-                          <canvas id="completedChart"></canvas>
-                        </div>
+                      <div style="width: 99px;" class="nameLabel">fwaleska</div>
+                    </div>
+                  </div>
+                  <div class="mdl-cell mdl-cell--2-5-col mdl-cell--4-col-phone">
+                    <div class="aliWrapper">
+                      <canvas width="15" id="doughnutchart2"></canvas>
+                      <div class="aliCounter"></div>
+                      <div class="aliLineWrapper">
+                        <canvas width="10" id="aliLine"></canvas>
                       </div>
+                      <div style="width: 97px;" class="nameLabel">alissitsin</div>
+                    </div>
+                  </div>
+                  <div style="margin: 8px 0px 8px 20px;" class="mdl-cell mdl-cell--2-5-col mdl-cell--4-col-phone">
+                    <div class="sstWrapper">
+                      <canvas width="15" id="doughnutchart3"></canvas>
+                      <div class="sstCounter"></div>
+                      <div class="sstLineWrapper">
+                        <canvas width="10" id="sstLine"></canvas>
                       </div>
-                      <div class='row 2'>
-                        <div class='column'>
-                          <div class="lineWrapper">
-                            <canvas id="line-chart"></canvas>
-                          </div>
-                        </div>
-                        <div class='column'>
-                          <div class="chart2">
-                             <canvas id="polar-chart"></canvas>
-                          </div>
-                        </div>
-                      </div>
-
-
+                      <div style="width: 104px;" class="nameLabel">sstergiou</div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="mdl-cell mdl-cell--2-col mdl-cell--0-col-phone"></div>
+                <div class="mdl-grid mdl-cell--stretch">
+                  <div class="h100 mdl-cell mdl-cell--12-col mdl-cell--4-col-phone mdl-cell--bottom">
+                    <div class="h100 bottomChartWrapper">
+                      <div class="bottomChartLabel">Maintenances Completed per Day</div>
+                      <canvas height="200" id="completedChart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>    
             </div>
         </main>
+        <?php if ($labelID !== '0'): ?>
         <script>
-          $.ajax({
-              url: 'api?completedLine=1',
-              success: function (data) {
 
-                // Labels + Dates
-                var DateTime = luxon.DateTime;
-                var topDay = (data[0]['day']);
-                var topDay = DateTime.fromISO(topDay);
-                var topDayStr = topDay.toFormat('LLL dd');
-                var comp_today = DateTime.local();
-                var comp_todayStr = DateTime.local().toFormat('LLL dd');
-                var comp_m1 = comp_today.minus({days: 1}).toFormat('LLL dd');
-                var comp_m2 = comp_today.minus({days: 2}).toFormat('LLL dd');
-                var comp_m3 = comp_today.minus({days: 3}).toFormat('LLL dd');
-                var comp_m4 = comp_today.minus({days: 4}).toFormat('LLL dd');
-                var comp_m5 = comp_today.minus({days: 5}).toFormat('LLL dd');
-                var comp_m6 = comp_today.minus({days: 6}).toFormat('LLL dd');
+          $('.unreadCounter').on('click', function() {
+            window.location.href = "https://maintenance.newtelco.de/incoming";
+          })
 
-                // date formats for comparing in array
-                var func_m0 = DateTime.local().toISODate();
-                var func_m1 = comp_today.minus({days: 1}).toISODate();
-                var func_m2 = comp_today.minus({days: 2}).toISODate();
-                var func_m3 = comp_today.minus({days: 3}).toISODate();
-                var func_m4 = comp_today.minus({days: 4}).toISODate();
-                var func_m5 = comp_today.minus({days: 5}).toISODate();
-                var func_m6 = comp_today.minus({days: 6}).toISODate();
+        
+        $(document).ready(function() {
 
-                // People Counts
-                var sst = [];
-                var ali = [];
-                var fwa = [];
+          // Pretty Scrollbars
+          $(".mdl-layout__content").overlayScrollbars({
+          className:"os-theme-minimal-dark",
+          overflowBehavior : {
+            x: "hidden"
+          },
+          scrollbars : {
+            visibility       : "auto",
+            autoHide         : "move",
+            autoHideDelay    : 500
+          }
+          });
 
-                for ( var i = 0; i < data.length; i++ ) {
-                  if (data[i]['bearbeitetvon'] == 'fwaleska') {
-                    fwa.push(data[i]['day']);
-                  } else if (data[i]['bearbeitetvon'] == 'alissitsin') {
-                    ali.push(data[i]['day']);
-                  } else if (data[i]['bearbeitetvon'] == 'sstergiou') {
-                    sst.push(data[i]['day']);
-                  }
-                }
 
-                function countDays(arr,day) {
-                  var occurences = arr.filter(function(val) {
-                    return val === day;
-                  }).length;
-                  return occurences;
-                }
 
-                var ctx = document.getElementById('completedChart').getContext('2d');
-                var chart = new Chart(ctx, {
-                  type: 'line',
-                  data: {
-                    labels: [comp_m6, comp_m5, comp_m4, comp_m3, comp_m2, comp_m1, comp_todayStr],
-                    datasets: [{
-                        // FWALESKA
-                        label: 'fwaleska',
-                        backgroundColor: 'rgba(103,178,70,0.4)',
-                        borderColor: 'rgba(103,178,70,0.8)',
-                        data: [countDays(fwa,func_m6), countDays(fwa,func_m5), countDays(fwa,func_m4), countDays(fwa,func_m3), countDays(fwa,func_m2), countDays(fwa,func_m1), countDays(fwa,func_m0)]
-                    },{
-                        // ALISSITSIN
-                        label: 'alissitsin',
-                        backgroundColor: 'rgba(249,103,103,0.4)',
-                        borderColor: 'rgba(249,103,103,0.8)',
-                        data: [countDays(ali,func_m6), countDays(ali,func_m5), countDays(ali,func_m4), countDays(ali,func_m3), countDays(ali,func_m2), countDays(ali,func_m1), countDays(ali,func_m0)]
-                    },{
-                        // SSTERGIOU
-                        label: 'sstergiou',
-                        backgroundColor: 'rgba(36,122,219,0.4)',
-                        borderColor: 'rgba(36,122,219,0.8)',
-                        data: [countDays(sst,func_m6), countDays(sst,func_m5), countDays(sst,func_m4), countDays(sst,func_m3), countDays(sst,func_m2), countDays(sst,func_m1), countDays(sst,func_m0)]
-                    }
-                    ]
-                  },
-                  options: {
-                      scales: {
-                          yAxes: [{
-                              ticks: {
-                                  beginAtZero:true
-                              },
-                              stacked: true
-                          }]
-                      },
-                      legend: {
-                          display: true
-                      },
-                      title: {
-                          display: true,
-                          text: 'Completed Maintenances per Day (Last 7 Days)'
-                      },
-                      tooltips: {
-                          mode: 'index'
-                      }
-                    }
-                });
+          if($('.unreadCounter').text() == '0') {
+  
+            // nothing to do? TADA!!11!
+            // https://github.com/daneden/animate.css
 
-              },
-              error: function (err) {
-                console.log('Error', err);
-              },
-              dataType:"json"
-            });
+            //animate in 
+            const loginBox1 =  document.querySelector('.unreadCounter');
+            $(loginBox1).css('opacity','1');
+            loginBox1.classList.add('animated', 'tada');
 
-            $.ajax({
-              url: 'api?completedLine=1',
-              success: function (data) {
+          } else {
 
-                // Polar Area Chart
+            // Got Mail? Make it big n greeeen
 
-                var sstCount = 0;
-                var aliCount = 0;
-                var fwaCount = 0;
-
-                var arrayLength = data.length;
-                for (var i = 0; i < arrayLength; i++) {
-                    if (data[i]['bearbeitetvon'] == 'sstergiou') {
-                      sstCount++;
-                    } else if (data[i]['bearbeitetvon'] == 'alissitsin') {
-                      aliCount++;
-                    } else if (data[i]['bearbeitetvon'] == 'fwaleska') {
-                      fwaCount++;
-                    }
-                }
-                var ctx = document.getElementById('polar-chart').getContext('2d');
-                new Chart(document.getElementById("polar-chart"), {
-                    type: 'polarArea',
-                    data: {
-                      labels: ["fwaleska", "alissitsin", "sstergiou"],
-                      datasets: [
-                        {
-                          label: "Maintenances Completed (total)",
-                          backgroundColor: ["rgba(103,178,70,0.4)", "rgba(249,103,103,0.4)","rgba(36,122,219,0.4)"],
-                          borderColor: ['rgba(103,178,70,0.8)','rgba(249,103,103,0.8)','rgba(36,122,219,0.8)'],
-                          data: [sstCount,aliCount,fwaCount]
-                        }
-                      ]
-                    },
-                    options: {
-                      title: {
-                        display: true,
-                        text: 'Maintenances Completed (total)'
-                      }
-                    }
-                });
-
-                // Line Chart
-                new Chart(document.getElementById("line-chart"), {
-                type: 'line',
-                data: {
-                  labels: [1500,1600,1700,1750,1800,1850,1900,1950,1999,2050],
-                  datasets: [{ 
-                      data: [86,114,106,106,107,111,133,221,783,2478],
-                      borderColor: "#67b246",
-                      fill: true
-                    }
-                  ]
-                },
-                options: {
-                  legend: {
-                    display: false
-                  },
-                  title: {
-                    display: true,
-                    text: 'Total Maintenances'
-                  }
-                }
-              });
-
-              },
-              error: function (err) {
-                console.log('Error', err);
-              },
-              dataType:"json"
-            });
-
-            $(document).ready(function() {
-
-              // Pretty Scrollbars
-              $(".mdl-layout__content").overlayScrollbars({
-              className:"os-theme-minimal-dark",
-              overflowBehavior : {
-                x: "hidden"
-              },
-              scrollbars : {
-            		visibility       : "auto",
-            		autoHide         : "move",
-            		autoHideDelay    : 500
-            	}
-             });
-
-             // big unread counter
-              if($('.unreadCounter').text().trim() == '0') {
-                $('.unreadCounter').css("color","#4e4e4e");
-                $('.unreadCounter').css("font-weight","100");
-              } 
-            });
+            const loginBox1 =  document.querySelector('.unreadCounter');
+            $(loginBox1).css('opacity','1');
+            $('.unreadCounter').css("font-family","ZCOOL QingKe HuangYou, cursive");
+            $('.unreadCounter').css("color","rgba(103, 178, 70, 0.5)");
+            $('.unreadCounter').css("text-shadow","0px 0px 30px #fff");
+          } 
+        });
 
         </script>
-        <?php echo file_get_contents("views/footer.html"); ?>
+        <?php endif; ?>
+        <?php  /*echo file_get_contents("views/footer.html");*/ ?>
 
         <!-- font awesome -->
         <link rel="preload stylesheet" as="style" href="dist/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
@@ -448,6 +255,11 @@ require('authenticate_google.php');
         <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment.min.js"></script>
         <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment-timezone-with-data.min.js"></script>
 
+        <!-- animate css -->
+        <link type="text/css" rel="stylesheet" href="dist/css/animate.css" />
+
+        <!-- chart.js init -->
+        <script rel="preload" as="script" src="dist/js/ntchartinit2.js"></script>
       </div>
 </body>
 </html>

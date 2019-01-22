@@ -240,8 +240,27 @@ border="0" alt=""/></a>
 <!-- hover css -->
 <link type="text/css" rel="stylesheet" href="dist/css/hover.css" />
 
-<script>
+<!-- animate css -->
+<link type="text/css" rel="stylesheet" href="dist/css/animate.css" />
 
+<!-- favicon.js -->
+<script rel="preload" as="script" src="dist/js/favicon.js"></script>
+
+<script>
+$(document).ready(function() {
+
+// https://github.com/daneden/animate.css
+
+//animate in 
+const loginBox1 =  document.querySelector('.demo-card-wide2');
+$(loginBox1).css('opacity','1');
+loginBox1.classList.add('animated', 'fadeIn');
+
+// initial favicon
+var favicon=new Favico();
+var image=document.getElementById('favicon2');
+favicon.image(image);
+});
 
 particlesJS("particles-js", {
   "particles": {

@@ -408,6 +408,7 @@ global $dbhandle;
                <div class="mdl-cell mdl-cell--6-col">
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input class="mdl-textfield__input" type="text" data-val="<?php echo $olieferantID ?>" value="<?php echo $olieferant ?>" id="company">
+                <img class ="lieferantFavicon" src='https://www.google.com/s2/favicons?domain=<?php echo $olieferantDomain ?>'>
                 <label class="mdl-textfield__label" for="company">Lieferant</label>
               </div>
               </div>
@@ -979,6 +980,44 @@ var table4 = $('#dataTable4').DataTable( {
 
 });
 
+
+/***********************
+ * Complete Switch Event
+ ***********************/
+
+$("#switch-2").click(function() {
+  var activeID = $('#activeMID').val();
+  if($('#switch-2:checked').val() == 'on') {
+    var odone = '1';
+  } else {
+    var odone = '0';
+  }
+  var mailSentAt = $('#mailSentAt').val();
+
+  $.ajax({
+    type : "POST",
+    url : "api?doneEvent=1&d="+odone+"&msa="+mailSentAt+"&id="+activeID,
+    cache : "false",
+    dataType: "json",
+    success: function (data) {
+      if (data.updated === 1){
+        var snackbarContainer2 = document.querySelector('#sbUpdated');
+        var dataME3 = {
+          message: 'Maintenance Status Saved',
+          timeout: 2000
+        };
+        snackbarContainer2.MaterialSnackbar.showSnackbar(dataME3);
+      } 
+    },
+    error: function (err) {
+      console.log('Error', err);
+    }
+  });
+});
+
+/*********************
+ * Save Button Event
+ *********************/
 
 $('#btnSave').on('click', function(e) {
 

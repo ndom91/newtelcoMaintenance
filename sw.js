@@ -47,7 +47,7 @@ var STATIC_FILES = [
   "dist/js/keymaster.js",
   "dist/css/vis-timeline.min.css",
   "dist/js/vis.js",
-  "dist/images/nt_square32_2_light3.png",
+  "dist/images/fav-32x32.png",
   "dist/images/Preloader_4.gif",
   "dist/js/materialize.min.js",
   "dist/js/select2_4.0.6-rc1.min.js",
@@ -59,9 +59,11 @@ var STATIC_FILES = [
   "dist/css/select2.min.css",
   "dist/css/flatpickr.min.css",
   "dist/css/flatpickr_green.css",
+  "dist/css/animate.css",
   "dist/css/materialize.min.css",
   "dist/js/handsontable.min.js",
   "dist/js/chart.js",
+  "dist/js/ntchartinit2.js",
   "dist/js/favicon.js",
   "dist/css/handsontable.min.css",
   "dist/css/hover.css",
@@ -110,8 +112,12 @@ self.addEventListener('fetch', (event) => {
       return;
     }
     if (requestURL.pathname.endsWith('.css')) {
-      event.respondWith(caches.match(event.request));
-      return;
+      try {
+        event.respondWith(caches.match(event.request));
+        return;
+      } catch (err) {
+        return event.respondWith(fetch(event.request));
+      }
     }
     if (requestURL.pathname.endsWith('.gif')) {
       event.respondWith(caches.match(event.request));
@@ -122,8 +128,12 @@ self.addEventListener('fetch', (event) => {
       return;
     }
     if (requestURL.pathname.endsWith('.js')) {
-      event.respondWith(caches.match(event.request));
-      return;
+      try {
+        event.respondWith(caches.match(event.request));
+        return;
+      } catch (err) {
+        return event.respondWith(fetch(event.request));
+      }
     }
     if (requestURL.pathname.endsWith('.svg')) {
       try {

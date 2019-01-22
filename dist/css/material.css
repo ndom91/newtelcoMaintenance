@@ -11372,18 +11372,24 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
     .mdl-grid--no-spacing > .mdl-cell--2-col, .mdl-grid--no-spacing >
     .mdl-cell--2-col-desktop.mdl-cell--2-col-desktop {
       width: 16.6666666667%; }
+  .mdl-cell--2-5-col {
+  width: calc(20.83333333% - 40px); 
+    margin: 8px 20px; }
   .mdl-cell--3-col,
   .mdl-cell--3-col-desktop.mdl-cell--3-col-desktop {
     width: calc(25% - 16px); }
     .mdl-grid--no-spacing > .mdl-cell--3-col, .mdl-grid--no-spacing >
     .mdl-cell--3-col-desktop.mdl-cell--3-col-desktop {
-      width: 25%; }
+      width: 25%; }}
   .mdl-cell--4-col,
   .mdl-cell--4-col-desktop.mdl-cell--4-col-desktop {
     width: calc(33.3333333333% - 16px); }
     .mdl-grid--no-spacing > .mdl-cell--4-col, .mdl-grid--no-spacing >
     .mdl-cell--4-col-desktop.mdl-cell--4-col-desktop {
       width: 33.3333333333%; }
+  .mdl-cell--4-5-col {
+    width: calc(37.5% - 18px);  
+    margin-right: 20px; }
   .mdl-cell--5-col,
   .mdl-cell--5-col-desktop.mdl-cell--5-col-desktop {
     width: calc(41.6666666667% - 16px); }

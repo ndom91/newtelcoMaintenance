@@ -104,110 +104,299 @@ table {
 
 /* Index */
 
-.indexWrapper {
-  margin-top: 30px;
-}
 .row {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   width: 100%;
-  height: 320px;
+  height: 45%;
 }
 .column {
   display: flex;
   flex-direction: column;
-  flex-basis: 100%;
+  flex-basis: 550px;
   flex: 1;
-}
-.indexCounterBox {
-  background-color: rgba(0,0,0,0.1);
-  box-shadow: 0 0 30px rgba(0,0,0,0.5);
-  border-radius: 18px;
-  height: 250px;
-  max-width: 440px;
-  padding: 10px;
-  margin-bottom: 60px;
-}
-.lineWrapper {
-  max-width: 440px;
-}
-#line-chart {
-  max-width: 440px;
-  float:right;
-}
-.chart1 {
-  max-width: 440px;
-  margin-bottom: 120px;
-  margin-top: -210px;
-}
-.chart2 {
-  max-width: 440px;
+  flex-grow: 5;
 }
 
-.headerWelcome {
-  margin: 5px 10px;
+/* chart.js */
+
+.card {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color:  rgba(0,0,0,0.1);
+  background-clip: border-box;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  border: 1px solid #fff;
+  border-radius: 8px;
+  height: 340px;
+  width: 100%;
+  min-width: 333px;
 }
+
+.card-body {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  padding: 1.25rem;
+  margin: 0 20px;
+}
+.card > .chart-wrapper {
+  height:20vh; 
+  width:30vw;
+  z-index: 1;
+}
+
+.chart-wrapper canvas {
+  width: 100%;
+  bottom: 10px;
+}
+
+base-chart.chart {
+  display: block;
+}
+
 .unread {
   display: inline-block;
-  position: relative;
+  margin: 0 auto;
+  width: 100%;
+  z-index: 2;
 }
 .unreadCounter {
-  position: absolute;
+  opacity: 0;
+  position: relative;
   z-index: 2;
   display: inline-block;
-  margin: 55px 60px;
+  margin-left: 1.5vw;
+  margin-top: 0.7vh;
   font-size: 142px;
-  color: #67B246;
+  color: #fff;
   font-weight: 500;
+  user-select: none;
 }
-.unreadIcon {
-  right: -210px;
-  top: 20px;
-  zoom: 200%;
-  opacity: .4;
-  z-index: 2;
-  text-align: right;
-  position: absolute;
+
+.unreadCounter:hover {
+  cursor: pointer !important;
 }
+
 .unreadLabel {
-  position: absolute;
-  width: 475px;
+  width: 100%;
   height: 150px;
   z-index: 1;
+  max-width: 500px;
+  float: right;
   font-size: 68px;
   font-weight: 100;
-  color: #4e4e4e;
-  line-height: 0.7;
+  line-height: 0.8;
   text-align: right;
-  top: 100px;
-  left: -50px;
-}
-#completedChart {
-  margin-top: 240px;
-  margin-bottom: 20px;
+  color: #fff;
+  user-select: none;
 }
 .settingsNudge {
   font-size: 28px;
-  line-height:1.2;
+  line-height: 0.95;
   font-weight: 100;
 }
 
-@media only screen and (max-width: 700px) {
+.fwaWrapper,.aliWrapper,.sstWrapper {
+  background-color: rgba(255,255,255,0.5);
+  border-radius: 8px;
+  padding: 20px;
+  height: 300px;<div class="mdl-layout-spacer"></div>
+  max-height: 340px;
+  position: relative;
+  user-select: none;
+}
+.fwaCounter, .aliCounter, .sstCounter {
+  font-size: 102px;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 76px;
+  user-select: none;
+}
+.fwaWrapper {
+  box-shadow: 0 0 10px rgba(103,178,70,0.4);
+}
+.fwaCounter {
+  color: rgba(103,178,70,0.4);
+}
+.aliWrapper {
+  box-shadow: 0 0 10px rgba(249,103,103,0.4);
+}
+.aliCounter {
+  color: rgba(249,103,103,0.4);
+}
+.sstWrapper {
+  box-shadow: 0 0 10px rgba(36,122,219,0.4);
+}
+.sstCounter {
+  color: rgba(36,122,219,0.4);
+}
+.fwaLineWrapper, .aliLineWrapper, .sstLineWrapper {
+  width: 100%;
+  height: 120px;
+  position: absolute;
+  bottom: -13px;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+}
 
+.nameLabel {
+  display: inline-block;
+  font-size: 26px;
+  color: rgba(0,0,0,0.6);
+  font-weight: 100;
+  position: absolute;
+  bottom: 20px;
+  margin: 0 auto;
+  width: 104px;
+  left: 0;
+  right: 0;
+}
+
+.h100 {
+  height: 100%;
+}
+
+/* Full screen graph */
+.bottomChartLabel {
+  position: absolute;
+  margin-top: -20px;
+  margin-left: 10px;
+  font-size: 28px;
+  font-weight: 100;
+  color: rgba(0,0,0,0.6);
+  user-select: none;
+}
+.bottomChartWrapper {
+  position: relative;
+  flex:2;
+  display: flex;
+  padding: 50px 20px;
+  background-color: rgba(255,255,255,0.3);
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  border-radius: 5px;
+}
+#completedChart {
+  width: 90%; 
+  height: 200px;
+}
+/* End Full screen graph */
+
+@media only screen and (min-width: 1826px) {
   .unreadCounter {
-    margin: 55px -220px;
+    margin-top: 13vh !important;
   }
+}
+@media only screen and (min-width: 1560px) {
+  .unreadCounter {
+    margin-left: 1vw;
+    margin-top: -3vh;
+  }
+  .unreadCounter {
+    font-size: 212px;
+  }
+}
 
-  .unreadIcon {
-    right: -100px;
-  }
+@media only screen and (max-width: 1250px) {
   .unreadLabel {
-    left: -280px;
+    font-size: 60px;
   }
+}
+
+@media only screen and (max-width: 1110px) {
+  .unreadLabel {
+    font-size: 48px;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .fwaWrapper,.aliWrapper,.sstWrapper {
+    padding: 20px 10px;
+  }
+  .fwaWrapper > canvas,.aliWrapper > canvas,.sstWrapper > canvas{
+    
+  }
+  .fwaCounter, .aliCounter, .sstCounter { 
+    font-size: 62px;
+  }
+  .row {
+    flex-direction: column;
+    height: 620px;
+  }
+  .lineWrapper {
+    max-width: 440px;
+  }
+  .chart1 {
+    margin: -140px auto 120px;
+  }
+}
+
+/* chart.js tooltips */
+
+.chartjs-tooltip {
+  position: absolute;
+  z-index: 1021;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  padding: 0.25rem 0.5rem;
+  color: #fff;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transition: all 0.25s ease;
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  border-radius: 0.25rem;
+}
+
+.chartjs-tooltip .tooltip-header {
+  margin-bottom: 0.5rem;
+}
+
+.chartjs-tooltip .tooltip-header-item {
+  font-size: 0.765625rem;
+  font-weight: 700;
+}
+
+.chartjs-tooltip .tooltip-body-item {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 0.765625rem;
+  white-space: nowrap;
+}
+
+.chartjs-tooltip .tooltip-body-item-color {
+  display: inline-block;
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-right: 0.875rem;
+}
+
+.chartjs-tooltip .tooltip-body-item-value {
+  padding-left: 1rem;
+  margin-left: auto;
+  font-weight: 700;
+}
+
+
+@media only screen and (max-width: 700px) {
 
 }
 /* Login */
+
+.demo-card-wide2 {
+  opacity: 0;
+}
 
 .signin_box {
 	text-align: center;
@@ -354,6 +543,55 @@ table {
 
 
 /* End Hamburger -> Arrow Animation */
+
+/* 
+
+ToDo: Expandable Drawer:
+
+https://stackoverflow.com/questions/36812372/material-design-expandable-drawer
+
+https://jsfiddle.net/damo_s/Ln6e4qLt/
+
+.mdl-layout__drawer {
+  overflow: hidden;
+  width: 55px;
+  transform: translateX(0);
+  transition: 250ms width ease-in-out;
+}
+.mdl-layout__drawer .mdl-navigation__link span {
+  opacity: 0;
+  transition: 250ms opacity ease-in-out;
+}
+.mdl-layout__drawer + .mdl-layout__header, .mdl-layout__drawer ~ .mdl-layout__content {
+  transition: 250ms margin-left ease-in-out;
+}
+.mdl-layout__drawer.is-expanded {
+  width: 240px;
+}
+.mdl-layout__drawer.is-expanded .mdl-navigation__link span {
+  opacity: 1;
+}
+.mdl-layout__drawer.is-expanded + .mdl-layout__header {
+  margin-left: 240px !important;
+}
+.mdl-layout__drawer.is-expanded ~ .mdl-layout__content {
+  margin-left: 240px !important;
+}
+.mdl-layout__header, .mdl-layout__content {
+  margin-left: 55px !important;
+}
+.mdl-navigation {
+  width: 240px;
+}
+.mdl-layout__header-row {
+  padding: 0 16px 0 22px;
+}
+.mdl-layout__content {
+  background: #878787;
+}
+.mdl-layout__drawer-button {
+  display: none;
+} */
 
 
 
@@ -856,6 +1094,13 @@ tr.strikeout td:before {
   border: 1px solid rgba(78, 78, 78, 0.2) !important;
   padding: 10px !important;
   margin-top: 10px !important;
+}
+
+.lieferantFavicon {
+  position: absolute;
+  right: 9px;
+  zoom: 1.5;
+  top: 9px;
 }
 
 @media only screen and (max-width: 700px) {

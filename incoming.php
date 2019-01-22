@@ -235,8 +235,8 @@ global $dbhandle;
             }
 
             if (strpos($FOUND_BODY, 'html') == false) {
-              $FOUND_BODY .= "</pre>";
               $FOUND_BODY = "<pre>" . $FOUND_BODY;
+              $FOUND_BODY .= "</pre>";
             }
 
             $FOUND_BODY = str_replace("http:","https:",$FOUND_BODY);
@@ -247,9 +247,9 @@ global $dbhandle;
             $fContents .= $FOUND_BODY;
 
             // write html file for mail
-            if (!file_exists($mFile)) {
+            //if (!file_exists($mFile)) {
               file_put_contents($mFile, $fContents);
-            }
+            //}
 
             /* INCOMING TABLE */
 
@@ -263,7 +263,7 @@ global $dbhandle;
                     </td>
                     <td></td>
                     <td>' . $date2 . '</td>
-                    <td><a id="show-dialog2" class="hvr-underline-from-left" data-target="' . $message_id . '">' . $domain . '</a></td>
+                    <td><a id="show-dialog2" class="hvr-underline-from-left" data-target="' . $message_id . '">' . $domain . ' ' . '<img src="https://www.google.com/s2/favicons?domain=' . $domain . '"></a></td>
                     <td></td>
                     <td>' . $subject . '</td>
                     <td></td>
@@ -462,6 +462,15 @@ global $dbhandle;
           </div>
         </main>
         <script>
+        $(window).on('load',function(){
+            var e = $('.mailDialog1');
+            e = e.contents();
+            e = e.find('body');
+            $(e).each(function(i, el) {
+                $(el).css('overflow','auto');
+            });
+        });
+        
         $(document).ready(function() {
 
           $.fn.dataTable.moment( 'ddd, DD MMM YYYY HH:mm:SS ZZ' );

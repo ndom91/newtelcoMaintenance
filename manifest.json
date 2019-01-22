@@ -4,7 +4,7 @@
     "name": "Newtelco Maintenance",
     "scope": "/",
     "display": "standalone",
-    "start_url": "https://maintenance.newtelco.de/index",
+    "start_url": "https://maintenance.newtelco.de",
     "short_name": "NT Maintenance",
     "theme_color": "transparent",
     "description": "Newtelco GmbH Maintenance Application",
@@ -14,19 +14,14 @@
     "prefer_related_applications": false,
     "icons": [
         {
-            "src": "dist/images/favicon/favicon-32x32.png",
-            "type": "image/png",
+            "src": "favicon.ico",
+            "type": "image/x-icon",
             "sizes": "32x32"
         },
         {
             "src": "dist/images/favicon/favicon-96x96.png",
             "type": "image/png",
             "sizes": "96x96"
-        },
-        {
-            "src": "dist/images/favicon/favicon-16x16.png",
-            "type": "image/png",
-            "sizes": "16x16"
         },
         {
             "src": "dist/images/favicon/apple-icon-114x114.png",

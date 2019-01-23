@@ -80,7 +80,7 @@ global $dbhandle;
                 <?php
 
                 if (empty($_POST['tLieferant']) && empty($_POST['tdCID'])) {
-                  $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, lcompanies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.betroffeneKunden, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.betroffeneCIDs, maintenancedb.done, maintenancedb.cancelled, lcompanies.mailDomain AS LmailDomain, kcompanies.mailDomain AS KmailDomain FROM maintenancedb LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies AS lcompanies ON maintenancedb.lieferant = lcompanies.id LEFT JOIN companies AS kcompanies ON maintenancedb.betroffeneKunden = kcompanies.name WHERE maintenancedb.active = 1");
+                  $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.betroffeneKunden, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.betroffeneCIDs, maintenancedb.done, maintenancedb.cancelled, companies.mailDomain FROM maintenancedb LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.active = 1");
 
                 }
 
@@ -160,12 +160,8 @@ global $dbhandle;
                         }
                         echo '</td>';
                       } elseif ($key == 'name') {
-                        $mailDomain = $rowx['LmailDomain'];
+                        $mailDomain = $rowx['mailDomain'];
                         echo "<td>$value <img src='https://www.google.com/s2/favicons?domain=$mailDomain'></td>";
-                        
-                      } elseif ($key == 'betroffeneKunden') {
-                        $mailDomain2 = $rowx['KmailDomain'];
-                        echo "<td>$value <img src='https://www.google.com/s2/favicons?domain=$mailDomain2'></td>";
                         
                       } else {
                         echo "<td>$value</td>";
@@ -262,11 +258,10 @@ global $dbhandle;
                     // 15 - Complete
                     // 16 - Cancelled
                     // 17 - L Mail Domain
-                    // 18 - K Mail Domain
 
                   columnDefs: [
                       {
-                          "targets": [ 1, 16, 17, 18 ],
+                          "targets": [ 1, 16, 17 ],
                           "visible": false,
                           "searchable": false
                       },

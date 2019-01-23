@@ -333,7 +333,7 @@
     if ($fetch = mysqli_fetch_array($result0)) {
       //Found a company - now show all maintenances for company
       $company_id = $fetch[0];
-      $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.done, maintenancedb.id, maintenancedb.receivedmail, companies.name FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.lieferant LIKE '$company_id' AND maintenancedb.active = '1';") or die(mysqli_error($dbhandle));
+      $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.done, maintenancedb.id, maintenancedb.receivedmail, maintenancedb.betroffeneCIDs, companies.name FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.lieferant LIKE '$company_id' AND maintenancedb.active = '1';") or die(mysqli_error($dbhandle));
 
         $array2 = array();
 
@@ -343,7 +343,7 @@
         echo json_encode($array2);
 
     } else {
-      $jsonArrayObject = array(array('maileingang' => 'no such company in DB yet', 'startDateTime' => '', 'done' => '', 'id' => '', 'receivedmail' => '', 'name' => ''));
+      $jsonArrayObject = array(array('maileingang' => '', 'startDateTime' => 'no such company in DB yet', 'endDateTime' => '', 'done' => '', 'id' => '', 'receivedmail' => '','betroffeneCIDs' => '', 'name' => ''));
       echo json_encode($jsonArrayObject);
       exit;
     }

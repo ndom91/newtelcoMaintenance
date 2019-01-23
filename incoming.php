@@ -222,9 +222,25 @@ global $dbhandle;
                 if($part['parts'] && !$FOUND_BODY) {
                   foreach ($part['parts'] as $p) {
                     // replace 'text/html' by 'text/plain' if you prefer
-                    if($p['mimeType'] === 'text/plain' && $p['body']) {
+                    if($p['body'] && $p['mimeType'] == 'text/plain' ||  $p['mimeType'] == 'text/html') {
                       $FOUND_BODY = decodeBody($p['body']->data);
                       break;
+                    }
+                  }
+                }
+                if($FOUND_BODY) {
+                  break;
+                }
+              }
+            } if(!$FOUND_BODY) {
+              foreach ($parts  as $part) {
+                if($part['parts'] && !$FOUND_BODY) {
+                  foreach ($part['parts'] as $p) {
+                    foreach ($p['parts'] as $p2) {
+                      if($p2['body'] && $p2['mimeType'] == 'text/plain' ||  $p2['mimeType'] == 'text/html') {
+                        $FOUND_BODY = decodeBody($p2['body']->data);
+                        break;
+                      }
                     }
                   }
                 }
@@ -235,8 +251,8 @@ global $dbhandle;
             }
 
             if (strpos($FOUND_BODY, 'html') == false) {
-              $FOUND_BODY = "<pre>" . $FOUND_BODY;
-              $FOUND_BODY .= "</pre>";
+              $FOUND_BODY = "<html><pre>" . $FOUND_BODY;
+              $FOUND_BODY .= "</pre></html>";
             }
 
             $FOUND_BODY = str_replace("http:","https:",$FOUND_BODY);
@@ -247,9 +263,9 @@ global $dbhandle;
             $fContents .= $FOUND_BODY;
 
             // write html file for mail
-            //if (!file_exists($mFile)) {
+            if (!file_exists($mFile)) {
               file_put_contents($mFile, $fContents);
-            //}
+            }
 
             /* INCOMING TABLE */
 
@@ -452,6 +468,7 @@ global $dbhandle;
                       <th>End Date/Time</th>
                       <th>ID</th>
                       <th>Received Mail ID</th>
+                      <th>Betroffene CIDs</th>
                       <th>Company</th>
                       <th>Complete</th>
                     </tr>
@@ -490,7 +507,7 @@ global $dbhandle;
                 { responsivePriority: 1, targets: [ 0, 3, 5 ] },
                 { responsivePriority: 2, targets: [ 0, 2, 13 ] },
                 {
-                    targets: [2, 3, 5 ],
+                    targets: [0, 2, 3, 5, 6, 7, 14 ],
                     className: 'mdl-data-table__cell--non-numeric'
                 },
                 {
@@ -532,6 +549,7 @@ global $dbhandle;
                         { data: "endDateTime" },
                         { data: "id" },
                         { data: "receivedmail" },
+                        { data: "betroffeneCIDs" },
                         { data: "name" },
                         { data: "done" }
                     ],
@@ -563,8 +581,12 @@ global $dbhandle;
                           }
                         }
                       },
-                      { responsivePriority: 1, targets: [ 0, 7 ] },
-                      { responsivePriority: 2, targets: [ 2, 3, 6 ] }
+                      { responsivePriority: 1, targets: [ 0, 6, 7 ] },
+                      { responsivePriority: 2, targets: [ 2, 3, 6 ] },
+                      {
+                          targets: [ 0, 1, 2, 3, 4, 5, 6, -1 ],
+                          className: 'mdl-data-table__cell--non-numeric'
+                      }
                     ],
                     responsive: true,
                     order: [ 1, 'desc' ]

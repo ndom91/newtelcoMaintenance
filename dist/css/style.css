@@ -146,14 +146,16 @@ table {
   margin: 0 20px;
 }
 .card > .chart-wrapper {
-  height:20vh; 
-  width:30vw;
+  height: 15vh;
   z-index: 1;
+  width: 100%;
+  bottom: -13px;
+  position: absolute;
 }
 
 .chart-wrapper canvas {
-  width: 100%;
-  bottom: 10px;
+  /* width: 100%;
+  bottom: 10px; */
 }
 
 base-chart.chart {
@@ -172,30 +174,44 @@ base-chart.chart {
   z-index: 2;
   display: inline-block;
   margin-left: 1.5vw;
-  margin-top: 0.7vh;
-  font-size: 142px;
+  margin-top: 2.7vh;
+  font-size: 7.4vw;
   color: #fff;
   font-weight: 500;
   user-select: none;
+  text-align: right;
+  float: right;
+  margin-top: -3vh;
 }
 
 .unreadCounter:hover {
   cursor: pointer !important;
 }
 
-.unreadLabel {
+.unreadLabel1 {
   width: 100%;
-  height: 150px;
   z-index: 1;
-  max-width: 500px;
-  float: right;
-  font-size: 68px;
+  float: left;
+  font-size: 2.4vw;
   font-weight: 100;
-  line-height: 0.8;
-  text-align: right;
+  line-height: 0.9;
+  text-align: left;
   color: #fff;
   user-select: none;
+  word-wrap: normal;
+  margin-top: 10px;
 }
+
+.unreadLabel2 {
+  font-weight: 100;
+  font-size: 2.1vw;
+  line-height: 0.9;
+  text-align: left;
+  color: #a0a0a0;
+  margin-top: 10px;
+  user-select: none;
+}
+
 .settingsNudge {
   font-size: 28px;
   line-height: 0.95;
@@ -206,7 +222,7 @@ base-chart.chart {
   background-color: rgba(255,255,255,0.5);
   border-radius: 8px;
   padding: 20px;
-  height: 300px;<div class="mdl-layout-spacer"></div>
+  height: 300px;
   max-height: 340px;
   position: relative;
   user-select: none;
@@ -219,19 +235,22 @@ base-chart.chart {
   user-select: none;
 }
 .fwaWrapper {
-  box-shadow: 0 0 10px rgba(103,178,70,0.4);
+  border: 1px solid rgba(0,0,0,0.2);
+  box-shadow: inset 0px 7px 94px -12px rgba(103,178,70,0.9);
 }
 .fwaCounter {
   color: rgba(103,178,70,0.4);
 }
 .aliWrapper {
-  box-shadow: 0 0 10px rgba(249,103,103,0.4);
+  border: 1px solid rgba(0,0,0,0.2);
+  box-shadow: inset 0px 7px 94px -12px rgba(249,103,103,0.9);
 }
 .aliCounter {
   color: rgba(249,103,103,0.4);
 }
 .sstWrapper {
-  box-shadow: 0 0 10px rgba(36,122,219,0.4);
+  border: 1px solid rgba(0,0,0,0.2);
+  box-shadow: inset 0px 7px 94px -12px rgba(36,122,219,0.9);
 }
 .sstCounter {
   color: rgba(36,122,219,0.4);
@@ -268,7 +287,7 @@ base-chart.chart {
   position: absolute;
   margin-top: -20px;
   margin-left: 10px;
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 100;
   color: rgba(0,0,0,0.6);
   user-select: none;
@@ -288,18 +307,16 @@ base-chart.chart {
 }
 /* End Full screen graph */
 
-@media only screen and (min-width: 1826px) {
-  .unreadCounter {
-    margin-top: 13vh !important;
-  }
+@media only screen and (min-width: 2270px) {
+  
 }
 @media only screen and (min-width: 1560px) {
-  .unreadCounter {
-    margin-left: 1vw;
-    margin-top: -3vh;
-  }
-  .unreadCounter {
-    font-size: 212px;
+  
+}
+/* 
+@media only screen and (max-width: 1490px) {
+  .unreadLabel {
+    font-size: 64px;
   }
 }
 
@@ -313,7 +330,7 @@ base-chart.chart {
   .unreadLabel {
     font-size: 48px;
   }
-}
+} */
 
 @media only screen and (max-width: 1000px) {
   .fwaWrapper,.aliWrapper,.sstWrapper {
@@ -1311,7 +1328,7 @@ tr.strikeout td:before {
 .menuSubLabel {
   color: #67B246;
   float: right;
-  top: 6px;
+  top: 0px;
   font-size: 14px !important;
   position: relative;
   right: -10px;
@@ -1319,7 +1336,7 @@ tr.strikeout td:before {
 .menuSubLabel2 {
   color: #4e4e4e;
   float: right;
-  top: 20px;
+  top: 13px;
   font-size: 20px !important;
   position: relative;
   right: -30px;
@@ -1341,8 +1358,10 @@ tr.strikeout td:before {
 .helperBG {
   background-color: rgba(126, 185, 100, 0.2);
   border-radius: 5px;
-  margin: 25px 45px 10px 25px;
+  margin: 25px 45px 10px 35px;
   padding: 15px;
+  bottom: 25px;
+  position: absolute;
 }
 .helperTable {
   margin-top: 2px;
@@ -1460,6 +1479,8 @@ tr.strikeout td:before {
 .mdl-mini-footer {
 	width:  100%;
   padding: 12px 16px !important;
+  max-height: 31px;
+  min-height: 31px;
 }
 .footertext {
 	margin-right: 20px;

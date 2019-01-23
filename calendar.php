@@ -51,7 +51,7 @@ require('authenticate_google.php');
             <div class="mdl-grid">
               <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
               <div class="mdl-cell mdl-cell--10-col mdl-cell--4-col-phone">
-                  <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                  <div style="width: 1200px;max-width: 1200px;" class="demo-card-wide mdl-card mdl-shadow--2dp">
                     <div class="mdl-card__title">
                       <h2 class="mdl-card__title-text">Maintenance Calendar</h2>
                       <div class="mdl-layout-spacer"></div>

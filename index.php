@@ -95,7 +95,7 @@ require('authenticate_google.php');
   </script>
 </head>
 <body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header ">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header ">
       <?php
       ob_start();
       include "views/header.php";
@@ -125,17 +125,19 @@ require('authenticate_google.php');
                           <div class="card-body">
                             <div class="unread">
                               <!-- <span class="hvr-grow-rotate mdi mdi-48px mdi-email mdi-green unreadIcon"></span> -->
-                              <div class="mdl-layout-spacer"></div>
-                              <div class="unreadLabel">
-                                Maintenance Unread
+                              <div class="unreadLabel1">
+                                Maintenance 
+                              </div>
+                              <div class="unreadLabel2">
+                                Unread 
                               </div>
                               <div class="hvr-bounce-in2 unreadCounter">
                                 <?php echo $results3['messagesUnread'] ?>
                               </div>
                             </div>
+                            </div>
                             <div class="chart-wrapper">
                               <canvas height="120" class="chart" id="line-chart"></canvas>
-                            </div>
                             </div>
                         </div>
                       <?php endif; ?>
@@ -205,7 +207,9 @@ require('authenticate_google.php');
           }
           });
 
-
+          // hide menu opener on index page with fixed drawer
+          $('.col').css("display","none");
+          $('.menuSubLabel2').css("display","none");
 
           if($('.unreadCounter').text() == '0') {
   
@@ -223,7 +227,7 @@ require('authenticate_google.php');
 
             const loginBox1 =  document.querySelector('.unreadCounter');
             $(loginBox1).css('opacity','1');
-            $('.unreadCounter').css("font-family","ZCOOL QingKe HuangYou, cursive");
+            $('.unreadCounter').css("font-family","Roboto");
             $('.unreadCounter').css("color","rgba(103, 178, 70, 0.5)");
             $('.unreadCounter').css("text-shadow","0px 0px 30px #fff");
           } 

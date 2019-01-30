@@ -819,7 +819,7 @@ textarea.mdl-textfield__input {
 }
 .labelSelectHeader {
   height: 30px;
-  width: 98%;
+  width: 90%;
   padding: 15px;
   margin-bottom: 10px;
   position: relative;
@@ -1059,6 +1059,7 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
   box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.12), 0 1px 1px 0 rgba(0, 0, 0, 0.24);
   /* font-size: 40px; */
   line-height: 44px !important;
+  border-bottom: none !important;
 }
 
 .labelColors {
@@ -1084,7 +1085,7 @@ tr.strikeout td:before {
   position: absolute;
   top: 50%;
   left: 0;
-  border-bottom: 1px solid #111;
+  border-bottom: 3px solid rgba(128,0,0,0.3);
   width: 100%;
 }
 
@@ -1110,7 +1111,7 @@ tr.strikeout td:before {
   border-radius: 5px !important;
   border: 1px solid rgba(78, 78, 78, 0.2) !important;
   padding: 10px !important;
-  margin-top: 10px !important;
+  margin-top: 50px !important;
 }
 
 .lieferantFavicon {
@@ -1474,13 +1475,40 @@ tr.strikeout td:before {
   display: none;
 }
 
+.mdl-layout__tab {
+  font-weight: 400 !important;
+}
+
+#orrsDiag_content > h5 {
+  color: rgba(0,0,0,0.5);
+  font-size: 24px;
+  margin-left: 10px;
+}
+
+.addFirmenWrapper {
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 8px;
+  padding: 25px;
+}
+
+.mAddSubtitle {
+  font-size: 11px;
+  color: rgb(0,0,0,0.6);
+  font-weight: 400;
+  margin-left: 10px;
+}
+
+.grayBorder1 {
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
 /* Footer */
 
 .mdl-mini-footer {
 	width:  100%;
   padding: 12px 16px !important;
-  max-height: 31px;
-  min-height: 31px;
+  max-height: 40px;
+  min-height: 40px;
 }
 .footertext {
 	margin-right: 20px;

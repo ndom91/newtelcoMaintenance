@@ -280,7 +280,7 @@ global $dbhandle;
                       { responsivePriority: 5, targets: [ 7, 8, 12 ] },
                       { responsivePriority: 10, targets: [ 11, 9, 10, 14 ] },
                       {
-                          targets: [ 0, 1, 3, 5, 6, 10, 11, 15 ],
+                          targets: [ 0, 1, 2, 3, 4, 5, 6, 10, 11, 13, 15 ],
                           className: 'mdl-data-table__cell--non-numeric'
                       }
                   ]
@@ -348,7 +348,8 @@ global $dbhandle;
                     overflowMethod: 'cap'
                   },
                   start: m14days,
-                  end: p14days
+                  end: p14days,
+                  zoomMax: 1000 * 60 * 60 * 24 * 17
                 };
 
                 // Create a Timeline

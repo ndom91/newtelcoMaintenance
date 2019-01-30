@@ -272,13 +272,13 @@
 
     echo json_encode($array2);
 
-  }  elseif (isset($_GET['completedLine'])) {
+  } elseif (isset($_GET['completedLine'])) {
 
     /*****************************************
      * INDEX - get line chart data
      *****************************************/
 
-    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(mailSentAt) as day FROM maintenancedb WHERE DATE(mailSentAt) NOT LIKE '0000-00-00' AND DATE(mailSentAt) >= curdate() - INTERVAL DAYOFWEEK(curdate())+14 DAY ORDER BY day desc") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(mailSentAt) as day FROM maintenancedb WHERE maintenancedb.done LIKE '1' AND DATE(mailSentAt) >= curdate() - INTERVAL DAYOFWEEK(curdate())+14 DAY ORDER BY day desc") or die(mysqli_error($dbhandle));
 
     $array3 = array();
 
@@ -287,14 +287,96 @@
     }
 
     echo json_encode($array3);
+    
+  } elseif (isset($_GET['sAddF'])) {
 
-  }  elseif (isset($_GET['completedLine1'])) {
+    /*****************************************
+     * SETTINGS - ADD COMPANY
+     *****************************************/
+
+    $cName = mysqli_real_escape_string($dbhandle, $_GET['sAddF_n']);
+    $cDomain = mysqli_real_escape_string($dbhandle, $_GET['sAddF_d']);
+    $cRecipients = mysqli_real_escape_string($dbhandle, $_GET['sAddF_r']);
+    $addedCompany = array();
+
+    $result = mysqli_query($dbhandle, "INSERT INTO companies (companies.name, companies.mailDomain, companies.maintenanceRecipient) VALUES ('$cName', '$cDomain', '$cRecipients')") or die(mysqli_error($dbhandle));
+
+    if ($result == 'TRUE'){
+        $addedCompany['added'] = 1;
+    } else {
+        $addedCompany['added'] = 0;
+    }
+
+    echo json_encode($addedCompany);
+
+  } elseif (isset($_GET['sAddL'])) {
+
+    /*****************************************
+     * SETTINGS - ADD Lieferant
+     *****************************************/
+
+    $lCompany = mysqli_real_escape_string($dbhandle, $_GET['sAddL_c']);
+    $lCID = mysqli_real_escape_string($dbhandle, $_GET['sAddL_i']);
+    $addedLieferant = array();
+
+    $result = mysqli_query($dbhandle, "INSERT INTO lieferantCID (lieferant, derenCID) VALUES ('$lCompany', '$lCID')") or die(mysqli_error($dbhandle));
+
+    if ($result == 'TRUE'){
+        $addedLieferant['added'] = 1;
+    } else {
+        $addedLieferant['added'] = 0;
+    }
+
+    echo json_encode($addedLieferant);
+
+  } elseif (isset($_GET['sAddK'])) {
+
+    /*****************************************
+     * SETTINGS - ADD Kunden
+     *****************************************/
+
+    $kCompany = mysqli_real_escape_string($dbhandle, $_GET['sAddK_c']);
+    $kdCID= mysqli_real_escape_string($dbhandle, $_GET['sAddK_dc']);
+    $kntCID = mysqli_real_escape_string($dbhandle, $_GET['sAddK_nt']);
+    $kProt = mysqli_real_escape_string($dbhandle, $_GET['sAddK_p']);
+    
+    $addedKunden = array();
+
+    $result = mysqli_query($dbhandle, "INSERT INTO kundenCID (lieferantCID, kundenCID, protected, kunde) VALUES ('$kdCID', '$kntCID','$kProt', '$kCompany')") or die(mysqli_error($dbhandle));
+
+    if ($result == 'TRUE'){
+        $addedKunden['added'] = 1;
+    } else {
+        $addedKunden['added'] = 0;
+    }
+
+    echo json_encode($addedKunden);
+
+  } elseif (isset($_GET['aedCIDc'])) {
+
+    /*****************************************
+     * Add Edit - Get derenCID on change select Company
+     *****************************************/
+
+    $dCIDcompany = mysqli_real_escape_string($dbhandle, $_GET['aedCIDc']);
+
+    $dCIDcompanyArray = array();
+
+    $result = mysqli_query($dbhandle, "SELECT lieferantCID.derenCID as text, lieferantCID.id as id FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id WHERE lieferantCID.lieferant LIKE '$dCIDcompany'") or die(mysqli_error($dbhandle));
+
+    while($resultsrows = mysqli_fetch_assoc($result)) {
+      $dCIDcompanyArray[] = $resultsrows;
+    }
+
+    echo json_encode($dCIDcompanyArray);
+
+  } elseif (isset($_GET['completedLine1'])) {
 
     /*****************************************
      * INDEX - get line chart data
      *****************************************/
 
-    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(mailSentAt) as day FROM maintenancedb WHERE DATE(mailSentAt) NOT LIKE '0000-00-00' AND maintenancedb.active LIKE '1';") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(mailSentAt) as day FROM maintenancedb WHERE maintenancedb.active LIKE '1' AND maintenancedb.done LIKE '1';") or die(mysqli_error($dbhandle));
 
     $array3 = array();
 
@@ -343,7 +425,7 @@
         echo json_encode($array2);
 
     } else {
-      $jsonArrayObject = array(array('maileingang' => '', 'startDateTime' => 'no such company in DB yet', 'endDateTime' => '', 'done' => '', 'id' => '', 'receivedmail' => '','betroffeneCIDs' => '', 'name' => ''));
+      $jsonArrayObject = array(array('maileingang' => '', 'startDateTime' => '', 'endDateTime' => '', 'done' => '', 'id' => '', 'receivedmail' => '','betroffeneCIDs' => 'no such company in DB yet', 'name' => ''));
       echo json_encode($jsonArrayObject);
       exit;
     }

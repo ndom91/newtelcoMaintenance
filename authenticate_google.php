@@ -116,7 +116,7 @@ $clientService = getGoogleClient();
 
 //var_dump($_SESSION['access_token']);
 
-if($_COOKIE['rtoken']) {
+if(isset($_COOKIE['rtoken'])) {
   if($client->isAccessTokenExpired()){  // if token expired
     $refreshtoken = $_COOKIE['rtoken'];
     //var_dump($refreshtoken);
@@ -132,7 +132,7 @@ if($_COOKIE['rtoken']) {
     //$client->setAccessToken($_SESSION['access_token']);
     $token_data = $client->verifyIdToken();
   }
-} else if($_COOKIE['mail1']) {
+} else if(isset($_COOKIE['mail1'])) {
   $requestedMail = $_COOKIE['mail1'];
     if($client->isAccessTokenExpired()){
       $rtoken_query = mysqli_query($dbhandle, "SELECT refreshToken from authentication where email like '$requestedMail' ");
@@ -158,28 +158,28 @@ if($client->isAccessTokenExpired() && isset($rtoken)){
   $rtoken_insertquery = mysqli_query($dbhandle, "UPDATE authentication set refreshToken = '$rtoken' where email like '$tokenemail'");
 }
 
-$q = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' . $_SESSION['access_token']['access_token'];
-$json = file_get_contents($q);
-$token_data=json_decode($json,true);
+// $q = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' . $_SESSION['access_token']['access_token'];
+// $json = file_get_contents($q);
+// $token_data=json_decode($json,true);
 
-if (isset($token_data['email'])) {
-  setcookie("mail1",$token_data['email']);
-}
+// if (isset($token_data['email'])) {
+//   setcookie("mail1",$token_data['email']);
+// }
 
 if ($_SESSION['access_token']['id_token'] === NULL):
   unset($_SESSION['access_token']);
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <style>
-<?php echo file_get_contents("dist/css/style.min.css"); ?>
 <?php echo file_get_contents("dist/css/material.min.css"); ?>
+<?php echo file_get_contents("dist/css/style.min.css"); ?>
 </style>
 <div class="loginBG">
 <head>
     <title>Newtelco Maintenance | Login</title>
+
+    <link id="favicon2" rel="shortcut icon" type="image/png" src="dist/images/fav-32x32.png">
     <?php echo file_get_contents("views/meta.html"); ?>
 
     <!-- jquery -->
@@ -190,7 +190,102 @@ if ($_SESSION['access_token']['id_token'] === NULL):
 
     <!-- particle.js -->
     <script rel="preload" as="script" src="dist/js/particle.js"></script>
+    <script>
+    $(document).ready(function() {
 
+      setTimeout(function() {
+        particlesJS("particles-js", {
+        "particles": {
+          "number": {
+            "value": 200,
+            "density": {
+              "enable": true,
+              "value_area": 700
+            }
+          },
+          "color": {
+            "value": "#67B246"
+          },
+          "shape": {
+            "type": "circle",
+            "stroke": {
+              "width": 1,
+              "color": "#67B246"
+            },
+            "polygon": {
+              "nb_sides": 5
+            }
+          },
+          "opacity": {
+            "value": 0.6,
+            "random": true,
+            "anim": {
+              "enable": false,
+              "speed": 1,
+              "opacity_min": 0.1,
+              "sync": false
+            }
+          },
+          "size": {
+            "value": 3,
+            "random": true,
+            "anim": {
+              "enable": false,
+              "speed": 40,
+              "size_min": 0.1,
+              "sync": false
+            }
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#67B246",
+            "opacity": 0.6,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 2,
+            "direction": "none",
+            "random": false,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false,
+            "attract": {
+              "enable": false,
+              "rotateX": 600,
+              "rotateY": 1200
+            }
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "repulse"
+            },
+            "resize": true
+          },
+          "modes": {
+            "repulse": {
+              "distance": 50,
+              "duration": 0.2
+            }
+          }
+        }
+      })
+      }, 149)
+      setTimeout(function() {window.dispatchEvent(new Event('resize'))}, 150);
+
+    });
+  </script>
+  <style>
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
   </head>
 
   <body>
@@ -260,84 +355,10 @@ loginBox1.classList.add('animated', 'fadeIn');
 var favicon=new Favico();
 var image=document.getElementById('favicon2');
 favicon.image(image);
-});
 
-particlesJS("particles-js", {
-  "particles": {
-    "number": {
-      "value": 200,
-      "density": {
-        "enable": true,
-        "value_area": 700
-      }
-    },
-    "color": {
-      "value": "#67B246"
-    },
-    "shape": {
-      "type": "circle",
-      "stroke": {
-        "width": 1,
-        "color": "#67B246"
-      },
-      "polygon": {
-        "nb_sides": 5
-      }
-    },
-    "opacity": {
-      "value": 0.6,
-      "random": true,
-      "anim": {
-        "enable": false,
-        "speed": 1,
-        "opacity_min": 0.1,
-        "sync": false
-      }
-    },
-    "size": {
-      "value": 3,
-      "random": true,
-      "anim": {
-        "enable": false,
-        "speed": 40,
-        "size_min": 0.1,
-        "sync": false
-      }
-    },
-    "line_linked": {
-      "enable": true,
-      "distance": 150,
-      "color": "#67B246",
-      "opacity": 0.6,
-      "width": 1
-    },
-    "move": {
-      "enable": true,
-      "speed": 2,
-      "direction": "none",
-      "random": false,
-      "straight": false,
-      "out_mode": "out",
-      "bounce": false,
-      "attract": {
-        "enable": false,
-        "rotateX": 600,
-        "rotateY": 1200
-      }
-    }
-  },
-  "retina_detect": true
-});
-
-$(document).on('load', function() {
-  particlesJS.load('particles-js', 'assets/particles.json', function() {
-    console.log('callback - particles.js config loaded');
-  });
 })
-
 </script>
 </html>
-
 <?php
   exit();
 endif;

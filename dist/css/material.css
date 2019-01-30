@@ -3873,7 +3873,7 @@ ul, ol {
   .mdl-button:active {
     background-color: rgba(158,158,158, 0.40); }
   .mdl-button.mdl-button--colored {
-    color: rgb(63,81,181); }
+    color: rgb(103, 178, 70); }
     .mdl-button.mdl-button--colored:focus:not(:active) {
       background-color: rgba(0,0,0, 0.12); }
 
@@ -5956,7 +5956,7 @@ input.mdl-button[type="submit"] {
     content: '';
     display: block; }
   .mdl-mini-footer .mdl-logo {
-    line-height: 36px; }
+    line-height: 27px; }
 
 .mdl-mini-footer--link-list,
 .mdl-mini-footer__link-list {
@@ -8141,7 +8141,7 @@ input.mdl-button[type="submit"] {
   border-radius: 50%;
   z-index: 2; }
   .mdl-radio.is-checked .mdl-radio__outer-circle {
-    border: 2px solid rgb(63,81,181); }
+    border: 2px solid rgb(103,178,70); }
   .mdl-radio__outer-circle fieldset[disabled] .mdl-radio,
   .mdl-radio.is-disabled .mdl-radio__outer-circle {
     border: 2px solid rgba(0,0,0, 0.26);
@@ -8165,7 +8165,7 @@ input.mdl-button[type="submit"] {
   -webkit-transform: scale(0, 0);
           transform: scale(0, 0);
   border-radius: 50%;
-  background: rgb(63,81,181); }
+  background: rgb(103,178,70); }
   .mdl-radio.is-checked .mdl-radio__inner-circle {
     -webkit-transform: scale(1, 1);
             transform: scale(1, 1); }
@@ -8177,6 +8177,7 @@ input.mdl-button[type="submit"] {
     box-shadow: 0 0 0px 10px rgba(0, 0, 0, 0.1); }
 
 .mdl-radio__label {
+  color: rgba(0,0,0,0.54);
   cursor: pointer; }
   fieldset[disabled] .mdl-radio .mdl-radio__label,
   .mdl-radio.is-disabled .mdl-radio__label {
@@ -8196,7 +8197,7 @@ input.mdl-button[type="submit"] {
   overflow: hidden;
   -webkit-mask-image: -webkit-radial-gradient(circle, white, black); }
   .mdl-radio__ripple-container .mdl-ripple {
-    background: rgb(63,81,181); }
+    background: rgb(103,178,70); }
   fieldset[disabled] .mdl-radio .mdl-radio__ripple-container,
   .mdl-radio.is-disabled .mdl-radio__ripple-container {
     cursor: auto; }

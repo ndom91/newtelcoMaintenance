@@ -211,15 +211,16 @@ require('authenticate_google.php');
           $('.col').css("display","none");
           $('.menuSubLabel2').css("display","none");
 
-          if($('.unreadCounter').text() == '0') {
+          if($('.unreadCounter').text().trim() == '0') {
   
             // nothing to do? TADA!!11!
             // https://github.com/daneden/animate.css
 
             //animate in 
             const loginBox1 =  document.querySelector('.unreadCounter');
+            $(loginBox1).css('font-weight','100');
             $(loginBox1).css('opacity','1');
-            loginBox1.classList.add('animated', 'tada');
+            loginBox1.classList.add('animated', 'tada', 'delay-2s');
 
           } else {
 

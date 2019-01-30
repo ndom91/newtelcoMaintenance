@@ -23,10 +23,12 @@
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-127102919-4"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  var dimensionValue = $('.menumail').text()
-  gtag('set', 'dimension1', dimensionValue);
-  gtag('config', 'UA-127102919-4');
+  setTimeout(function() {
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var dimensionValue = $('.menumail').text()
+    gtag('set', 'dimension1', dimensionValue);
+    gtag('config', 'UA-127102919-4');
+  },500);
 </script>

@@ -20,7 +20,7 @@
     <div class="menu_userdetails">
       <button id="user-profile-menu" class="mdl-button mdl-js-button mdl-userprofile-button">
         <img class="hvr-rotate menu_userphoto" src="<?php echo $token_data['picture'] ?>"/>
-        <span class="hvr-sink mdl-layout-subtitle menumail"> <?php echo $token_data['email'] ?>
+        <span class="mdl-layout-subtitle menumail"> <?php echo $token_data['email'] ?>
           <i class="fas fa-angle-down menuangle"></i>
         </span>        
       </button>

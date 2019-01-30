@@ -406,7 +406,7 @@ global $dbhandle;
                  </div>
                </div>
                <div class="mdl-cell mdl-cell--6-col">
-              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input class="mdl-textfield__input" type="text" data-val="<?php echo $olieferantID ?>" value="<?php echo $olieferant ?>" id="company">
                 <img class ="lieferantFavicon" src='https://www.google.com/s2/favicons?domain=<?php echo $olieferantDomain ?>'>
                 <label class="mdl-textfield__label" for="company">Lieferant</label>
@@ -462,6 +462,7 @@ global $dbhandle;
                     })
                   </script>
               </div>
+
               <div class="mdl-cell mdl-cell--6-col">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr">
                     <input type="text" id="sdt" class="mdl-textfield__input"  value="<?php echo $newSDT ?>" data-input>
@@ -511,10 +512,11 @@ global $dbhandle;
                 </div>
               </div>
               <?php
-                $mailRecipientQ =  mysqli_query($dbhandle, "SELECT maintenanceRecipient FROM companies WHERE companies.name LIKE '$olieferant'") or die(mysqli_error($dbhandle));
+               $mailRecipientQ =  mysqli_query($dbhandle, "SELECT maintenanceRecipient FROM companies WHERE companies.name LIKE '$olieferant'") or die(mysqli_error($dbhandle));
                 if ($row = mysqli_fetch_row($mailRecipientQ)) {
                   $mailrecipient = $row[0];
                 }
+
               ?>
               <script>
                 function openInNewTab(url) {
@@ -926,57 +928,58 @@ document.querySelector("#timezoneSelector").dispatchEvent(event);
 //       dCID onLoad. Making many unnecessary db calls!
 
 $("#dcid3").change(function() {
-if ( $.fn.dataTable.isDataTable( '#dataTable4' ) ) {
-    table3 = $('#dataTable4').DataTable();
-    table3.destroy();
-}
+ 
+  if ( $.fn.dataTable.isDataTable( '#dataTable4' ) ) {
+      table3 = $('#dataTable4').DataTable();
+      table3.destroy();
+  }
 
-var data3 = $('#dcid3').val();
-$('#kundenCard').addClass('display').removeClass('hidden');
-//filter by selected value on second column
-var table4 = $('#dataTable4').DataTable( {
-  ajax: {
-    url: "api?dCID=" + data3,
-    dataSrc: ""
-  },
-  columns: [
-      { title: "Notification" },
-      { data: "kundenCID" },
-      { data: "protected" },
-      { data: "name" },
-      { data: "kunde" },
-      { data: "maintenanceRecipient" }
-  ],
-  columnDefs: [
-      {
-          "targets": [ 4 ],
-          "visible": false,
-          "searchable": false
-      }, {
-          "targets": 0,
-          "data": null,
-          "defaultContent": "<button style='margin-left:3px;text-align:center;' id='sendMailbtn' type='button' class='mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored button40'><span class='mdi mdi-send mdi-24px'></span></button><div class='mdl-tooltip  mdl-tooltip--bottom' data-mdl-for='sendMailbtn'> Send Notification </div>",
-          className: 'mdl-data-table__cell--non-numeric text-center'
-      },{
-          targets: [ 1, 3 ],
-          className: 'mdl-data-table__cell--non-numeric'
-      },{
-          targets: [ 5 ],
-          className: 'mdl-typography--text-lowercase'
-      },{
-          targets: [2], render: function (a, b, data, d) {
-            if (data['protected'] == '0' ){
-              return 'Unprotected'
-            } else if (data['protected'] == '1' ){
-              return 'Protected';
-            } else {
-              return data['protected'];
-            }
-          }
-      },{ responsivePriority: 1, targets: [ 0, 1, 3 ] }
+  var data3 = $('#dcid3').val();
+  $('#kundenCard').addClass('display').removeClass('hidden');
+  //filter by selected value on second column
+  var table4 = $('#dataTable4').DataTable( {
+    ajax: {
+      url: "api?dCID=" + data3,
+      dataSrc: ""
+    },
+    columns: [
+        { title: "Notification" },
+        { data: "kundenCID" },
+        { data: "protected" },
+        { data: "name" },
+        { data: "kunde" },
+        { data: "maintenanceRecipient" }
     ],
-    responsive: true
-});
+    columnDefs: [
+        {
+            "targets": [ 4 ],
+            "visible": false,
+            "searchable": false
+        }, {
+            "targets": 0,
+            "data": null,
+            "defaultContent": "<button style='margin-left:3px;text-align:center;' id='sendMailbtn' type='button' class='mdl-color--light-green-nt mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored button40'><span class='mdi mdi-send mdi-24px'></span></button><div class='mdl-tooltip  mdl-tooltip--bottom' data-mdl-for='sendMailbtn'> Send Notification </div>",
+            className: 'mdl-data-table__cell--non-numeric text-center'
+        },{
+            targets: [ 1, 3 ],
+            className: 'mdl-data-table__cell--non-numeric'
+        },{
+            targets: [ 5 ],
+            className: 'mdl-typography--text-lowercase'
+        },{
+            targets: [2], render: function (a, b, data, d) {
+              if (data['protected'] == '0' ){
+                return 'Unprotected'
+              } else if (data['protected'] == '1' ){
+                return 'Protected';
+              } else {
+                return data['protected'];
+              }
+            }
+        },{ responsivePriority: 1, targets: [ 0, 1, 3 ] }
+      ],
+      responsive: true
+  });
 
 });
 
@@ -1085,7 +1088,7 @@ $('#btnSave').on('click', function(e) {
     "omaintid" : $('#maintid').val(),
     "omaileingang" : medtISO,
     "oreceivedmail" : $('#rmail').val(),
-    "olieferant" : $('#company').val(),
+    "olieferant" : $("#company").val(),
     "olieferantid" : $("#company").data('val'),
     "oderenCIDid" : dcid, 
     "obearbeitetvon" : $('#bearbeitet').val(),
@@ -1277,7 +1280,7 @@ $('#btnSave').on('click', function(e) {
       // var d = moment.duration(ms);
       // var impactTime = d.format("mm");
 
-      openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?from=maintenance@newtelco.de&subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=​<style>.grayText10{​​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:131px}.tdSizing2{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624px}</style><body style="​​padding:0;margin:0;​​​" class="grayText10"><div​​ ​style="​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266" class="grayText10"​​>Dear Colleagues,​​<p><span>We would like to inform you about planned work on the CID ​' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"> <tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span>Start date and time:</span></p></td><td class="tdSizing"> <p style="margin-bottom:12.0pt;text-align:justify"><span><b><span class="grayText10">' + startLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-​​bottom:12.0pt"><span><span>Finish date and time:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><b><span​​ class="grayText10">​' + endLabel + ' (' + tzSuffixRAW + ')</span></b></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span> <span>Impact:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span>[INSERT IMPACT HERE]</span></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span>Location:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span class="grayText10">[INSERT LOCATION HERE]</span></span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span><span>Reason:</span></span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span><span>[INSERT REASON HERE]</span></span></p></td></tr></table> <p><span>We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span>If you have any questions feel free to contact us at maintenance@newtelco.de.</span></p>​​</body>​​<footer>​<style>.sig{font-family: Century Gothic, sans-serif;font-size: 9pt;color: #636266 !important;}b{color: #4ca702;}.gray{color: #636266 !important;}a{text-decoration: none;color: #636266 !important;}</style><div class="sig"><br><div>Best regards | Mit freundlichen Grüßen</div><br><div><b class="gray">Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b>|</b> Mainzer Landstr. 351-353 <b>|</b> 60326 Frankfurt a.M. <b>|</b> DE <br>www.newtelco.com <b>|</b> 24/7 NOC  49 69 75 00 27 30 <b>|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" alt="" height="29" width="516"></div></div>​</footer>');
+      openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?from=maintenance@newtelco.de&subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=​​​​<style>.grayText10{​​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:131px}.tdSizing2{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624px}</style><body style="​​padding:0;margin:0;​​​" class="grayText10"><div​​ ​style="​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266" class="grayText10"​​>Dear Colleagues,​​<p><span>We would like to inform you about planned work on the CID ​' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"> <tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span class="grayText10">' + startLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr><tr> <td class="tdSizing"> <p style="margin-​​bottom:12.0pt"><span class="grayText10">Finish date and time:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span​​ class="grayText10">​​' + endLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Impact:</span></p></td><td class="tdSizing2"> <p style="margi​​n-bottom:12.0pt;text-align:justify"><span>[INSERT IMPACT HERE]</span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Location:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span class="grayText10">[INSERT LOCATION HERE]</span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Reason:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span>[INSERT REASON HERE]</span></p></td></tr></table> <p><span>We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span>If you have any questions feel free to contact us at maintenance@newtelco.de.</span></p>​​</body>​​<footer>​<style>.sig{font-family: Century Gothic, sans-serif;font-size: 9pt;color: #636266 !important;}b{color: #4ca702;}.gray{color: #636266 !important;}a{text-decoration: none;color: #636266 !important;}</style><div class="sig"><br><div>Best regards | Mit freundlichen Grüßen</div><br><div><b class="gray">Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b>|</b> Mainzer Landstr. 351-353 <b>|</b> 60326 Frankfurt a.M. <b>|</b> DE <br>www.newtelco.com <b>|</b> 24/7 NOC  49 69 75 00 27 30 ​​<b>|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" alt="" height="29" width="516"></div></div>​</footer>');
 
       var DateTime = luxon.DateTime;
       var now = DateTime.local().toFormat("y-MM-dd HH:mm");
@@ -1298,6 +1301,7 @@ $('#btnSave').on('click', function(e) {
     
 
     // Show 'Kunden Circuits' if loading with selected Deren CIDs
+    
     if ($( "#dcid3 option:selected" ).text() != '') {
       $('#kundenCard').addClass('display').removeClass('hidden');
       var value = $( "#dcid3 option:selected" ).val();

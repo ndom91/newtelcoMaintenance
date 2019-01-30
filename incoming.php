@@ -563,7 +563,7 @@ global $dbhandle;
                           "visible": false,
                           "searchable": false
                       },{
-                        targets: [7], render: function (a, b, data, d) {
+                        targets: [8], render: function (a, b, data, d) {
                           if (data['done'] === '1'){
                             return '<span class="mdi mdi-24px mdi-check-decagram mdi-dark"></span>';
                           } else if (data['done'] === '0') {
@@ -581,7 +581,7 @@ global $dbhandle;
                           }
                         }
                       },
-                      { responsivePriority: 1, targets: [ 0, 6, 7 ] },
+                      { responsivePriority: 1, targets: [ 0, 6, 8 ] },
                       { responsivePriority: 2, targets: [ 2, 3, 6 ] },
                       {
                           targets: [ 0, 1, 2, 3, 4, 5, 6, -1 ],
@@ -607,7 +607,7 @@ global $dbhandle;
             		autoHide         : "move",
             		autoHideDelay    : 500
             	}
-            });
+            }); 
 
             // Hide Loader
             setTimeout(function() {$('#loading').hide()},1000);

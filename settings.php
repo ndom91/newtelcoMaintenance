@@ -77,7 +77,21 @@ if (isset($_POST['endlabel'])) {
           <div class="mdl-layout-spacer"></div>
           <div class="menu_userdetails">
             <button id="user-profile-menu" class="mdl-button mdl-js-button mdl-userprofile-button">
-              <img class="hvr-rotate menu_userphoto" src="<?php echo $token_data['picture'] ?>"/>
+              <img class="hvr-rotate menu_userphoto" src="
+              <?php 
+                // var_dump($token_data['email']);
+                if ($token_data['email'] == 'alissitsin@newtelco.de') {
+                  echo '/dist/images/icons/ali_round.png';
+                } else if ($token_data['email'] == 'fwaleska@newtelco.de') {
+                  echo '/dist/images/icons/fwa_round.png';
+                } else if ($token_data['email'] == 'sstergiou@newtelco.de') {
+                  echo '/dist/images/icons/sst_round.png';
+                } else if ($token_data['email'] == 'ndomino@newtelco.de') {
+                  echo '/dist/images/icons/ndo_round.png';
+                }        
+                // for echoing google picture directly
+                // echo $token_data['picture'] 
+                ?>"/>
               <span class="mdl-layout-subtitle menumail"> <?php echo $token_data['email'] ?>
                 <i class="fas fa-angle-down menuangle"></i>
               </span>              
@@ -576,6 +590,33 @@ if (isset($_POST['endlabel'])) {
             $('.innerHide1').hide(500);
           });
 
+          // $(document).on('load', function() {
+
+          //   var myTabs = document.getElementsByClassName('mdl-layout__tab');
+          //   var mdlTabs = myTabs.MaterialTabs;
+            
+          //   var hash = location.hash.substr(1);
+          //   if (hash = 'firmenTab') {
+          //     $('#firmenTab').addClass('is-active');
+          //     mdlTabs.setTab(0);
+          //     $('#firmenTab').click()
+          //   } else if (hash = 'lieferantenTab') {
+          //     $('#lieferantenTab').addClass('is-active');
+          //     mdlTabs.setTab(1);
+          //     $('#lieferantenTab').click()
+          //   } else if (hash = 'kundenTab') {
+          //     $('#kundenTab').addClass('is-active');
+          //     mdlTabs.setTab(2);
+          //     $('#kundenTab').click()
+          //   }
+          // })
+
+          // var myTabs = document.getElementsByClassName('mdl-layout__tab');
+          // var mdlTabs = myTabs.MaterialTabs;
+          // mdlTabs.setTab(1);
+
+
+
           /*
            *
            * Add Firmen
@@ -606,6 +647,9 @@ if (isset($_POST['endlabel'])) {
                               timeout: 2000
                             };
                             snackbarContainer.MaterialSnackbar.showSnackbar(sbData);
+                            setTimeout(function() {
+                              window.location.href = 'https://maintenance.newtelco.de/settings#firmenTab'
+                            },1000);
                           } 
                         },
                         error: function (err) {
@@ -639,6 +683,9 @@ if (isset($_POST['endlabel'])) {
                   };
                   $('.close1').click();
                   snackbarContainer.MaterialSnackbar.showSnackbar(sbData);
+                  setTimeout(function() {
+                    window.location.href = 'https://maintenance.newtelco.de/settings#lieferantenTab'
+                  },1000);
                 } 
               },
               error: function (err) {
@@ -661,7 +708,7 @@ if (isset($_POST['endlabel'])) {
 
             if ($('#prot0').is(':checked') == 'true') {
               var kAdd_p = '0';
-            } else {
+            } else if ($('#prot1').is(':checked') == 'true') {
               var kAdd_p = '1';
             }
             
@@ -676,6 +723,9 @@ if (isset($_POST['endlabel'])) {
                   };
                   $('.close3').click();
                   snackbarContainer.MaterialSnackbar.showSnackbar(sbData);
+                  setTimeout(function() {
+                    window.location.href = 'https://maintenance.newtelco.de/settings#kundenTab'
+                  },1000);
                 } 
               },
               error: function (err) {

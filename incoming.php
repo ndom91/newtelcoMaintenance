@@ -60,7 +60,7 @@ global $dbhandle;
 
     <main class="mdl-layout__content">
         <div id="loading">
-          <img id="loading-image" src="dist/images/Preloader_4.gif" alt="Loading..." />
+          <img id="loading-image" src="dist/images/Preloader_bobbleHead.gif" alt="Loading..." />
         </div>
         <div class="mdl-grid">
           <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
@@ -210,7 +210,7 @@ global $dbhandle;
               $parts = $payload->getParts();
               foreach ($parts  as $part) {
                 
-                if($part['body'] && $part['mimeType'] == 'text/plain' ||  $part['mimeType'] == 'text/html') {
+                if($part['body'] && $part['mimeType'] == 'text/html') {
                     $FOUND_BODY = decodeBody($part['body']->data);
                     break;
                 }
@@ -222,7 +222,7 @@ global $dbhandle;
                 if($part['parts'] && !$FOUND_BODY) {
                   foreach ($part['parts'] as $p) {
                     // replace 'text/html' by 'text/plain' if you prefer
-                    if($p['body'] && $p['mimeType'] == 'text/plain' ||  $p['mimeType'] == 'text/html') {
+                    if($p['body'] &&  $p['mimeType'] == 'text/html') {
                       $FOUND_BODY = decodeBody($p['body']->data);
                       break;
                     }
@@ -241,6 +241,32 @@ global $dbhandle;
                         $FOUND_BODY = decodeBody($p2['body']->data);
                         break;
                       }
+                    }
+                  }
+                }
+                if($FOUND_BODY) {
+                  break;
+                }
+              }
+            } if(!$FOUND_BODY) {
+              $parts = $payload->getParts();
+              foreach ($parts  as $part) {
+                
+                if($part['body'] && $part['mimeType'] == 'text/plain') {
+                    $FOUND_BODY = decodeBody($part['body']->data);
+                    break;
+                }
+              }
+            } if(!$FOUND_BODY) {
+              foreach ($parts  as $part) {
+                // Last try: if we didn't find the body in the first parts,
+                // let's loop into the parts of the parts (as @Tholle suggested).
+                if($part['parts'] && !$FOUND_BODY) {
+                  foreach ($part['parts'] as $p) {
+                    // replace 'text/html' by 'text/plain' if you prefer
+                    if($p['body'] &&  $p['mimeType'] == 'text/plain') {
+                      $FOUND_BODY = decodeBody($p['body']->data);
+                      break;
                     }
                   }
                 }

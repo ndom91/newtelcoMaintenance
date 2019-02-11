@@ -68,7 +68,7 @@ global $dbhandle;
 
         <main class="mdl-layout__content">
           <div id="loading">
-            <img id="loading-image" src="dist/images/Preloader_4.gif" alt="Loading..." />
+            <img id="loading-image" src="dist/images/Preloader_bobbleHead.gif" alt="Loading..." />
           </div>
             <div class="mdl-grid">
               <div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
@@ -280,7 +280,7 @@ global $dbhandle;
                       { responsivePriority: 5, targets: [ 7, 8, 12 ] },
                       { responsivePriority: 10, targets: [ 11, 9, 10, 14 ] },
                       {
-                          targets: [ 0, 1, 2, 3, 4, 5, 6, 10, 11, 13, 15 ],
+                          targets: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
                           className: 'mdl-data-table__cell--non-numeric'
                       }
                   ]

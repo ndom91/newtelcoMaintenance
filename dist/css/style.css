@@ -56,8 +56,8 @@ table {
 
 #loading-image {
   position: absolute;
-  top: 20%;
-  left: 30%;
+  top: 30%;
+  left: 35%;
   height: 50%;
   width: auto;
   z-index: 100;
@@ -118,6 +118,146 @@ table {
   flex: 1;
   flex-grow: 5;
 }
+
+/* 3D Sign - Modal Animation */
+
+
+.container {
+	/* background: #e74c3c; */
+	min-height: 90%;
+}
+
+.md-modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 50%;
+	max-width: 630px;
+	min-width: 320px;
+	height: auto;
+	z-index: 2000;
+	visibility: hidden;
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	backface-visibility: hidden;
+	-webkit-transform: translateX(-50%) translateY(-50%);
+	-moz-transform: translateX(-50%) translateY(-50%);
+	-ms-transform: translateX(-50%) translateY(-50%);
+	transform: translateX(-50%) translateY(-50%);
+}
+
+.md-show {
+	visibility: visible;
+}
+
+.md-overlay {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	visibility: hidden;
+	top: 0;
+	left: 0;
+	z-index: 1000;
+	opacity: 0;
+	background: rgba(103,178,70,0.4);
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+  transition: all 0.3s;
+  /* filter: blur(5px); */
+}
+.blur4 {
+  filter: blur(2px);
+}
+.md-show ~ .md-overlay {
+	opacity: 1;
+	visibility: visible;
+}
+
+.md-close {
+  right: 20px;
+  position: absolute !important;
+  bottom: 20px;
+}
+
+/* Content styles */
+.md-content {
+	color: #fff;
+	background: #67B246;
+	position: relative;
+	border-radius: 3px;
+	margin: 0 auto;
+}
+
+.md-content h3 {
+  height: 40px;
+	margin: 0;
+	padding: 0.4em;
+	text-align: center;
+	font-size: 2.4em;
+	font-weight: 300;
+	opacity: 0.8;
+	background: rgba(0,0,0,0.1);
+	border-radius: 3px 3px 0 0;
+}
+
+.md-content > div {
+	padding: 15px 40px 30px;
+	margin: 0;
+	font-weight: 300;
+	font-size: 1.15em;
+}
+
+.md-content > div p {
+	margin: 0;
+	padding: 10px 0;
+}
+
+.md-content > div ul {
+	margin: 0;
+	padding: 0 0 30px 20px;
+}
+
+.md-content > div ul li {
+	padding: 5px 0;
+}
+
+.md-content button {
+	display: block;
+	margin: 0 auto;
+	font-size: 0.8em;
+}
+.md-effect-10.md-modal {
+	-webkit-perspective: 1300px;
+	-moz-perspective: 1300px;
+	perspective: 1300px;
+}
+
+.md-effect-10 .md-content {
+	-webkit-transform-style: preserve-3d;
+	-moz-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-transform: rotateX(-60deg);
+	-moz-transform: rotateX(-60deg);
+	-ms-transform: rotateX(-60deg);
+	transform: rotateX(-60deg);
+	-webkit-transform-origin: 50% 0;
+	-moz-transform-origin: 50% 0;
+	transform-origin: 50% 0;
+	opacity: 0;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+.md-show.md-effect-10 .md-content {
+	-webkit-transform: rotateX(0deg);
+	-moz-transform: rotateX(0deg);
+	-ms-transform: rotateX(0deg);
+	transform: rotateX(0deg);
+	opacity: 1;
+}
+
+/* modal animation END */
 
 /* chart.js */
 
@@ -188,11 +328,44 @@ base-chart.chart {
   cursor: pointer !important;
 }
 
+/* maintenance rank */
+
+.fwaRank, .aliRank, .sstRank {
+  /* display: none; */
+}
+
+.fwaRank {
+  filter: drop-shadow(1px 1px 2px #9146B2) invert(100%)  saturate(100%) opacity(90%);
+  width: 10vw;
+  position: absolute;
+  z-index: -100;
+  margin-top: 107px;
+  left: 15%;
+}
+.aliRank {
+  filter: drop-shadow(1px 1px 2px #06F3A0) invert(100%)  saturate(50%) opacity(90%);
+  width: 10vw;
+  position: absolute;
+  z-index: -100;
+  margin-top: 107px;
+  left: 15%;
+  opacity: 0.6;
+}
+.sstRank {
+  filter: drop-shadow(1px 1px 2px #DB8B23) invert(100%)  saturate(100%) opacity(90%);
+  width: 10vw;
+  position: absolute;
+  z-index: -100;
+  margin-top: 107px;
+  left: 15%;
+  opacity: 0.6;
+}
+
 .unreadLabel1 {
   width: 100%;
   z-index: 1;
   float: left;
-  font-size: 2.4vw;
+  font-size: 2.7vw;
   font-weight: 100;
   line-height: 0.9;
   text-align: left;
@@ -204,7 +377,7 @@ base-chart.chart {
 
 .unreadLabel2 {
   font-weight: 100;
-  font-size: 2.1vw;
+  font-size: 2.4vw;
   line-height: 0.9;
   text-align: left;
   color: #a0a0a0;
@@ -744,8 +917,12 @@ textarea.mdl-textfield__input {
    top: 20px;
 }
 
-.select2-container {
-    width: 100% !important;
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+  border: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  background-color: rgba(103,172,70,0.3) !important;
 }
 
 #sendMailbtn {
@@ -812,10 +989,13 @@ textarea.mdl-textfield__input {
 
 /* Select Mail Modal */
 
+.mailHider {
+  display: none;
+}
+
 .mailDialog1 {
-  width: 800px;
-   height: calc(100vh - 126px);
-   overflow-y:scroll;
+  width: 100%;
+  height: 100%;
 }
 .labelSelectHeader {
   height: 30px;
@@ -887,8 +1067,8 @@ textarea.mdl-textfield__input {
   margin-top: 20px;  */
   top: 150px;
   position: absolute;
-  width: 92% !important;
-  height: 70% !important;
+  width: 100%;
+  height: 100%;
   z-index: 100 !important;
 }
 
@@ -1158,8 +1338,131 @@ tr.strikeout td:before {
     margin-top: -40px !important;
     right: -20px;
   }
+  .demo-card-wide2 {
+    width: 80% !important;
+  }
+  .unreadLabel1 {
+    font-size: 11.4vw;
+  }
+  .unreadLabel2 {
+    font-size: 11.1vw;
+  }
+  .unreadCounter {
+    font-size: 35.4vw;
+    margin-left: 39.5vw;
+    margin-top: 4vh;
+    float: unset !important;
+  }
+  .mdl-cell--2-5-col:last-of-type {
+    margin: 8px 0px 8px 8px !important;
+  }
+  .col {
+    display: inherit !important;
+  }
+  .menuSubLabel2 {
+    display: inherit !important;
+  }
+  .helperBG {
+    display: none !important;
+  }
+  #loading-image {
+    top: 30%;
+    left: 7.5%;
+    height: 50%;
+  }
+  #completedChart {
+    width: 95% !important;
+    height: 210px !important;
+  }
+  .aliCounter, .fwaCounter, .sstCounter {
+    margin-top: -92px;
+    font-size: 92px;
+  }
+  .nameLabel {
+    font-size: 56px;
+    width: 100% !important;
+    text-align: center;
+    left: unset;
+    right: unset;
+    margin: unset;
+  }
+  .bottomChartLabel {
+    font-weight: 500 !important;
+  }
+  .mdl-layout-title {
+    font-size: 27px !important;
+  }
+  .mdl-layout-title2 > img {
+    zoom: 1.25;
+  }
+  .con {
+    margin: 47px auto;
+  }
+  .mdl-grid:nth-of-type(2){
+    padding: 0 !important;
+  }
+  .mdl-grid:first-of-type {
+    margin: 0 !important;
+  }
+  .mdl-data-table td {
+    padding: 5px 5px !important;
+  }
+  .selectGoogleLabel {
+    font-size: 40px !important;
+  }
+  .demo-card-square.mdl-card {
+    width: 95% !important;
+  }
+  .labelSelectLabelSettings {
+    line-height: 30px !important;
+  }
+  .settingWrapper > .mdl-cell {
+    line-height: 30px !important;
+    text-align: left;
+  }
+  .innerHide {
+    display: none !important;
+  }
+  .selectLabelSettings {
+    left: -30px !important;
+  }
+  table.dataTable.dtr-inline.collapsed>tbody>tr[role=row]>td:first-child:before, table.dataTable.dtr-inline.collapsed>tbody>tr[role=row]>th:first-child:before {
+    margin-top: -7px !important;
+  }
+  .demo-card-wide.mdl-card, .demo-card-wide3.mdl-card {
+    min-width: unset !important;
+  }
+  .mdl-card__supporting-text {
+    padding: 5px !important;
+  }
+  label.mdl-switch {
+    margin-left: 55px !important;
+  }
+  .notesLabel1 {
+    margin-left: 340px;
+  }
+  .mdl-textfield__input {
+    font-size: 13px !important;
+  }
+  .select2-container--default {
+    font-size: 13px !important;
+  }
+  .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    font-size: 13px !important;
+  }
+  .mdl-selectfield__box .mdl-selectfield__box-value {
+    font-size: 13px !important;
+  }
 }
 
+#canvas {
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
 
 /* Menu */
 
@@ -1349,8 +1652,8 @@ tr.strikeout td:before {
   overflow-y: unset !important;
 }
 .helperText {
-  color:rgba(61,106,42,0.6);
-  font-size: 14px;
+  color:#fff;
+  font-size: 16px;
 }
 .helperTitle {
   vertical-align: top;
@@ -1366,9 +1669,15 @@ tr.strikeout td:before {
 }
 .helperTable {
   margin-top: 2px;
-  color:rgba(61,106,42,0.5);
-  font-size: 12px;
+  color:#fff;
+  font-size: 18px;
   cursor: default;
+  text-align: left;
+}
+.shortcutText {
+  position:absolute;
+  bottom:10px;
+  right:52px;
 }
 /* Settings */
 

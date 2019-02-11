@@ -44,7 +44,7 @@ require('authenticate_google.php');
       ?>
         <main class="mdl-layout__content">
           <div id="loading">
-            <img id="loading-image" src="dist/images/Preloader_4.gif" alt="Loading..." />
+            <img id="loading-image" src="dist/images/Preloader_bobbleHead.gif" alt="Loading..." />
           </div>
           <div style="margin: 0; padding: 0; height: 100%; overflow: hidden;">
             <div style="position:absolute; left: 0; right: 0; bottom: 0; top: 0px; ">

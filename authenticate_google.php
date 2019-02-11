@@ -150,10 +150,11 @@ if(isset($_COOKIE['rtoken'])) {
         //var_dump($accessToken);
         //$client->setAccessToken($_SESSION['access_token']);
         $token_data = $client->verifyIdToken();
+        // $mail = $token_data['email'];
       }
     }
 }
-
+// var_dump($token_data['email']);
 if($client->isAccessTokenExpired() && isset($rtoken)){
   $rtoken_insertquery = mysqli_query($dbhandle, "UPDATE authentication set refreshToken = '$rtoken' where email like '$tokenemail'");
 }
@@ -166,7 +167,7 @@ if($client->isAccessTokenExpired() && isset($rtoken)){
 //   setcookie("mail1",$token_data['email']);
 // }
 
-if ($_SESSION['access_token']['id_token'] === NULL):
+if (!isset($_SESSION['access_token']['id_token'])):
   unset($_SESSION['access_token']);
 ?>
 <!DOCTYPE html>

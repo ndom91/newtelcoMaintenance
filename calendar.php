@@ -46,7 +46,7 @@ require('authenticate_google.php');
 
         <main class="mdl-layout__content">
           <div id="loading">
-            <img id="loading-image" src="dist/images/Preloader_4.gif" alt="Loading..." />
+            <img id="loading-image" src="dist/images/Preloader_bobbleHead.gif" alt="Loading..." />
           </div>
             <div class="mdl-grid">
               <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>

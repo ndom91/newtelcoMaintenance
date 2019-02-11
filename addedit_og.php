@@ -35,10 +35,6 @@ global $dbhandle;
   <!-- flatpickr -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/flatpickr.min.js"></script>
 
-  <!-- jsPanel -->
-  <script rel="preload" as="script" type="text/javascript" src="dist/js/jspanel.js"></script>
-
-
   <!-- materialize (multiselect) -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/materialize.min.js"></script>
 
@@ -91,24 +87,18 @@ global $dbhandle;
             $otitlestring = 'Add';
             $omaileingang = '';
             $oreceivedmail = '';
-            $newSDT = '';
-            $newEDT = '';
             $olieferant = '';
             $olieferantID = '';
             $oderenCIDid = '';
             $obearbeitetvon = '';
             $omaintenancedate = '';
-            $cancelled = '';
             $ostartdatetime = '';
             $oenddatetime = '';
             $opostponed = '';
             $onotes = '';
             $omailSentAt = '';
-            $oupdatedBy = '';
-            $omaintid = '';
             $ocal = '';
             $odone = '';
-            $activeID = '';
             $update = '0';
 
 
@@ -289,26 +279,25 @@ global $dbhandle;
                       }
                     }
                     $msgArray[] = $attachmentParts;
-                  } 
-                  // if(!$FOUND_BODY) {
-                  //   foreach ($parts  as $part) {
-                  //     // Last try: if we didn't find the body in the first parts,
-                  //     // let's loop into the parts of the parts (as @Tholle suggested).
-                  //     if($part['parts'] && !$FOUND_BODY) {
-                  //       foreach ($part['parts'] as $p) {
-                  //         // replace 'text/html' by 'text/plain' if you prefer
-                  //         if($p['mimeType'] === 'text/plain' && $p['body']) {
-                  //           $FOUND_BODY = decodeBody($p['body']->data);
-                  //           break;
-                  //         }
-                  //       }
-                  //     }
-                  //     if($FOUND_BODY) {
-                  //       break;
-                  //     }
-                  //   }
-                  // }
-                  // $msgArray[] = $FOUND_BODY;
+                  } if(!$FOUND_BODY) {
+                    foreach ($parts  as $part) {
+                      // Last try: if we didn't find the body in the first parts,
+                      // let's loop into the parts of the parts (as @Tholle suggested).
+                      if($part['parts'] && !$FOUND_BODY) {
+                        foreach ($part['parts'] as $p) {
+                          // replace 'text/html' by 'text/plain' if you prefer
+                          if($p['mimeType'] === 'text/plain' && $p['body']) {
+                            $FOUND_BODY = decodeBody($p['body']->data);
+                            break;
+                          }
+                        }
+                      }
+                      if($FOUND_BODY) {
+                        break;
+                      }
+                    }
+                  }
+                  $msgArray[] = $FOUND_BODY;
 
                 } catch (Exception $e) {
                     //echo $e->getMessage();
@@ -339,17 +328,10 @@ global $dbhandle;
                   }
                 }
 
-                // for self-created maintenances without incoming mail
-                // if (isnull($olieferantDomain)) {
-                //   $olieferantDomain = ' ';
-                //   $msubject = ' ';
-                //   $mfrom = ' ';
-                // }
-
                 $msubject = $msgInfo[2];
                 $mfrom = $msgInfo[3];
                 $mdate = $msgInfo[4];
-                // $mbody = $msgInfo[6];
+                $mbody = $msgInfo[6];
 
               }
 
@@ -379,8 +361,6 @@ global $dbhandle;
                 unset($workers[$key]);
                 $workers = array_values($workers);
               }
-
-              
 
             ?>
 
@@ -425,78 +405,78 @@ global $dbhandle;
                   </div>'; } ?>
                  </div>
                </div>
+               <div class="mdl-cell mdl-cell--6-col">
+               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" data-val="<?php echo $olieferantID ?>" value="<?php echo $olieferant ?>" id="company">
+                <img class ="lieferantFavicon" src='https://www.google.com/s2/favicons?domain=<?php echo $olieferantDomain ?>'>
+                <label class="mdl-textfield__label" for="company">Lieferant</label>
+              </div>
+              </div>
               <div class="mdl-cell mdl-cell--6-col">
-                <label class="mdl-selectfield--floating-label">Company</label><br>
-                <select id="company" name="company" class="company" style="width:80% !important;">
-                  <option selected value="<?php echo $olieferantID ?>"><?php echo $olieferant ?><img class ="lieferantFavicon" src='https://www.google.com/s2/favicons?domain=<?php echo $olieferantDomain ?>'></option>
+
+              <div>
+                <label class="mdl-selectfield--floating-label" >Deren CID</label>
+                <div class="multiselect-wrapper">
+                <select id="dcid3" multiple class="select_all">                  
                   <?php
-                    $aeCompanyQ =  mysqli_query($dbhandle, "SELECT companies.id, companies.name FROM companies;") or die(mysqli_error($aeCompanyQ));
-                    while ($row = mysqli_fetch_row($aeCompanyQ)) {
-                      if ($row[0] != $olieferantID) {
-                        echo '<option value="' . $row[0] . '">' . $row[1] . '</option>';
+                      while ($row = mysqli_fetch_row($derenCIDQ)) {
+                        if (strpos($oderenCIDid, ',') !== false) {
+                          // comma in string, now split
+                          $dCIDarray = explode(',', $oderenCIDid);
+                          foreach ($dCIDarray as $value) {
+                            if ($row[2] == $value) {
+                              echo '<option selected value="' . $value . '">' . $row[1] . '</option>';
+                            } 
+                          }
+                          if (!in_array($row[2],$dCIDarray)) {
+                            echo '<option value="' . $row[2] . '">' . $row[1] . '</option>';
+                          }
+                        } else {
+                          if ((isset($_GET['mid'])) && ($row[2] == $oderenCIDid)) {
+                            echo '<option selected value="' . $row[2] . '">' . $row[1] . '</option>';
+                          } else {
+                            echo '<option value="' . $row[2] . '">' . $row[1] . '</option>';
+                          }
+                        }
                       }
-                    }
-                  ?>
-                  <img class ="lieferantFavicon" src='https://www.google.com/s2/favicons?domain=<?php echo $olieferantDomain ?>'>
-                </select>
-                <span class="mdl-selectfield__error">Select a Company</span>
+                    ?>
+                </select>     
+
+                </div>         
+              </div>  
+                  <script>
+                    var multiValueNoType = $("select.multiValueNoTypeInParameter#parameterRealValue" + i);
+
+                      if(multiValueNoType.length > 0) {
+                          multiValueNoType.html(options).select2();
+                          var multipleVals = (defaultValue.v).split(",");
+                          //defaultValue.v has comma seperated values of state codes
+                          var simpleArr = [];
+                          for(var multiCounter=0; multiCounter < multipleVals.length; multiCounter++) {
+                              // simpleArr.push(multipleVals[multiCounter]);
+                              simpleArr.push({id: multipleVals[multiCounter], text: multipleVals[multiCounter]});
+                          }
+
+                          multiValueNoType.select2().select2("val", simpleArr );
+                      }
+                    // $(document).ready(function() {
+                    //     // $('select').val([1]);
+                    //     $('#dcid3').formSelect();
+                    //     $('select.select_all').siblings('ul').prepend('<li id=sm_select_all><span>Select All</span></li>');
+                    //     $('li#sm_select_all').on('click', function () {
+                    //       var jq_elem = $(this), 
+                    //           jq_elem_span = jq_elem.find('span'),
+                    //           select_all = jq_elem_span.text() == 'Select All',
+                    //           set_text = select_all ? 'Select None' : 'Select All';
+                    //       jq_elem_span.text(set_text);
+                    //       jq_elem.siblings('li').filter(function() {
+                    //         return $(this).find('input').prop('checked') != select_all;
+                    //       }).click();
+                    //     });
+                    // })
+                  </script>
               </div>
-              <div class="mdl-cell mdl-cell--6-col">
-                <label class="mdl-selectfield--floating-label" >Deren CID</label><br>
-                  <select style="width:80% !important;" class="dcid3" id="dcid3" name="dcid3" multiple></select>    
-                <span class="mdl-selectfield__error">Select a CID</span> 
-              <script>
-                $(document).ready(function() {
 
-                  var dCIDQ = $("#company").val();
-                  $.ajax({
-                        type: 'GET',
-                        url: 'api?aedCIDc='+dCIDQ
-                    }).then(function (data) {
-                      $('.dcid3').select2({
-                        multiple: true,
-                        placeholder: 'Select CID',
-                        data: data,
-                        debug: true
-                      });
-                    });
-                  
-                    $('.company').select2();
-                });
-
-                  setTimeout(function() {
-                    var mid = $('#activeMID').val();
-                    var dcidSelect = $('.dcid3');
-                    $.ajax({
-                        type: 'GET',
-                        url: 'api?aedCIDc2='+mid
-                    }).then(function (data) {
-
-                      var IDs1 = data[0].id;
-                      // console.log(IDs1);
-                      var idarray = IDs1.split(",");
-                      // console.log(idarray);
-                      $('.dcid3').select2().val(idarray).trigger('change');
-                    })
-                  },1000);
-                  
-                $('#company').on('change', function() {
-                  $('.dcid3').val(null);
-                  $(".dcid3 option").remove();
-                  $('.dcid3').select2('destroy');
-                  
-                  var dCIDQ = $("#company").val();
-                  $(function () {
-                    $.getJSON( "api?aedCIDc="+dCIDQ, function(respond) {
-                        $('.dcid3').select2({
-                            multiple: true,
-                            data: respond
-                        });
-                    });
-                  });
-                });
-              </script>
-              </div>
               <div class="mdl-cell mdl-cell--6-col">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr">
                     <input type="text" id="sdt" class="mdl-textfield__input"  value="<?php echo $newSDT ?>" data-input>
@@ -530,13 +510,9 @@ global $dbhandle;
                 </div>
               </div>
               <div class="mdl-cell mdl-cell--6-col">
-                <!-- <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  <input class="mdl-textfield__input" type="text" value="<?php echo $opostponed ?>" id="pponed">
-                  <label class="mdl-textfield__label" for="pponed">Postponed</label>
-                </div> -->
-                <label style="display: inline; margin-right: 5px;margin-left: 245px;" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-3">
+                <label style="display: inline; margin-right: 5px; margin-left: 240px;" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-3">
                   <span style="color: #6e6e6e;line-height: 44px !important;top: 18px; margin-left: -135px; color:#67B246;" class="mdl-switch__label">Cancelled</span>
-                  <input type="checkbox" id="switch-3"class="mdl-switch__input" <?php echo $cancelled ?>>
+                  <input type="checkbox" id="switch-3" class="mdl-switch__input" <?php echo $cancelled ?>>
                 </label>
               </div>
               <div style="margin-right: calc(12% - 32px) !important;" class="mdl-cell mdl-cell--12-col">
@@ -546,10 +522,11 @@ global $dbhandle;
                 </div>
               </div>
               <?php
-                $mailRecipientQ =  mysqli_query($dbhandle, "SELECT maintenanceRecipient FROM companies WHERE companies.name LIKE '$olieferant'") or die(mysqli_error($dbhandle));
+               $mailRecipientQ =  mysqli_query($dbhandle, "SELECT maintenanceRecipient FROM companies WHERE companies.name LIKE '$olieferant'") or die(mysqli_error($dbhandle));
                 if ($row = mysqli_fetch_row($mailRecipientQ)) {
                   $mailrecipient = $row[0];
                 }
+
               ?>
               <script>
                 function openInNewTab(url) {
@@ -580,7 +557,7 @@ global $dbhandle;
             <div class="mdl-card__actions mdl-card--border">
               <div style="display: inline;">
                 <label style="display: inline; margin-right: 5px; float: right;width: 150px; line-height: 2.8em;" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-2">
-                  <span style="color: #6e6e6e;line-height: 44px !important;" id="confettiSwitch" class="mdl-switch__label">Completed</span>
+                  <span style="color: #6e6e6e;line-height: 44px !important;" class="mdl-switch__label">Completed</span>
                   <input type="checkbox" id="switch-2" class="mdl-switch__input" <?php echo $odone ?>>
                 </label>
                 <div class="mdl-layout-spacer"></div>
@@ -593,26 +570,30 @@ global $dbhandle;
               </div>
             </div>
           </div>
-          <div class="mailHider">
           <?php
-          echo '<div id="mailDialog" class="mailDialog1" style="">
+          echo '<dialog id="mailDialog" class="mdl-dialog mailDialog1" style="">
                 <div class="mailcSelectHeader">
-                <h6 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $msubject . '</h6><br>
-                <h6 class="sublabelSelectLabel"><font color="#67B246">From:</font> ' . $mfrom . '</h6><br>
-                <h6 class="sublabelSelectLabel"><font color="#67B246">Date:</font> ' . $mdate . '</h6>';
+                  <h6 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $msubject . '</h6><br>
+                  <h6 class="sublabelSelectLabel"><font color="#67B246">From:</font> ' . $mfrom . '</h6><br>
+                  <h6 class="sublabelSelectLabel"><font color="#67B246">Date:</font> ' . $mdate . '</h6>
+                  <button tabindex="-1" type="button" class="mailcSelectClose2 mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close1">
+                    <i class="material-icons">close</i>
+                  </button>';
+
+
 
                 $attachmentParts2 = $msgInfo[5];
-                if ($attachmentParts2[0][1] !== '') {
-                  echo '<div style="margin-top:-30px;float:right;text-align:right;z-index:1000;position:relative;">
+                if ($attachmentParts2 !== '') {
+                  echo '<div style="float:right;text-align:right;z-index:1000;position:relative;">
                   <font style="color:#4c4c4c">Attachments:</font><br>';
-                    foreach ($attachmentParts2 as $part) {
-                      echo '<a class="attachmentLink" target="_blank" href="attachments?messageId='.$oreceivedmail.'&part_id='.$part[0].'">'.$part[1].'</a><br>';
+                  foreach ($attachmentParts2 as $part) {
+                    echo '<a class="attachmentLink" target="_blank" href="attachments?messageId='.$oreceivedmail.'&part_id='.$part[0].'">'.$part[1].'</a><br>';
                     }
-                  } else {
-                    echo '<div style="margin-top:-30px;float:right;text-align:right;z-index:1000;position:relative;">
-                    <font style="color:#4c4c4c"></font><br>';
+
                   }
-                 echo '</div><br><br></div>
+                  echo '</div>';
+                
+                 echo '<br><br></div>
                  <div class="mdl-dialog__content">
                  <p>
                  <div class="mailcHR">NT</div>
@@ -625,9 +606,20 @@ global $dbhandle;
                     </div>
                   </p>
                 </div>
-              </div>';
+              </dialog>';
             ?>
-            </div>
+          </div>
+          <div id="sbMExists" class="mdl-js-snackbar mdl-snackbar">
+            <div class="mdl-snackbar__text"></div>
+            <button class="mdl-snackbar__action" type="button"></button>
+          </div>
+          <div id="sbMAS" class="mdl-js-snackbar mdl-snackbar">
+            <div class="mdl-snackbar__text"></div>
+            <button class="mdl-snackbar__action" type="button"></button>
+          </div>
+          <div id="sbUpdated" class="mdl-js-snackbar mdl-snackbar">
+            <div class="mdl-snackbar__text"></div>
+            <button class="mdl-snackbar__action" type="button"></button>
           </div>
           <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
             <div id="kundenCard" class="demo-card-wide3 mdl-card mdl-shadow--2dp hidden">
@@ -661,11 +653,6 @@ global $dbhandle;
               </div>
             </div>
           </div>
-        </div>
-
-        <div id="snackbarAddedit" class="mdl-js-snackbar mdl-snackbar">
-          <div class="mdl-snackbar__text"></div>
-          <button class="mdl-snackbar__action" type="button"></button>
         </div>
 
         <dialog id="xlsDialog" class="mdl-dialog">
@@ -723,41 +710,6 @@ $('#btnShowSent').click(function(){
 
 $('#addCalbtn').click(function(){
 
-  // ajax save when making cal 
-  
-  var activeID = $('#activeMID').val();
-  if($('#switch-2:checked').val() == 'on') {
-    var odone = '1';
-    const button = document.querySelector("#confettiSwitch");
-    confetti(button);
-  } else {
-    var odone = '0';
-  }
-  var mailSentAt = $('#mailSentAt').val();
-  var rmail = $('#rmail').val();
-
-  $.ajax({
-    type : "POST",
-    url : "api?doneEvent=1&d="+odone+"&msa="+mailSentAt+"&id="+activeID+"&gid="+rmail,
-    cache : "false",
-    dataType: "json",
-    success: function (data) {
-      if (data.updated === 1){
-        var snackbarContainer2 = document.querySelector('#snackbarAddedit');
-        var dataME3 = {
-          message: 'Maintenance Status Saved',
-          timeout: 2000
-        };
-        snackbarContainer2.MaterialSnackbar.showSnackbar(dataME3);
-      } 
-    },
-    error: function (err) {
-      console.log('Error', err);
-    }
-  });
-
-  // create Calendar URL to click
-
   var calSDT = $('#sdt').val();
   var calSDTISO = moment(calSDT).toISOString().replace(/[^a-z0-9\s]/gi, '');
   var calSDTISO2 = calSDTISO.replace('000Z','Z');
@@ -767,27 +719,13 @@ $('#addCalbtn').click(function(){
   var calEDTISO2 = calEDTISO.replace('000Z','Z');
 
   var selectedDCID = $( "#dcid3 option:selected" ).text().trim();
-
-
-  var selectedDCIDAr = $('#dcid3').select2('data');
-  var selectedDCIDar2 = [];
-
-  for (var i = 0; i < Object.keys(selectedDCIDAr).length; i++) {
-    var dcidtext1 = selectedDCIDAr[i].text;
-    // console.log(dcidtext1);
-    selectedDCIDar2.push(dcidtext1);
-  }
-  var selectedDCIDjoin = selectedDCIDar2.join(', ').trim().replace(/\s/g, '%20');
-
-  // console.log(selectedDCIDjoin);
-
-  var selectedCompanyAr = $('#company').select2('data');
-  var selectedCompany = selectedCompanyAr[0].text;
+  var selectedCompany = $('#company').val();
 
   var activeID = $('#activeMID').val();
 
   table4 = $('#dataTable4').DataTable();
   var data = table4.row( $('tr') ).data();
+  // console.log('data: ' + data['kundenCID']);
 
   // concat all visible 'unsere CIDs' from kunden table aka selected 'deren CIDs'
   var kIDsconcat = table4
@@ -796,12 +734,10 @@ $('#addCalbtn').click(function(){
         .eq( 0 )      // Reduce the 2D array into a 1D array of data
         .sort()       // Sort data alphabetically
         .unique()     // Reduce to unique values
-        .join( ', ' )
-        .replace(/\s/g, '%20');
+        .join( ',' );
 
-  varCalLink = `http://www.google.com/calendar/event?action=TEMPLATE&dates=${calSDTISO2}%2F${calEDTISO2}&src=newtelco.de_hkp98ambbvctcn966gjj3c7dlo@group.calendar.google.com&text=Maintenance%20${selectedCompany}%20CID%20${kIDsconcat}&add=service@newtelco.de&details=Maintenance%20for%20<b>${selectedCompany}</b>%20on%20deren%20CID:%20"<b>${selectedDCIDjoin}</b>".<br><br>Affected%20Newtelco%20CIDs:%20<b>${kIDsconcat}</b><br><br>Source%20-%20<a href="https://maintenance.newtelco.de/addedit?mid=${activeID}">NT-M_${activeID}</a>&trp=false`;
-  console.log(varCalLink);
-  openInNewTab(varCalLink);
+
+  openInNewTab(`http://www.google.com/calendar/event?action=TEMPLATE&dates=${calSDTISO2}%2F${calEDTISO2}&src=newtelco.de_hkp98ambbvctcn966gjj3c7dlo@group.calendar.google.com&text=Maintenance%20${selectedCompany}%20CID%20${kIDsconcat}&add=service@newtelco.de&details=Maintenance%20for%20<b>${selectedCompany}</b>%20on%20deren%20CID:%20"<b>${selectedDCID}</b>".<br><br>Affected%20Newtelco%20CIDs:%20<b>${kIDsconcat}</b><br><br>Source%20-%20<a href="https://maintenance.newtelco.de/addedit?mid=${activeID}">NT-M_${activeID}</a>&trp=false`);
 });
 
 const _t = (s) => {
@@ -1001,28 +937,19 @@ document.querySelector("#timezoneSelector").dispatchEvent(event);
 // TODO: Check this on change event handler firing once per selected
 //       dCID onLoad. Making many unnecessary db calls!
 
-$('#dcid3').on('change', function (e) {
+$("#dcid3").change(function() {
+ 
   if ( $.fn.dataTable.isDataTable( '#dataTable4' ) ) {
       table3 = $('#dataTable4').DataTable();
       table3.destroy();
   }
 
-  // var data3 = $('#dcid3').val();
-  var data3 = $("#dcid3").find(":selected").val();
-
-  var selectedIDs = $("#dcid3").find(":selected");
-
-  var data4 = $("option:selected", this).map(function() {
-        return $(this).val();
-      }).toArray().join(", ");
-  
-  data4 = data4.trim();
-
+  var data3 = $('#dcid3').val();
   $('#kundenCard').addClass('display').removeClass('hidden');
   //filter by selected value on second column
   var table4 = $('#dataTable4').DataTable( {
     ajax: {
-      url: "api?dCID=" + data4,
+      url: "api?dCID=" + data3,
       dataSrc: ""
     },
     columns: [
@@ -1047,6 +974,9 @@ $('#dcid3').on('change', function (e) {
             targets: [ 1, 2, 3, 5 ],
             className: 'mdl-data-table__cell--non-numeric'
         },{
+            targets: [ 5 ],
+            className: 'mdl-typography--text-lowercase'
+        },{
             targets: [2], render: function (a, b, data, d) {
               if (data['protected'] == '0' ){
                 return 'Unprotected'
@@ -1054,24 +984,6 @@ $('#dcid3').on('change', function (e) {
                 return 'Protected';
               } else {
                 return data['protected'];
-              }
-            }
-        },{
-            targets: [1], render: function (a, b, data, d) {
-              return '<b>'+data['kundenCID']+'</b>';
-            }
-        },{
-            targets: [3], render: function (a, b, data, d) {
-              return '<b style="color:#67B246">'+data['name']+'</b>';
-            }
-        },{
-            targets: [5], render: function (a, b, data, d) {
-              if (data['maintenanceRecipient'] != '') {
-                // var mrLowercase = data['maintenanceRecipient'].toLowerCase();
-                // return mrLowercase;
-                return data['maintenanceRecipient'];
-              } else {
-                return data['maintenanceRecipient'];
               }
             }
         },{ responsivePriority: 1, targets: [ 0, 1, 3 ] }
@@ -1090,22 +1002,19 @@ $("#switch-2").click(function() {
   var activeID = $('#activeMID').val();
   if($('#switch-2:checked').val() == 'on') {
     var odone = '1';
-    const button = document.querySelector("#confettiSwitch");
-    confetti(button);
   } else {
     var odone = '0';
   }
   var mailSentAt = $('#mailSentAt').val();
-  var rmail = $('#rmail').val();
 
   $.ajax({
     type : "POST",
-    url : "api?doneEvent=1&d="+odone+"&msa="+mailSentAt+"&id="+activeID+"&gid="+rmail,
+    url : "api?doneEvent=1&d="+odone+"&msa="+mailSentAt+"&id="+activeID,
     cache : "false",
     dataType: "json",
     success: function (data) {
       if (data.updated === 1){
-        var snackbarContainer2 = document.querySelector('#snackbarAddedit');
+        var snackbarContainer2 = document.querySelector('#sbUpdated');
         var dataME3 = {
           message: 'Maintenance Status Saved',
           timeout: 2000
@@ -1122,8 +1031,6 @@ $("#switch-2").click(function() {
 /*********************
  * Save Button Event
  *********************/
-
-
 
 $('#btnSave').on('click', function(e) {
 
@@ -1191,8 +1098,8 @@ $('#btnSave').on('click', function(e) {
     "omaintid" : $('#maintid').val(),
     "omaileingang" : medtISO,
     "oreceivedmail" : $('#rmail').val(),
-    "olieferant" : $('#company option:selected').text(),
-    "olieferantid" : $("#company").val(),
+    "olieferant" : $("#company").val(),
+    "olieferantid" : $("#company").data('val'),
     "oderenCIDid" : dcid, 
     "obearbeitetvon" : $('#bearbeitet').val(),
     "omaintenancedate" : $('#mdt').val(),
@@ -1222,8 +1129,8 @@ $('#btnSave').on('click', function(e) {
     success : function(result1){
       var obj = JSON.stringify(result1);
 
-      var snackbarContainer = document.querySelector('#snackbarAddedit');
       if (result1.exist === 1) {
+        var snackbarContainer = document.querySelector('#sbMExists');
         var midval = $('#rmail').val();
         var handler = function(event) {
           var aeURL = 'https://maintenance.newtelco.de/addedit?update=1&gmid=' + midval
@@ -1237,23 +1144,21 @@ $('#btnSave').on('click', function(e) {
         };
         snackbarContainer.MaterialSnackbar.showSnackbar(dataME);
       } else if (result1.added === 1){
+         var snackbarContainer2 = document.querySelector('#sbMAS');
          var dataME2 = {
           message: 'Maintenance Successfully Saved',
           timeout: 2000
          };
-         snackbarContainer.MaterialSnackbar.showSnackbar(dataME2);
+         snackbarContainer2.MaterialSnackbar.showSnackbar(dataME2);
       } else if (result1.updated === 1){
+        var snackbarContainer2 = document.querySelector('#sbUpdated');
         var dataME3 = {
           message: 'Maintenance Successfully Updated',
           timeout: 2000
         };
-        snackbarContainer.MaterialSnackbar.showSnackbar(dataME3);
+        snackbarContainer2.MaterialSnackbar.showSnackbar(dataME3);
       } else {
-        var dataME4 = {
-          message: 'Invalid Response',
-          timeout: 2000
-        };
-        snackbarContainer.MaterialSnackbar.showSnackbar(dataME4);
+        alert('Invalid Response');
       }
       if (result1.updatedID != '') {
         var newID = result1.updatedID;
@@ -1272,55 +1177,20 @@ $('#btnSave').on('click', function(e) {
     $("#emailBodyFrame").attr('src',"msg/"+mailID+".html");
     $("#emailBodyFrame").attr('src', function ( i, val ) { return val; });
 
-    /*********************
-    *  Mail preview
-    *********************/
-
+    // Mail preview modal
+    var dialog = document.querySelector('#mailDialog');
     var showDialogButton = document.querySelector('#viewmailbtn');
-    // var dialog = document.querySelector('#mailDialog');
-    var dialog = $('#mailDialog').get(0).outerHTML;
-    
+    if (! dialog.showModal) {
+      dialogPolyfill.registerDialog(dialog);
+    }
     showDialogButton.addEventListener('click', function() {
-      // $('.mailDialog1').css('display','inherit');
-      jsPanel.create({
-          theme:       'rgba(66,66,66,.7)',
-          border: "3px solid",
-          borderRadius: 8,
-          closeOnEscape: true,
-          boxShadow: 4,
-          headerTitle: 'Mail Preview',
-          position:    'right-center -20 0',
-          contentSize: '48% 75%',
-          content:     dialog,
-          animateIn:    'animated fadeIn',
-          animateOut:   'animated zoomOut',
-          callback: function () {
-            this.content.style.padding = '20px';
-          }
-      });
-
-      OverlayScrollbars(document.getElementsByClassName("jsPanel-content"), {
-        className       : "os-theme-dark",
-        resize          : "vertical"
-      });
+      dialog.showModal();
     });
-    
-    // var dialog = document.querySelector('#mailDialog');
-    // var showDialogButton = document.querySelector('#viewmailbtn');
-    // if (! dialog.showModal) {
-    //   dialogPolyfill.registerDialog(dialog);
-    // }
-    // showDialogButton.addEventListener('click', function() {
-    //   dialog.showModal();
-    // });
-    // dialog.querySelector('.close1').addEventListener('click', function() {
-    //   dialog.close();
-    // });
+    dialog.querySelector('.close1').addEventListener('click', function() {
+      dialog.close();
+    });
 
-    /*********************
-    *  XLS Preview
-    *********************/
-
+      // xls(x) preview modal
     var dialog2 = document.querySelector('#xlsDialog');
     var showDialogButton2 = document.querySelectorAll('.attachmentLink');
     if (! dialog2.showModal) {
@@ -1404,33 +1274,11 @@ $('#btnSave').on('click', function(e) {
       table3 = $('#dataTable4').DataTable();
       var data = table3.row( $(this).parents('tr') ).data();
 
-      
-      // make sendmail work without having to reload after first save!
-      
-      // var mdtTZ = $('#timezoneSelector').val();
-
-      // var mSDT = $('#sdt').val();
-      // var mSDT = moment(mSDT).format('YYYY-MM-DD\THH:mm:ss');
-      // var zOffset = moment.tz(mdtTZ).format('Z');
-      // var tzConcat = mSDT.concat(zOffset);
-      // var sdtUTC = moment(tzConcat).utc().format();
-      // var mEDT = $('#edt').vmdtTZal();
-      // var mEDT = moment(mEDT).format('YYYY-MM-DD\THH:mm:ss');
-      // var tzConcat2 = mEDT.concat(zOffset);
-      // var edtUTC = moment(tzConcat2).utc().format();
-
-      // const event = new Event("change");
-      // document.querySelector("#timezoneSelector").value = "Europe/Amsterdam";
-      // document.querySelector("#timezoneSelector").dispatchEvent(event);
-
-
-
-
       var start = moment($('#sdt').val());
       var end = moment($('#edt').val());
 
-      var startTimeLabel = start.format("DD MMM YYYY HH:mm:SS");
-      var endTimeLabel = end.format("DD MMM YYYY HH:mm:SS");
+      var startLabel = start.format("DD MMM YYYY HH:mm:SS");
+      var endLabel = end.format("DD MMM YYYY HH:mm:SS");
 
       var tzSuffix = $("#timezoneSelector option:selected").text();
       var regExp = /\(([^)]+)\)/;
@@ -1442,13 +1290,13 @@ $('#btnSave').on('click', function(e) {
       // var d = moment.duration(ms);
       // var impactTime = d.format("mm");
 
-      openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?from=maintenance@newtelco.de&subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=​​​​<style>.grayText10{​​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:131px}.tdSizing2{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624px}</style><body style="​​padding:0;margin:0;​​​" class="grayText10"><div​​ ​style="​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266" class="grayText10"​​>Dear Colleagues,​​<p><span>We would like to inform you about planned work on the CID ​' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"> <tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span class="grayText10">' + startTimeLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr><tr> <td class="tdSizing"> <p style="margin-​​bottom:12.0pt"><span class="grayText10">Finish date and time:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span​​ class="grayText10">​​' + endTimeLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Impact:</span></p></td><td class="tdSizing2"> <p style="margi​​n-bottom:12.0pt;text-align:justify"><span>IMPACT</span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Location:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span class="grayText10">LOCATION</span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Reason:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span>REASON</span></p></td></tr></table> <p><span>We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span>If you have any questions feel free to contact us at maintenance@newtelco.de.</span></p>​​</body>​​<footer>​<style>.sig{font-family: Century Gothic, sans-serif;font-size: 9pt;color: #636266 !important;}b{color: #4ca702;}.gray{color: #636266 !important;}a{text-decoration: none;color: #636266 !important;}</style><div class="sig"><br><div>Best regards | Mit freundlichen Grüßen</div><br><div><b class="gray">Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b>|</b> Mainzer Landstr. 351-353 <b>|</b> 60326 Frankfurt a.M. <b>|</b> DE <br>www.newtelco.com <b>|</b> 24/7 NOC  49 69 75 00 27 30 ​​<b>|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" alt="" height="29" width="516"></div></div>​</footer>');
+      openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?from=maintenance@newtelco.de&subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=​​​​<style>.grayText10{​​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:131px}.tdSizing2{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624px}</style><body style="​​padding:0;margin:0;​​​" class="grayText10"><div​​ ​style="​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266" class="grayText10"​​>Dear Colleagues,​​<p><span>We would like to inform you about planned work on the CID ​' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"> <tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span class="grayText10">' + startLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr><tr> <td class="tdSizing"> <p style="margin-​​bottom:12.0pt"><span class="grayText10">Finish date and time:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span​​ class="grayText10">​​' + endLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Impact:</span></p></td><td class="tdSizing2"> <p style="margi​​n-bottom:12.0pt;text-align:justify"><span>[INSERT IMPACT HERE]</span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Location:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span class="grayText10">[INSERT LOCATION HERE]</span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Reason:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span>[INSERT REASON HERE]</span></p></td></tr></table> <p><span>We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span>If you have any questions feel free to contact us at maintenance@newtelco.de.</span></p>​​</body>​​<footer>​<style>.sig{font-family: Century Gothic, sans-serif;font-size: 9pt;color: #636266 !important;}b{color: #4ca702;}.gray{color: #636266 !important;}a{text-decoration: none;color: #636266 !important;}</style><div class="sig"><br><div>Best regards | Mit freundlichen Grüßen</div><br><div><b class="gray">Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b>|</b> Mainzer Landstr. 351-353 <b>|</b> 60326 Frankfurt a.M. <b>|</b> DE <br>www.newtelco.com <b>|</b> 24/7 NOC  49 69 75 00 27 30 ​​<b>|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" alt="" height="29" width="516"></div></div>​</footer>');
 
       var DateTime = luxon.DateTime;
       var now = DateTime.local().toFormat("y-MM-dd HH:mm");
       $("#mailSentAt").val(now);
-    });
-
+    } );
+ 
     /*************************************************************************************************
      *
      *   Gmail HTML Paste Extension:
@@ -1464,19 +1312,17 @@ $('#btnSave').on('click', function(e) {
 
     // Show 'Kunden Circuits' if loading with selected Deren CIDs
     
-    //if ($( "#dcid3 option:selected" ).text() != '') {
+    if ($( "#dcid3 option:selected" ).text() != '') {
+      $('#kundenCard').addClass('display').removeClass('hidden');
+      var value = $( "#dcid3 option:selected" ).val();
 
-    // $('#dcid3').on('change', function (e) {
-    //   $('#kundenCard').addClass('display').removeClass('hidden');
-    //   var value = $("#dcid3").find(":selected");
+      $('#dcid3')
+          .find('option:checked(' + value + ')')
+          .prop('selected',true)
+          .trigger('change');
 
-    //   // $('#dcid3')
-    //   //     .find('option:checked(' + value + ')')
-    //   //     .prop('selected',true)
-    //   //     .trigger('change');
-
-    //   // return false;
-    // });
+      return false;
+    }
 
     // Pretty Scrollbars
     $(".mdl-layout__content").overlayScrollbars({
@@ -1508,12 +1354,7 @@ $('#btnSave').on('click', function(e) {
 
 </script>
 </main>
-
-<canvas id="canvas"></canvas>
-    <!-- confetti.js -->
-    <script rel="preload" as="script" type="text/javascript" src="dist/js/confetti.js"></script>
     <?php echo file_get_contents("views/footer.html"); ?>
-
   </div>
 
   <!-- Google font-->
@@ -1524,12 +1365,6 @@ $('#btnSave').on('click', function(e) {
 
   <!-- select 2 css -->
   <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/select2.min.css" onload="this.rel='stylesheet'">
-
-  <!-- animate css -->
-  <link type="text/css" rel="stylesheet" href="dist/css/animate.css" />
-
-  <!-- jspanel -->
-  <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/jspanel.css" onload="this.rel='stylesheet'">
 
   <!-- flatpickr -->
   <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/flatpickr.min.css" onload="this.rel='stylesheet'">
@@ -1556,6 +1391,4 @@ $('#btnSave').on('click', function(e) {
   <!-- overlay scrollbars css -->
   <link type="text/css" href="dist/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
 </body>
-
-
 </html>

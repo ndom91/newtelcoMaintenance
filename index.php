@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <?php
 require('authenticate_google.php');
-
 ?>
+<!--
+Credits:
+Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
+
+-->
 <html lang="en">
 <head>
   <?php
@@ -34,6 +38,9 @@ require('authenticate_google.php');
     $service3 = new Google_Service_Gmail($clientService);
     $results3 = $service3->users_labels->get($user,$labelID);
     $results4 = $service3->users_labels->get($user,$gmailLabelAdd);
+  } else {
+    setcookie("label", 'Label_2565420896079443395', strtotime('+30 days'));
+    setcookie("endlabel", 'Label_2533604283317145521', strtotime('+30 days'));
   }
 
   ?>
@@ -56,6 +63,18 @@ require('authenticate_google.php');
 
   <!-- chart.js -->
   <script rel="preload" as="script" src="dist/js/chart.js"></script>
+
+  <!-- classie.js -->
+  <!-- <script rel="preload" as="script" src="dist/js/classie.js"></script> -->
+
+  <!-- modalEffects.js -->
+  <script rel="preload" as="script" src="dist/js/modalEffects.js"></script>
+
+  <!-- cssParser.js
+  <script rel="preload" as="script" src="dist/js/cssParser.js"></script>-->
+
+  <!-- modernizerCustom.js -->
+  <!-- <script rel="preload" as="script" src="dist/js/modernizrCustom.js"></script> --> 
 
   <!-- luxon -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/luxon.min.js"></script>
@@ -80,22 +99,22 @@ require('authenticate_google.php');
   //This is the "Offline copy of pages" service worker
 
   //Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
-  if (navigator.serviceWorker.controller) {
-    console.log('active service worker found, no need to register')
-  } else {
-    //Register the ServiceWorker
-    navigator.serviceWorker.register('sw.js', {
-      scope: './'
-    }).then(function(reg) {
-      console.log('Service worker has been registered for scope:'+ reg.scope);
-    });
-  }
+  // if (navigator.serviceWorker.controller) {
+  //   console.log('active service worker found, no need to register')
+  // } else {
+  //   //Register the ServiceWorker
+  //   navigator.serviceWorker.register('sw.js', {
+  //     scope: './'
+  //   }).then(function(reg) {
+  //     console.log('Service worker has been registered for scope:'+ reg.scope);
+  //   });
+  // }
 
 
   </script>
 </head>
 <body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header ">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
       <?php
       ob_start();
       include "views/header.php";
@@ -108,8 +127,10 @@ require('authenticate_google.php');
       echo $content_menu;
       ?>
 
-        <main style="background-color: #e9e9e9;" class="mdl-layout__content">
-
+        <main style="background-color: #e9e9e9;" class="mdl-layout__content container">
+          <div id="loading">
+            <img id="loading-image" src="dist/images/Preloader_bobbleHead.gif" alt="Loading..." />
+          </div>
             <div style="height:calc(100vh - 100px);" class="mdl-grid">
               <div class="mdl-cell--stretch mdl-cell mdl-cell--12-col mdl-cell--4-col-phone">
                 <div class="mdl-grid">
@@ -144,7 +165,8 @@ require('authenticate_google.php');
                   </div>
                   <div class="mdl-cell mdl-cell--2-5-col mdl-cell--4-col-phone">
                     <div class="fwaWrapper">
-                      <canvas width="15" id="doughnutchart1"></canvas>
+                      <img width="32px" class="fwaRank"/>
+                      <canvas width="20" id="doughnutchart1"></canvas>
                       <div class="fwaCounter"></div>
                       <div class="fwaLineWrapper">
                         <canvas width="10" id="fwaLine"></canvas>
@@ -154,7 +176,8 @@ require('authenticate_google.php');
                   </div>
                   <div class="mdl-cell mdl-cell--2-5-col mdl-cell--4-col-phone">
                     <div class="aliWrapper">
-                      <canvas width="15" id="doughnutchart2"></canvas>
+                      <img width="32px" class="aliRank"/>
+                      <canvas width="20" id="doughnutchart2"></canvas>
                       <div class="aliCounter"></div>
                       <div class="aliLineWrapper">
                         <canvas width="10" id="aliLine"></canvas>
@@ -164,7 +187,8 @@ require('authenticate_google.php');
                   </div>
                   <div style="margin: 8px 0px 8px 20px;" class="mdl-cell mdl-cell--2-5-col mdl-cell--4-col-phone">
                     <div class="sstWrapper">
-                      <canvas width="15" id="doughnutchart3"></canvas>
+                      <img width="32px" class="sstRank"/>
+                      <canvas width="21" id="doughnutchart3"></canvas>
                       <div class="sstCounter"></div>
                       <div class="sstLineWrapper">
                         <canvas width="10" id="sstLine"></canvas>
@@ -184,15 +208,71 @@ require('authenticate_google.php');
               </div>    
             </div>
         </main>
+      
+            
+        <div class="md-modal md-effect-10" id="modal-10">
+          <div class="md-content">
+            <h3><span class='mdi mdi-48px mdi-keyboard'></span>  <span class="helperTitle">Getting Started</span><br></h3>
+            <div>
+              <div class="">
+                <div class="helperText">
+                  <table class="helperTable" width="100%">
+                    <tr style="font-size: 20px;height:33px;vertical-align:top;">
+                      <td style=" text-align: center;" colspan="2">Navigation</td> 
+                      <td width="10%"></td> 
+                      <td style=" text-align: center;" colspan="2">More</td>
+                    <tr>
+                      <td width="21%"><b>alt + r</b></td> <td width="21%">open menu</td>
+                      <td width="6%"></td> 
+                      <td width="21%"><b>shift + c</b></td> <td width="21%">create new</td>
+                    </tr>
+                    <tr>
+                      <td width="21%"><b>alt + h</b></td> <td width="21%">home</td>
+                      <td width="6%"></td> 
+                      <td width="21%"><b></b></td> <td width="21%"></td>
+                    </tr>
+                    <tr>
+                      <td width="21%"><b>alt + i</b></td>  <td width="21%">incoming</td>
+                      <td width="6%"></td> 
+                      <td width="21%"><b></b></td> <td width="21%"></td>
+                    </tr>
+                    <tr>
+                      <td width="21%"><b>alt + o</b></td>  <td width="21%">overview</td>
+                      <td width="6%"></td> 
+                      <td width="21%"><b></b></td> <td width="21%"></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="md-overlay"></div>
+
+
         <?php if ($labelID !== '0'): ?>
         <script>
 
-          $('.unreadCounter').on('click', function() {
-            window.location.href = "https://maintenance.newtelco.de/incoming";
-          })
+        $('.md-trigger').on('click',function() {
+          $('.md-modal').addClass('md-show');
+        })
 
-        
+        $('.md-close').on('click',function() {
+          $('.md-modal').removeClass('md-show');
+        })
+
+        $('.unreadCounter').on('click', function() {
+          window.location.href = "https://maintenance.newtelco.de/incoming";
+        })
+
         $(document).ready(function() {
+
+          // military rank 
+          setTimeout(function() {
+            $('.fwaRank').attr('src',getRank($('.fwaCounter').text()));
+            $('.sstRank').attr('src',getRank($('.sstCounter').text()));
+            $('.aliRank').attr('src',getRank($('.aliCounter').text()));
+          },500);
 
           // Pretty Scrollbars
           $(".mdl-layout__content").overlayScrollbars({
@@ -234,6 +314,43 @@ require('authenticate_google.php');
           } 
         });
 
+        
+
+        $( window ).on('load',function() {
+          setTimeout(function() {$('#loading').hide()},500);
+        });
+
+        // source. https://thenounproject.com/smashicons/collection/smashicons-badges-army-md-outline/
+
+        function getRank(count) {
+          if (count < 5) {
+            return '/dist/images/rank/1_rank.svg';
+          } else if (5 <= count && count < 10) {
+            return '/dist/images/rank/2_rank.svg';
+          } else if (10 <= count && count < 15) {
+            return '/dist/images/rank/3_rank.svg';
+          } else if (15 <= count && count < 20) {
+            return '/dist/images/rank/4_rank.svg';
+          } else if (20 <= count && count < 25) {
+            return '/dist/images/rank/5_rank.svg';
+          } else if (25 <= count && count < 30) {
+            return '/dist/images/rank/6_rank.svg';
+          } else if (30 <= count && count < 35) {
+            return '/dist/images/rank/7_rank.svg';
+          } else if (35 <= count && count < 40) {
+            return '/dist/images/rank/8_rank.svg';
+          } else if (40 <= count && count < 45) {
+            return '/dist/images/rank/9_rank.svg';
+          } else if (45 <= count && count < 50) {
+            return '/dist/images/rank/10_rank.svg';
+          } else if (50 <= count && count < 55) {
+            return '/dist/images/rank/11_rank.svg';
+          } else if (55 <= count && count < 60) {
+            return '/dist/images/rank/12_rank.svg';
+          } else if (60 <= count && count < 65) {
+            return '/dist/images/rank/13_rank.svg';
+          }
+        }
         </script>
         <?php endif; ?>
         <?php  /*echo file_get_contents("views/footer.html");*/ ?>
@@ -266,5 +383,6 @@ require('authenticate_google.php');
         <!-- chart.js init -->
         <script rel="preload" as="script" src="dist/js/ntchartinit2.js"></script>
       </div>
+
 </body>
 </html>

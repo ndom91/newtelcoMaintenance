@@ -102,6 +102,9 @@ global $dbhandle;
             $ostartdatetime = '';
             $oenddatetime = '';
             $opostponed = '';
+            $oreason = '';
+            $oimpact = '';
+            $olocation = '';
             $onotes = '';
             $omailSentAt = '';
             $oupdatedBy = '';
@@ -135,6 +138,9 @@ global $dbhandle;
               $ostartdatetime = $mIDresult['startDateTime'];
               $oenddatetime = $mIDresult['endDateTime'];
               $opostponed = $mIDresult['postponed'];
+              $oreason = $mIDresult['reason'];
+              $oimpact = $mIDresult['impact'];
+              $olocation = $mIDresult['location'];
               $onotes = $mIDresult['notes'];
               $omailSentAt = $mIDresult['mailSentAt'];
               $oupdatedBy = $mIDresult['updatedBy'];
@@ -375,9 +381,20 @@ global $dbhandle;
               $workers[] = "alissitsin";
               $workers[] = "sstergiou";
 
+              $workers2 = array();
+              $workers2[] = "ndomino";
+              $workers2[] = "fwaleska";
+              $workers2[] = "alissitsin";
+              $workers2[] = "sstergiou";
+
               if (($key = array_search($usernameBV, $workers)) !== false) {
                 unset($workers[$key]);
                 $workers = array_values($workers);
+              }
+
+              if (($key = array_search($obearbeitetvon, $workers2)) !== false) {
+                unset($workers2[$key]);
+                $workers2 = array_values($workers2);
               }
 
               
@@ -520,10 +537,23 @@ global $dbhandle;
               <div class="mdl-cell mdl-cell--6-col">
                 <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
                   <select id="bearbeitet" name="bearbeitet" class="mdl-selectfield__select">
+                    <?php
+                    if (isset($_GET['update'])):
+                    ?>
                     <option value="<?php echo $usernameBV ?>"><?php echo $usernameBV ?></option>
                     <option value="<?php echo $workers[0] ?>"><?php echo $workers[0] ?></option>
                     <option value="<?php echo $workers[1] ?>"><?php echo $workers[1] ?></option>
                     <option value="<?php echo $workers[2] ?>"><?php echo $workers[2] ?></option>
+                    <?php
+                    else:
+                    ?>
+                    <option selected value="<?php echo $obearbeitetvon ?>"><?php echo $obearbeitetvon ?></option>
+                    <option value="<?php echo $workers2[0] ?>"><?php echo $workers2[0] ?></option>
+                    <option value="<?php echo $workers2[1] ?>"><?php echo $workers2[1] ?></option>
+                    <option value="<?php echo $workers2[2] ?>"><?php echo $workers2[2] ?></option>
+                    <?php
+                    endif
+                    ?>
                   </select>
                   <label class="mdl-selectfield__label" for="bearbeitet">Bearbeitet Von</label>
                   <span class="mdl-selectfield__error">Select a value</span>
@@ -538,6 +568,24 @@ global $dbhandle;
                   <span style="color: #6e6e6e;line-height: 44px !important;top: 18px; margin-left: -135px; color:#67B246;" class="mdl-switch__label">Cancelled</span>
                   <input type="checkbox" id="switch-3"class="mdl-switch__input" <?php echo $cancelled ?>>
                 </label>
+              </div>
+              <div class="mdl-cell mdl-cell--6-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" value="<?php echo $oimpact ?>" id="mimp">
+                  <label class="mdl-textfield__label" for="mimp">Impact</label>
+                </div>
+              </div>
+              <div class="mdl-cell mdl-cell--6-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" value="<?php echo $olocation ?>" id="mloc">
+                  <label class="mdl-textfield__label" for="mloc">Location</label>
+                </div>
+              </div>
+              <div style="margin-right: calc(12% - 32px) !important;" class="mdl-cell mdl-cell--12-col">
+                <div style="width: 100%" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" style="" value="<?php echo $oreason ?>" id="mreas">
+                  <label class="mdl-textfield__label" for="mreas">Reason</label>
+                </div>
               </div>
               <div style="margin-right: calc(12% - 32px) !important;" class="mdl-cell mdl-cell--12-col">
                 <div style="margin-top: -20px;" class="mdl-textfield mdl-js-textfield notesTextArea">
@@ -595,37 +643,41 @@ global $dbhandle;
           </div>
           <div class="mailHider">
           <?php
-          echo '<div id="mailDialog" class="mailDialog1" style="">
-                <div class="mailcSelectHeader">
-                <h6 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $msubject . '</h6><br>
-                <h6 class="sublabelSelectLabel"><font color="#67B246">From:</font> ' . $mfrom . '</h6><br>
-                <h6 class="sublabelSelectLabel"><font color="#67B246">Date:</font> ' . $mdate . '</h6>';
+          if ($msubject != '') {
+            echo '<div id="mailDialog" class="mailDialog1" style="">
+                  <div class="mailcSelectHeader">
+                  <h6 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $msubject . '</h6><br>
+                  <h6 class="sublabelSelectLabel"><font color="#67B246">From:</font> ' . $mfrom . '</h6><br>
+                  <h6 class="sublabelSelectLabel"><font color="#67B246">Date:</font> ' . $mdate . '</h6>';
 
-                $attachmentParts2 = $msgInfo[5];
-                if ($attachmentParts2[0][1] !== '') {
-                  echo '<div style="margin-top:-30px;float:right;text-align:right;z-index:1000;position:relative;">
-                  <font style="color:#4c4c4c">Attachments:</font><br>';
-                    foreach ($attachmentParts2 as $part) {
-                      echo '<a class="attachmentLink" target="_blank" href="attachments?messageId='.$oreceivedmail.'&part_id='.$part[0].'">'.$part[1].'</a><br>';
-                    }
-                  } else {
+                  $attachmentParts2 = $msgInfo[5];
+                  if ($attachmentParts2[0][1] !== '') {
                     echo '<div style="margin-top:-30px;float:right;text-align:right;z-index:1000;position:relative;">
-                    <font style="color:#4c4c4c"></font><br>';
-                  }
-                 echo '</div><br><br></div>
-                 <div class="mdl-dialog__content">
-                 <p>
-                 <div class="mailcHR">NT</div>
-                    <div class="mailWrapper0">
-                      <div class="mdl-textfield mdl-js-textfield mailWrapper1">
-                        <div style="display:inline-block !important;height: 100%;margin-top: 20px;" class=" mailWrapper2">
-                          <iframe class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0"  id="emailBodyFrame" src="https://maintenance.newtelco.de/msg/' . $oreceivedmail . '.html"></iframe>
+                    <font style="color:#4c4c4c">Attachments:</font><br>';
+                      foreach ($attachmentParts2 as $part) {
+                        echo '<a class="attachmentLink" target="_blank" href="attachments?messageId='.$oreceivedmail.'&part_id='.$part[0].'">'.$part[1].'</a><br>';
+                      }
+                    } else {
+                      echo '<div style="margin-top:-30px;float:right;text-align:right;z-index:1000;position:relative;">
+                      <font style="color:#4c4c4c"></font><br>';
+                    }
+                  echo '</div><br><br></div>
+                  <div class="mdl-dialog__content">
+                  <p>
+                  <div class="mailcHR">NT</div>
+                      <div class="mailWrapper0">
+                        <div class="mdl-textfield mdl-js-textfield mailWrapper1">
+                          <div style="display:inline-block !important;height: 100%;margin-top: 20px;" class=" mailWrapper2">
+                            <iframe class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0"  id="emailBodyFrame" src="https://maintenance.newtelco.de/msg/' . $oreceivedmail . '.html"></iframe>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </p>
-                </div>
-              </div>';
+                    </p>
+                  </div>
+                </div>';
+              } else {
+                echo '</div>';
+              }
             ?>
             </div>
           </div>
@@ -724,7 +776,7 @@ $('#btnShowSent').click(function(){
 $('#addCalbtn').click(function(){
 
   // ajax save when making cal 
-  
+
   var activeID = $('#activeMID').val();
   if($('#switch-2:checked').val() == 'on') {
     var odone = '1';
@@ -1200,6 +1252,9 @@ $('#btnSave').on('click', function(e) {
     "oenddatetime" : edtUTC,
     "opostponed": $('#pponed').val(),
     "onotes" : $('#notes').val(),
+    "oimp" : $('#mimp').val(),
+    "oloc" : $('#mloc').val(),
+    "oreas" : $('#mreas').val(),
     //"omailankunde" : makdtUTC.toString(),
     "mailSentAt" : $('#mailSentAt').val(),
     "odone" : odone,
@@ -1321,28 +1376,28 @@ $('#btnSave').on('click', function(e) {
     *  XLS Preview
     *********************/
 
-    var dialog2 = document.querySelector('#xlsDialog');
-    var showDialogButton2 = document.querySelectorAll('.attachmentLink');
-    if (! dialog2.showModal) {
-      dialogPolyfill.registerDialog(dialog2);
-    }
-    for (var i = 0; i < showDialogButton2.length; i++) {
-      var link = showDialogButton2[i];
-      if (link.innerHTML.indexOf('xls') >= 0) {
-        showDialogButton2.forEach(function(elem) {
-          elem.addEventListener('click', function(e) {
-            var targetText = $(e.target).text();
-            if (targetText.indexOf("xls") >= 0) {
-              dialog2.showModal();
-            };
-          });
-        });
-      };
-    }
+    // var dialog2 = $('#xlsDialog').get(0).outerHTML;
+    // var showDialogButton2 = document.querySelectorAll('.attachmentLink');
+    // if (! dialog2.showModal) {
+    //   dialogPolyfill.registerDialog(dialog2);
+    // }
+    // for (var i = 0; i < showDialogButton2.length; i++) {
+    //   var link = showDialogButton2[i];
+    //   if (link.innerHTML.indexOf('xls') >= 0) {
+    //     showDialogButton2.forEach(function(elem) {
+    //       elem.addEventListener('click', function(e) {
+    //         var targetText = $(e.target).text();
+    //         if (targetText.indexOf("xls") >= 0) {
+    //           dialog2.showModal();
+    //         };
+    //       });
+    //     });
+    //   };
+    // }
     
-    dialog2.querySelector('.close2').addEventListener('click', function() {
-      dialog2.close();
-    });
+    // dialog2.querySelector('.close2').addEventListener('click', function() {
+    //   dialog2.close();
+    // });
   }
 
   $('.attachmentLink').on('click', function(e) {
@@ -1423,7 +1478,9 @@ $('#btnSave').on('click', function(e) {
       // document.querySelector("#timezoneSelector").value = "Europe/Amsterdam";
       // document.querySelector("#timezoneSelector").dispatchEvent(event);
 
-
+      var impact = $('#mimp').val();
+      var location = $('#mloc').val();
+      var reason =  $('#mreas').val();
 
 
       var start = moment($('#sdt').val());
@@ -1442,7 +1499,23 @@ $('#btnSave').on('click', function(e) {
       // var d = moment.duration(ms);
       // var impactTime = d.format("mm");
 
-      openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?from=maintenance@newtelco.de&subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=​​​​<style>.grayText10{​​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:131px}.tdSizing2{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624px}</style><body style="​​padding:0;margin:0;​​​" class="grayText10"><div​​ ​style="​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266" class="grayText10"​​>Dear Colleagues,​​<p><span>We would like to inform you about planned work on the CID ​' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"> <tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span class="grayText10">' + startTimeLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr><tr> <td class="tdSizing"> <p style="margin-​​bottom:12.0pt"><span class="grayText10">Finish date and time:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span​​ class="grayText10">​​' + endTimeLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Impact:</span></p></td><td class="tdSizing2"> <p style="margi​​n-bottom:12.0pt;text-align:justify"><span>IMPACT</span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Location:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span class="grayText10">LOCATION</span></p></td></tr><tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Reason:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span>REASON</span></p></td></tr></table> <p><span>We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span>If you have any questions feel free to contact us at maintenance@newtelco.de.</span></p>​​</body>​​<footer>​<style>.sig{font-family: Century Gothic, sans-serif;font-size: 9pt;color: #636266 !important;}b{color: #4ca702;}.gray{color: #636266 !important;}a{text-decoration: none;color: #636266 !important;}</style><div class="sig"><br><div>Best regards | Mit freundlichen Grüßen</div><br><div><b class="gray">Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b>|</b> Mainzer Landstr. 351-353 <b>|</b> 60326 Frankfurt a.M. <b>|</b> DE <br>www.newtelco.com <b>|</b> 24/7 NOC  49 69 75 00 27 30 ​​<b>|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" alt="" height="29" width="516"></div></div>​</footer>');
+      var body = '<style>.grayText10{​​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:131px}.tdSizing2{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624px}</style><body style="​​padding:0;margin:0;​​​" class="grayText10"><div​​ ​style="​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266" class="grayText10"​​>Dear Colleagues,​​<p><span>We would like to inform you about planned work on the CID ​' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"> <tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span class="grayText10">' + startTimeLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr><tr> <td class="tdSizing"> <p style="margin-​​bottom:12.0pt"><span class="grayText10">Finish date and time:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span​​ class="grayText10">​​' + endTimeLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr>'
+      
+      if (impact != '') {
+        body += '<tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Impact:</span></p></td><td class="tdSizing2"> <p style="margi​​n-bottom:12.0pt;text-align:justify"><span>' + impact + '</span></p></td></tr>';
+      }
+      
+      if (location != '') {
+        body += '<tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Location:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span class="grayText10">' + location + '</span></p></td></tr>';
+      }
+      
+      if (reason != '') {
+        body += '<tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Reason:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span>' + reason + '</span></p></td></tr>';
+      }
+      
+      body += '</table><p><span>We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span>If you have any questions feel free to contact us at maintenance@newtelco.de.</span></p>​​</body>​​<footer>​<style>.sig{font-family: Century Gothic, sans-serif;font-size: 9pt;color: #636266 !important;}b{color: #4ca702;}.gray{color: #636266 !important;}a{text-decoration: none;color: #636266 !important;}</style><div class="sig"><br><div>Best regards | Mit freundlichen Grüßen</div><br><div><b class="gray">Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b>|</b> Mainzer Landstr. 351-353 <b>|</b> 60326 Frankfurt a.M. <b>|</b> DE <br>www.newtelco.com <b>|</b> 24/7 NOC  49 69 75 00 27 30 ​​<b>|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" alt="" height="29" width="516"></div></div>​</footer>';
+
+      openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?from=maintenance@newtelco.de&subject=Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=​​​​' + body);
 
       var DateTime = luxon.DateTime;
       var now = DateTime.local().toFormat("y-MM-dd HH:mm");

@@ -40,33 +40,16 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
   <nav class="mdl-navigation">
     <a class="mdl-navigation__link homeLink" href="index.php"><img src="/dist/images/svg/home.svg" class="ndl-home"/>  Home</a>
     <a class="mdl-navigation__link historyLink" href="overview.php"><img src="/dist/images/svg/overview.svg" class="ndl-overview"/>  History</a>
-    <a class="mdl-navigation__link incomingLink" href="incoming.php"><img src="/dist/images/svg/ballot.svg" class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"/>  Incoming<div class="material-icons mdl-badge mdl-badge--overlap menuSubLabel2" data-badge="<?php if ($labelID != '0') { if ($results3['messagesUnread'] == 0) { echo "♥"; } else { echo $results3['messagesUnread']; }} else {  echo "♥"; } ?>"></div></a></a>
+    <a class="mdl-navigation__link incomingLink" href="incoming.php"><img src="/dist/images/svg/ballot.svg" class="ndl-ballot mdl-badge mdl-badge--overlap" data-badge="3"/>  Incoming<div class="material-icons mdl-badge mdl-badge--overlap menuSubLabel2" data-badge="<?php if ($labelID != '0') { if ($results3['messagesUnread'] == 0) { echo "ϟ"; } else { echo $results3['messagesUnread']; }} else {  echo "♥"; } ?>"></div></a></a>
     <a class="mdl-navigation__link group1Link" href="group.php"><img src="/dist/images/svg/group.svg" class="ndl-group1"/>  Group <small class="menuSubLabel">maintenance</small></a>
     <a class="mdl-navigation__link group2Link" href="groupservice.php"><img src="/dist/images/svg/group.svg" class="ndl-group2"/>  Group <small class="menuSubLabel">service</small></a>
     <a class="mdl-navigation__link calendarLink" href="calendar.php"><img src="/dist/images/svg/calendar.svg" class="ndl-calendar"/>  Calendar</a>
     <a class="mdl-navigation__link crmLink" href="crm_iframe.php"><img src="/dist/images/svg/work.svg" class="ndl-work"/>  CRM</a>
     <a class="mdl-navigation__link settingsLink" href="settings.php"><img src="/dist/images/svg/settings.svg" class="ndl-settings"/>  Settings</a>
     <div class="mdl-layout-spacer"></div>
-    <div class="helperBG">
-      <div class="helperText">
-        <span class='mdi mdi-24px mdi-keyboard'></span>  <span class="helperTitle"> Getting Started</span><br>
-        <table class="helperTable" width="100%">
-          <tr>
-            <td width="40px"><b>alt + r</b></td> <td>open menu</td>
-          </tr>
-          <tr>
-            <td width="40px"><b>alt + h</b></td> <td>home</td>
-          </tr>
-          <tr>
-            <td width="40px"><b>alt + i</b></td>  <td>incoming</td>
-          </tr>
-          <tr>
-            <td width="40px"><b>alt + o</b></td>  <td>overview</td>
-          </tr>
-        </table>
-      </div>
+    <div class="shortcutText">
+      <font style="font-size:10px; color:rgba(0,0,0,0.5);">for keyboard shortcuts press (?)</font>
     </div>
-    <div class="mdl-layout-spacer"></div>
   </nav>
   <!-- keymaster.js -->
   <script rel="preload" as="script" src="dist/js/keymaster.js"></script>
@@ -103,13 +86,35 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
     key('alt+o', function(){ window.location.href = 'https://maintenance.newtelco.de/overview'; return false });
     key('alt+i', function(){ window.location.href = 'https://maintenance.newtelco.de/incoming'; return false });
     key('alt+m', function(){ $('.mdl-menu__container').toggleClass('is-visible'); return false });
+    key('shift+c', function(){ window.location.href = 'https://maintenance.newtelco.de/addedit'; });
 
+    $(document.body).on('keypress', function(e) {
+      if (e.charCode === 63) {
+        $('.md-modal').toggleClass('md-show');
+        $('.mdl-layout__header').toggleClass('blur4');
+        $('.mdl-layout__drawer').toggleClass('blur4');
+        $('.mdl-layout__content').toggleClass('blur4');
+        $('.mdl-mini-footer').toggleClass('blur4');
+        return false;
+      }
+    });
+
+    $(document).mouseup(function(e) {
+        var container = $('.md-modal');
+        if (!container.is(e.target) && container.has(e.target).length === 0 && container.hasClass('md-show')) {
+          container.removeClass('md-show');
+          $('.mdl-layout__header').toggleClass('blur4');
+          $('.mdl-layout__drawer').toggleClass('blur4');
+          $('.mdl-layout__content').toggleClass('blur4');
+          $('.mdl-mini-footer').toggleClass('blur4');
+        }
+    });
 
     $(document).ready(function() {
 
     // dynamic favicon
     var unreadCounter = $('.menuSubLabel2').attr('data-badge');
-    if(unreadCounter !== '♥') {
+    if(unreadCounter !== 'ϟ') {
         var favNumber = unreadCounter;
         var favicon=new Favico({
             animation:'slide'

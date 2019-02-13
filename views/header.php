@@ -19,7 +19,21 @@
     <div class="mdl-layout-spacer"></div>
     <div class="menu_userdetails">
       <button id="user-profile-menu" class="mdl-button mdl-js-button mdl-userprofile-button">
-        <img class="hvr-rotate menu_userphoto" src="<?php echo $token_data['picture'] ?>"/>
+        <img class="hvr-rotate menu_userphoto" src="
+        <?php 
+        // var_dump($token_data['email']);
+        if ($token_data['email'] == 'alissitsin@newtelco.de') {
+          echo '/dist/images/icons/ali_round.png';
+        } else if ($token_data['email'] == 'fwaleska@newtelco.de') {
+          echo '/dist/images/icons/fwa_round.png';
+        } else if ($token_data['email'] == 'sstergiou@newtelco.de') {
+          echo '/dist/images/icons/sst_round.png';
+        } else if ($token_data['email'] == 'ndomino@newtelco.de') {
+          echo '/dist/images/icons/ndo_round.png';
+        }        
+        // for echoing google picture directly
+        // echo $token_data['picture'] 
+        ?>"/>
         <span class="mdl-layout-subtitle menumail"> <?php echo $token_data['email'] ?>
           <i class="fas fa-angle-down menuangle"></i>
         </span>        
@@ -32,18 +46,18 @@
               <span class="mdi mdi-24px mdi-calendar-text mdi-dark mdi-inactive"></span>
             </li>
           </a>
-          <div class="mdl-tooltip mdl-tooltip--bottom" data-mdl-for="submenuCal">
+          <!-- <div class="mdl-tooltip mdl-tooltip--bottom" data-mdl-for="submenuCal">
             <span class='mdi mdi-24px mdi-keyboard'></span> <span style="vertical-align:top;font-size:12px;">(c)</span>
-          </div>
+          </div> -->
           <a class="usermenuhref" href="settings">
             <li id="submenuSettings" class="mdl-menu__item">
               Settings
               <span class="mdi mdi-24px mdi-settings-outline mdi-dark mdi-inactive"></span>
             </li>
           </a>
-          <div class="mdl-tooltip mdl-tooltip--left" style="z-index:10 !important;" data-mdl-for="submenuSettings">
+          <!-- <div class="mdl-tooltip mdl-tooltip--left" style="z-index:10 !important;" data-mdl-for="submenuSettings">
             <span class='mdi mdi-24px mdi-keyboard'></span> <span style="vertical-align:top;font-size:12px;">(s)</span>
-          </div>
+          </div> -->
           <li>
             <div class="mailcHR3"></div>
           </li>
@@ -53,9 +67,9 @@
               <span class="mdi mdi-24px mdi-logout mdi-dark mdi-inactive"></span>
             </li>
           </a>
-          <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="submenuLogout">
+          <!-- <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="submenuLogout">
             <span class='mdi mdi-24px mdi-keyboard'></span> <span style="vertical-align:top;font-size:12px;">(l)</span>
-          </div>
+          </div> -->
         </ul>
     </div>
   </div>

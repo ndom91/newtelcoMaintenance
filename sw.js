@@ -49,6 +49,7 @@ var STATIC_FILES = [
   "dist/js/vis.js",
   "dist/images/fav-32x32.png",
   "dist/images/Preloader_4.gif",
+  "dist/images/preloaderWork.gif",
   "dist/js/materialize.min.js",
   "dist/js/select2_4.0.6-rc1.min.js",
   "dist/js/mdl-selectfield.min.js",
@@ -65,6 +66,7 @@ var STATIC_FILES = [
   "dist/js/chart.js",
   "dist/js/ntchartinit2.js",
   "dist/js/favicon.js",
+  "dist/js/particle.js",
   "dist/css/handsontable.min.css",
   "dist/css/hover.css",
   "dist/js/moment/luxon.min.js",
@@ -76,7 +78,7 @@ var STATIC_FILES = [
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open('nt-mt-v1').then(cache =>
+    caches.open('nt-mt-v2').then(cache =>
       adderall.addAll(cache, STATIC_FILES)
     )
   );

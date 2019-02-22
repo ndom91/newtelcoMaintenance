@@ -19,34 +19,36 @@ function getAttachment($messageId, $partId, $userId) {
     }
 }
 
-    function base64_to_jpeg($base64_string, $content_type) {
-        $find = ["_","-"]; $replace = ["/","+"];
-        $base64_string = str_replace($find,$replace,$base64_string);
-        $url_str = 'data:'.$content_type.','.$base64_string;
-        $base64_string = "url(".$url_str.")";
-        $data = explode(',', $base64_string);
-        return base64_decode( $data[ 1 ] );
-    }
+function base64_to_jpeg($base64_string, $content_type) {
+    $find = ["_","-"]; $replace = ["/","+"];
+    $base64_string = str_replace($find,$replace,$base64_string);
+    $url_str = 'data:'.$content_type.','.$base64_string;
+    $base64_string = "url(".$url_str.")";
+    $data = explode(',', $base64_string);
+    return base64_decode( $data[ 1 ] );
+}
 
     // Get the API client and construct the service object.
     $service = new Google_Service_Gmail($clientService);
     $opt_param = array();
     $opt_param['labelIds'] =  'INBOX';
     $opt_param['maxResults'] = 1;
-    $messages = $service->users_messages->listUsersMessages($user, $opt_param);
+    // $messages = $service->users_messages->listUsersMessages($user, $opt_param);
 
-    foreach ($messages as $message_thread) {
-            $message = $service->users_messages->get($user, $message_thread['id']);
-            $message_parts = $message->getPayload()->getParts();
-            $files = array();
-            $attachId = $message_parts[1]['body']['attachmentId'];
-            $attach = $service->users_messages_attachments->get($user, $message['id'], $attachId);
-            foreach ($message_parts as $key => $value) {
-                if ( isset($value->body->attachmentId) && !isset($value->body->data)) {
-                  array_push($files, $value['partId']);
-                }
-            }   
-    }
+    // sleep(2);
+    // foreach ($messages as $message_thread) {
+    //     $message = $service->users_messages->get($user, $message_thread['id']);
+    //     var_dump($message);
+    //     $message_parts = $message->getPayload()->getParts();
+    //     $files = array();
+    //     $attachId = $message_parts[1]['body']['attachmentId'];
+    //     $attach = $service->users_messages_attachments->get($user, $message['id'], $attachId); 
+    //     foreach ($message_parts as $key => $value) {
+    //         if ( isset($value->body->attachmentId) && !isset($value->body->data)) {
+    //             array_push($files, $value['partId']);
+    //         }
+    //     }   
+    // }
 
     if (isset($_GET['messageId']) && $_GET['part_id']){ // This is After Clicking an Attachment
         $attachment = getAttachment($_GET['messageId'], $_GET['part_id'], 'fwaleska@newtelco.de');

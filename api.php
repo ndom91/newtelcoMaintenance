@@ -35,7 +35,7 @@
      * SETTINGS - KUNDEN
      *********************/
 
-    $kundenQ = mysqli_query($dbhandle, "SELECT kundenCID.id, kundenCID.kundenCID, kundenCID.protected, companies.name FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id") or die(mysqli_error($dbhandle));
+    $kundenQ = mysqli_query($dbhandle, "SELECT kundenCID.id, kundenCID.kundenCID, kundenCID.protected, lieferantCID.derenCID, companies.name FROM kundenCID LEFT JOIN companies ON kundenCID.kunde = companies.id LEFT JOIN lieferantCID ON kundenCID.lieferantCID = lieferantCID.id") or die(mysqli_error($dbhandle));
 
     $kundenArray = array();
 
@@ -44,6 +44,26 @@
     }
 
     echo json_encode($kundenArray);
+
+  } elseif (isset($_GET['updateFirmen'])) {
+
+    /***************************
+     * SETTINGS - UPDATE FIRMEN
+     ***************************/
+    $firmenID = $_GET['id'];
+    $firmenName = $_GET['name'];
+    $firmenMailDomain = $_GET['mailDomain'];
+    $firmenMaintenanceRecipient = $_GET['maintenanceRecipient'];
+
+    $kundenQ = mysqli_query($dbhandle, "UPDATE companies SET companies.name = '" . $firmenName . "', companies.mailDomain = '" . $firmenMailDomain . "', companies.maintenanceRecipient = '" . $firmenMaintenanceRecipient . "' WHERE companies.id like '$firmenID'") or die(mysqli_error($dbhandle));
+
+    if ($kundenQ == 'TRUE'){
+      $hideResults['updated'] = 1;
+    } else {
+      $hideResults['updated'] = 0;
+    }
+
+    echo json_encode($hideResults);
 
   } elseif (isset($_GET['mRead'])) {
 
@@ -126,113 +146,137 @@
 
     echo json_encode($firmenArray);
 
-  } elseif (isset($_GET['sfirmen'])) {
+  } elseif (isset($_GET['updateLieferanten'])) {
 
     /**************************
-     * SAVE SETTINGS - FIRMEN
+     * UPDATE LIEFERANTEN  
      *************************/
-    if ($_GET['sfirmen'] == 1) {
-      // sfirmen = 1 - FIRMEN
 
-      // get existing state from DB
-      $firmenQ1 = mysqli_query($dbhandle, "SELECT * FROM companies;") or die(mysqli_error($dbhandle));
-      $firmenArray2 = array();
-      while($firmenResults = mysqli_fetch_array($firmenQ1)) {
-        $firmenArray2[] = $firmenResults;
-      }
+    $id = $_GET['id'];
+    $name = $_GET['name'];
+    $derenCID = $_GET['derenCID'];
 
-      // get new state from xhr request
-      $request_body = file_get_contents('php://input');
-      $data = array();
-      $data = json_decode($request_body, true);
-      $arraySize = sizeof($data);
-
-      $updateArray = array();
-
-      // loop through all rows (based on xhr row size) to compare db state to xhr data
-      for ($row = 0; $row < $arraySize; $row++) {
-        $idToSearch = $firmenArray2[$row][0];
-        $keys = array_search($idToSearch, array_column($data, '0'));
-
-        // check each row for changes, mark rows that have changes in $updateArray
-        for ($col = 0; $col < 4; $col++) {
-          $needsUpdate = 0;
-          if ($firmenArray2[$row][$col] != $data[$keys][$col]) {
-            array_push($updateArray,$data[$keys][0]);
-          }
-        }
-      }
-
-      // check if $updateArray has any queued changes, if so - commit them
-      $arraySize2 = sizeof($updateArray);
-      $updateFirmen = array();
-      if ($arraySize2 > 0) {
-        for ($i = 0; $i < $arraySize2; $i++) {
-          $row = $updateArray[$i];
-          $row2 = array_search($row, array_column($data, '0'));
-          $updateQ = 'UPDATE companies SET name = "' . $data[$row2][1] . '",  mailDomain = "' . $data[$row2][2] . '", maintenanceRecipient = "' . $data[$row2][3] . '" WHERE id LIKE "' . $data[$row2][0] . '"';
-          $firmenQ2 = mysqli_query($dbhandle, $updateQ) or die(mysqli_error($dbhandle));
-          if ($firmenQ2 == 'TRUE'){
-            $updateFirmen['updated'] = $updateFirmen['updated'] + 1;
-          }
-        }
-        echo json_encode($updateFirmen);
-      } else {
-        $updateFirmen['updated'] = -1;
-        echo json_encode($updateFirmen);
-      }
-    } elseif ($_GET['sfirmen'] == 2) {
-      // sfirmen = 2 - LIEFERANTEN
-
-      // get existing state from DB
-      $lieferantQ1 = mysqli_query($dbhandle, "SELECT lieferantCID.id, companies.name, lieferantCID.derenCID FROM lieferantCID LEFT JOIN companies  ON lieferantCID.lieferant = companies.id;") or die(mysqli_error($dbhandle));
-      $lieferantArray2 = array();
-      while($lieferantResults = mysqli_fetch_array($lieferantQ1)) {
-        $lieferantArray2[] = $lieferantResults;
-      }
-      // get new state from xhr request
-      $request_body = file_get_contents('php://input');
-      $data = array();
-      $data = json_decode($request_body, true);
-      $arraySize = sizeof($data);
-
-      $updateArray = array();
-
-      // loop through all rows (based on xhr row size) to compare db state to xhr data
-      for ($row = 0; $row < $arraySize; $row++) {
-        $idToSearch = $lieferantArray2[$row][0];
-        $keys = array_search($idToSearch, array_column($data, '0'));
-
-        // check each row for changes, mark rows that have changes in $updateArray
-        for ($col = 0; $col < 3; $col++) {
-          $needsUpdate = 0;
-          if ($lieferantArray2[$row][$col] != $data[$keys][$col]) {
-            array_push($updateArray,$data[$keys][0]);
-          }
-        }
-      }
-
-      // check if $updateArray has any queued changes, if so - commit them
-      $arraySize2 = sizeof($updateArray);
-      $updateLieferant = array();
-      if ($arraySize2 > 0) {
-        for ($i = 0; $i < $arraySize2; $i++) {
-          $row = $updateArray[$i];
-          $row2 = array_search($row, array_column($data, '0'));
-          //$updateQ = 'UPDATE lieferantCID SET name = "' . $data[$row2][1] . '",  mailDomain = "' . $data[$row2][2] . '", maintenanceRecipient = "' . $data[$row2][3] . '" WHERE id LIKE "' . $data[$row2][0] . '"';
-          //$lieferantQ2 = mysqli_query($dbhandle, $updateQ) or die(mysqli_error($dbhandle));
-          //if ($lieferantQ2 == 'TRUE'){
-          //  $updateLieferant['updated'] = $updateLieferant['updated'] + 1;
-          //}
-        echo json_encode('lief updated: ' . $data[$row2][0]);
-        }
-      } else {
-        $updateLieferant['updated'] = -1;
-        echo json_encode('lief NOT updated: ' . $data);
-      }
-
-
+    $firmenQ1 = mysqli_query($dbhandle, "SELECT companies.id, companies.name FROM companies WHERE companies.name LIKE '".$name."';") or die(mysqli_error($dbhandle));   
+     
+    $firmenArray2 = array();
+     
+    while($firmenResults = mysqli_fetch_array($firmenQ1)) {
+      $firmenArray2[] = $firmenResults;
     }
+     
+    $selectedCompanyID = $firmenArray2[0][0];
+
+    $firmenQ2 = mysqli_query($dbhandle, "UPDATE lieferantCID SET lieferantCID.lieferant = '" . $selectedCompanyID . "', lieferantCID.derenCID = '" . $derenCID . "' WHERE lieferantCID.id like '$id'") or die(mysqli_error($dbhandle));
+
+    if ($firmenQ2 == 'TRUE'){
+      $lieferantResults['updated'] = 1;
+    } else {
+      $lieferantResults['updated'] = 0;
+    }
+
+    echo json_encode($lieferantResults);
+
+    // if ($_GET['sfirmen'] == 1) {
+    //   // sfirmen = 1 - FIRMEN
+
+    //   // get existing state from DB
+    //   $firmenQ1 = mysqli_query($dbhandle, "SELECT * FROM companies;") or die(mysqli_error($dbhandle));
+    //   $firmenArray2 = array();
+    //   while($firmenResults = mysqli_fetch_array($firmenQ1)) {
+    //     $firmenArray2[] = $firmenResults;
+    //   }
+
+    //   // get new state from xhr request
+    //   $request_body = file_get_contents('php://input');
+    //   $data = array();
+    //   $data = json_decode($request_body, true);
+    //   $arraySize = sizeof($data);
+
+    //   $updateArray = array();
+
+    //   // loop through all rows (based on xhr row size) to compare db state to xhr data
+    //   for ($row = 0; $row < $arraySize; $row++) {
+    //     $idToSearch = $firmenArray2[$row][0];
+    //     $keys = array_search($idToSearch, array_column($data, '0'));
+
+    //     // check each row for changes, mark rows that have changes in $updateArray
+    //     for ($col = 0; $col < 4; $col++) {
+    //       $needsUpdate = 0;
+    //       if ($firmenArray2[$row][$col] != $data[$keys][$col]) {
+    //         array_push($updateArray,$data[$keys][0]);
+    //       }
+    //     }
+    //   }
+
+    //   // check if $updateArray has any queued changes, if so - commit them
+    //   $arraySize2 = sizeof($updateArray);
+    //   $updateFirmen = array();
+    //   if ($arraySize2 > 0) {
+    //     for ($i = 0; $i < $arraySize2; $i++) {
+    //       $row = $updateArray[$i];
+    //       $row2 = array_search($row, array_column($data, '0'));
+    //       $updateQ = 'UPDATE companies SET name = "' . $data[$row2][1] . '",  mailDomain = "' . $data[$row2][2] . '", maintenanceRecipient = "' . $data[$row2][3] . '" WHERE id LIKE "' . $data[$row2][0] . '"';
+    //       $firmenQ2 = mysqli_query($dbhandle, $updateQ) or die(mysqli_error($dbhandle));
+    //       if ($firmenQ2 == 'TRUE'){
+    //         $updateFirmen['updated'] = $updateFirmen['updated'] + 1;
+    //       }
+    //     }
+    //     echo json_encode($updateFirmen);
+    //   } else {
+    //     $updateFirmen['updated'] = -1;
+    //     echo json_encode($updateFirmen);
+    //   }
+    // } elseif ($_GET['sfirmen'] == 2) {
+    //   // sfirmen = 2 - LIEFERANTEN
+
+    //   // get existing state from DB
+    //   $lieferantQ1 = mysqli_query($dbhandle, "SELECT lieferantCID.id, companies.name, lieferantCID.derenCID FROM lieferantCID LEFT JOIN companies  ON lieferantCID.lieferant = companies.id;") or die(mysqli_error($dbhandle));
+    //   $lieferantArray2 = array();
+    //   while($lieferantResults = mysqli_fetch_array($lieferantQ1)) {
+    //     $lieferantArray2[] = $lieferantResults;
+    //   }
+    //   // get new state from xhr request
+    //   $request_body = file_get_contents('php://input');
+    //   $data = array();
+    //   $data = json_decode($request_body, true);
+    //   $arraySize = sizeof($data);
+
+    //   $updateArray = array();
+
+    //   // loop through all rows (based on xhr row size) to compare db state to xhr data
+    //   for ($row = 0; $row < $arraySize; $row++) {
+    //     $idToSearch = $lieferantArray2[$row][0];
+    //     $keys = array_search($idToSearch, array_column($data, '0'));
+
+    //     // check each row for changes, mark rows that have changes in $updateArray
+    //     for ($col = 0; $col < 3; $col++) {
+    //       $needsUpdate = 0;
+    //       if ($lieferantArray2[$row][$col] != $data[$keys][$col]) {
+    //         array_push($updateArray,$data[$keys][0]);
+    //       }
+    //     }
+    //   }
+
+    //   // check if $updateArray has any queued changes, if so - commit them
+    //   $arraySize2 = sizeof($updateArray);
+    //   $updateLieferant = array();
+    //   if ($arraySize2 > 0) {
+    //     for ($i = 0; $i < $arraySize2; $i++) {
+    //       $row = $updateArray[$i];
+    //       $row2 = array_search($row, array_column($data, '0'));
+    //       //$updateQ = 'UPDATE lieferantCID SET name = "' . $data[$row2][1] . '",  mailDomain = "' . $data[$row2][2] . '", maintenanceRecipient = "' . $data[$row2][3] . '" WHERE id LIKE "' . $data[$row2][0] . '"';
+    //       //$lieferantQ2 = mysqli_query($dbhandle, $updateQ) or die(mysqli_error($dbhandle));
+    //       //if ($lieferantQ2 == 'TRUE'){
+    //       //  $updateLieferant['updated'] = $updateLieferant['updated'] + 1;
+    //       //}
+    //     echo json_encode('lief updated: ' . $data[$row2][0]);
+    //     }
+    //   } else {
+    //     $updateLieferant['updated'] = -1;
+    //     echo json_encode('lief NOT updated: ' . $data);
+    //   }
+    // }
+
   } elseif (isset($_GET['dCID'])) {
 
     /*****************************************
@@ -489,6 +533,7 @@
     $oreas = mysqli_real_escape_string($dbhandle, $fields[0]['oreas']);
     //$omailankunde = mysqli_real_escape_string($dbhandle, $fields[0]['omailankunde']);
     //$ocal = mysqli_real_escape_string($dbhandle, $fields[0]['ocal']);
+    $onotes = mysqli_real_escape_string($dbhandle, $fields[0]['onotes']);
     $odone = mysqli_real_escape_string($dbhandle, $fields[0]['odone']);
     $cancelled = mysqli_real_escape_string($dbhandle, $fields[0]['cancelled']);
     $mailSentAt = mysqli_real_escape_string($dbhandle, $fields[0]['mailSentAt']);

@@ -37,7 +37,7 @@ global $dbhandle;
 
   <!-- jsPanel -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/jspanel.js"></script>
-
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/jspanel.dock.min.js"></script>
 
   <!-- materialize (multiselect) -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/materialize.min.js"></script>
@@ -158,11 +158,13 @@ global $dbhandle;
                 $cancelled = '';
               }
 
+
+              $nowDT = date("Y-m-d  H:i:s");
+
               $newSDT = DateTime::createFromFormat("Y-m-d  H:i:s", $ostartdatetime);
               $newSDT = new DateTime($ostartdatetime);
               $newSDT->add(new DateInterval('PT1H'));
               $newSDT = $newSDT->format('Y-m-d  H:i:s'); // for example
-
 
               $newEDT = DateTime::createFromFormat("Y-m-d  H:i:s", $oenddatetime);
               $newEDT = new DateTime($oenddatetime);
@@ -252,79 +254,80 @@ global $dbhandle;
               }
               
               
-              function getMessage2($service, $userId, $message_id) {
-                try {
-                  $msgArray = array();
-                  $attachmentParts = array();
-                  $optParamsGet2['format'] = 'full';
-                  $single_message = $service->users_messages->get($userId, $message_id, $optParamsGet2);
-                  $payload = $single_message->getPayload();
-                  $headers = $payload->getHeaders();
-                  $snippet = $single_message->getSnippet();
-                  $date = getHeader($headers, 'Date');
-                  $subject = getHeader($headers, 'Subject');
-                  $from = getHeader($headers, 'From');
-                  $fromHTML = htmlentities($from);
-                  if (($pos = strpos($fromHTML, "@")) !== FALSE) {
-                    preg_match_all("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $fromHTML, $matches);
-                    $fromAddress = $matches[0];
-                    $domain = get_email_domain($matches[0]);
-                  }
-
-                  $msgArray[] = $date;
-                  $msgArray[] = $domain;
-                  $msgArray[] = $subject;
-                  $msgArray[] = $fromHTML;
-                  $msgArray[] = $date;
-
-                  // With no attachment, the payload might be directly in the body, encoded.
-                  $body = $payload->getBody();
-                  $FOUND_BODY = decodeBody($body['data']);
-
-                  // If we didn't find a body, let's look for the parts
-                  if(!$FOUND_BODY) {
-                    $parts = $payload->getParts();
-                    foreach ($parts as $part) {
-                      if($part['partId'] > '0' && $part['mimeType'] !== 'text/plain') {
-                        //array_push($attachmentParts,$part['partId'],$part['filename']);
-                        $attachmentParts[] = array($part['partId'],$part['filename']);
-                      }
-                      if($part['body'] && $part['mimeType'] == 'text/plain' ||  $part['mimeType'] == 'text/html') {
-                        $FOUND_BODY = decodeBody($part['body']->data);
-                        // break;
-                      }
+                function getMessage2($service, $userId, $message_id) {
+                  try {
+                    $msgArray = array();
+                    $attachmentParts = array();
+                    $optParamsGet2['format'] = 'full';
+                    $single_message = $service->users_messages->get($userId, $message_id, $optParamsGet2);
+                    $payload = $single_message->getPayload();
+                    $headers = $payload->getHeaders();
+                    $snippet = $single_message->getSnippet();
+                    $date = getHeader($headers, 'Date');
+                    $subject = getHeader($headers, 'Subject');
+                    $from = getHeader($headers, 'From');
+                    $fromHTML = htmlentities($from);
+                    if (($pos = strpos($fromHTML, "@")) !== FALSE) {
+                      preg_match_all("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $fromHTML, $matches);
+                      $fromAddress = $matches[0];
+                      $domain = get_email_domain($matches[0]);
                     }
-                    $msgArray[] = $attachmentParts;
-                  } 
-                  // if(!$FOUND_BODY) {
-                  //   foreach ($parts  as $part) {
-                  //     // Last try: if we didn't find the body in the first parts,
-                  //     // let's loop into the parts of the parts (as @Tholle suggested).
-                  //     if($part['parts'] && !$FOUND_BODY) {
-                  //       foreach ($part['parts'] as $p) {
-                  //         // replace 'text/html' by 'text/plain' if you prefer
-                  //         if($p['mimeType'] === 'text/plain' && $p['body']) {
-                  //           $FOUND_BODY = decodeBody($p['body']->data);
-                  //           break;
-                  //         }
-                  //       }
-                  //     }
-                  //     if($FOUND_BODY) {
-                  //       break;
-                  //     }
-                  //   }
-                  // }
-                  // $msgArray[] = $FOUND_BODY;
 
-                } catch (Exception $e) {
-                    //echo $e->getMessage();
-                    echo '<div style="width:100%;font-size: 18px;font-weight:200;margin-left:10px;margin-top:25px;">Maintenance Entry created from a different <b>base</b> Email Account (See Settings)</div>';
+                    $msgArray[] = $date;
+                    $msgArray[] = $domain;
+                    $msgArray[] = $subject;
+                    $msgArray[] = $fromHTML;
+                    $msgArray[] = $date;
+
+                    // With no attachment, the payload might be directly in the body, encoded.
+                    $body = $payload->getBody();
+                    $FOUND_BODY = decodeBody($body['data']);
+
+                    // If we didn't find a body, let's look for the parts
+                    if(!$FOUND_BODY) {
+                      $parts = $payload->getParts();
+                      foreach ($parts as $part) {
+                        if($part['partId'] > '0' && $part['mimeType'] !== 'text/plain') {
+                          //array_push($attachmentParts,$part['partId'],$part['filename']);
+                          $attachmentParts[] = array($part['partId'],$part['filename']);
+                        }
+                        if($part['body'] && $part['mimeType'] == 'text/plain' ||  $part['mimeType'] == 'text/html') {
+                          $FOUND_BODY = decodeBody($part['body']->data);
+                          // break;
+                        }
+                      }
+                      $msgArray[] = $attachmentParts;
+                    } 
+                    // if(!$FOUND_BODY) {
+                    //   foreach ($parts  as $part) {
+                    //     // Last try: if we didn't find the body in the first parts,
+                    //     // let's loop into the parts of the parts (as @Tholle suggested).
+                    //     if($part['parts'] && !$FOUND_BODY) {
+                    //       foreach ($part['parts'] as $p) {
+                    //         // replace 'text/html' by 'text/plain' if you prefer
+                    //         if($p['mimeType'] === 'text/plain' && $p['body']) {
+                    //           $FOUND_BODY = decodeBody($p['body']->data);
+                    //           break;
+                    //         }
+                    //       }
+                    //     }
+                    //     if($FOUND_BODY) {
+                    //       break;
+                    //     }
+                    //   }
+                    // }
+                    // $msgArray[] = $FOUND_BODY;
+
+                  } catch (Exception $e) {
+                      //echo $e->getMessage();
+                      echo '<div style="width:100%;font-size: 18px;font-weight:200;margin-left:10px;margin-top:25px;">Maintenance Entry created from a different <b>base</b> Email Account (See Settings)</div>';
+                  }
+                    return $msgArray;
+                  }
+                
+                if($gmid != '') {
+                  $msgInfo = getMessage2($service2, $user, $gmid);
                 }
-                  return $msgArray;
-                }
-
-
-                $msgInfo = getMessage2($service2, $user, $gmid);
 
                 $otitlestring = 'Edit';
                 $omaileingang = $msgInfo[0];
@@ -344,13 +347,6 @@ global $dbhandle;
                     $olieferantID = $row['id'];
                   }
                 }
-
-                // for self-created maintenances without incoming mail
-                // if (isnull($olieferantDomain)) {
-                //   $olieferantDomain = ' ';
-                //   $msubject = ' ';
-                //   $mfrom = ' ';
-                // }
 
                 $msubject = $msgInfo[2];
                 $mfrom = $msgInfo[3];
@@ -397,7 +393,14 @@ global $dbhandle;
                 $workers2 = array_values($workers2);
               }
 
-              
+              // for self-created maintenances without incoming mail
+              if (!isset($olieferantDomain)) {
+                $olieferantDomain = ' ';
+                $msubject = ' ';
+                $mfrom = ' ';
+                $mdate = ' ';
+                // $msgInfo = '';
+              }
 
             ?>
 
@@ -423,7 +426,7 @@ global $dbhandle;
               <input type="hidden" value="<?php echo $omaintid ?>" id="maintid">
               <div class="mdl-cell mdl-cell--6-col">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  <input class="mdl-textfield__input" type="text" value="<?php echo $omaileingang ?>" id="medt">
+                  <input class="mdl-textfield__input" type="text" value="<?php if (isset($omaileingang)) { echo $omaileingang; } else { echo $nowDT; } ?>" id="medt">
                   <label class="mdl-textfield__label" for="medt">Maileingang Date/Time</label>
                 </div>
               </div>
@@ -540,17 +543,17 @@ global $dbhandle;
                     <?php
                     if (isset($_GET['update'])):
                     ?>
-                    <option value="<?php echo $usernameBV ?>"><?php echo $usernameBV ?></option>
-                    <option value="<?php echo $workers[0] ?>"><?php echo $workers[0] ?></option>
-                    <option value="<?php echo $workers[1] ?>"><?php echo $workers[1] ?></option>
-                    <option value="<?php echo $workers[2] ?>"><?php echo $workers[2] ?></option>
-                    <?php
-                    else:
-                    ?>
                     <option selected value="<?php echo $obearbeitetvon ?>"><?php echo $obearbeitetvon ?></option>
                     <option value="<?php echo $workers2[0] ?>"><?php echo $workers2[0] ?></option>
                     <option value="<?php echo $workers2[1] ?>"><?php echo $workers2[1] ?></option>
                     <option value="<?php echo $workers2[2] ?>"><?php echo $workers2[2] ?></option>
+                    <?php
+                    else:
+                    ?>
+                    <option value="<?php echo $usernameBV ?>"><?php echo $usernameBV ?></option>
+                    <option value="<?php echo $workers[0] ?>"><?php echo $workers[0] ?></option>
+                    <option value="<?php echo $workers[1] ?>"><?php echo $workers[1] ?></option>
+                    <option value="<?php echo $workers[2] ?>"><?php echo $workers[2] ?></option>
                     <?php
                     endif
                     ?>
@@ -620,7 +623,7 @@ global $dbhandle;
               <input type="hidden" value="<?php echo $update ?>" id="update">
               <input type="hidden" value="<?php echo $omailSentAt ?>" id="mailSentAt">
               <input type="hidden" value="<?php echo $_COOKIE['label'] ?>" id="gmailLabel">
-              <input type="hidden" value="<?php echo $msgInfo[1] ?>" id="mailDomain">
+              <input type="hidden" value="<?php if(isset($msgInfo)) { echo $msgInfo[1]; } ?>" id="mailDomain">
               <input type="hidden" value="<?php echo $activeID ?>" id="activeMID">
             </div>
             </form>
@@ -643,13 +646,14 @@ global $dbhandle;
           </div>
           <div class="mailHider">
           <?php
-          if ($msubject != '') {
+          if (isset($msubject)) {
             echo '<div id="mailDialog" class="mailDialog1" style="">
                   <div class="mailcSelectHeader">
                   <h6 class="labelSelectLabel"><font color="#67B246">Sub:</font> ' . $msubject . '</h6><br>
                   <h6 class="sublabelSelectLabel"><font color="#67B246">From:</font> ' . $mfrom . '</h6><br>
                   <h6 class="sublabelSelectLabel"><font color="#67B246">Date:</font> ' . $mdate . '</h6>';
 
+                  if(isset($msgInfo)) {
                   $attachmentParts2 = $msgInfo[5];
                   if ($attachmentParts2[0][1] !== '') {
                     echo '<div style="margin-top:-30px;float:right;text-align:right;z-index:1000;position:relative;">
@@ -661,6 +665,10 @@ global $dbhandle;
                       echo '<div style="margin-top:-30px;float:right;text-align:right;z-index:1000;position:relative;">
                       <font style="color:#4c4c4c"></font><br>';
                     }
+                  }else {
+                    echo '<div style="margin-top:-30px;float:right;text-align:right;z-index:1000;position:relative;">
+                    <font style="color:#4c4c4c"></font><br>';
+                  }
                   echo '</div><br><br></div>
                   <div class="mdl-dialog__content">
                   <p>
@@ -668,7 +676,7 @@ global $dbhandle;
                       <div class="mailWrapper0">
                         <div class="mdl-textfield mdl-js-textfield mailWrapper1">
                           <div style="display:inline-block !important;height: 100%;margin-top: 20px;" class=" mailWrapper2">
-                            <iframe class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0"  id="emailBodyFrame" src="https://maintenance.newtelco.de/msg/' . $oreceivedmail . '.html"></iframe>
+                            <iframe onload="resizeIframe(this)" class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0"  id="emailBodyFrame" src="https://maintenance.newtelco.de/msg/' . $oreceivedmail . '.html"></iframe>
                           </div>
                         </div>
                       </div>
@@ -727,7 +735,7 @@ global $dbhandle;
               <i class="material-icons">close</i>
             </button>
           </div>
-          <div class="mdl-dialog__content">
+          <div id="gridWrapper" class="mdl-dialog__content">
             
             <p>
               <div id="gridctr"></div>
@@ -747,6 +755,13 @@ global $dbhandle;
         </dialog>
         
       <script>
+  function resizeIframe(obj) {
+    obj.height = obj.contentWindow.document.body.scrollHeight;
+    obj.width = obj.contentWindow.document.body.scrollWidth;
+
+    obj.style.height = obj.contentWindow.document.body.scrollHeight+"px";
+    obj.style.width = obj.contentWindow.document.body.scrollWidth+"px";
+  }
 
 $('#btnShowSent').click(function(){
 
@@ -819,7 +834,6 @@ $('#addCalbtn').click(function(){
   var calEDTISO2 = calEDTISO.replace('000Z','Z');
 
   var selectedDCID = $( "#dcid3 option:selected" ).text().trim();
-
 
   var selectedDCIDAr = $('#dcid3').select2('data');
   var selectedDCIDar2 = [];
@@ -1332,12 +1346,10 @@ $('#btnSave').on('click', function(e) {
     *********************/
 
     var showDialogButton = document.querySelector('#viewmailbtn');
-    // var dialog = document.querySelector('#mailDialog');
     var dialog = $('#mailDialog').get(0).outerHTML;
     
     showDialogButton.addEventListener('click', function() {
-      // $('.mailDialog1').css('display','inherit');
-      jsPanel.create({
+      var msgPanel = jsPanel.create({
           theme:       'rgba(66,66,66,.7)',
           border: "3px solid",
           borderRadius: 8,
@@ -1346,96 +1358,85 @@ $('#btnSave').on('click', function(e) {
           headerTitle: 'Mail Preview',
           position:    'right-center -20 0',
           contentSize: '48% 75%',
-          content:     dialog,
+          overflow: {vertical: 'scroll', horizontal: 'scroll'},
+          content:  dialog,
           animateIn:    'animated fadeIn',
           animateOut:   'animated zoomOut',
           callback: function () {
             this.content.style.padding = '20px';
+            $('.attachmentLink').on('click', function(e) {
+              var targetText = $('.attachmentLink').text();
+              if (targetText.indexOf("xls") >= 0) {
+                var xlsDialog = $('#gridWrapper').get(0).outerHTML;
+                var xlsWrapper = document.createElement('div');
+                xlsWrapper.id = 'xlsWrapper';
+                e.preventDefault();
+                if ($('canvas-datagrid').length == '0') {
+                  var url = $('.attachmentLink').attr('href');
+                  $('.xlsDownload').attr('href', url);
+                  var req = new XMLHttpRequest();
+                  req.open("GET", url, true);
+                  req.responseType = "arraybuffer";
+                  req.onload = function(e) {
+                    /* parse the data when it is received */
+                    var data = new Uint8Array(req.response);
+                    var workbook = XLSX.read(data, {type:"array"});
+                    /* DO SOMETHING WITH workbook HERE */
+                    var grid = canvasDatagrid({
+                      parentNode: document.getElementById('gridctr'),
+                      data: []
+                    });
+                    var ws = workbook.Sheets[workbook.SheetNames[0]];
+                    grid.data = XLSX.utils.sheet_to_json(ws, {header:1});
+                    // grid.style.height = auto;
+                    grid.style.width = '100%';
+                    $('#gridctr').height('180px');
+                  };
+                  req.send();
+                }
+                setTimeout(function() { 
+                var xlsPanel = jsPanel.create({
+                    theme:       'rgba(66,66,66,.7)',
+                    border: "3px solid",
+                    borderRadius: 8,
+                    closeOnEscape: true,
+                    boxShadow: 4,
+                    headerTitle: 'Excel Content',
+                    position:    'right-center -20 0',
+                    contentSize: '38% 35%',
+                    content:     xlsWrapper,
+                    animateIn:    'animated fadeIn',
+                    animateOut:   'animated zoomOut',
+                    callback: function() {
+                        var e = document.getElementById('xlsWrapper');
+                        var s = document.getElementById('gridctr');
+                        e.appendChild(s);
+                    }
+                });
+
+                xlsPanel.dock({
+                    master: msgPanel,
+                    position: {my:'right-top', at:'left-top', offsetX:-5},
+                    linkSlaveHeight: false,
+                    linkSlaveWidth: false
+                });
+
+                },800);
+              
+              }
+            });
           }
       });
 
       OverlayScrollbars(document.getElementsByClassName("jsPanel-content"), {
-        className       : "os-theme-dark",
+        className       : "os-theme-minimal-dark",
         resize          : "vertical"
       });
     });
     
-    // var dialog = document.querySelector('#mailDialog');
-    // var showDialogButton = document.querySelector('#viewmailbtn');
-    // if (! dialog.showModal) {
-    //   dialogPolyfill.registerDialog(dialog);
-    // }
-    // showDialogButton.addEventListener('click', function() {
-    //   dialog.showModal();
-    // });
-    // dialog.querySelector('.close1').addEventListener('click', function() {
-    //   dialog.close();
-    // });
-
-    /*********************
-    *  XLS Preview
-    *********************/
-
-    // var dialog2 = $('#xlsDialog').get(0).outerHTML;
-    // var showDialogButton2 = document.querySelectorAll('.attachmentLink');
-    // if (! dialog2.showModal) {
-    //   dialogPolyfill.registerDialog(dialog2);
-    // }
-    // for (var i = 0; i < showDialogButton2.length; i++) {
-    //   var link = showDialogButton2[i];
-    //   if (link.innerHTML.indexOf('xls') >= 0) {
-    //     showDialogButton2.forEach(function(elem) {
-    //       elem.addEventListener('click', function(e) {
-    //         var targetText = $(e.target).text();
-    //         if (targetText.indexOf("xls") >= 0) {
-    //           dialog2.showModal();
-    //         };
-    //       });
-    //     });
-    //   };
-    // }
-    
-    // dialog2.querySelector('.close2').addEventListener('click', function() {
-    //   dialog2.close();
-    // });
   }
 
-  $('.attachmentLink').on('click', function(e) {
-    //console.log($(this).text());
-    var targetText = $(e.target).text();
-    var title = $(this).text();
-    if (targetText.indexOf("xls") >= 0) {
-      e.preventDefault();
-
-      $('#xlsTitle').text($(this).text());
-
-      if ($('canvas-datagrid').length == '0') {
-        var url = $(this).attr('href');
-        $('.xlsDownload').attr('href', url);
-        var req = new XMLHttpRequest();
-        req.open("GET", url, true);
-        req.responseType = "arraybuffer";
-        req.onload = function(e) {
-          /* parse the data when it is received */
-          var data = new Uint8Array(req.response);
-          var workbook = XLSX.read(data, {type:"array"});
-          /* DO SOMETHING WITH workbook HERE */
-          //console.log(workbook);
-          var grid = canvasDatagrid({
-            parentNode: document.getElementById('gridctr'),
-            data: []
-          });
-          var ws = workbook.Sheets[workbook.SheetNames[0]];
-          grid.data = XLSX.utils.sheet_to_json(ws, {header:1});
-          grid.style.height = '150%';
-          grid.style.width = '100%';
-          $('#gridctr').height('180px');
-        };
-        req.send();
-      }
-      
-    }
-  });
+  
 
   document.addEventListener("DOMContentLoaded", function() {
 
@@ -1502,7 +1503,7 @@ $('#btnSave').on('click', function(e) {
       var body = '<style>.grayText10{​​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:131px}.tdSizing2{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624px}</style><body style="​​padding:0;margin:0;​​​" class="grayText10"><div​​ ​style="​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266" class="grayText10"​​>Dear Colleagues,​​<p><span>We would like to inform you about planned work on the CID ​' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"> <tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span class="grayText10">' + startTimeLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr><tr> <td class="tdSizing"> <p style="margin-​​bottom:12.0pt"><span class="grayText10">Finish date and time:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span​​ class="grayText10">​​' + endTimeLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr>'
       
       if (impact != '') {
-        body += '<tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Impact:</span></p></td><td class="tdSizing2"> <p style="margi​​n-bottom:12.0pt;text-align:justify"><span>' + impact + '</span></p></td></tr>';
+        body += '<tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Impact:</span></p></td><td class="tdSizing2"> <p style="margi​​n-bottom:12.0pt;text-align:justify"><span class="grayText10">' + impact + '</span></p></td></tr>';
       }
       
       if (location != '') {
@@ -1510,7 +1511,7 @@ $('#btnSave').on('click', function(e) {
       }
       
       if (reason != '') {
-        body += '<tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Reason:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span>' + reason + '</span></p></td></tr>';
+        body += '<tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"><span class="grayText10">Reason:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><span class="grayText10">' + reason + '</span></p></td></tr>';
       }
       
       body += '</table><p><span>We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</span></p><p><span>If you have any questions feel free to contact us at maintenance@newtelco.de.</span></p>​​</body>​​<footer>​<style>.sig{font-family: Century Gothic, sans-serif;font-size: 9pt;color: #636266 !important;}b{color: #4ca702;}.gray{color: #636266 !important;}a{text-decoration: none;color: #636266 !important;}</style><div class="sig"><br><div>Best regards | Mit freundlichen Grüßen</div><br><div><b class="gray">Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b>|</b> Mainzer Landstr. 351-353 <b>|</b> 60326 Frankfurt a.M. <b>|</b> DE <br>www.newtelco.com <b>|</b> 24/7 NOC  49 69 75 00 27 30 ​​<b>|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" alt="" height="29" width="516"></div></div>​</footer>';
@@ -1564,7 +1565,7 @@ $('#btnSave').on('click', function(e) {
       }
       });
       OverlayScrollbars(document.getElementById("mailDialog"), {
-        className       : "os-theme-dark",
+        className       : "os-theme-minimal-dark",
         resize          : "both",
         sizeAutoCapable : true
       });
@@ -1628,6 +1629,8 @@ $('#btnSave').on('click', function(e) {
 
   <!-- overlay scrollbars css -->
   <link type="text/css" href="dist/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+  <link type="text/css" href="dist/css/os-theme-minimal-dark.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">
+
 </body>
 
 

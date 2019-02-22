@@ -56,8 +56,8 @@ table {
 
 #loading-image {
   position: absolute;
-  top: 30%;
-  left: 35%;
+  top: 23%;
+  left: 28%;
   height: 50%;
   width: auto;
   z-index: 100;
@@ -328,10 +328,10 @@ base-chart.chart {
   cursor: pointer !important;
 }
 
-/* maintenance rank */
+/* maintenance  */
 
 .fwaRank, .aliRank, .sstRank {
-  /* display: none; */
+  display: none;
 }
 
 .fwaRank {
@@ -1084,6 +1084,10 @@ textarea.mdl-textfield__input {
   height: 100% !important;
 }
 
+.mailWrapper2 > iframe {
+  overflow: visible;
+}
+
 .labelSelectClose {
   position:relative !important;
   top:-50px;
@@ -1154,8 +1158,14 @@ textarea.mdl-textfield__input {
 }
 
 #gridctr {
-  margin-top: -50px;
+  /* margin-top: -50px; */
   width: 93%;
+  height: 100%;
+}
+
+#xlsWrapper {
+  height: 75%;
+
 }
 /* incoming */
 
@@ -1464,6 +1474,10 @@ tr.strikeout td:before {
   height: 100%;
 }
 
+.gridWrapper {
+  height: 75%;
+}
+
 /* Menu */
 
 .menu_userdetails {
@@ -1756,15 +1770,11 @@ tr.strikeout td:before {
 #firmenTable {
   height: auto;
 }
-
-#kundenTable {
-  height: 30vh;
-}
-
 .tableWrapper1 {
   margin-top: 20px;
-  width: auto;
-  padding: 5%;
+  /* width: auto; */
+  /* padding: 5%; */
+  /* height:100%; */
 }
 
 .searchWrapper {

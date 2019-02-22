@@ -30,6 +30,12 @@ if (isset($_POST['endlabel'])) {
   <!-- handsontable -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/handsontable.min.js"></script>
 
+  <!-- tabulator -->
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/tabulator/tabulator.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/tabulator/edit.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/tabulator/filter.js"></script>
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/tabulator/responsive_layout.js"></script>
+
   <!-- material design -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/material.min.js"></script>
 
@@ -70,10 +76,15 @@ if (isset($_POST['endlabel'])) {
               <div class="bar arrow-bottom"></div>
             </div>
           </div>
-          <div class="mdl-layout-title2 hvr-grow">
+          <div class="mdl-layout-title2 hvr-grow"> 
             <a href="index.php"><img style="margin-right: 10px" src="dist/images/nt_square32_2_light2.png"/></a>
             <span class="mdl-layout-title">Maintenance</span>
           </div>
+          <script>
+            $(".mdl-layout-title2").click(function(){
+              window.location.replace("https://maintenance.newtelco.de/index");
+            });
+          </script>
           <div class="mdl-layout-spacer"></div>
           <div class="menu_userdetails">
             <button id="user-profile-menu" class="mdl-button mdl-js-button mdl-userprofile-button">
@@ -264,19 +275,12 @@ if (isset($_POST['endlabel'])) {
                   <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnAddF">
                     Add Company
                   </div>
-                  <br><br>
-                  <button id="btnUpdateF" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important; float:right;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-                    <i class="material-icons">save</i>
-                  </button>
-                  <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnUpdateF">
-                    Save Changes
-                  </div>
                 </div>
                 <div class="tableWrapper1">
                   <div class="searchWrapper">
-                    Search: <input type="text" id="firmenSearch"/>
+                    Search: <input type="search" id="firmenSearch"/>
                   </div><br><br>
-                  <div id="firmenTable"></div>
+                  <div id="firmenTable" class="hot handsontable htRowHeaders htColumnHeaders"></div>
                 </div>
               </div>
               <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
@@ -297,19 +301,15 @@ if (isset($_POST['endlabel'])) {
                   <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnAddL">
                     Add Lieferant CID
                   </div>
-                  <br><br><br>
-                  <button id="btnUpdateL" style="top: -80px; display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important; float:right;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-                    <i class="material-icons">save</i>
-                  </button>
-                  <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnUpdateL">
-                    Save Changes
-                  </div>
                 </div>
-                <div class="tableWrapper1">
+                <br>
+                <br>
+
+                <div class="tableWrapper2">
                   <div class="searchWrapper">
                     Search: <input type="text" id="lieferantenSearch"/>
                   </div><br><br>
-                  <div id="lieferantenTable"></div>
+                  <div id="lieferantenTable" class="hot handsontable htRowHeaders htColumnHeaders"></div>
                 </div>
               </div>
               <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
@@ -330,19 +330,15 @@ if (isset($_POST['endlabel'])) {
                   <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnAddK">
                     Add Kunden CID
                   </div>
-                  <br><br><br>
-                  <button id="btnUpdateK" style="top: -80px; display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important; float:right;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-                    <i class="material-icons">save</i>
-                  </button>
-                  <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnUpdateK">
-                    Save Changes
-                  </div>
                 </div>
-                <div class="tableWrapper1">
+                <br>
+                <br>
+                <div class="tableWrapper3">
                   <div class="searchWrapper">
                     Search: <input type="text" id="kundenSearch"/>
-                  </div><br><br>
-                  <div id="kundenTable"></div>
+                  </div>
+                  <br><br>
+                  <div id="kundenTable" class="hot handsontable htRowHeaders htColumnHeaders"></div>
                 </div>
               </div>
               <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
@@ -704,11 +700,10 @@ if (isset($_POST['endlabel'])) {
             var kAdd_company = $('#sAddK_cid').val();
             var kAdd_dCID = $('#sAddK_cid1').val();
             var kAdd_ntCID = $('#sAddK_cid2').val();
-            var kAdd_p = '';
 
-            if ($('#prot0').is(':checked') == 'true') {
+            if ($('#prot0').is(':checked') == true) {
               var kAdd_p = '0';
-            } else if ($('#prot1').is(':checked') == 'true') {
+            } else if ($('#prot1').is(':checked') == true) {
               var kAdd_p = '1';
             }
             
@@ -824,128 +819,480 @@ if (isset($_POST['endlabel'])) {
             dialog4.close();
           });
 
+          function matchAny(data, filterParams){
+              //data - the data for the row being filtered
+              //filterParams - params object passed to the filter
+
+              var match = false;
+
+              for(var key in data){
+                  if(data[key] == filterParams.value){
+                      match = true;
+                  }
+              }
+
+              return match;
+          }
+
+          Tabulator.prototype.extendModule("filter", "filters", {
+              "===":function(headerValue, rowValue, rowData, filterParams){
+                  //headerValue - the value of the header filter element
+                  //rowValue - the value of the column in this row
+                  //rowData - the data for the row being filtered
+                  //filterParams - params object passed to the headerFilterFuncParams property
+
+                  return rowVal === headerValue ? true : false;
+              }
+          });
+
+          Tabulator.prototype.extendModule("format", "formatters", {
+              protected:function(cell, formatterParams){
+                if (cell.getValue() == 0) {
+                  return 'Unprotected';
+                } else {
+                  return 'Protected';
+                }
+                  // return "<img class='fileicon' src='/images/fileicons/" + cell.getValue() + ".png'></img>";
+              },
+          });
+
          $('#firmenTab').click(function(){
 
          /*****************
           *
           *  FIRMEN Table
-          *
+          *                                                                                                                               
           ******************/
 
-          var container = document.getElementById('firmenTable');
-          var hot = new Handsontable(container, {
-             rowHeaders: true,
-             colHeaders: true,
-             contextMenu: true,
-             colWidths: [25, 100, 100, 320],
-             columnSorting: true,
-             colHeaders: ['ID', 'Name', 'Mail Domain', 'Maintenance Recipient'],
-             columns: [
-              {data: 'id', editor:false},
-              {data: 'name'},
-              {data: 'mailDomain'},
-              {data: 'maintenanceRecipient'}
-             ],
-             stretchH: 'all',
-             manualColumnResize: true,
-             manualRowResize: true,
-             comments: true,
-             autoWrapRows: true,
-             preventOverflow: 'horizontal',
-             filters: true,
-             dropdownMenu: true,
-             renderAllRows: true,
-             search: true,
-             search: {
-               searchResultClass: 'searchResultClass'
-             }
-          });
+          
+          if ($('#firmenTable').html() == '') {
 
-          hot.addHook('afterChange', function(change,source) {
-          const commentsPlugin = hot.getPlugin('comments');
-            commentsPlugin.setRange({from: {row: 0, col: 3}});
-            commentsPlugin.setComment('Multiple recipients should be separated by semicolon (";")');
-            commentsPlugin.show();
-             //    $.ajax('save?firmen=1', 'GET', JSON.stringify({changes: change}), function (res) {
-             //      var response = JSON.parse(res.response);
-             //      if (response.result === 'ok') {
-             //         console.log("Data saved");
-             //      }
-             //      else {
-             //         console.log("Saving error");
-             //      }
-             // });
-          });
-
-          // Save
-          $("#btnUpdateF").click(function () {
-            var tableData = JSON.stringify(hot.getData());
-            $.ajax({
-              type: 'POST',
-              url: "api?sfirmen=1",
-              data: tableData,
-              contentType: "application/json; charset=utf-8",
-              dataType: 'json',
-              success: function (res1) {
-                if (res1.updated < 0) {
-                  var snackbarContainer3 = document.querySelector('#firmenUpdated');
-                  var dataFirmenUpdated2 = {
-                    message: 'No Changes Made',
-                    timeout: 2000
-                  };
-                  snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
-                } else if (res1.updated > 0) {
-                    var snackbarContainer2 = document.querySelector('#firmenUpdated');
-                    var dataFirmenUpdated = {
-                      message: 'Successfully Updated ' + res1.updated + ' entries',
-                      timeout: 2000
-                    };
-                    snackbarContainer2.MaterialSnackbar.showSnackbar(dataFirmenUpdated);
-                }
+            var firmenTable = '';
+            var firmenData = $.ajax({
+              type: "GET",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
               },
-              error: function (xhr) {
-                  alert(xhr.responseText);
+              'url':'api?firmen=1',
+              'success': function (data) {
+                var firmenTable = new Tabulator("#firmenTable", {
+                  data:data,           //load row data from array
+                  layout:"fitColumns",      //fit columns to width of table
+                  responsiveLayout:"hide",  //hide columns that dont fit on the table
+                  tooltips:true,            //show tool tips on cells
+                  addRowPos:"top",          //when adding a new row, add it to the top of the table
+                  history:true,             //allow undo and redo actions on the table
+                  resizableRows:true,       //allow row order to be changed
+                  initialSort:[             //set the initial sort order of the data
+                    {column:"name", dir:"asc"},
+                  ],
+                  columns:[                 //define the table columns
+                    {title:"ID", field:"id", width:50, editor:false},
+                    {title:"name", field:"name", width:195, editor:"input"},
+                    {title:"mailDomain", field:"mailDomain", width:250, editor:"input"},
+                    {title:"maintenanceRecipient", field:"maintenanceRecipient", editor:"input"}
+                  ],
+                  cellEdited:function(cell) {
+                    $.ajax({
+                      url: "api.php?updateFirmen",
+                      data: cell.getRow().getData(),
+                      type: "get",
+                      success: function(response, textstatus, xhr) {
+                        var snackbarContainer3 = document.querySelector('#firmenUpdated');
+                        var dataFirmenUpdated2 = {
+                          message: 'Firmen Updated',
+                          timeout: 2000
+                        };
+                        snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
+                      },
+                      error: function(XMLHttpRequest, textstatus, error) {
+                        alert("AJAX error: " + textstatus + "; " + error);
+                      }
+                    })
+                  }
+                });
+
+                $('#firmenSearch').on('change', function(data) {
+                  var firmenSearchQuery = $('#firmenSearch').val();
+                  // $('#firmenTable').tabulator("setFilter",matchAny,{value:firmenSearchQuery});
+                  console.log(data);
+                  console.log(firmenSearchQuery);
+                  firmenTable.setFilter("name","=",firmenSearchQuery);
+                })
+
+              },
+              'error': function () {
+                console.log("Loading error");
               }
             });
-            $("#btnUpdate").blur();
-          });
 
-          // Search
-          searchField = document.getElementById('firmenSearch');
-          Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
-            var search = hot.getPlugin('search');
-            var queryResult = search.query(this.value);
 
-            console.log(queryResult);
-            hot.render();
-          });
 
-          // Load
-          $.ajax({
+            // $('#firmenSearch').on('change', function(data) {
+            //   var firmenSearchQuery = $('#firmenSearch').val();
+            //   // $('#firmenTable').tabulator("setFilter",matchAny,{value:firmenSearchQuery});
+            //   firmenTable.setFilter("name","=",firmenSearchQuery);
+            // })
+
+
+
+
+            // var hot = new Handsontable(container, {
+            //   rowHeaders: true,
+            //   colHeaders: true,
+            //   contextMenu: true,
+            //   colWidths: [25, 100, 100, 320],
+            //   columnSorting: true,
+            //   colHeaders: ['ID', 'Name', 'Mail Domain', 'Maintenance Recipient'],
+            //   columns: [
+            //     {data: 'id', readonly:true},
+            //     {data: 'name'},
+            //     {data: 'mailDomain'},
+            //     {data: 'maintenanceRecipient'}
+            //   ],
+            //   stretchH: 'all',
+            //   manualColumnResize: false,
+            //   manualRowResize: false,
+            //   comments: true,
+            //   // autoWrapRows: true,
+            //   // filters: true,
+            //   // dropdownMenu: true,
+            //   // viewportColumnRenderingOffset: 100,
+            //   renderAllRows: true,
+            //   search: true,
+            //   search: {
+            //     searchResultClass: 'searchResultClass'
+            //   }
+            // });
+                
+
+            // var firmenDataJson = '';
+            // var firmenData = $.ajax({
+            //   type: "GET",
+            //   headers: {
+            //     'Accept': 'application/json',
+            //     'Content-Type': 'application/json'
+            //   },
+            //   'url':'api?firmen=1',
+            //   'success': function (data) {
+            //     // firmenDataJson = res;
+            //     // firmenDataJson = data.responseText; 
+            //     console.log(data);
+            //     hot.loadData(data);
+            //     hot.render();
+            //     var calculatedRowHeight = 29 * (data.length);
+            //     console.log(data.length);
+            //     console.log(calculatedRowHeight);
+            //     // $('#firmenTable').css('height',calculatedRowHeight);
+            //     hot.updateSettings({
+            //       height: calculatedRowHeight
+            //     });
+            //   },
+            //   'error': function () {
+            //     console.log("Loading error");
+            //   }
+            // });
+            // // console.log(firmenData);
+            // // console.log(firmenDataJson);
+
+           
+            
+            // // hot.updateSettings({
+            // //   columns: getNewColumns(firmenDataJson)
+            // // });
+
+
+            // hot.addHook('afterChange', function(change,source) {
+            // const commentsPlugin = hot.getPlugin('comments');
+            //   commentsPlugin.setRange({from: {row: 0, col: 3}});
+            //   commentsPlugin.setComment('Multiple recipients should be separated by semicolon (";")');
+            //   commentsPlugin.show();
+            //   //    $.ajax('save?firmen=1', 'GET', JSON.stringify({changes: change}), function (res) {
+            //   //      var response = JSON.parse(res.response);
+            //   //      if (response.result === 'ok') {
+            //   //         console.log("Data saved");
+            //   //      }
+            //   //      else {
+            //   //         console.log("Saving error");
+            //   //      }
+            //   // });
+            // });
+
+            // Load
+            // $.ajax({
+            //   type: "GET",
+            //   headers: {
+            //     'Accept': 'application/json',
+            //     'Content-Type': 'application/json'
+            //   },
+            //   'url':'api?firmen=1',
+            //   'success': function (res) {
+            //     hot.loadData(res);
+            //     hot
+            //     hot.render();
+            //     // var firmenHeight = $('#firmenTable > .ht_master > .wtHolder > .wtHider').css( "height" );
+            //     // var firmenHeight = parseInt(firmenHeight) + 200;
+            //     // var firmenHeight = firmenHeight + "px";
+            //     // $('.tableWrapper1').css('height',firmenHeight);
+            //     // $('#firmenTable').css('height',firmenHeight);
+            //     // $('.ht_master').css('height',firmenHeight);
+            //     // $('.wtHolder').css('height',firmenHeight);
+            //     // $('.ht_clone_left').css("height",firmenHeight);
+            //   },
+            //   'error': function () {
+            //     console.log("Loading error");
+            //   }
+            // });
+          }
+        });
+
+        // Save
+        // $("#btnUpdateF").click(function () {
+        //   var tableData = JSON.stringify(hot.getData());
+        //   $.ajax({
+        //     type: 'POST',
+        //     url: "api?sfirmen=1",
+        //     data: tableData,
+        //     contentType: "application/json; charset=utf-8",
+        //     dataType: 'json',
+        //     success: function (res1) {
+        //       if (res1.updated < 0) {
+        //         var snackbarContainer3 = document.querySelector('#firmenUpdated');
+        //         var dataFirmenUpdated2 = {
+        //           message: 'No Changes Made',
+        //           timeout: 2000
+        //         };
+        //         snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
+        //       } else if (res1.updated > 0) {
+        //           var snackbarContainer2 = document.querySelector('#firmenUpdated');
+        //           var dataFirmenUpdated = {
+        //             message: 'Successfully Updated ' + res1.updated + ' entries',
+        //             timeout: 2000
+        //           };
+        //           snackbarContainer2.MaterialSnackbar.showSnackbar(dataFirmenUpdated);
+        //       }
+        //     },
+        //     error: function (xhr) {
+        //         alert(xhr.responseText);
+        //     }
+        //   });
+        //   $("#btnUpdate").blur();
+        // });
+
+        // Search
+        // searchField = document.getElementById('firmenSearch');
+        // Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
+        //   var search = hot.getPlugin('search');
+        //   var queryResult = search.query(this.value);
+
+        //   console.log(queryResult);
+        //   hot.render();
+        // });
+
+        $('#lieferantenTab').click(function(){
+
+        /*****************
+        *
+        *  LIEFERANT Table
+        *
+        ******************/
+
+        if ($('#lieferantenTable').html() == '') {
+          
+          var lieferantTableData = $.ajax({
             type: "GET",
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
-            'url':'api?firmen=1',
-            'success': function (res) {
-              hot.loadData(res);
-              hot.render();
-              var firmenHeight = $('#firmenTable > .ht_master > .wtHolder > .wtHider').css( "height" );
-              $('.tableWrapper1').css("height",firmenHeight);
-              $('#firmenTable').css("height",firmenHeight);
-              $('#firmenTable > .ht_master').css("height",firmenHeight);
-              $('#firmenTable > .ht_master > .wtHolder').css("height",firmenHeight);
-              $('#firmenTable > .ht_clone_left').css("height",firmenHeight);
-              $('#firmenTable > .ht_clone_left > .wtHolder').css("height",firmenHeight);
-              // $('footer').css("min-height","76px");
-              // $('footer').css("max-height","76px");
+            'url':'api?lieferanten=1',
+            'success': function (data) { 
+              var lieferantTable = new Tabulator("#lieferantenTable", {
+                data:data,           //load row data from array
+                layout:"fitColumns",      //fit columns to width of table
+                responsiveLayout:"hide",  //hide columns that dont fit on the table
+                tooltips:true,            //show tool tips on cells
+                addRowPos:"top",          //when adding a new row, add it to the top of the table
+                history:true,             //allow undo and redo actions on the table
+                resizableRows:true,       //allow row order to be changed
+                initialSort:[             //set the initial sort order of the data
+                  {column:"name", dir:"asc"},
+                ],
+                columns:[                 //define the table columns
+                  {title:"ID", field:"id", width:90, editor:false},
+                  {title:"Name", field:"name", width:295, editor:"select", editorParams:{
+                    values:true,
+                    sortValuesList:"asc",
+                  }},
+                  {title:"Deren CID", field:"derenCID", editor:"input"}
+                ],
+                cellEdited:function(cell) {
+                  $.ajax({
+                    url: "api.php?updateLieferanten",
+                    data: cell.getRow().getData(),
+                    type: "get",
+                    success: function(response, textstatus, xhr) {
+                      var snackbarContainer3 = document.querySelector('#firmenUpdated');
+                      var dataFirmenUpdated2 = {
+                        message: 'Lieferanten Updated',
+                        timeout: 2000
+                      };
+                      snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
+                    },
+                    error: function(XMLHttpRequest, textstatus, error) {
+                      alert("AJAX error: " + textstatus + "; " + error);
+                    }
+                  })
+                }
+              });
             },
             'error': function () {
               console.log("Loading error");
             }
           });
+          
+          
+          
+          
+          
+        //   var hot2 = new Handsontable(container2, {
+        //     rowHeaders: true,
+        //     colHeaders: true,
+        //     contextMenu: true,
+        //     colWidths: [10, 35, 120],
+        //     columnSorting: true,
+        //     colHeaders: ['ID', 'Lieferant', 'Deren CID'],
+        //     columns: [
+        //       {data: 'id', editor:false},
+        //       {data: 'name', type: 'dropdown', source: function (query, process) {
+        //         $.ajax({
+        //           //url: 'php/cars.php', // commented out because our website is hosted as a set of static pages
+        //           url: 'api?companies=1',
+        //           dataType: 'json',
+        //           data: {
+        //             query: query
+        //           },
+        //           success: function (response) {
+        //             console.log("response", response);
+        //             //process(JSON.parse(response.data)); // JSON.parse takes string as a argument
+        //             //process(JSON.parse(response[1]));
+        //             // process(JSON.parse(response.responseJSON));
+        //             return response;
+
+        //           }
+        //         });
+        //         }
+        //       },
+        //       {data: 'derenCID'}
+        //     ],
+        //     stretchH: 'all',
+        //     manualColumnResize: true,
+        //     manualRowResize: true,
+        //     comments: true,
+        //     autoWrapRows: true,
+        //     height: 'auto',
+        //     filters: true,
+        //     renderAllRows: true,
+        //     dropdownMenu: true,
+        //     search: true,
+        //     search: {
+        //       searchResultClass: 'searchResultClass'
+        //     },
+        //     //  afterChange: function (change, source) {
+        //     //      $.ajax('save?lieferant=1', 'GET', JSON.stringify({data: this.getData()}), function (res2) {
+        //     //        var response = JSON.parse(res2.response);
+        //     //
+        //     //        if (response.result === 'ok') {
+        //     //           console.log("Data saved");
+        //     //        }
+        //     //        else {
+        //     //           console.log("Saving error");
+        //     //        }
+        //     //   });
+        //     // }
+        //   });
+
+        //   // For Loading
+        //   $.ajax({
+        //     type: "GET",
+        //     headers: {
+        //       'Accept': 'application/json',
+        //       'Content-Type': 'application/json'
+        //     },
+        //     'url':'api?lieferanten=1',
+        //     'success': function (res2) {
+        //       hot2.loadData(res2);
+        //       hot2.render();
+        //       var lieferantenHeight = $('#lieferantenTable > .ht_master > .wtHolder > .wtHider').css( "height" );
+        //       var lieferantenHeight = parseInt(lieferantenHeight) + 200;
+        //       var lieferantenHeight = lieferantenHeight + "px";
+        //       $('.tableWrapper2').css('height',lieferantenHeight);
+        //       $('#lieferantenTable').css('height',lieferantenHeight);
+        //       $('.ht_master').css('height',lieferantenHeight);
+        //       $('.wtHolder').css('height',lieferantenHeight);
+        //       $('.ht_clone_left').css("height",lieferantenHeight);
+        //       //console.log('lieferantenHeight: ' + lieferantenHeight);
+        //       // $('.tableWrapper1').css("height",lieferantenHeight);
+        //       // $('#lieferantenTable').css("height",lieferantenHeight);
+        //       // $('#lieferantenTable > .ht_master').css("height",lieferantenHeight);
+        //       // $('#lieferantenTable > .ht_master > .wtHolder').css("height",lieferantenHeight);
+        //       // $('#lieferantenTable > .ht_clone_left').css("height",lieferantenHeight);
+        //       // $('#lieferantenTable > .ht_clone_left > .wtHolder').css("height",lieferantenHeight);
+        //       // $('footer').css("min-height","76px");
+        //       // $('footer').css("max-height","76px");
+        //     },
+        //     'error': function () {
+        //       console.log("Loading error");
+        //     }
+        //   })
+        }
+
         });
+
+        // searchField2 = document.getElementById('lieferantenSearch');
+        // Handsontable.dom.addEvent(searchField2, 'keyup', function (event) {
+        //   var search2 = hot2.getPlugin('search');
+        //   var queryResult2 = search2.query(this.value);
+
+        //   console.log(queryResult2);
+        //   hot2.render();
+        // });
+
+
+        // For Saving
+        $("#btnUpdateL").click(function () {
+          var tableData = JSON.stringify(hot2.getData());
+          $.ajax({
+            type: 'POST',
+            url: "api?sfirmen=2",
+            data: tableData,
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            success: function (res1) {
+              if (res1.updated < 0) {
+                var snackbarContainer3 = document.querySelector('#firmenUpdated');
+                var dataFirmenUpdated2 = {
+                  message: 'No Changes Made',
+                  timeout: 2000
+                };
+                snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
+              } else if (res1.updated > 0) {
+                  var snackbarContainer2 = document.querySelector('#firmenUpdated');
+                  var dataFirmenUpdated = {
+                    message: 'Successfully Updated ' + res1.updated + ' entries',
+                    timeout: 2000
+                  };
+                  snackbarContainer2.MaterialSnackbar.showSnackbar(dataFirmenUpdated);
+              }
+            },
+            error: function (xhr) {
+                alert(xhr.responseText);
+            }
+          });
+          $("#btnUpdate").blur();
+        });
+
 
         $('#kundenTab').click(function(){
 
@@ -955,223 +1302,136 @@ if (isset($_POST['endlabel'])) {
          *
          ******************/
 
-         var container3 = document.getElementById('kundenTable');
-         var hot3 = new Handsontable(container3, {
-            rowHeaders: true,
-            colHeaders: true,
-            contextMenu: true,
-            colWidths: [10, 35, 15, 120],
-            columnSorting: true,
-            colHeaders: ['ID', 'Kunde', 'Protected', 'Kunden CID'],
-            columns: [
-              {data: 'id', editor:false},
-              {data: 'name'},
-              {data: 'protected'},
-              {data: 'kundenCID'}
-            ],
-            stretchH: 'all',
-            manualColumnResize: true,
-            manualRowResize: true,
-            comments: true,
-            autoWrapRows: true,
-            preventOverflow: 'horizontal',
-            filters: true,
-            dropdownMenu: true,
-            renderAllRows: true,
-            search: true,
-            search: {
-              searchResultClass: 'searchResultClass'
+        if ($('#kundenTable').html() == '') {
+         
+         
+         
+          var kundenTableData = $.ajax({
+            type: "GET",
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            'url':'api?kunden=1',
+            'success': function (data) { 
+              var kundenTable = new Tabulator("#kundenTable", {
+                data:data,           //load row data from array
+                layout:"fitColumns",      //fit columns to width of table
+                responsiveLayout:"hide",  //hide columns that dont fit on the table
+                tooltips:true,            //show tool tips on cells
+                addRowPos:"top",          //when adding a new row, add it to the top of the table
+                history:true,             //allow undo and redo actions on the table
+                resizableRows:true,       //allow row order to be changed
+                layoutColumnsOnNewData: true,
+                initialSort:[             //set the initial sort order of the data
+                  {column:"name", dir:"asc"},
+                ],
+                columns:[                 //define the table columns
+                  {title:"ID", field:"id", width:90, editor:false},
+                  {title:"Lieferant CID", field:"derenCID", width:170, editor: false},
+                  {title:"Name", field:"name", width:170, editor:"input"},
+                  {title:"Protected", field:"protected", formatter:"protected", width:150, editor:"input"},
+                  {title:"Kunden CID", field:"kundenCID", editor:"input"}
+                ],
+              });
+            },
+            'error': function () {
+              console.log("Loading error");
             }
-         });
+          });
+          
+          
+          
+         
+        //  var container3 = document.getElementById('kundenTable');
+        //  var hot3 = new Handsontable(container3, {
+        //     rowHeaders: true,
+        //     colHeaders: true,
+        //     contextMenu: true,
+        //     colWidths: [10, 35, 15, 120],
+        //     columnSorting: true,
+        //     colHeaders: ['ID', 'Kunde', 'Protected', 'Kunden CID'],
+        //     columns: [
+        //       {data: 'id', editor:false},
+        //       {data: 'name'},
+        //       {data: 'protected'},
+        //       {data: 'kundenCID'}
+        //     ],
+        //     stretchH: 'all',
+        //     manualColumnResize: true,
+        //     manualRowResize: true,
+        //     comments: true,
+        //     autoWrapRows: true,
+        //     filters: true,
+        //     dropdownMenu: true,
+        //     renderAllRows: true,
+        //     search: true,
+        //     search: {
+        //       searchResultClass: 'searchResultClass'
+        //     }
+        //  });
 
-         // hot3.addHook('afterChange', function(change,source) {
-         //       $.ajax('save?kunden=1', 'GET', JSON.stringify({changes: change}), function (res3) {
-         //         var response = JSON.parse(res3.response);
-         //
-         //         if (response.result === 'ok') {
-         //            console.log("Data saved");
-         //         }
-         //         else {
-         //            console.log("Saving error");
-         //         }
-         //    });
-         // });
+        //  // For Loading
+        //  $.ajax({
+        //    type: "GET",
+        //    headers: {
+        //      'Accept': 'application/json',
+        //      'Content-Type': 'application/json'
+        //    },
+        //    'url':'api?kunden=1',
+        //    'success': function (res3) {
+        //       hot3.loadData(res3);
+        //       hot3.render();
+        //       var kundenHeight = $('#kundenTable > .ht_master > .wtHolder > .wtHider').css( "height" );
+        //       var kundenHeight = parseInt(kundenHeight) + 500;
+        //       var kundenHeight = kundenHeight + "px";
+        //       $('.tableWrapper3').css('height',kundenHeight);
+        //       $('#kundenTable').css('height',kundenHeight);
+        //       $('.ht_master').css('height',kundenHeight);
+        //       $('.wtHolder').css('height',kundenHeight);
+        //       $('.ht_clone_left').css("height",kundenHeight);
 
-         searchField3 = document.getElementById('kundenSearch');
+        //     //  $('.tableWrapper1').css("height",kundenHeight);
+        //     //  $('#kundenTable').css("height",kundenHeight);
+        //     //  $('#kundenTable > .ht_master').css("height",kundenHeight);
+        //     //  $('#kundenTable > .ht_master > .wtHolder').css("height",kundenHeight);
+        //     //  $('#kundenTable > .ht_clone_left').css("height",kundenHeight);
+        //     //  $('#kundenTable > .ht_clone_left > .wtHolder').css("height",kundenHeight);
+        //     //  $('footer').css("min-height","76px");
+        //     //  $('footer').css("max-height","76px");
+        //    },
+        //    'error': function () {
+        //      console.log("Loading error");
+        //    }
+        //  })
 
-         Handsontable.dom.addEvent(searchField3, 'keyup', function (event) {
-           var search = hot3.getPlugin('search');
-           var queryResult = search.query(this.value);
+        }
 
-           console.log(queryResult);
-           hot3.render();
-         });
+        //  // hot3.addHook('afterChange', function(change,source) {
+        //  //       $.ajax('save?kunden=1', 'GET', JSON.stringify({changes: change}), function (res3) {
+        //  //         var response = JSON.parse(res3.response);
+        //  //
+        //  //         if (response.result === 'ok') {
+        //  //            console.log("Data saved");
+        //  //         }
+        //  //         else {
+        //  //            console.log("Saving error");
+        //  //         }
+        //  //    });
+        //  // });
 
-         // For Loading
-         $.ajax({
-           type: "GET",
-           headers: {
-             'Accept': 'application/json',
-             'Content-Type': 'application/json'
-           },
-           'url':'api?kunden=1',
-           'success': function (res3) {
-             hot3.loadData(res3);
-             hot3.render();
-             var kundenHeight = $('#kundenTable > .ht_master > .wtHolder > .wtHider').css( "height" );
-             console.log('kundenHeight: ' + kundenHeight);
-             $('.tableWrapper1').css("height",kundenHeight);
-             $('#kundenTable').css("height",kundenHeight);
-             $('#kundenTable > .ht_master').css("height",kundenHeight);
-             $('#kundenTable > .ht_master > .wtHolder').css("height",kundenHeight);
-             $('#kundenTable > .ht_clone_left').css("height",kundenHeight);
-             $('#kundenTable > .ht_clone_left > .wtHolder').css("height",kundenHeight);
-            //  $('footer').css("min-height","76px");
-            //  $('footer').css("max-height","76px");
-           },
-           'error': function () {
-             console.log("Loading error");
-           }
-         })
         });
 
-         $('#lieferantenTab').click(function(){
+        // searchField3 = document.getElementById('kundenSearch');
+        // Handsontable.dom.addEvent(searchField3, 'keyup', function (event) {
+        //   var search = hot3.getPlugin('search');
+        //   var queryResult = search.query(this.value);
 
-         /*****************
-          *
-          *  LIEFERANT Table
-          *
-          ******************/
-
-          var container2 = document.getElementById('lieferantenTable');
-          var hot2 = new Handsontable(container2, {
-             rowHeaders: true,
-             colHeaders: true,
-             contextMenu: true,
-             colWidths: [10, 35, 120],
-             columnSorting: true,
-             colHeaders: ['ID', 'Lieferant', 'Deren CID'],
-             columns: [
-              {data: 'id', editor:false},
-              {data: 'name', type: 'dropdown', source: function (query, process) {
-                $.ajax({
-                  //url: 'php/cars.php', // commented out because our website is hosted as a set of static pages
-                  url: 'api?companies=1',
-                  dataType: 'json',
-                  data: {
-                    query: query
-                  },
-                  success: function (response) {
-                    console.log("response", response);
-                    //process(JSON.parse(response.data)); // JSON.parse takes string as a argument
-                    //process(JSON.parse(response[1]));
-                    process(JSON.parse(response));
+        //   console.log(queryResult);
+        //   hot3.render();
+        // });
 
 
-                  }
-                });
-                }
-              },
-              {data: 'derenCID'}
-             ],
-             stretchH: 'all',
-             manualColumnResize: true,
-             manualRowResize: true,
-             comments: true,
-             autoWrapRows: true,
-             height: 'auto',
-             filters: true,
-             renderAllRows: true,
-             dropdownMenu: true,
-             search: true,
-             search: {
-               searchResultClass: 'searchResultClass'
-             },
-            //  afterChange: function (change, source) {
-            //      $.ajax('save?lieferant=1', 'GET', JSON.stringify({data: this.getData()}), function (res2) {
-            //        var response = JSON.parse(res2.response);
-            //
-            //        if (response.result === 'ok') {
-            //           console.log("Data saved");
-            //        }
-            //        else {
-            //           console.log("Saving error");
-            //        }
-            //   });
-            // }
-          });
-
-          searchField2 = document.getElementById('lieferantenSearch');
-
-          Handsontable.dom.addEvent(searchField2, 'keyup', function (event) {
-            var search2 = hot2.getPlugin('search');
-            var queryResult2 = search2.query(this.value);
-
-            console.log(queryResult2);
-            hot2.render();
-          });
-
-
-          // For Saving
-          $("#btnUpdateL").click(function () {
-            var tableData = JSON.stringify(hot2.getData());
-            $.ajax({
-              type: 'POST',
-              url: "api?sfirmen=2",
-              data: tableData,
-              contentType: "application/json; charset=utf-8",
-              dataType: 'json',
-              success: function (res1) {
-                if (res1.updated < 0) {
-                  var snackbarContainer3 = document.querySelector('#firmenUpdated');
-                  var dataFirmenUpdated2 = {
-                    message: 'No Changes Made',
-                    timeout: 2000
-                  };
-                  snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
-                } else if (res1.updated > 0) {
-                    var snackbarContainer2 = document.querySelector('#firmenUpdated');
-                    var dataFirmenUpdated = {
-                      message: 'Successfully Updated ' + res1.updated + ' entries',
-                      timeout: 2000
-                    };
-                    snackbarContainer2.MaterialSnackbar.showSnackbar(dataFirmenUpdated);
-                }
-              },
-              error: function (xhr) {
-                  alert(xhr.responseText);
-              }
-            });
-            $("#btnUpdate").blur();
-          });
-
-            // For Loading
-            $.ajax({
-              type: "GET",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-              'url':'api?lieferanten=1',
-              'success': function (res2) {
-                hot2.loadData(res2);
-                hot2.render();
-                var lieferantenHeight = $('#lieferantenTable > .ht_master > .wtHolder > .wtHider').css( "height" );
-                //console.log('lieferantenHeight: ' + lieferantenHeight);
-                $('.tableWrapper1').css("height",lieferantenHeight);
-                $('#lieferantenTable').css("height",lieferantenHeight);
-                $('#lieferantenTable > .ht_master').css("height",lieferantenHeight);
-                $('#lieferantenTable > .ht_master > .wtHolder').css("height",lieferantenHeight);
-                $('#lieferantenTable > .ht_clone_left').css("height",lieferantenHeight);
-                $('#lieferantenTable > .ht_clone_left > .wtHolder').css("height",lieferantenHeight);
-                // $('footer').css("min-height","76px");
-                // $('footer').css("max-height","76px");
-              },
-              'error': function () {
-                console.log("Loading error");
-              }
-            })
-          });
 
 
           document.addEventListener("DOMContentLoaded", function() {
@@ -1212,7 +1472,10 @@ if (isset($_POST['endlabel'])) {
       <link type="text/css" rel="stylesheet" href="dist/css/hover.css" />
 
       <!-- handsontable -->
-      <link href="dist/css/handsontable.min.css" rel="preload stylesheet" as="style" media="screen" onload="this.rel='stylesheet'">
+     <link href="dist/css/handsontable.full.min.css" rel="preload stylesheet" as="style" media="screen" onload="this.rel='stylesheet'">
+
+      <!-- tabulator -->
+     <link href="dist/css/tabulator_bootstrap4.min.css" rel="preload stylesheet" as="style" media="screen" onload="this.rel='stylesheet'">
 
       <!-- select 2 css -->
       <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/select2.min.css" onload="this.rel='stylesheet'">

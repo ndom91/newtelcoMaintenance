@@ -338,8 +338,8 @@ global $dbhandle;
                       <div class="mailcHR">NT</div>
                         <div class="mailWrapper0">
                           <div class="mdl-textfield mdl-js-textfield mailWrapper1">
-                            <div style="display:inline-block !important;height: 100%;margin-top: 20px;" class=" mailWrapper2">
-                              <iframe importance="low" class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0" src="msg/' . $message_id . '.html" id="emailBody1_' . $message_id . '"></iframe>
+                            <div style="display:inline-block !important;margin-top: 20px;" class=" mailWrapper2">
+                              <iframe onload="resizeIframe(this)" class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0" src="msg/' . $message_id . '.html" id="emailBody1_' . $message_id . '"></iframe>
                             </div>
                           </div>
                         </div>
@@ -409,7 +409,7 @@ global $dbhandle;
                     showDialogButton2.addEventListener(\'click\', function() {
                       dialog2.showModal();
                       OverlayScrollbars(document.querySelectorAll(".mdl-dialog"), {
-                        className       : "os-theme-dark",
+                        className       : "os-theme-minimal-dark",
                         resize          : "vertical",
                         sizeAutoCapable : true
                       });
@@ -505,6 +505,34 @@ global $dbhandle;
           </div>
         </main>
         <script>
+
+        function resizeIframe(obj) {
+          function getDocHeight(doc) {
+            // from http://stackoverflow.com/questions/1145850/get-height-of-entire-document-with-javascript
+            var body = doc.body, html = doc.documentElement;
+            var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+            console.log(height);
+            return height;
+          }
+          function getDocWidth(doc) {
+            // from http://stackoverflow.com/questions/1145850/get-height-of-entire-document-with-javascript
+            var body = doc.body, html = doc.documentElement;
+            var width = Math.max( body.scrollWidth, body.offsetWidth, html.clientWidth, html.scrollWidth, html.offsetWidth );
+            console.log(width);
+            return width;
+          }
+          var doc = obj.contentDocument;
+          console.log(doc);
+          obj.style.height = (getDocHeight(doc) + "px");
+          obj.style.width = (getDocWidth(doc) + "px");
+          obj.height = getDocHeight(doc);
+          obj.width = getDocWidth(doc);
+          // obj.style.height = obj.contentDocument.documentElement.scrollHeight;
+          // obj.style.width = obj.contentDocument.documentElement.scrollWidth;
+          // obj.style.height = obj.contentWindow.document.body.scrollHeight;
+          // obj.style.width = obj.contentWindow.document.body.scrollWidth;
+        }
+
         $(window).on('load',function(){
             var e = $('.mailDialog1');
             e = e.contents();

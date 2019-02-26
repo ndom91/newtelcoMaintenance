@@ -44,7 +44,7 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
     <a class="mdl-navigation__link group1Link" href="group.php"><img src="/dist/images/svg/group.svg" class="ndl-group1"/>  Group <small class="menuSubLabel">maintenance</small></a>
     <a class="mdl-navigation__link group2Link" href="groupservice.php"><img src="/dist/images/svg/group.svg" class="ndl-group2"/>  Group <small class="menuSubLabel">service</small></a>
     <a class="mdl-navigation__link calendarLink" href="calendar.php"><img src="/dist/images/svg/calendar.svg" class="ndl-calendar"/>  Calendar</a>
-    <a class="mdl-navigation__link crmLink" href="crm_iframe.php"><img src="/dist/images/svg/work.svg" class="ndl-work"/>  CRM</a>
+    <a class="mdl-navigation__link crmLink" target="_blank" href="https://crm.newtelco.de"><img src="/dist/images/svg/work.svg" class="ndl-work"/>  CRM</a>
     <a class="mdl-navigation__link settingsLink" href="settings.php"><img src="/dist/images/svg/settings.svg" class="ndl-settings"/>  Settings</a>
     <div class="mdl-layout-spacer"></div>
     <div class="shortcutText">

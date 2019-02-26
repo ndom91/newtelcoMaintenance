@@ -115,6 +115,8 @@ global $dbhandle;
             $update = '0';
 
 
+            $nowDT = date("Y-m-d  H:i:s");
+
             if(isset($_GET['update'])) {
               $update = '1';
             }
@@ -158,8 +160,6 @@ global $dbhandle;
                 $cancelled = '';
               }
 
-
-              $nowDT = date("Y-m-d  H:i:s");
 
               $newSDT = DateTime::createFromFormat("Y-m-d  H:i:s", $ostartdatetime);
               $newSDT = new DateTime($ostartdatetime);
@@ -426,7 +426,7 @@ global $dbhandle;
               <input type="hidden" value="<?php echo $omaintid ?>" id="maintid">
               <div class="mdl-cell mdl-cell--6-col">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  <input class="mdl-textfield__input" type="text" value="<?php if (isset($omaileingang)) { echo $omaileingang; } else { echo $nowDT; } ?>" id="medt">
+                  <input class="mdl-textfield__input" type="text" value="<?php if ($omaileingang == 'Invalid date') { echo $nowDT; } else { echo $omaileingang; } ?>" id="medt">
                   <label class="mdl-textfield__label" for="medt">Maileingang Date/Time</label>
                 </div>
               </div>
@@ -535,7 +535,7 @@ global $dbhandle;
                 <label class="timeZoneLabel" for="timezoneSelector">
                   Timezone
                 </label>
-                  <select class="js-example-basic-multiple js-states form-control" id="timezoneSelector"></select>
+                <select class="js-example-basic-multiple js-states form-control" id="timezoneSelector"></select>
               </div>
               <div class="mdl-cell mdl-cell--6-col">
                 <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
@@ -563,13 +563,9 @@ global $dbhandle;
                 </div>
               </div>
               <div class="mdl-cell mdl-cell--6-col">
-                <!-- <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  <input class="mdl-textfield__input" type="text" value="<?php echo $opostponed ?>" id="pponed">
-                  <label class="mdl-textfield__label" for="pponed">Postponed</label>
-                </div> -->
-                <label style="display: inline; margin-right: 5px;margin-left: 245px;" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-3">
-                  <span style="color: #6e6e6e;line-height: 44px !important;top: 18px; margin-left: -135px; color:#67B246;" class="mdl-switch__label">Cancelled</span>
-                  <input type="checkbox" id="switch-3"class="mdl-switch__input" <?php echo $cancelled ?>>
+                <label class="aeCancel" for="switch-3">
+                    <input type="checkbox" id="switch-3" class="mdl-checkbox__input" <?php echo $cancelled ?>>
+                    <span class="mdl-checkbox__label">Cancelled</span>
                 </label>
               </div>
               <div class="mdl-cell mdl-cell--6-col">
@@ -1198,9 +1194,14 @@ $('#btnSave').on('click', function(e) {
   // Some formatting before we push to mysql
   var DateTime = luxon.DateTime;
 
-  var medt = $('#medt').val();
-  var medtUTC = moment.parseZone(medt).utc().format();
-  var medtISO = moment(medtUTC).toISOString();
+  console.log($('#medt').val());
+  if ($('#medt').val() != '') {
+    var medt = $('#medt').val();
+    var medtUTC = moment.parseZone(medt).utc().format();
+    var medtISO = moment(medtUTC).toISOString();
+  } else {
+    var medtISO = moment().format();
+  }
 
   var mdtTZ = $('#timezoneSelector').val();
 
@@ -1233,7 +1234,7 @@ $('#btnSave').on('click', function(e) {
         .sort()       // Sort data alphabetically
         .unique()     // Reduce to unique values
         .join( ',' );
-  console.log('kCompaniesConcat: ' + kCompaniesConcat);
+  // console.log('kCompaniesConcat: ' + kCompaniesConcat);
 
   var kCIDsConcat = table4
         .columns( 1 )
@@ -1242,7 +1243,7 @@ $('#btnSave').on('click', function(e) {
         .sort()       // Sort data alphabetically
         .unique()     // Reduce to unique values
         .join( ',' );
-  console.log('kCIDsConcat: ' + kCIDsConcat);
+  // console.log('kCIDsConcat: ' + kCIDsConcat);
 
   var getSelected = $('#dcid3').val();
   var selectedNums = [];
@@ -1460,25 +1461,6 @@ $('#btnSave').on('click', function(e) {
       table3 = $('#dataTable4').DataTable();
       var data = table3.row( $(this).parents('tr') ).data();
 
-      
-      // make sendmail work without having to reload after first save!
-      
-      // var mdtTZ = $('#timezoneSelector').val();
-
-      // var mSDT = $('#sdt').val();
-      // var mSDT = moment(mSDT).format('YYYY-MM-DD\THH:mm:ss');
-      // var zOffset = moment.tz(mdtTZ).format('Z');
-      // var tzConcat = mSDT.concat(zOffset);
-      // var sdtUTC = moment(tzConcat).utc().format();
-      // var mEDT = $('#edt').vmdtTZal();
-      // var mEDT = moment(mEDT).format('YYYY-MM-DD\THH:mm:ss');
-      // var tzConcat2 = mEDT.concat(zOffset);
-      // var edtUTC = moment(tzConcat2).utc().format();
-
-      // const event = new Event("change");
-      // document.querySelector("#timezoneSelector").value = "Europe/Amsterdam";
-      // document.querySelector("#timezoneSelector").dispatchEvent(event);
-
       var impact = $('#mimp').val();
       var location = $('#mloc').val();
       var reason =  $('#mreas').val();
@@ -1495,11 +1477,7 @@ $('#btnSave').on('click', function(e) {
       var matches = regExp.exec(tzSuffix);
       var tzSuffixRAW = matches[1];
       tzSuffixRAW = tzSuffixRAW.replace("+","%2B");
-
-      // var ms = moment(end).diff(moment(start));
-      // var d = moment.duration(ms);
-      // var impactTime = d.format("mm");
-
+      
       var body = '<style>.grayText10{​​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}.tdSizing{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:131px}.tdSizing2{width:140px;padding:0cm 5.4pt 0cm 5.4pt;vertical-align:text-top;width:624px}</style><body style="​​padding:0;margin:0;​​​" class="grayText10"><div​​ ​style="​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266" class="grayText10"​​>Dear Colleagues,​​<p><span>We would like to inform you about planned work on the CID ​' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0 " cellspacing="0 " cellpadding="0" width="775 style="width:581.2pt;border-collapse:collapse;border:none"> <tr> <td class="tdSizing"> <p style="margin-bottom:12.0pt"> <span class="grayText10">Start date and time:</span></p></td><td class="tdSizing"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span class="grayText10">' + startTimeLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr><tr> <td class="tdSizing"> <p style="margin-​​bottom:12.0pt"><span class="grayText10">Finish date and time:</span></p></td><td class="tdSizing2"> <p style="margin-bottom:12.0pt;text-align:justify"><b><span​​ class="grayText10">​​' + endTimeLabel + ' (' + tzSuffixRAW + ')</span></b></p></td></tr>'
       
       if (impact != '') {
@@ -1535,22 +1513,6 @@ $('#btnSave').on('click', function(e) {
       win.focus();
     };
     
-
-    // Show 'Kunden Circuits' if loading with selected Deren CIDs
-    
-    //if ($( "#dcid3 option:selected" ).text() != '') {
-
-    // $('#dcid3').on('change', function (e) {
-    //   $('#kundenCard').addClass('display').removeClass('hidden');
-    //   var value = $("#dcid3").find(":selected");
-
-    //   // $('#dcid3')
-    //   //     .find('option:checked(' + value + ')')
-    //   //     .prop('selected',true)
-    //   //     .trigger('change');
-
-    //   // return false;
-    // });
 
     // Pretty Scrollbars
     $(".mdl-layout__content").overlayScrollbars({

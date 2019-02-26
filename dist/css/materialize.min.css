@@ -1,7 +1,7 @@
 
 label{
     font-size:.8rem;
-    color:#67B246;
+    color:rgba(0,0,0,.54);
 }
 
 .multiselect-wrapper > .select-wrapper > select{

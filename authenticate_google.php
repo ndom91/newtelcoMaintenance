@@ -198,10 +198,10 @@ if (!isset($_SESSION['access_token']['id_token'])):
         particlesJS("particles-js", {
         "particles": {
           "number": {
-            "value": 200,
+            "value": 120,
             "density": {
               "enable": true,
-              "value_area": 700
+              "value_area": 800
             }
           },
           "color": {
@@ -263,7 +263,7 @@ if (!isset($_SESSION['access_token']['id_token'])):
           "detect_on": "canvas",
           "events": {
             "onhover": {
-              "enable": true,
+              "enable": false,
               "mode": "repulse"
             },
             "resize": true

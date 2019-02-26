@@ -315,13 +315,14 @@ base-chart.chart {
   display: inline-block;
   margin-left: 1.5vw;
   margin-top: 2.7vh;
-  font-size: 7.4vw;
+  font-size: 10.4vw;
   color: #fff;
   font-weight: 500;
   user-select: none;
   text-align: right;
   float: right;
-  margin-top: -3vh;
+  margin-top: -1vh;
+  right: -1.5vw;
 }
 
 .unreadCounter:hover {
@@ -401,7 +402,7 @@ base-chart.chart {
   user-select: none;
 }
 .fwaCounter, .aliCounter, .sstCounter {
-  font-size: 102px;
+  font-size: 6vw;
   font-weight: 600;
   text-align: center;
   margin-top: 76px;
@@ -1281,6 +1282,12 @@ tr.strikeout td:before {
 
 /* addedit */
 
+.aeCancel {
+  float:right;
+  margin-top: 15px;
+  margin-right: 3vw;
+}
+
 #timezoneSelector {
   width: 100%;
 }
@@ -1694,7 +1701,14 @@ tr.strikeout td:before {
   right:52px;
 }
 /* Settings */
-
+.__lpform_userEmail_numspan {
+  visibility: hidden !important;
+  display: none !important;
+  opacity: 0;
+}
+.__lpform_userEmail_icon {
+  opacity: 0 !important;
+}
 .settingsFirmenHeader {
 	width: 100%;
 	height: 40px;
@@ -1778,8 +1792,39 @@ tr.strikeout td:before {
 }
 
 .searchWrapper {
-  float:left;
+  float:right;
   margin-bottom: 10px;
+  font-size: 16px;
+  /* color: rgba(0,0,0,.54); */
+  color: rgba(0,0,0,.54);
+  font-weight:700;
+  margin-top: -33px;
+}
+.settingsSearchBtn {
+  top: -40px; 
+  display: inline; 
+  height: 46px !important;
+  width: 46px !important;
+  min-width: 46px !important; 
+  margin: 0 !important; 
+  float:right;
+}
+input[type="search"] {
+  font-size: 15px;
+  font-family: "Roboto";
+  color: rgba(0,0,0,.54);
+  height: 38px;
+  width: 200px;
+  margin-right: 40px;
+  padding: 10px;
+  border: 2px solid rgba(103,178,70,0.3);
+  border-radius:5px;
+  margin-bottom:20px;
+}
+
+input[type="search"]:focus {
+  box-shadow: 0 0 20px rgba(103,178,70,0.7);
+  /* border: 2px solid rgba(103,178,70,0.3); */
 }
 
 .searchResultClass{
@@ -1821,6 +1866,32 @@ tr.strikeout td:before {
   border: 1px solid rgba(0,0,0,0.1);
   border-radius: 8px;
 }
+
+.settingsFirmenHeader > h6 {
+  display: inline-block;
+}
+
+#firmenSearch::-webkit-search-cancel-button{
+    /* position:relative;
+    right:20px;     */
+    font-size: 20px;
+    background: #67B246;
+}
+
+#lieferantenSearch::-webkit-search-cancel-button{
+    /* position:relative;
+    right:20px;     */
+    font-size: 20px;
+    background-color: #67B246;
+}
+
+#kundenSearch::-webkit-search-cancel-button{
+    /* position:relative;
+    right:20px;     */
+    font-size: 20px;
+    background-color: #67B246;
+}
+
 /* Footer */
 
 .mdl-mini-footer {

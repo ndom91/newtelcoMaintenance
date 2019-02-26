@@ -268,18 +268,19 @@ if (isset($_POST['endlabel'])) {
               <div class="mdl-cell mdl-cell--1-col mdl-cell--0-col-phone"></div>
               <div class="mdl-cell mdl-cell--10-col mdl-cell--0-col-phone">
                 <div class="settingsFirmenHeader">
-                  <h4 class="selectGoogleLabel">Company Details</h4>
-                  <button id="btnAddF" style="display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important; float:right;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-                    <i class="material-icons">add</i>
+                  <h4 class="selectGoogleLabel">Company Details</h4><br><br>
+                  <h6>Companies can then be assigned as suppliers and customers!</h6>
+                  <button id="btnAddF" style="" class="settingsSearchBtn mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+                    <i class="material-icons md-36">add</i>
                   </button>
+                  <div class="searchWrapper">
+                    <input type="search" placeholder="Search" id="firmenSearch"/>
+                  </div>
                   <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnAddF">
                     Add Company
                   </div>
                 </div>
                 <div class="tableWrapper1">
-                  <div class="searchWrapper">
-                    Search: <input type="search" id="firmenSearch"/>
-                  </div><br><br>
                   <div id="firmenTable" class="hot handsontable htRowHeaders htColumnHeaders"></div>
                 </div>
               </div>
@@ -295,9 +296,12 @@ if (isset($_POST['endlabel'])) {
                 <div class="settingsFirmenHeader">
                   <h4 class="selectGoogleLabel">Lieferanten Details</h4><br><br>
                   <h6>Connection between companies and their connection ID's</h6>
-                  <button id="btnAddL" style="top: -80px; display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important; float:right;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+                  <button id="btnAddL" class="settingsSearchBtn mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
                     <i class="material-icons">add</i>
                   </button>
+                  <div class="searchWrapper">
+                    <input type="search" placeholder="Search" id="lieferantenSearch"/>
+                  </div>
                   <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnAddL">
                     Add Lieferant CID
                   </div>
@@ -306,9 +310,6 @@ if (isset($_POST['endlabel'])) {
                 <br>
 
                 <div class="tableWrapper2">
-                  <div class="searchWrapper">
-                    Search: <input type="text" id="lieferantenSearch"/>
-                  </div><br><br>
                   <div id="lieferantenTable" class="hot handsontable htRowHeaders htColumnHeaders"></div>
                 </div>
               </div>
@@ -324,9 +325,12 @@ if (isset($_POST['endlabel'])) {
                 <div class="settingsFirmenHeader">
                   <h4 class="selectGoogleLabel">Kunden Details</h4><br><br>
                   <h6>Connection between companies and our CID's</h6>
-                  <button id="btnAddK" style="top: -80px; display: inline; height: 44px; width: 44px; min-width: 44px !important; margin: 0 !important; float:right;" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+                  <button id="btnAddK" class="settingsSearchBtn mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
                     <i class="material-icons">add</i>
                   </button>
+                  <div class="searchWrapper">
+                    <input type="search" placeholder="Search" id="kundenSearch"/>
+                  </div>
                   <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btnAddK">
                     Add Kunden CID
                   </div>
@@ -334,10 +338,6 @@ if (isset($_POST['endlabel'])) {
                 <br>
                 <br>
                 <div class="tableWrapper3">
-                  <div class="searchWrapper">
-                    Search: <input type="text" id="kundenSearch"/>
-                  </div>
-                  <br><br>
                   <div id="kundenTable" class="hot handsontable htRowHeaders htColumnHeaders"></div>
                 </div>
               </div>
@@ -581,36 +581,13 @@ if (isset($_POST['endlabel'])) {
             <button class="mdl-snackbar__action" type="button"></button>
           </div>
         <script>
+          $(document).on('ready', function() {
+            $('__lpform_userEmail_numspan').css('display','none');
+          })
 
           $('#hideBasedOnWarning').on('click', function(e) {
             $('.innerHide1').hide(500);
           });
-
-          // $(document).on('load', function() {
-
-          //   var myTabs = document.getElementsByClassName('mdl-layout__tab');
-          //   var mdlTabs = myTabs.MaterialTabs;
-            
-          //   var hash = location.hash.substr(1);
-          //   if (hash = 'firmenTab') {
-          //     $('#firmenTab').addClass('is-active');
-          //     mdlTabs.setTab(0);
-          //     $('#firmenTab').click()
-          //   } else if (hash = 'lieferantenTab') {
-          //     $('#lieferantenTab').addClass('is-active');
-          //     mdlTabs.setTab(1);
-          //     $('#lieferantenTab').click()
-          //   } else if (hash = 'kundenTab') {
-          //     $('#kundenTab').addClass('is-active');
-          //     mdlTabs.setTab(2);
-          //     $('#kundenTab').click()
-          //   }
-          // })
-
-          // var myTabs = document.getElementsByClassName('mdl-layout__tab');
-          // var mdlTabs = myTabs.MaterialTabs;
-          // mdlTabs.setTab(1);
-
 
 
           /*
@@ -855,16 +832,44 @@ if (isset($_POST['endlabel'])) {
                   // return "<img class='fileicon' src='/images/fileicons/" + cell.getValue() + ".png'></img>";
               },
           });
+          var protectedMutator = function(value, data, type, params, component){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+            if (value == 0) {
+              return "Unprotected";
+            } else if (value == 1) {
+              return "Protected";
+            } else {
+              return "N/A";
+            }
+          }
+
+          var protectedAccessor = function(value, data, type, params, component){
+            //value - original value of the cell
+            //data - the data for the row
+            //type - the type of mutation occurring  (data|edit)
+            //params - the mutatorParams object from the column definition
+            //component - when the "type" argument is "edit", this contains the cell component for the edited cell, otherwise it is the column component for the column
+            if (value == 'Unprotected') {
+              return "0";
+            } else if (value == 'Protected') {
+              return "1";
+            } else {
+              return "N/A";
+            }
+          }
 
          $('#firmenTab').click(function(){
 
          /*****************
           *
           *  FIRMEN Table
-          *                                                                                                                               
+          *pi 
           ******************/
 
-          
           if ($('#firmenTable').html() == '') {
 
             var firmenTable = '';
@@ -916,9 +921,13 @@ if (isset($_POST['endlabel'])) {
                 $('#firmenSearch').on('change', function(data) {
                   var firmenSearchQuery = $('#firmenSearch').val();
                   // $('#firmenTable').tabulator("setFilter",matchAny,{value:firmenSearchQuery});
-                  console.log(data);
-                  console.log(firmenSearchQuery);
-                  firmenTable.setFilter("name","=",firmenSearchQuery);
+                  // console.log(data);
+                  // console.log(firmenSearchQuery);
+                  firmenTable.setFilter([[
+                    {field:"name",type:"like",value:firmenSearchQuery},
+                    {field:"mailDomain",type:"like",value:firmenSearchQuery},
+                    {field:"maintenanceRecipient",type:"like",value:firmenSearchQuery},
+                  ]]);
                 })
 
               },
@@ -927,168 +936,9 @@ if (isset($_POST['endlabel'])) {
               }
             });
 
-
-
-            // $('#firmenSearch').on('change', function(data) {
-            //   var firmenSearchQuery = $('#firmenSearch').val();
-            //   // $('#firmenTable').tabulator("setFilter",matchAny,{value:firmenSearchQuery});
-            //   firmenTable.setFilter("name","=",firmenSearchQuery);
-            // })
-
-
-
-
-            // var hot = new Handsontable(container, {
-            //   rowHeaders: true,
-            //   colHeaders: true,
-            //   contextMenu: true,
-            //   colWidths: [25, 100, 100, 320],
-            //   columnSorting: true,
-            //   colHeaders: ['ID', 'Name', 'Mail Domain', 'Maintenance Recipient'],
-            //   columns: [
-            //     {data: 'id', readonly:true},
-            //     {data: 'name'},
-            //     {data: 'mailDomain'},
-            //     {data: 'maintenanceRecipient'}
-            //   ],
-            //   stretchH: 'all',
-            //   manualColumnResize: false,
-            //   manualRowResize: false,
-            //   comments: true,
-            //   // autoWrapRows: true,
-            //   // filters: true,
-            //   // dropdownMenu: true,
-            //   // viewportColumnRenderingOffset: 100,
-            //   renderAllRows: true,
-            //   search: true,
-            //   search: {
-            //     searchResultClass: 'searchResultClass'
-            //   }
-            // });
-                
-
-            // var firmenDataJson = '';
-            // var firmenData = $.ajax({
-            //   type: "GET",
-            //   headers: {
-            //     'Accept': 'application/json',
-            //     'Content-Type': 'application/json'
-            //   },
-            //   'url':'api?firmen=1',
-            //   'success': function (data) {
-            //     // firmenDataJson = res;
-            //     // firmenDataJson = data.responseText; 
-            //     console.log(data);
-            //     hot.loadData(data);
-            //     hot.render();
-            //     var calculatedRowHeight = 29 * (data.length);
-            //     console.log(data.length);
-            //     console.log(calculatedRowHeight);
-            //     // $('#firmenTable').css('height',calculatedRowHeight);
-            //     hot.updateSettings({
-            //       height: calculatedRowHeight
-            //     });
-            //   },
-            //   'error': function () {
-            //     console.log("Loading error");
-            //   }
-            // });
-            // // console.log(firmenData);
-            // // console.log(firmenDataJson);
-
-           
-            
-            // // hot.updateSettings({
-            // //   columns: getNewColumns(firmenDataJson)
-            // // });
-
-
-            // hot.addHook('afterChange', function(change,source) {
-            // const commentsPlugin = hot.getPlugin('comments');
-            //   commentsPlugin.setRange({from: {row: 0, col: 3}});
-            //   commentsPlugin.setComment('Multiple recipients should be separated by semicolon (";")');
-            //   commentsPlugin.show();
-            //   //    $.ajax('save?firmen=1', 'GET', JSON.stringify({changes: change}), function (res) {
-            //   //      var response = JSON.parse(res.response);
-            //   //      if (response.result === 'ok') {
-            //   //         console.log("Data saved");
-            //   //      }
-            //   //      else {
-            //   //         console.log("Saving error");
-            //   //      }
-            //   // });
-            // });
-
-            // Load
-            // $.ajax({
-            //   type: "GET",
-            //   headers: {
-            //     'Accept': 'application/json',
-            //     'Content-Type': 'application/json'
-            //   },
-            //   'url':'api?firmen=1',
-            //   'success': function (res) {
-            //     hot.loadData(res);
-            //     hot
-            //     hot.render();
-            //     // var firmenHeight = $('#firmenTable > .ht_master > .wtHolder > .wtHider').css( "height" );
-            //     // var firmenHeight = parseInt(firmenHeight) + 200;
-            //     // var firmenHeight = firmenHeight + "px";
-            //     // $('.tableWrapper1').css('height',firmenHeight);
-            //     // $('#firmenTable').css('height',firmenHeight);
-            //     // $('.ht_master').css('height',firmenHeight);
-            //     // $('.wtHolder').css('height',firmenHeight);
-            //     // $('.ht_clone_left').css("height",firmenHeight);
-            //   },
-            //   'error': function () {
-            //     console.log("Loading error");
-            //   }
-            // });
           }
         });
 
-        // Save
-        // $("#btnUpdateF").click(function () {
-        //   var tableData = JSON.stringify(hot.getData());
-        //   $.ajax({
-        //     type: 'POST',
-        //     url: "api?sfirmen=1",
-        //     data: tableData,
-        //     contentType: "application/json; charset=utf-8",
-        //     dataType: 'json',
-        //     success: function (res1) {
-        //       if (res1.updated < 0) {
-        //         var snackbarContainer3 = document.querySelector('#firmenUpdated');
-        //         var dataFirmenUpdated2 = {
-        //           message: 'No Changes Made',
-        //           timeout: 2000
-        //         };
-        //         snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
-        //       } else if (res1.updated > 0) {
-        //           var snackbarContainer2 = document.querySelector('#firmenUpdated');
-        //           var dataFirmenUpdated = {
-        //             message: 'Successfully Updated ' + res1.updated + ' entries',
-        //             timeout: 2000
-        //           };
-        //           snackbarContainer2.MaterialSnackbar.showSnackbar(dataFirmenUpdated);
-        //       }
-        //     },
-        //     error: function (xhr) {
-        //         alert(xhr.responseText);
-        //     }
-        //   });
-        //   $("#btnUpdate").blur();
-        // });
-
-        // Search
-        // searchField = document.getElementById('firmenSearch');
-        // Handsontable.dom.addEvent(searchField, 'keyup', function (event) {
-        //   var search = hot.getPlugin('search');
-        //   var queryResult = search.query(this.value);
-
-        //   console.log(queryResult);
-        //   hot.render();
-        // });
 
         $('#lieferantenTab').click(function(){
 
@@ -1116,14 +966,14 @@ if (isset($_POST['endlabel'])) {
                 addRowPos:"top",          //when adding a new row, add it to the top of the table
                 history:true,             //allow undo and redo actions on the table
                 resizableRows:true,       //allow row order to be changed
-                initialSort:[             //set the initial sort order of the data
-                  {column:"name", dir:"asc"},
-                ],
+                // initialSort:[             //set the initial sort order of the data
+                //   {column:"name", dir:"desc"}
+                // ],
                 columns:[                 //define the table columns
                   {title:"ID", field:"id", width:90, editor:false},
                   {title:"Name", field:"name", width:295, editor:"select", editorParams:{
                     values:true,
-                    sortValuesList:"asc",
+                    sortValuesList:"asc"
                   }},
                   {title:"Deren CID", field:"derenCID", editor:"input"}
                 ],
@@ -1146,153 +996,29 @@ if (isset($_POST['endlabel'])) {
                   })
                 }
               });
+              $('#lieferantenSearch').on('change', function(data) {
+                var lieferantenSearchQuery = $('#lieferantenSearch').val();
+                // $('#firmenTable').tabulator("setFilter",matchAny,{value:firmenSearchQuery});
+                // console.log(data);
+                // console.log(firmenSearchQuery);
+                lieferantTable.setFilter([[
+                  {field:"name",type:"like",value:lieferantenSearchQuery},
+                  {field:"derenCID",type:"like",value:lieferantenSearchQuery},
+                ]]);
+              })
             },
             'error': function () {
               console.log("Loading error");
             }
           });
           
-          
-          
-          
-          
-        //   var hot2 = new Handsontable(container2, {
-        //     rowHeaders: true,
-        //     colHeaders: true,
-        //     contextMenu: true,
-        //     colWidths: [10, 35, 120],
-        //     columnSorting: true,
-        //     colHeaders: ['ID', 'Lieferant', 'Deren CID'],
-        //     columns: [
-        //       {data: 'id', editor:false},
-        //       {data: 'name', type: 'dropdown', source: function (query, process) {
-        //         $.ajax({
-        //           //url: 'php/cars.php', // commented out because our website is hosted as a set of static pages
-        //           url: 'api?companies=1',
-        //           dataType: 'json',
-        //           data: {
-        //             query: query
-        //           },
-        //           success: function (response) {
-        //             console.log("response", response);
-        //             //process(JSON.parse(response.data)); // JSON.parse takes string as a argument
-        //             //process(JSON.parse(response[1]));
-        //             // process(JSON.parse(response.responseJSON));
-        //             return response;
-
-        //           }
-        //         });
-        //         }
-        //       },
-        //       {data: 'derenCID'}
-        //     ],
-        //     stretchH: 'all',
-        //     manualColumnResize: true,
-        //     manualRowResize: true,
-        //     comments: true,
-        //     autoWrapRows: true,
-        //     height: 'auto',
-        //     filters: true,
-        //     renderAllRows: true,
-        //     dropdownMenu: true,
-        //     search: true,
-        //     search: {
-        //       searchResultClass: 'searchResultClass'
-        //     },
-        //     //  afterChange: function (change, source) {
-        //     //      $.ajax('save?lieferant=1', 'GET', JSON.stringify({data: this.getData()}), function (res2) {
-        //     //        var response = JSON.parse(res2.response);
-        //     //
-        //     //        if (response.result === 'ok') {
-        //     //           console.log("Data saved");
-        //     //        }
-        //     //        else {
-        //     //           console.log("Saving error");
-        //     //        }
-        //     //   });
-        //     // }
-        //   });
-
-        //   // For Loading
-        //   $.ajax({
-        //     type: "GET",
-        //     headers: {
-        //       'Accept': 'application/json',
-        //       'Content-Type': 'application/json'
-        //     },
-        //     'url':'api?lieferanten=1',
-        //     'success': function (res2) {
-        //       hot2.loadData(res2);
-        //       hot2.render();
-        //       var lieferantenHeight = $('#lieferantenTable > .ht_master > .wtHolder > .wtHider').css( "height" );
-        //       var lieferantenHeight = parseInt(lieferantenHeight) + 200;
-        //       var lieferantenHeight = lieferantenHeight + "px";
-        //       $('.tableWrapper2').css('height',lieferantenHeight);
-        //       $('#lieferantenTable').css('height',lieferantenHeight);
-        //       $('.ht_master').css('height',lieferantenHeight);
-        //       $('.wtHolder').css('height',lieferantenHeight);
-        //       $('.ht_clone_left').css("height",lieferantenHeight);
-        //       //console.log('lieferantenHeight: ' + lieferantenHeight);
-        //       // $('.tableWrapper1').css("height",lieferantenHeight);
-        //       // $('#lieferantenTable').css("height",lieferantenHeight);
-        //       // $('#lieferantenTable > .ht_master').css("height",lieferantenHeight);
-        //       // $('#lieferantenTable > .ht_master > .wtHolder').css("height",lieferantenHeight);
-        //       // $('#lieferantenTable > .ht_clone_left').css("height",lieferantenHeight);
-        //       // $('#lieferantenTable > .ht_clone_left > .wtHolder').css("height",lieferantenHeight);
-        //       // $('footer').css("min-height","76px");
-        //       // $('footer').css("max-height","76px");
-        //     },
-        //     'error': function () {
-        //       console.log("Loading error");
-        //     }
-        //   })
+        } else {
+          var lieferantTable = $('#lieferantenTable');
+          lieferantTable.clearData();
+          lieferantTable.getData();
         }
 
         });
-
-        // searchField2 = document.getElementById('lieferantenSearch');
-        // Handsontable.dom.addEvent(searchField2, 'keyup', function (event) {
-        //   var search2 = hot2.getPlugin('search');
-        //   var queryResult2 = search2.query(this.value);
-
-        //   console.log(queryResult2);
-        //   hot2.render();
-        // });
-
-
-        // For Saving
-        $("#btnUpdateL").click(function () {
-          var tableData = JSON.stringify(hot2.getData());
-          $.ajax({
-            type: 'POST',
-            url: "api?sfirmen=2",
-            data: tableData,
-            contentType: "application/json; charset=utf-8",
-            dataType: 'json',
-            success: function (res1) {
-              if (res1.updated < 0) {
-                var snackbarContainer3 = document.querySelector('#firmenUpdated');
-                var dataFirmenUpdated2 = {
-                  message: 'No Changes Made',
-                  timeout: 2000
-                };
-                snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
-              } else if (res1.updated > 0) {
-                  var snackbarContainer2 = document.querySelector('#firmenUpdated');
-                  var dataFirmenUpdated = {
-                    message: 'Successfully Updated ' + res1.updated + ' entries',
-                    timeout: 2000
-                  };
-                  snackbarContainer2.MaterialSnackbar.showSnackbar(dataFirmenUpdated);
-              }
-            },
-            error: function (xhr) {
-                alert(xhr.responseText);
-            }
-          });
-          $("#btnUpdate").blur();
-        });
-
 
         $('#kundenTab').click(function(){
 
@@ -1324,114 +1050,60 @@ if (isset($_POST['endlabel'])) {
                 resizableRows:true,       //allow row order to be changed
                 layoutColumnsOnNewData: true,
                 initialSort:[             //set the initial sort order of the data
+                  {column:"derenCID", dir: "desc"},
                   {column:"name", dir:"asc"},
                 ],
                 columns:[                 //define the table columns
                   {title:"ID", field:"id", width:90, editor:false},
                   {title:"Lieferant CID", field:"derenCID", width:170, editor: false},
-                  {title:"Name", field:"name", width:170, editor:"input"},
-                  {title:"Protected", field:"protected", formatter:"protected", width:150, editor:"input"},
-                  {title:"Kunden CID", field:"kundenCID", editor:"input"}
+                  {title:"Newtelco CID", field:"kundenCID", editor:"input"},
+                  {title:"Protection", field:"protected", width:150, editor:"select", mutator:protectedMutator, accessor:protectedAccessor, editorParams:{
+                    values:{ "0":"Unprotected","1":"Protected" },
+                  }},
+                  {title:"Kunde", field:"name", width:170, editor:"select", editorParams: {
+                    values:true,
+                    sortValuesList:"asc"
+                  }},
                 ],
+                cellEdited:function(cell) {
+                  $.ajax({
+                    url: "api.php?updateKunden",
+                    data: cell.getRow().getData(),
+                    type: "get",
+                    success: function(response, textstatus, xhr) {
+                      var snackbarContainer3 = document.querySelector('#firmenUpdated');
+                      var dataFirmenUpdated2 = {
+                        message: 'Kunden Updated',
+                        timeout: 2000
+                      };
+                      snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
+                    },
+                    error: function(XMLHttpRequest, textstatus, error) {
+                      alert("AJAX error: " + textstatus + "; " + error);
+                    }
+                  })
+                }
               });
+              $('#kundenSearch').on('change', function(data) {
+                var kundenSearchQuery = $('#kundenSearch').val();
+                // $('#firmenTable').tabulator("setFilter",matchAny,{value:firmenSearchQuery});
+                // console.log(data);
+                // console.log(firmenSearchQuery);
+                  kundenTable.setFilter([[
+                    {field:"name",type:"like",value:kundenSearchQuery},
+                    {field:"derenCID",type:"like",value:kundenSearchQuery},
+                    {field:"kundenCID",type:"like",value:kundenSearchQuery},
+                  ]]);
+              })
             },
             'error': function () {
               console.log("Loading error");
             }
           });
-          
-          
-          
-         
-        //  var container3 = document.getElementById('kundenTable');
-        //  var hot3 = new Handsontable(container3, {
-        //     rowHeaders: true,
-        //     colHeaders: true,
-        //     contextMenu: true,
-        //     colWidths: [10, 35, 15, 120],
-        //     columnSorting: true,
-        //     colHeaders: ['ID', 'Kunde', 'Protected', 'Kunden CID'],
-        //     columns: [
-        //       {data: 'id', editor:false},
-        //       {data: 'name'},
-        //       {data: 'protected'},
-        //       {data: 'kundenCID'}
-        //     ],
-        //     stretchH: 'all',
-        //     manualColumnResize: true,
-        //     manualRowResize: true,
-        //     comments: true,
-        //     autoWrapRows: true,
-        //     filters: true,
-        //     dropdownMenu: true,
-        //     renderAllRows: true,
-        //     search: true,
-        //     search: {
-        //       searchResultClass: 'searchResultClass'
-        //     }
-        //  });
-
-        //  // For Loading
-        //  $.ajax({
-        //    type: "GET",
-        //    headers: {
-        //      'Accept': 'application/json',
-        //      'Content-Type': 'application/json'
-        //    },
-        //    'url':'api?kunden=1',
-        //    'success': function (res3) {
-        //       hot3.loadData(res3);
-        //       hot3.render();
-        //       var kundenHeight = $('#kundenTable > .ht_master > .wtHolder > .wtHider').css( "height" );
-        //       var kundenHeight = parseInt(kundenHeight) + 500;
-        //       var kundenHeight = kundenHeight + "px";
-        //       $('.tableWrapper3').css('height',kundenHeight);
-        //       $('#kundenTable').css('height',kundenHeight);
-        //       $('.ht_master').css('height',kundenHeight);
-        //       $('.wtHolder').css('height',kundenHeight);
-        //       $('.ht_clone_left').css("height",kundenHeight);
-
-        //     //  $('.tableWrapper1').css("height",kundenHeight);
-        //     //  $('#kundenTable').css("height",kundenHeight);
-        //     //  $('#kundenTable > .ht_master').css("height",kundenHeight);
-        //     //  $('#kundenTable > .ht_master > .wtHolder').css("height",kundenHeight);
-        //     //  $('#kundenTable > .ht_clone_left').css("height",kundenHeight);
-        //     //  $('#kundenTable > .ht_clone_left > .wtHolder').css("height",kundenHeight);
-        //     //  $('footer').css("min-height","76px");
-        //     //  $('footer').css("max-height","76px");
-        //    },
-        //    'error': function () {
-        //      console.log("Loading error");
-        //    }
-        //  })
 
         }
 
-        //  // hot3.addHook('afterChange', function(change,source) {
-        //  //       $.ajax('save?kunden=1', 'GET', JSON.stringify({changes: change}), function (res3) {
-        //  //         var response = JSON.parse(res3.response);
-        //  //
-        //  //         if (response.result === 'ok') {
-        //  //            console.log("Data saved");
-        //  //         }
-        //  //         else {
-        //  //            console.log("Saving error");
-        //  //         }
-        //  //    });
-        //  // });
-
         });
-
-        // searchField3 = document.getElementById('kundenSearch');
-        // Handsontable.dom.addEvent(searchField3, 'keyup', function (event) {
-        //   var search = hot3.getPlugin('search');
-        //   var queryResult = search.query(this.value);
-
-        //   console.log(queryResult);
-        //   hot3.render();
-        // });
-
-
 
 
           document.addEventListener("DOMContentLoaded", function() {

@@ -64,17 +64,8 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
   <!-- chart.js -->
   <script rel="preload" as="script" src="dist/js/chart.js"></script>
 
-  <!-- classie.js -->
-  <!-- <script rel="preload" as="script" src="dist/js/classie.js"></script> -->
-
   <!-- modalEffects.js -->
   <script rel="preload" as="script" src="dist/js/modalEffects.js"></script>
-
-  <!-- cssParser.js
-  <script rel="preload" as="script" src="dist/js/cssParser.js"></script>-->
-
-  <!-- modernizerCustom.js -->
-  <!-- <script rel="preload" as="script" src="dist/js/modernizrCustom.js"></script> --> 
 
   <!-- luxon -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/luxon.min.js"></script>
@@ -201,7 +192,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
                   <div class="h100 mdl-cell mdl-cell--12-col mdl-cell--4-col-phone mdl-cell--bottom">
                     <div class="h100 bottomChartWrapper">
                       <div class="bottomChartLabel">Maintenances Completed per Day</div>
-                      <canvas height="200" id="completedChart"></canvas>
+                      <canvas style="" height="200" id="completedChart"></canvas>
                     </div>
                   </div>
                 </div>

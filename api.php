@@ -176,106 +176,60 @@
 
     echo json_encode($lieferantResults);
 
-    // if ($_GET['sfirmen'] == 1) {
-    //   // sfirmen = 1 - FIRMEN
 
-    //   // get existing state from DB
-    //   $firmenQ1 = mysqli_query($dbhandle, "SELECT * FROM companies;") or die(mysqli_error($dbhandle));
-    //   $firmenArray2 = array();
-    //   while($firmenResults = mysqli_fetch_array($firmenQ1)) {
-    //     $firmenArray2[] = $firmenResults;
-    //   }
+  } elseif (isset($_GET['updateKunden'])) {
 
-    //   // get new state from xhr request
-    //   $request_body = file_get_contents('php://input');
-    //   $data = array();
-    //   $data = json_decode($request_body, true);
-    //   $arraySize = sizeof($data);
+    /**************************
+     * UPDATE KUNDEN  
+     *************************/
+    
+    $id = $_GET['id'];
+    $name = $_GET['name'];
+    $kundenCID = $_GET['kundenCID'];
+    $protected = $_GET['protected'];
+    $derenCID = $_GET['derenCID'];
+    
+    if ($protected == 'Protected') {
+      $protected = "1";
+    } elseif ($protected == "Unprotected") {
+      $protected = "0";
+    } else {
+      $protected = "";
+    }
 
-    //   $updateArray = array();
+    // Select company ID based on name
 
-    //   // loop through all rows (based on xhr row size) to compare db state to xhr data
-    //   for ($row = 0; $row < $arraySize; $row++) {
-    //     $idToSearch = $firmenArray2[$row][0];
-    //     $keys = array_search($idToSearch, array_column($data, '0'));
+    $kundenQ1 = mysqli_query($dbhandle, "SELECT companies.id FROM companies WHERE companies.name LIKE '".$name."';") or die(mysqli_error($dbhandle));   
+     
+    $kundenArray2 = array();
+     
+    while($kundenResults1 = mysqli_fetch_array($kundenQ1)) {
+      $kundenArray2[] = $kundenResults1;
+    }
+     
+    $selectedCompanyID = $kundenArray2[0][0];
 
-    //     // check each row for changes, mark rows that have changes in $updateArray
-    //     for ($col = 0; $col < 4; $col++) {
-    //       $needsUpdate = 0;
-    //       if ($firmenArray2[$row][$col] != $data[$keys][$col]) {
-    //         array_push($updateArray,$data[$keys][0]);
-    //       }
-    //     }
-    //   }
+    // select lieferantID based on name 
 
-    //   // check if $updateArray has any queued changes, if so - commit them
-    //   $arraySize2 = sizeof($updateArray);
-    //   $updateFirmen = array();
-    //   if ($arraySize2 > 0) {
-    //     for ($i = 0; $i < $arraySize2; $i++) {
-    //       $row = $updateArray[$i];
-    //       $row2 = array_search($row, array_column($data, '0'));
-    //       $updateQ = 'UPDATE companies SET name = "' . $data[$row2][1] . '",  mailDomain = "' . $data[$row2][2] . '", maintenanceRecipient = "' . $data[$row2][3] . '" WHERE id LIKE "' . $data[$row2][0] . '"';
-    //       $firmenQ2 = mysqli_query($dbhandle, $updateQ) or die(mysqli_error($dbhandle));
-    //       if ($firmenQ2 == 'TRUE'){
-    //         $updateFirmen['updated'] = $updateFirmen['updated'] + 1;
-    //       }
-    //     }
-    //     echo json_encode($updateFirmen);
-    //   } else {
-    //     $updateFirmen['updated'] = -1;
-    //     echo json_encode($updateFirmen);
-    //   }
-    // } elseif ($_GET['sfirmen'] == 2) {
-    //   // sfirmen = 2 - LIEFERANTEN
+    $kundenQ3 = mysqli_query($dbhandle, "SELECT lieferantCID.id FROM lieferantCID WHERE lieferantCID.derenCID LIKE '".$derenCID."';") or die(mysqli_error($dbhandle));   
+     
+    $kundenArray3 = array();
+     
+    while($kundenResults2 = mysqli_fetch_array($kundenQ3)) {
+      $kundenArray3[] = $kundenResults2;
+    }
+     
+    $selectedLieferantID = $kundenArray3[0][0];
 
-    //   // get existing state from DB
-    //   $lieferantQ1 = mysqli_query($dbhandle, "SELECT lieferantCID.id, companies.name, lieferantCID.derenCID FROM lieferantCID LEFT JOIN companies  ON lieferantCID.lieferant = companies.id;") or die(mysqli_error($dbhandle));
-    //   $lieferantArray2 = array();
-    //   while($lieferantResults = mysqli_fetch_array($lieferantQ1)) {
-    //     $lieferantArray2[] = $lieferantResults;
-    //   }
-    //   // get new state from xhr request
-    //   $request_body = file_get_contents('php://input');
-    //   $data = array();
-    //   $data = json_decode($request_body, true);
-    //   $arraySize = sizeof($data);
+    $kundenQ4 = mysqli_query($dbhandle, "UPDATE kundenCID SET kundenCID.lieferantCID = '" . $selectedLieferantID . "', kundenCID.kunde = '" . $selectedCompanyID . "', kundenCID.protected = '" . $protected . "', kundenCID.kundenCID = '" . $kundenCID . "' WHERE kundenCID.id like '$id'") or die(mysqli_error($dbhandle));
 
-    //   $updateArray = array();
+    if ($kundenQ4 == 'TRUE'){
+      $kundenResults['updated'] = 1;
+    } else {
+      $kundenResults['updated'] = 0;
+    }
 
-    //   // loop through all rows (based on xhr row size) to compare db state to xhr data
-    //   for ($row = 0; $row < $arraySize; $row++) {
-    //     $idToSearch = $lieferantArray2[$row][0];
-    //     $keys = array_search($idToSearch, array_column($data, '0'));
-
-    //     // check each row for changes, mark rows that have changes in $updateArray
-    //     for ($col = 0; $col < 3; $col++) {
-    //       $needsUpdate = 0;
-    //       if ($lieferantArray2[$row][$col] != $data[$keys][$col]) {
-    //         array_push($updateArray,$data[$keys][0]);
-    //       }
-    //     }
-    //   }
-
-    //   // check if $updateArray has any queued changes, if so - commit them
-    //   $arraySize2 = sizeof($updateArray);
-    //   $updateLieferant = array();
-    //   if ($arraySize2 > 0) {
-    //     for ($i = 0; $i < $arraySize2; $i++) {
-    //       $row = $updateArray[$i];
-    //       $row2 = array_search($row, array_column($data, '0'));
-    //       //$updateQ = 'UPDATE lieferantCID SET name = "' . $data[$row2][1] . '",  mailDomain = "' . $data[$row2][2] . '", maintenanceRecipient = "' . $data[$row2][3] . '" WHERE id LIKE "' . $data[$row2][0] . '"';
-    //       //$lieferantQ2 = mysqli_query($dbhandle, $updateQ) or die(mysqli_error($dbhandle));
-    //       //if ($lieferantQ2 == 'TRUE'){
-    //       //  $updateLieferant['updated'] = $updateLieferant['updated'] + 1;
-    //       //}
-    //     echo json_encode('lief updated: ' . $data[$row2][0]);
-    //     }
-    //   } else {
-    //     $updateLieferant['updated'] = -1;
-    //     echo json_encode('lief NOT updated: ' . $data);
-    //   }
-    // }
+    echo json_encode($kundenResults);
 
   } elseif (isset($_GET['dCID'])) {
 
@@ -338,7 +292,7 @@
      * INDEX - get line chart data
      *****************************************/
 
-    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(maileingang) as day FROM maintenancedb WHERE maintenancedb.done LIKE '1' AND DATE(maileingang) >= curdate() - INTERVAL DAYOFWEEK(curdate())+14 DAY ORDER BY day desc") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(updatedAt) as day FROM maintenancedb WHERE maintenancedb.done LIKE '1' AND DATE(maileingang) >= curdate() - INTERVAL DAYOFWEEK(curdate())+14 DAY ORDER BY day desc") or die(mysqli_error($dbhandle));
 
     $array3 = array();
 
@@ -454,7 +408,7 @@
      * INDEX - get line chart data
      *****************************************/
 
-    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(mailSentAt) as day FROM maintenancedb WHERE maintenancedb.active LIKE '1' AND maintenancedb.done LIKE '1';") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(updatedAt) as day FROM maintenancedb WHERE maintenancedb.active LIKE '1' AND maintenancedb.done LIKE '1';") or die(mysqli_error($dbhandle));
 
     $array3 = array();
 

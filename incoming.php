@@ -339,7 +339,7 @@ global $dbhandle;
                         <div class="mailWrapper0">
                           <div class="mdl-textfield mdl-js-textfield mailWrapper1">
                             <div style="display:inline-block !important;margin-top: 20px;" class=" mailWrapper2">
-                              <iframe onload="resizeIframe(this)" class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0" src="msg/' . $message_id . '.html" id="emailBody1_' . $message_id . '"></iframe>
+                              <iframe onload="resizeIframe(this)" class="frameClass" style="min-width:100%;min-height:100%;margin-top: 20px;" height="100%" width="100%" frameborder="0" src="msg/' . $message_id . '.html" id="emailBody1_' . $message_id . '"></iframe>
                             </div>
                           </div>
                         </div>
@@ -457,9 +457,6 @@ global $dbhandle;
               }
             }
             if ($labelNameForSearch == '') {
-              // echo '<script language="javascript">';
-              // echo 'alert("No Label Selected - Please go to Settings.")';
-              // echo '</script>';
               echo'<script>
               showDialog({
                 title: \'No Mailbox Labels Selected\',
@@ -477,8 +474,6 @@ global $dbhandle;
                 </script>';
               $labelNameForSearch = 'aaaaaaa';
             }
-            //var_dump('label_results: ' . $results);
-            // $q = 'label:' . $labelNameForSearch . ' newer_than:1d';
             $q = 'label:' . $labelNameForSearch . ' is:unread';
             fetchMails($service, $q);
 
@@ -506,31 +501,26 @@ global $dbhandle;
         </main>
         <script>
 
+        $('#show-dialog2').on('click',function() {
+          var obj = $('.frameClass');
+          obj.height = obj.contentWindow.document.body.scrollHeight;
+          obj.width = obj.contentWindow.document.body.scrollWidth;
+          console.log("click: " + obj.width);
+
+          obj.style.height = obj.contentWindow.document.body.scrollHeight+"px";
+          obj.style.width = obj.contentWindow.document.body.scrollWidth+"px";
+          console.log("click: " + obj.style.width);
+        })
+
         function resizeIframe(obj) {
-          function getDocHeight(doc) {
-            // from http://stackoverflow.com/questions/1145850/get-height-of-entire-document-with-javascript
-            var body = doc.body, html = doc.documentElement;
-            var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
-            console.log(height);
-            return height;
-          }
-          function getDocWidth(doc) {
-            // from http://stackoverflow.com/questions/1145850/get-height-of-entire-document-with-javascript
-            var body = doc.body, html = doc.documentElement;
-            var width = Math.max( body.scrollWidth, body.offsetWidth, html.clientWidth, html.scrollWidth, html.offsetWidth );
-            console.log(width);
-            return width;
-          }
-          var doc = obj.contentDocument;
-          console.log(doc);
-          obj.style.height = (getDocHeight(doc) + "px");
-          obj.style.width = (getDocWidth(doc) + "px");
-          obj.height = getDocHeight(doc);
-          obj.width = getDocWidth(doc);
-          // obj.style.height = obj.contentDocument.documentElement.scrollHeight;
-          // obj.style.width = obj.contentDocument.documentElement.scrollWidth;
-          // obj.style.height = obj.contentWindow.document.body.scrollHeight;
-          // obj.style.width = obj.contentWindow.document.body.scrollWidth;
+
+          obj.height = obj.contentWindow.document.body.scrollHeight;
+          obj.width = obj.contentWindow.document.body.scrollWidth;
+          console.log(obj.width);
+
+          obj.style.height = obj.contentWindow.document.body.scrollHeight+"px";
+          obj.style.width = obj.contentWindow.document.body.scrollWidth+"px";
+          console.log(obj.style.width);
         }
 
         $(window).on('load',function(){

@@ -114,6 +114,7 @@ $.ajax({
               }
             }],
             yAxes: [{
+              // stacked: true,
               display: false,
               ticks: {
                 display: false
@@ -133,6 +134,11 @@ $.ajax({
           },
           tooltips: {
               mode: 'index'
+          },
+          layout: {
+            padding: {
+              top: 10
+            }
           }
         }
       });
@@ -196,7 +202,13 @@ $.ajax({
           hoverRadius: 4,
           hoverBorderWidth: 3
         }
+      },
+      layout: {
+        padding: {
+          top: 10
+        }
       }
+
     }
     });
   }
@@ -257,7 +269,13 @@ $.ajax({
           hoverRadius: 4,
           hoverBorderWidth: 3
         }
+      },
+      layout: {
+        padding: {
+          top: 10
+        }
       }
+
     }
     });
   }
@@ -318,7 +336,13 @@ $.ajax({
           hoverRadius: 4,
           hoverBorderWidth: 3
         }
+      },
+      layout: {
+        padding: {
+          top: 10
+        }
       }
+
     }
     });
   }

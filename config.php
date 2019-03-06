@@ -1,7 +1,9 @@
 <?php
 
-   $username = "ndomino";
-   $password = "Miney91*";
+   #$username = "ndomino";
+   #$password = "Miney91*";
+   $username = "maint";
+   $password = "N3wt3lco";
    $hostname = "94.249.164.180";
    $database = "maintenance";
 

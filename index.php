@@ -90,16 +90,16 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
   //This is the "Offline copy of pages" service worker
 
   //Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
-  // if (navigator.serviceWorker.controller) {
-  //   console.log('active service worker found, no need to register')
-  // } else {
-  //   //Register the ServiceWorker
-  //   navigator.serviceWorker.register('sw.js', {
-  //     scope: './'
-  //   }).then(function(reg) {
-  //     console.log('Service worker has been registered for scope:'+ reg.scope);
-  //   });
-  // }
+  if (navigator.serviceWorker.controller) {
+    console.log('active service worker found, no need to register')
+  } else {
+    //Register the ServiceWorker
+    navigator.serviceWorker.register('sw4.js', {
+      scope: './'
+    }).then(function(reg) {
+      console.log('Service worker has been registered for scope:'+ reg.scope);
+    });
+  }
 
 
   </script>
@@ -220,7 +220,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
                     <tr>
                       <td width="21%"><b>alt + h</b></td> <td width="21%">home</td>
                       <td width="6%"></td> 
-                      <td width="21%"><b></b></td> <td width="21%"></td>
+                      <td width="21%"><b></b></td><td width="21%"></td>
                     </tr>
                     <tr>
                       <td width="21%"><b>alt + i</b></td>  <td width="21%">incoming</td>

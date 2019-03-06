@@ -2,6 +2,7 @@
     "require": {
         "google/apiclient": "^2.0",
 	"fightbulc/moment": "*",
-        "phpoffice/phpspreadsheet": "^1.6"
+        "phpoffice/phpspreadsheet": "^1.6",
+        "google/cloud-pubsub": "^1.8"
     }
 }

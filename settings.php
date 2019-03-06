@@ -607,7 +607,7 @@ if (isset($_POST['endlabel'])) {
                     title: 'Add',
                     onClick: function(e) {
                       console.log(e);
-                      var cName = $('#cName').val();
+                      var cName = $('#cName').val().trim();
                       var cDomain = $('#cDomain').val();
                       var cRecipient = $('#cRecipient').val();
                       $.ajax({
@@ -621,7 +621,8 @@ if (isset($_POST['endlabel'])) {
                             };
                             snackbarContainer.MaterialSnackbar.showSnackbar(sbData);
                             setTimeout(function() {
-                              window.location.href = 'https://maintenance.newtelco.de/settings#firmenTab'
+                              window.location.reload(); 
+                              // window.location.href = 'https://maintenance.newtelco.de/settings#firmenTab';
                             },1000);
                           } 
                         },
@@ -657,7 +658,7 @@ if (isset($_POST['endlabel'])) {
                   $('.close1').click();
                   snackbarContainer.MaterialSnackbar.showSnackbar(sbData);
                   setTimeout(function() {
-                    window.location.href = 'https://maintenance.newtelco.de/settings#lieferantenTab'
+                    window.location.reload(); 
                   },1000);
                 } 
               },
@@ -696,7 +697,7 @@ if (isset($_POST['endlabel'])) {
                   $('.close3').click();
                   snackbarContainer.MaterialSnackbar.showSnackbar(sbData);
                   setTimeout(function() {
-                    window.location.href = 'https://maintenance.newtelco.de/settings#kundenTab'
+                    window.location.reload(); 
                   },1000);
                 } 
               },

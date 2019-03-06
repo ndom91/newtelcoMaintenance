@@ -65,6 +65,26 @@
 
     echo json_encode($hideResults);
 
+  } elseif (isset($_GET['rmReschedule'])) {
+
+    /***************************
+     * SETTINGS - UPDATE FIRMEN
+     ***************************/
+    $rescheduleNum = $_GET['rmReschedule'];
+    $activeMID = $_GET['mid'];
+
+    $rid = 'NT'.$activeMID.'_'.$rescheduleNum;
+
+    $removeRsQuery = mysqli_query($dbhandle, "UPDATE reschedule SET reschedule.active = '0' WHERE reschedule.rid like '$rid'") or die(mysqli_error($dbhandle));
+
+    if ($removeRsQuery == 'TRUE'){
+      $rmResults['removed'] = 1;
+    } else {
+      $rmResults['removed'] = 0;
+    }
+
+    echo json_encode($rmResults);
+
   } elseif (isset($_GET['mRead'])) {
 
     /***************************
@@ -447,7 +467,7 @@
     if ($fetch = mysqli_fetch_array($result0)) {
       //Found a company - now show all maintenances for company
       $company_id = $fetch[0];
-      $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.done, maintenancedb.id, maintenancedb.receivedmail, maintenancedb.betroffeneCIDs, companies.name FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.lieferant LIKE '$company_id' AND maintenancedb.active = '1';") or die(mysqli_error($dbhandle));
+      $result = mysqli_query($dbhandle, "SELECT maintenancedb.maileingang, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.done, maintenancedb.id, maintenancedb.receivedmail, maintenancedb.betroffeneCIDs, lieferantCID.derenCID, companies.name FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id WHERE maintenancedb.lieferant LIKE '$company_id' AND maintenancedb.active = '1';") or die(mysqli_error($dbhandle));
 
         $array2 = array();
 
@@ -469,8 +489,10 @@
      **************************/
 
     $fields=$_POST['data'];
+    $rescheduleCount = sizeof($fields); 
 
     $addeditA = array();
+    $addeditA['rescheduleCount'] = $rescheduleCount;
 
     $omaintid = $fields[0]['omaintid'];
     $omaileingang = mysqli_real_escape_string($dbhandle, $fields[0]['omaileingang']);
@@ -494,6 +516,24 @@
     $mailDomain = mysqli_real_escape_string($dbhandle, $fields[0]['mailDomain']);
     $kundenCompanies = mysqli_real_escape_string($dbhandle, $fields[0]['kundenCompanies']);
     $kundenCIDs = mysqli_real_escape_string($dbhandle, $fields[0]['kundenCIDs']);
+
+    $rescheduleCount = $rescheduleCount - 1;
+
+    if($rescheduleCount > 0) {
+      for($r=1;$r <= $rescheduleCount;$r++) {
+        ${'rUser'.$r} = mysqli_real_escape_string($dbhandle,$fields[$r]['rUser']);
+        // $rUser1 = mysqli_real_escape_string($dbhandle,$fields[$r]['rUser']);
+        ${'rEditTime'.$r} = mysqli_real_escape_string($dbhandle,$fields[$r]['rEditTime']);
+        ${'rSdt'.$r} = mysqli_real_escape_string($dbhandle,$fields[$r]['rSdt']);
+        ${'rEdt'.$r} = mysqli_real_escape_string($dbhandle,$fields[$r]['rEdt']);
+        ${'rReas'.$r} = mysqli_real_escape_string($dbhandle,$fields[$r]['rReas']);
+        ${'rLoc'.$r} = mysqli_real_escape_string($dbhandle,$fields[$r]['rLoc']);
+        ${'rImp'.$r} = mysqli_real_escape_string($dbhandle,$fields[$r]['rImp']);
+      }
+    }
+
+    // $addeditA['rReas1'] = $rReas1;
+    // $addeditA['rReas2'] = $rReas2;
 
     $update = $fields[0]['update'];
     $updatedBy = $fields[0]['updatedBy'];
@@ -522,6 +562,29 @@
 
       if ($fetchID1 = mysqli_fetch_array($resultx2)) {
         $oupdatedID = $fetchID1[0];
+      }
+       
+
+      // check if reschedule[$r] already exists for this maintenance
+      $rescheduleCheckQ = mysqli_query($dbhandle, "SELECT MAX(reschedule.rcounter) FROM reschedule WHERE reschedule.maintenanceid LIKE '$omaintid'");
+      if($fetchReschedule = mysqli_fetch_array($rescheduleCheckQ)) {
+        // reschedules exist for this maintenance, count then update
+        // maintenance Resch. exists - lets check which ones..
+        $lastSavedRS = $fetchReschedule[0];
+
+        for ($i=1;$i<$lastSavedRS;$i++) {
+          $rescheduleUpdateQuery = mysqli_query($dbhandle, "UPDATE reschedule SET sdt = '${'rSdt'.$i}', edt = '${'rEdt'.$i}', reason = '${'rReas'.$i}', location = '${'rLoc'.$i}', impact = '${'rLoc'.$i}' WHERE maintenanceid LIKE '$omaintid' AND rcounter LIKE '$i';");
+        }
+        $addeditA['reschExists'] = 1;
+      } else {
+        // reschedules dont exist, insert them
+        $rcounter = 1;
+        for ($i=0;$i<$rescheduleCount;$i++) {
+          $rescheduleInsertQuery = mysqli_query($dbhandle, "INSERT INTO reschedule (maintenanceid,rcounter,user,datetime,sdt,edt,reason,location,impact,active) VALUES ('$omaintid','$rcounter','${'rUser'.$rcounter}','${'rEditTime'.$rcounter}','${'rSdt'.$rcounter}','${'rEdt'.$rcounter}','${'rReas'.$rcounter}','${'rLoc'.$rcounter}','${'rImp'.$rcounter}','1')");
+          $rcounter = $rcounter + 1;
+        }
+        $addeditA['reschExists'] = 0;
+
       }
 
       if ($resultx == 'TRUE'){

@@ -161,7 +161,7 @@ global $dbhandle;
                         echo '</td>';
                       } elseif ($key == 'name') {
                         $mailDomain = $rowx['mailDomain'];
-                        echo "<td>$value <img src='https://www.google.com/s2/favicons?domain=$mailDomain'></td>";
+                        echo "<td><img src='https://www.google.com/s2/favicons?domain=$mailDomain'> $value</td>";
                         
                       } else {
                         echo "<td>$value</td>";
@@ -186,7 +186,14 @@ global $dbhandle;
             </div>
         </main>
         <script>
-          
+
+         
+
+          function openInNewTab(url) {
+            var win = window.open(url, '_blank');
+            win.focus();
+          }
+
           key('alt+shift+l', function(){ 
             
             var table3 = $('#dataTable1').DataTable();
@@ -261,37 +268,43 @@ global $dbhandle;
 
                   columnDefs: [
                       {
-                          "targets": [ 1, 16, 17 ],
-                          "visible": false,
-                          "searchable": false
+                        "targets": [ 1, 16, 17 ],
+                        "visible": false,
+                        "searchable": false
                       },
                       {
-                          "targets": [ 3, 10 ],
-                          "visible": false,
-                          "searchable": false
+                        "targets": [ 3, 10 ],
+                        "visible": false,
+                        "searchable": false
                       },
                       {
-                          "targets": [ 0, 3 ],
-                          "visible": true,
-                          "searchable": false
+                        "targets": [ 0, 3 ],
+                        "visible": true,
+                        "searchable": false
+                      },
+                      {
+                        targets: [ 7, 14 ],
+                        className: "datatablesWraptext"
                       },
                       { responsivePriority: 1, targets: [ 0, 2, 3, 4, 5, 6, 13 ] },
                       { responsivePriority: 2, targets: [ -1 ] },
                       { responsivePriority: 5, targets: [ 7, 8, 12 ] },
                       { responsivePriority: 10, targets: [ 11, 9, 10, 14 ] },
                       {
-                          targets: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+                          targets: [ 0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 15 ],
                           className: 'mdl-data-table__cell--non-numeric'
                       }
                   ]
               } );
 
-              table.on( 'select', function ( e, dt, type, indexes ) {
-                  if ( type === 'row' ) {
-                      var data = table.rows( { selected: true } ).data()[0][1]
-                        //console.log(data);
-                  }
-              } );
+            table.on( 'select', function ( e, dt, type, indexes ) {
+                if ( type === 'row' ) {
+                    var data = table.rows( { selected: true } ).data()[0][1]
+                      //console.log(data);
+                }
+            });
+
+            
 
 
             // Hide Loader
@@ -328,7 +341,6 @@ global $dbhandle;
                 m14days = m14days.toISODate();
                 var p14days = now.plus({days: 21});
                 p14days = p14days.toISODate();
-                // Create a DataSet (allows two way data-binding)
                 var items = new vis.DataSet(data);
 
                 // Create a DataSet (allows two way data-binding)
@@ -354,6 +366,16 @@ global $dbhandle;
 
                 // Create a Timeline
                 var timeline = new vis.Timeline(container, items, options);
+               
+                timeline.on('click', function (e) {
+                  // console.log('click without ctrl');
+                  // console.log(e);
+                  if (e.what != 'background') {
+                    if(window.event.ctrlKey) {
+                      openInNewTab('https://maintenance.newtelco.de/addedit?update=1&mid='+e.item);
+                    }
+                  }
+                })
               },
               error: function (err) {
                 console.log('Error', err);
@@ -367,7 +389,60 @@ global $dbhandle;
             });
           });
 
+          $('#dataTable1').on('responsive-resize.dt', function(e) {
+            console.log('Table Redrawn - Responsive');
+            // console.log(e);
+            // console.log(e.currentTarget.childNodes);
+            var tbody = e.currentTarget.childNodes[3];
+            // console.log(tbody.children);
+            var tbodyChild = tbody.children;
+            var rowStyle = $('<style />').appendTo('head');
+            var fullstyle = '';
 
+            if (typeof tbodyChild !== 'undefined') {
+              for(i=0;i<tbody.children.length;i++) {
+                var rowHeight = tbody.children[i].offsetHeight;
+                var className = 'rowHeight' + i;
+                // console.log(rowHeight);
+                var firstChild = tbodyChild[i].firstChild;
+                // console.log(firstChild);
+                $(firstChild).addClass(className);
+                var adjustedMargin = rowHeight - 61;
+                adjustedMargin = adjustedMargin / 2;
+                adjustedMargin = adjustedMargin - 1;
+                fullstyle += '.' + className + ':before { margin-top: ' + adjustedMargin + 'px !important;}\n';
+                rowStyle.text(fullstyle);
+              }
+            }
+
+          });
+
+          $('#dataTable1').on('draw.dt', function(e) {
+            console.log('Table Redrawn - Draw');
+            // console.log(e);
+            // console.log(e.currentTarget.childNodes);
+            var tbody = e.currentTarget.childNodes[3];
+            // console.log(tbody.children);
+            var tbodyChild = tbody.children;
+            var rowStyle = $('<style />').appendTo('head');
+            var fullstyle = '';
+
+            if (typeof tbodyChild !== 'undefined') {
+              for(i=0;i<tbody.children.length;i++) {
+                var rowHeight = tbody.children[i].offsetHeight;
+                var className = 'rowHeight' + i;
+                // console.log(rowHeight);
+                var firstChild = tbodyChild[i].firstChild;
+                // console.log(firstChild);
+                $(firstChild).addClass(className);
+                var adjustedMargin = rowHeight - 61;
+                adjustedMargin = adjustedMargin / 2;
+                adjustedMargin = adjustedMargin - 1;
+                fullstyle += '.' + className + ':before { margin-top: ' + adjustedMargin + 'px !important;}\n';
+                rowStyle.text(fullstyle);
+              }
+            }
+          });
 
         </script>
         <?php echo file_get_contents("views/footer.html"); ?>

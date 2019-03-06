@@ -46,7 +46,7 @@ var STATIC_FILES = [
   "dist/js/moment/datetime-moment.min.js",
   "dist/js/keymaster.js",
   "dist/css/vis-timeline.min.css",
-  "dist/js/vis.js",
+  "dist/js/vis.js", 
   "dist/images/fav-32x32.png",
   "dist/images/Preloader_4.gif",
   "dist/images/preloaderWork.gif",

@@ -899,7 +899,8 @@ textarea.mdl-textfield__input {
 }
 
 #addCalbtn {
-  float: left;
+  float: right;
+  margin-right: 10px;
   display: inline;
   color: #4e4e4e;
   font-family: 'Roboto', sans-serif;
@@ -908,8 +909,40 @@ textarea.mdl-textfield__input {
   font-size: 14px;
 }
 
+#rescheduleBtn {
+  float:left;
+  margin-left: 10px;
+  display: inline;
+  color: #4e4e4e;
+  line-height: 48px;
+  font-size: 14px;
+}
+
 #viewMailID {
     float: right;
+}
+
+.rescheduleHeader {
+  font-size: 24px;
+  font-family: Roboto;
+  font-weight: 100;
+  line-height:36px;
+}
+
+.rescheduleUser {
+  font-family: Roboto;
+  font-weight: 300;
+  color: #67B246;
+}
+
+.rescheduleTime {
+  font-family: Roboto;
+  font-weight: 300;
+  color: #67B246;
+}
+
+.mdi-18px:before {
+  font-size:20px !important;
 }
 
 .mdl-textfield__label__icon {
@@ -922,8 +955,8 @@ textarea.mdl-textfield__input {
   border: 1px solid rgba(0,0,0,0.1) !important;
 }
 
-.select2-container--default .select2-selection--multiple .select2-selection__choice {
-  background-color: rgba(103,172,70,0.3) !important;
+.select2-container--default .select2-selection--multiple {
+  /* background-color: rgba(103,172,70,0.3) !important; */
 }
 
 #sendMailbtn {
@@ -1187,6 +1220,16 @@ textarea.mdl-textfield__input {
   margin-top: -3px !important;
 }
 
+.datatablesWraptext {
+  white-space:normal;
+  text-align: left !important;
+  border: none !important; 
+}
+
+ul.dtr-details > li > .dtr-data {
+  white-space: normal;
+}
+
 @media only screen and (min-width: 800px) {
   .table2 {
     position: absolute;
@@ -1280,6 +1323,14 @@ tr.strikeout td:before {
   width: 100%;
 }
 
+.vis-tooltip {
+  font-family: 'Roboto' !important;
+  font-size: 14px !important;
+  background-color: rgba(255,255,255,0.7) !important;
+  color: #67B246 !important;
+  border-radius: 5px !important;
+  border: 2px solid #67B246 !important;
+}
 /* addedit */
 
 .aeCancel {
@@ -1318,6 +1369,20 @@ tr.strikeout td:before {
   top: 9px;
 }
 
+.select2-selection--multiple {
+  border-radius: 5px;
+  border: 1px solid rgba(0,0,0,.12) !important;
+}
+
+.select2-selection--multiple > ul {
+  line-height: 20px !important;
+}
+.select2-selection__choice {
+  background-color: rgba(255,255,255,.3)!important;
+  border: 2px solid rgba(103,172,70,0.5) !important;
+  border-radius: 5px !important;
+  color: #8b8989;
+}
 @media only screen and (max-width: 700px) {
   #dialog1 {
     width: 90% !important;
@@ -1809,7 +1874,7 @@ tr.strikeout td:before {
   margin: 0 !important; 
   float:right;
 }
-input[type="search"] {
+#firmenSearch, #lieferantenSearch, #kundenSearch {
   font-size: 15px;
   font-family: "Roboto";
   color: rgba(0,0,0,.54);
@@ -1822,7 +1887,7 @@ input[type="search"] {
   margin-bottom:20px;
 }
 
-input[type="search"]:focus {
+#firmenSearch:focus, #lieferantenSearch:focus, #kundenSearch:focus {
   box-shadow: 0 0 20px rgba(103,178,70,0.7);
   /* border: 2px solid rgba(103,178,70,0.3); */
 }

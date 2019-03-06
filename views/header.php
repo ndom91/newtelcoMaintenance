@@ -30,6 +30,16 @@
           echo '/dist/images/icons/sst_round.png';
         } else if ($token_data['email'] == 'ndomino@newtelco.de') {
           echo '/dist/images/icons/ndo_round.png';
+        }  else if ($token_data['email'] == 'jskribek@newtelco.de') {
+          echo '/dist/images/icons/jsk_round.png';
+        }   else if ($token_data['email'] == 'kmoeller@newtelco.de') {
+          echo '/dist/images/icons/kmo_round.png';
+        }    else if ($token_data['email'] == 'jharfert@newtelco.de') {
+          echo '/dist/images/icons/jha_round.png';
+        }     else if ($token_data['email'] == 'nchachua@newtelco.de') {
+          echo '/dist/images/icons/nch_round.png';
+        }      else if ($token_data['email'] == 'kkoester@newtelco.de') {
+          echo '/dist/images/icons/kko_round.png';
         }        
         // for echoing google picture directly
         // echo $token_data['picture'] 

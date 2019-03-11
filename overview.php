@@ -272,6 +272,7 @@ global $dbhandle;
                         "targets": [ 1, 16, 17 ],
                         "visible": false,
                         "searchable": false
+<<<<<<< HEAD
                       },
                       {
                         "targets": [ 3, 10 ],
@@ -284,6 +285,20 @@ global $dbhandle;
                         "searchable": false
                       },
                       {
+=======
+                      },
+                      {
+                        "targets": [ 3, 10 ],
+                        "visible": false,
+                        "searchable": false
+                      },
+                      {
+                        "targets": [ 0, 3 ],
+                        "visible": true,
+                        "searchable": false
+                      },
+                      {
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
                         targets: [ 7, 14 ],
                         className: "datatablesWraptext"
                       },
@@ -415,9 +430,15 @@ global $dbhandle;
                 rowStyle.text(fullstyle);
               }
             }
+<<<<<<< HEAD
 
           });
 
+=======
+
+          });
+
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
           $('#dataTable1').on('draw.dt', function(e) {
             console.log('Table Redrawn - Draw');
             // console.log(e);

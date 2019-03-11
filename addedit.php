@@ -14,6 +14,7 @@ global $dbhandle;
 
 <head>
     <title>Newtelco Maintenance | Edit</title>
+<<<<<<< HEAD
 
     <!-- jquery -->
     <script rel="preload" as="script" type="text/javascript" src="dist/js/jquery-3.3.1.min.js"></script>
@@ -24,6 +25,17 @@ global $dbhandle;
     <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/luxon.min.js"></script>
     <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment.min.js"></script>
     <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment-timezone-with-data.min.js"></script>
+=======
+    <?php echo file_get_contents("views/meta.html"); ?>
+
+    <!-- moment -->
+    <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/luxon.min.js"></script>
+    <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment.min.js"></script>
+    <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment-timezone-with-data.min.js"></script>
+
+    <!-- jquery -->
+    <script rel="preload" as="script" type="text/javascript" src="dist/js/jquery-3.3.1.min.js"></script>
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
 
     <!-- select2 -->
     <script rel="preload" as="script" type="text/javascript" src="dist/js/select2_4.0.6-rc1.min.js"></script>
@@ -180,6 +192,7 @@ global $dbhandle;
                   $derenCIDQ =  mysqli_query($dbhandle, "SELECT companies.name, lieferantCID.derenCID, lieferantCID.id FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id WHERE lieferantCID.lieferant LIKE '$olieferant'") or die(mysqli_error($dbhandle));
                 }
                 if (isset($_GET['gmid'])) {
+<<<<<<< HEAD
 
                   $gmid = $_GET['gmid'];
 
@@ -224,8 +237,57 @@ global $dbhandle;
 
                     foreach ($script as $item) {
                       $remove[] = $item;
+=======
+
+                  $gmid = $_GET['gmid'];
+
+                  $service2 = new Google_Service_Gmail($clientService);
+
+                  function decodeBody($body)
+                  {
+                    $rawData = $body;
+                    $sanitizedData = strtr($rawData, '-_', '+/');
+                    $decodedMessage = base64_decode($sanitizedData);
+                    if (!$decodedMessage) {
+                      $decodedMessage = false;
+                    }
+                    return $decodedMessage;
+                  }
+
+                  function get_email_domain($email)
+                  {
+                    $domain = substr(strrchr($email[0], "@"), 1);
+                    $result = preg_split('/(?=\.[^.]+$)/', $domain);
+                    return $domain;
+                  }
+
+                  function getHeader($headers, $name)
+                  {
+                    foreach ($headers as $header) {
+                      if ($header['name'] == $name) {
+                        return $header['value'];
+                      }
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
+                    }
+                  }
+
+<<<<<<< HEAD
+=======
+                  function stripHTML($html)
+                  {
+                    $dom = new DOMDocument();
+                    $dom->loadHTML($html);
+                    $script = $dom->getElementsByTagName('script');
+                    $html = $dom->getElementsByTagName('html');
+                    $body1 = $dom->getElementsByTagName('body');
+                    $table = $dom->getElementsByTagName('table');
+                    $remove = [];
+
+                    foreach ($script as $item) {
+                      $remove[] = $item;
                     }
 
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
                     foreach ($table as $item) {
                       $item->setAttribute("style", "overflow: auto !important;");
                       $item->parentNode->setAttribute("style", "display: table !important;");
@@ -691,7 +753,10 @@ global $dbhandle;
                                                                   echo $msgInfo[1];
                                                                 } ?>" id="mailDomain">
                                     <input type="hidden" value="<?php echo $activeID ?>" id="activeMID">
+<<<<<<< HEAD
                                     <input type="hidden" value="" id="newlyCreatedMID">
+=======
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
                                 </div>
                                 <?php
                                         // load reschedules
@@ -957,12 +1022,16 @@ global $dbhandle;
                     var selectedCompanyAr = $('#company').select2('data');
                     var selectedCompany = selectedCompanyAr[0].text.trim();
 
+<<<<<<< HEAD
                     // var activeID = $('#activeMID').val();
                     if($('#activeMID') !== '') {
                         var activeID = $('#activeMID').val();
                     } else {
                         var activeID = $('#newlyCreatedMID').val();
                     }
+=======
+                    var activeID = $('#activeMID').val();
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
 
                     table4 = $('#dataTable4').DataTable();
                     var data = table4.row($('tr')).data();
@@ -1611,12 +1680,16 @@ global $dbhandle;
                             }
                             if (result1.updatedID != '') {
                                 var newID = result1.updatedID;
+<<<<<<< HEAD
                                 // window.location.href = "https://maintenance.newtelco.de/addedit?gmid=" + $('#rmail').val() + "&mid=" + newID + "&update=1";
                                 $('#newlyCreatedMID').val(newID);
                                 $('#update').val('1');
                                 // window.location.href = "https://maintenance.newtelco.de/addedit?gmid=" + $('#rmail').val() + "&mid=" + newID + "&update=1";
                                 var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?update=1&gmid=' + $('#rmail').val() + '&mid=' + newID;
                                 window.history.pushState({ path: newurl }, '', newurl);
+=======
+                                window.location.href = "https://maintenance.newtelco.de/addedit?gmid=" + $('#rmail').val() + "&mid=" + newID + "&update=1";
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
                             }
                         }
                     });
@@ -1883,9 +1956,14 @@ global $dbhandle;
                     }
                     OverlayScrollbars(document.getElementById("notes"), {
                         className: "os-theme-dark",
+<<<<<<< HEAD
                         resize: "none",
                         sizeAutoCapable: false,
                         autoUpdate: true
+=======
+                        resize: "vertical",
+                        sizeAutoCapable: true
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
                     });
                 });
 
@@ -1896,7 +1974,11 @@ global $dbhandle;
                 });
 
                 $('#dataTable4').on('responsive-resize.dt', function(e) {
+<<<<<<< HEAD
                     // console.log('Table Redrawn - Draw');
+=======
+                    console.log('Table Redrawn - Draw');
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
                     // console.log(e);
                     // console.log(e.currentTarget.childNodes);
                     var tbody = e.currentTarget.childNodes[3];
@@ -1923,7 +2005,11 @@ global $dbhandle;
                 });
 
                 $('#dataTable4').on('draw.dt', function(e) {
+<<<<<<< HEAD
                     // console.log('Table Redrawn - Draw');
+=======
+                    console.log('Table Redrawn - Draw');
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
                     // console.log(e);
                     // console.log(e.currentTarget.childNodes);
                     var tbody = e.currentTarget.childNodes[3];

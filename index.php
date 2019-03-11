@@ -88,7 +88,28 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
     <?php echo file_get_contents("dist/css/style.min.css"); ?>
     <?php echo file_get_contents("dist/css/material.min.css"); ?>
   </style>
+<<<<<<< HEAD
  
+=======
+
+  <script>
+  //This is the "Offline copy of pages" service worker
+
+  //Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
+  if (navigator.serviceWorker.controller) {
+    console.log('active service worker found, no need to register')
+  } else {
+    //Register the ServiceWorker
+    navigator.serviceWorker.register('sw4.js', {
+      scope: './'
+    }).then(function(reg) {
+      console.log('Service worker has been registered for scope:'+ reg.scope);
+    });
+  }
+
+
+  </script>
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
 </head>
 <body>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
@@ -205,8 +226,13 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
                     </tr>
                     <tr>
                       <td width="21%"><b>alt + h</b></td> <td width="21%">home</td>
+<<<<<<< HEAD
                       <td width="6%"></td>
                       <td width="21%"><b>ctrl + shift + x</b></td>  <td width="21%">paste HTML</td>
+=======
+                      <td width="6%"></td> 
+                      <td width="21%"><b></b></td><td width="21%"></td>
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
                     </tr>
                     <tr>
                       <td width="21%"><b>alt + i</b></td>  <td width="21%">incoming</td>

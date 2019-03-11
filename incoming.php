@@ -117,9 +117,15 @@ global $dbhandle;
                             echo '</tr>';
                           }
                         }
+<<<<<<< HEAD
 
                         // https://stackoverflow.com/questions/32655874/cannot-get-the-body-of-email-with-gmail-php-api
 
+=======
+
+                        // https://stackoverflow.com/questions/32655874/cannot-get-the-body-of-email-with-gmail-php-api
+
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
                         function decodeBody($body)
                         {
                           $rawData = $body;
@@ -568,10 +574,13 @@ global $dbhandle;
                     className: 'all'
                 },
                 {
+<<<<<<< HEAD
                     targets: [ 5 ],
                     className: 'datatablesWraptext'
                 },
                 {
+=======
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
                     targets: [5], render: function (a, b, data, d) {
                       var subject = data[5];
                       if (subject.length > 70) {

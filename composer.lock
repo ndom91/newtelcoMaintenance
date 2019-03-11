@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "195e1d5b017e981211d1988a14c56a7a",
+=======
+    "content-hash": "7204a071ae75674fb46d09dc6a36acff",
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
     "packages": [
         {
             "name": "fgrosse/phpasn1",
@@ -1671,6 +1675,7 @@
             "time": "2016-02-11T07:05:27+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "redjanym/php-firebase-cloud-messaging",
             "version": "v1.1.4",
             "source": {
@@ -1728,6 +1733,8 @@
             "time": "2018-04-21T10:43:51+00:00"
         },
         {
+=======
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
             "name": "rize/uri-template",
             "version": "0.3.2",
             "source": {
@@ -1770,6 +1777,7 @@
                 "uri"
             ],
             "time": "2017-06-14T03:57:53+00:00"
+<<<<<<< HEAD
         },
         {
             "name": "rollbar/rollbar",
@@ -2516,6 +2524,8 @@
                 "symfony"
             ],
             "time": "2019-01-10T11:49:11+00:00"
+=======
+>>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
         }
     ],
     "packages-dev": [],

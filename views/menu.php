@@ -88,11 +88,11 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
     }); 
 
     key('alt+r', function(){ $('.mdl-layout__drawer').toggleClass('is-visible'); $('.mdl-layout__obfuscator').toggleClass('is-visible'); return false });
-    key('alt+h', function(){ window.location.href = 'https://maintenance.newtelco.de/index'; return false });
-    key('alt+o', function(){ window.location.href = 'https://maintenance.newtelco.de/overview'; return false });
-    key('alt+i', function(){ window.location.href = 'https://maintenance.newtelco.de/incoming'; return false });
+    key('alt+h', function(){ window.location.href = '/index'; return false });
+    key('alt+o', function(){ window.location.href = '/overview'; return false });
+    key('alt+i', function(){ window.location.href = '/incoming'; return false });
     key('alt+m', function(){ $('.mdl-menu__container').toggleClass('is-visible'); return false });
-    key('shift+c', function(){ window.location.href = 'https://maintenance.newtelco.de/addedit'; });
+    key('shift+c', function(){ window.location.href = '/addedit'; });
 
     $(document.body).on('keypress', function(e) {
       if (e.charCode === 63) {

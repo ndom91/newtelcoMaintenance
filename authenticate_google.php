@@ -68,7 +68,7 @@ $clientService = getGoogleClient();
 
    unset($_SESSION['access_token']);
    $client->revokeToken();
-   header('Location: https://maintenance.newtelco.de');
+   header('Location: ' . $_SERVER['SERVER_NAME']);
  }
  /************************************************
   * If we have a code back from the OAuth 2.0 flow,
@@ -82,7 +82,7 @@ $clientService = getGoogleClient();
    // store in the session also
    $_SESSION['access_token'] = $token;
    // redirect back to the example
-   header('Location: https://maintenance.newtelco.de/index.php');
+   header('Location: https://' . $_SERVER['SERVER_NAME'] . '/index');
    // return;
  }
 

@@ -179,9 +179,15 @@ global $dbhandle;
 
                   $derenCIDQ =  mysqli_query($dbhandle, "SELECT companies.name, lieferantCID.derenCID, lieferantCID.id FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id WHERE lieferantCID.lieferant LIKE '$olieferant'") or die(mysqli_error($dbhandle));
                 }
-                if (isset($_GET['gmid'])) {
+                 $gmid = $_GET['gmid'];
+                if(!isset($_GET['gmid']) && isset($_GET['mid'])) {
+                    $getGmidQuery = mysqli_query($dbhandle, "SELECT receivedmail FROM maintenancedb WHERE id LIKE '$activeID';");
+                    $gmidResult = mysqli_fetch_array($getGmidQuery);
+                    $gmid = $gmidResult[0];
+                }
 
-                  $gmid = $_GET['gmid'];
+                if ($gmid != '') {
+
 
                   $service2 = new Google_Service_Gmail($clientService);
 
@@ -338,9 +344,7 @@ global $dbhandle;
                     return $msgArray;
                   }
 
-                  if ($gmid != '') {
-                    $msgInfo = getMessage2($service2, $user, $gmid);
-                  }
+                  $msgInfo = getMessage2($service2, $user, $gmid);
 
                   $otitlestring = 'Edit';
                   if(isset($msgInfo[0])) {
@@ -766,7 +770,7 @@ global $dbhandle;
                                         <div class="mdl-textfield mdl-js-textfield mailWrapper1">
                                         <div style="display:inline-block !important;height: 100%;margin-top: 20px;" class=" mailWrapper2">';
                                         if(strpos($oreceivedmail,'NT-')==false) {
-                                            echo '<iframe onload="resizeIframe(this)" class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0"  id="emailBodyFrame" src="https://maintenance.newtelco.de/msg/' . $oreceivedmail . '.html"></iframe>';
+                                            echo '<iframe onload="resizeIframe(this)" class="frameClass" style="margin-top: 20px;" height="100%" width="100%" frameborder="0"  id="emailBodyFrame" src="' . $_SERVER['SERVER_NAME'] . '/msg/' . $oreceivedmail . '.html"></iframe>';
                                             }
                                         echo '</div>
                                         </div>
@@ -977,7 +981,7 @@ global $dbhandle;
                         .join(', ')
                         .replace(/\s/g, '%20');
 
-                    varCalLink = `http://www.google.com/calendar/event?action=TEMPLATE&dates=${calSDTISO2}%2F${calEDTISO2}&src=newtelco.de_hkp98ambbvctcn966gjj3c7dlo@group.calendar.google.com&text=Maintenance%20${selectedCompany}%20CID%20${kIDsconcat}&add=service@newtelco.de&details=Maintenance%20for%20<b>${selectedCompany}</b>%20on%20deren%20CID:%20"<b>${selectedDCIDjoin}</b>".<br><br>Affected%20Newtelco%20CIDs:%20<b>${kIDsconcat}</b><br><br>Source%20-%20<a href="https://maintenance.newtelco.de/addedit?mid=${activeID}">NT-M_${activeID}</a>&trp=false`;
+                    varCalLink = `http://www.google.com/calendar/event?action=TEMPLATE&dates=${calSDTISO2}%2F${calEDTISO2}&src=newtelco.de_hkp98ambbvctcn966gjj3c7dlo@group.calendar.google.com&text=Maintenance%20${selectedCompany}%20CID%20${kIDsconcat}&add=service@newtelco.de&details=Maintenance%20for%20<b>${selectedCompany}</b>%20on%20deren%20CID:%20"<b>${selectedDCIDjoin}</b>".<br><br>Affected%20Newtelco%20CIDs:%20<b>${kIDsconcat}</b><br><br>Source%20-%20<a href="https://${window.location.hostname}/addedit?mid=${activeID}">NT-M_${activeID}</a>&trp=false`;
                     console.log(varCalLink);
                     openInNewTab(varCalLink);
                 });
@@ -1579,7 +1583,7 @@ global $dbhandle;
                             if (result1.exist === 1) {
                                 var midval = $('#rmail').val();
                                 var handler = function(event) {
-                                    var aeURL = 'https://maintenance.newtelco.de/addedit?update=1&gmid=' + midval
+                                    var aeURL = 'https://' + window.location.hostname + '/addedit?update=1&gmid=' + midval
                                     window.location.href = aeURL;
                                 };
                                 var dataME = {

@@ -30,7 +30,7 @@ Rollbar::init(
     </div>
     <script>
       $(".mdl-layout-title2").click(function(){
-        window.location.replace("https://maintenance.newtelco.de/index");
+        window.location.replace("https://"+window.location.hostname+"/index");
       });
     </script>
     <div class="col">

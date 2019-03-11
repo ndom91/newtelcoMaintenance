@@ -451,7 +451,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
         })
 
         $('.unreadCounter').on('click', function() {
-          window.location.href = "https://maintenance.newtelco.de/incoming";
+          window.location.href = "https://"+window.location.hostname+"/incoming";
         })
 
         $(document).ready(function() {

@@ -218,7 +218,7 @@ global $dbhandle;
                             timeout: 2000
                           };
                           snackbarContainer.MaterialSnackbar.showSnackbar(dataSB1);
-                          setTimeout(function(){ window.location.href = 'https://maintenance.newtelco.de/overview'; }, 1000);
+                          setTimeout(function(){ window.location.href = 'https://'+window.location.hostname+'/overview'; }, 1000);
                         }
                     },
                     error: function (err) {
@@ -373,7 +373,7 @@ global $dbhandle;
                   // console.log(e);
                   if (e.what != 'background') {
                     if(window.event.ctrlKey) {
-                      openInNewTab('https://maintenance.newtelco.de/addedit?update=1&mid='+e.item);
+                      openInNewTab('https://'+window.location.hostname+'/addedit?update=1&mid='+e.item);
                     }
                   }
                 })

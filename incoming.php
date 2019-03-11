@@ -472,11 +472,11 @@ global $dbhandle;
                 text: \'You will not see any incoming mail until you set your label preferences<br>Please go to Settings and select your <b>incoming</b> and <b>completed</b> labels.\',
                 negative: {
                     title: \'Home\',
-                    onClick: function() {window.location.replace("https://maintenance.newtelco.de/index")}
+                    onClick: function() {window.location.replace("https://' . $_SERVER['SERVER_NAME'] . 'index")}
                 },
                 positive: {
                     title: \'Settings\',
-                    onClick: function() {window.location.replace("https://maintenance.newtelco.de/settings")}
+                    onClick: function() {window.location.replace("https://' . $_SERVER['SERVER_NAME'] . '/settings")}
                 },
                 cancelable: true
                 }); 
@@ -699,7 +699,7 @@ global $dbhandle;
                     $.ajax({
                       url: 'api?mRead='+mailId,
                       success: function (data) {
-                        window.location.replace("https://maintenance.newtelco.de/incoming");
+                        window.location.replace("https://"+window.location.hostname+"/incoming");
                       },
                       error: function (err) {
                         console.log('Error', err);

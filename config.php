@@ -5,7 +5,7 @@
     $hostname = "94.249.164.180";
     $database = "maintenance";
 
-    $domain = "https://maintenance.newtelco.de/";
+    $domain = "https://".$_SERVER['SERVER_NAME'];
     //Define length of salt,minimum=10, maximum=35
     $length_salt = 15;
     //Define the maximum number of failed attempts to ban brute force attackers

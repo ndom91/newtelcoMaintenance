@@ -775,7 +775,7 @@ global $dbhandle;
                                 </div>
                                 </div>';
                         } else {
-                          echo '</div>';
+                          echo '';
                         }
                         ?>
                     </div>

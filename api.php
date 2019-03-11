@@ -606,7 +606,6 @@
         $oupdatedID = $fetchID1[0];
       }
        
-<<<<<<< HEAD
       // check if reschedule[$r] already exists for this maintenance
       $rescheduleCheckQ = mysqli_query($dbhandle, "SELECT MAX(reschedule.rcounter) FROM reschedule WHERE reschedule.maintenanceid LIKE '$omaintid'");
       $addeditA['omaintid'] = $omaintid;
@@ -625,23 +624,10 @@
           $rescheduleUpdateQuery = mysqli_query($dbhandle, "UPDATE reschedule SET sdt = '${'rSdt'.$i}', edt = '${'rEdt'.$i}', reason = '${'rReas'.$i}', location = '${'rLoc'.$i}', impact = '${'rImp'.$i}' WHERE rid LIKE '$reschedRID';");
           $rescheduleUpdateQueryResults = mysqli_fetch_array($rescheduleUpdateQuery);
           $addeditA['rsuqr'] = $rescheduleUpdateQueryResults;
-=======
-
-      // check if reschedule[$r] already exists for this maintenance
-      $rescheduleCheckQ = mysqli_query($dbhandle, "SELECT MAX(reschedule.rcounter) FROM reschedule WHERE reschedule.maintenanceid LIKE '$omaintid'");
-      if($fetchReschedule = mysqli_fetch_array($rescheduleCheckQ)) {
-        // reschedules exist for this maintenance, count then update
-        // maintenance Resch. exists - lets check which ones..
-        $lastSavedRS = $fetchReschedule[0];
-
-        for ($i=1;$i<$lastSavedRS;$i++) {
-          $rescheduleUpdateQuery = mysqli_query($dbhandle, "UPDATE reschedule SET sdt = '${'rSdt'.$i}', edt = '${'rEdt'.$i}', reason = '${'rReas'.$i}', location = '${'rLoc'.$i}', impact = '${'rLoc'.$i}' WHERE maintenanceid LIKE '$omaintid' AND rcounter LIKE '$i';");
->>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
         }
         $addeditA['reschExists'] = 1;
       } else {
         // reschedules dont exist, insert them
-<<<<<<< HEAD
         // update RID
         $rcounter = 1;
         $reschedRID = 'NT'.$omaintid.'_'.$rcounter;
@@ -650,15 +636,6 @@
           $rcounter = $rcounter + 1;
         }
         $addeditA['reschExists'] = 0;
-=======
-        $rcounter = 1;
-        for ($i=0;$i<$rescheduleCount;$i++) {
-          $rescheduleInsertQuery = mysqli_query($dbhandle, "INSERT INTO reschedule (maintenanceid,rcounter,user,datetime,sdt,edt,reason,location,impact,active) VALUES ('$omaintid','$rcounter','${'rUser'.$rcounter}','${'rEditTime'.$rcounter}','${'rSdt'.$rcounter}','${'rEdt'.$rcounter}','${'rReas'.$rcounter}','${'rLoc'.$rcounter}','${'rImp'.$rcounter}','1')");
-          $rcounter = $rcounter + 1;
-        }
-        $addeditA['reschExists'] = 0;
-
->>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
       }
 
       if ($resultx == 'TRUE'){

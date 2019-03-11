@@ -3,13 +3,9 @@
         "google/apiclient": "^2.0",
 	"fightbulc/moment": "*",
         "phpoffice/phpspreadsheet": "^1.6",
-<<<<<<< HEAD
         "google/cloud-pubsub": "^1.8",
         "redjanym/php-firebase-cloud-messaging": "^1.1",
         "minishlink/web-push": "^5.2",
         "rollbar/rollbar": "~1.5"
-=======
-        "google/cloud-pubsub": "^1.8"
->>>>>>> 1c0c49935d87b4b243f89015f9423f3eeaf27015
     }
 }

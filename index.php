@@ -102,7 +102,14 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
       include "views/menu.php";
       $content_menu = ob_get_clean();
       echo $content_menu;
-      ?>
+     ?> 
+    <script>
+      $(window).on('load', function() {
+        $('#loading').css('display','none');
+      });
+    </script>
+
+
 
         <main style="background-color: #e9e9e9;" class="mdl-layout__content container">
           <div id="loading">
@@ -306,10 +313,10 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
               });
           });
           // get notification permission
-          const permission = window.Notification.requestPermission();
-          if(permission !== 'granted'){
-              throw new Error('Permission not granted for Notification');
-          }
+          // const permission = window.Notification.requestPermission();
+          // if(permission !== 'granted'){
+          //     throw new Error('Permission not granted for Notification');
+          // }
         }
       
         function subscribePush() {
@@ -338,7 +345,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
               //saveSubscriptionID(subscription);
               changePushStatus(true);
               const subscriptionObjectToo = JSON.stringify(subscription);
-              console.log(subscriptionObjectToo);
+              console.log(subscriptionObjectToo) ;
               $.ajax({
                 type: "POST",
                 //url: "https://webhook.site/8c9d96b6-03b3-4ab7-96f8-717cc1914002",
@@ -501,11 +508,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
           } 
    
         });
-        $(window).on('load', function() {
-          setTimeout(function() {$('#loading').hide()},500);
-        })
-
-
+       
         // source. https://thenounproject.com/smashicons/collection/smashicons-badges-army-md-outline/
 
         function getRank(count) {

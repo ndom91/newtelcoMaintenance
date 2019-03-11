@@ -25,6 +25,10 @@ if (isset($_POST['endlabel'])) {
 <html>
 <head>
   <title>Newtelco Maintenance | Settings</title>
+
+  <!-- jquery -->
+  <script rel="preload" as="script" type="text/javascript" src="dist/js/jquery-3.3.1.min.js"></script>
+
   <?php echo file_get_contents("views/meta.html"); ?>
 
   <!-- handsontable -->
@@ -38,9 +42,6 @@ if (isset($_POST['endlabel'])) {
 
   <!-- material design -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/material.min.js"></script>
-
-  <!-- jquery -->
-  <script rel="preload" as="script" type="text/javascript" src="dist/js/jquery-3.3.1.min.js"></script>
 
   <!-- pace -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/pace.js"></script>
@@ -868,7 +869,7 @@ if (isset($_POST['endlabel'])) {
          /*****************
           *
           *  FIRMEN Table
-          *pi 
+          * 
           ******************/
 
           if ($('#firmenTable').html() == '') {

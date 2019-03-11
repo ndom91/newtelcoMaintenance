@@ -793,6 +793,19 @@ li .mdi {
   position: absolute;
 }
 
+#notification-toggle-label {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+.keyboard-shortcut-text {
+  font-size: 11px;
+  color: rgba(0,0,0,0.5);
+  position: absolute;
+  bottom: 7px;
+  width: 170px;
+  left: -130px;
+}
 /* Userhome */
 
 .mdl-dialog {
@@ -896,6 +909,8 @@ textarea.mdl-textfield__input {
   font-size: 12px !important;
   line-height: 2;
   margin-left: 2px;
+  position: absolute !important;
+  top: -25px;
 }
 
 #addCalbtn {
@@ -1355,11 +1370,16 @@ tr.strikeout td:before {
   margin-left: 260px;
 }
 
+#mreas0 {
+  margin-bottom: 20px;
+}
+
 #notes {
   border-radius: 5px !important;
-  border: 1px solid rgba(78, 78, 78, 0.2) !important;
+  border: 1px solid rgba(50, 50, 50, 0.3) !important;
   padding: 10px !important;
-  margin-top: 50px !important;
+  height: 100%;
+  /* margin-top: 50px !important; */
 }
 
 .lieferantFavicon {
@@ -1488,6 +1508,8 @@ tr.strikeout td:before {
   }
   .mdl-data-table td {
     padding: 5px 5px !important;
+    border-top: none !important;
+    border-bottom: none !important;
   }
   .selectGoogleLabel {
     font-size: 40px !important;
@@ -1522,6 +1544,8 @@ tr.strikeout td:before {
   }
   .notesLabel1 {
     margin-left: 340px;
+    position: absolute !important;
+    top: -25px;
   }
   .mdl-textfield__input {
     font-size: 13px !important;

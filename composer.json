@@ -3,6 +3,9 @@
         "google/apiclient": "^2.0",
 	"fightbulc/moment": "*",
         "phpoffice/phpspreadsheet": "^1.6",
-        "google/cloud-pubsub": "^1.8"
+        "google/cloud-pubsub": "^1.8",
+        "redjanym/php-firebase-cloud-messaging": "^1.1",
+        "minishlink/web-push": "^5.2",
+        "rollbar/rollbar": "~1.5"
     }
 }

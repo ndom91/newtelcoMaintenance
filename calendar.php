@@ -8,10 +8,11 @@ require('authenticate_google.php');
 <head>
 
   <title>Newtelco Maintenance | Calendar</title>
-  <?php echo file_get_contents("views/meta.html"); ?>
 
   <!-- jquery -->
   <script rel="preload" as="script" src="dist/js/jquery-3.3.1.min.js"></script>
+
+  <?php echo file_get_contents("views/meta.html"); ?>
 
   <!-- material design -->
   <script rel="preload" as="script" src="dist/js/material.min.js"></script>

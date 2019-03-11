@@ -14,15 +14,16 @@ global $dbhandle;
 
 <head>
     <title>Newtelco Maintenance | Edit</title>
+
+    <!-- jquery -->
+    <script rel="preload" as="script" type="text/javascript" src="dist/js/jquery-3.3.1.min.js"></script>
+
     <?php echo file_get_contents("views/meta.html"); ?>
 
     <!-- moment -->
     <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/luxon.min.js"></script>
     <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment.min.js"></script>
     <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment-timezone-with-data.min.js"></script>
-
-    <!-- jquery -->
-    <script rel="preload" as="script" type="text/javascript" src="dist/js/jquery-3.3.1.min.js"></script>
 
     <!-- select2 -->
     <script rel="preload" as="script" type="text/javascript" src="dist/js/select2_4.0.6-rc1.min.js"></script>
@@ -690,6 +691,7 @@ global $dbhandle;
                                                                   echo $msgInfo[1];
                                                                 } ?>" id="mailDomain">
                                     <input type="hidden" value="<?php echo $activeID ?>" id="activeMID">
+                                    <input type="hidden" value="" id="newlyCreatedMID">
                                 </div>
                                 <?php
                                         // load reschedules
@@ -955,7 +957,12 @@ global $dbhandle;
                     var selectedCompanyAr = $('#company').select2('data');
                     var selectedCompany = selectedCompanyAr[0].text.trim();
 
-                    var activeID = $('#activeMID').val();
+                    // var activeID = $('#activeMID').val();
+                    if($('#activeMID') !== '') {
+                        var activeID = $('#activeMID').val();
+                    } else {
+                        var activeID = $('#newlyCreatedMID').val();
+                    }
 
                     table4 = $('#dataTable4').DataTable();
                     var data = table4.row($('tr')).data();
@@ -1604,7 +1611,12 @@ global $dbhandle;
                             }
                             if (result1.updatedID != '') {
                                 var newID = result1.updatedID;
-                                window.location.href = "https://maintenance.newtelco.de/addedit?gmid=" + $('#rmail').val() + "&mid=" + newID + "&update=1";
+                                // window.location.href = "https://maintenance.newtelco.de/addedit?gmid=" + $('#rmail').val() + "&mid=" + newID + "&update=1";
+                                $('#newlyCreatedMID').val(newID);
+                                $('#update').val('1');
+                                // window.location.href = "https://maintenance.newtelco.de/addedit?gmid=" + $('#rmail').val() + "&mid=" + newID + "&update=1";
+                                var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?update=1&gmid=' + $('#rmail').val() + '&mid=' + newID;
+                                window.history.pushState({ path: newurl }, '', newurl);
                             }
                         }
                     });
@@ -1871,8 +1883,9 @@ global $dbhandle;
                     }
                     OverlayScrollbars(document.getElementById("notes"), {
                         className: "os-theme-dark",
-                        resize: "vertical",
-                        sizeAutoCapable: true
+                        resize: "none",
+                        sizeAutoCapable: false,
+                        autoUpdate: true
                     });
                 });
 
@@ -1883,7 +1896,7 @@ global $dbhandle;
                 });
 
                 $('#dataTable4').on('responsive-resize.dt', function(e) {
-                    console.log('Table Redrawn - Draw');
+                    // console.log('Table Redrawn - Draw');
                     // console.log(e);
                     // console.log(e.currentTarget.childNodes);
                     var tbody = e.currentTarget.childNodes[3];
@@ -1910,7 +1923,7 @@ global $dbhandle;
                 });
 
                 $('#dataTable4').on('draw.dt', function(e) {
-                    console.log('Table Redrawn - Draw');
+                    // console.log('Table Redrawn - Draw');
                     // console.log(e);
                     // console.log(e.currentTarget.childNodes);
                     var tbody = e.currentTarget.childNodes[3];

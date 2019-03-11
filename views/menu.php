@@ -47,8 +47,14 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
     <a class="mdl-navigation__link crmLink" target="_blank" href="https://crm.newtelco.de"><img src="/dist/images/svg/work.svg" class="ndl-work"/>  CRM</a>
     <a class="mdl-navigation__link settingsLink" href="settings.php"><img src="/dist/images/svg/settings.svg" class="ndl-settings"/>  Settings</a>
     <div class="mdl-layout-spacer"></div>
+    
+    <label id="notification-toggle-label" class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="notification-toggle">
+      <input type="checkbox" id="notification-toggle" class="mdl-icon-toggle__input">
+      <i class="mdl-icon-toggle__label material-icons">notification_important</i>
+    </label>
+
     <div class="shortcutText">
-      <font style="font-size:10px; color:rgba(0,0,0,0.5);">for keyboard shortcuts press (?)</font>
+      <font class="keyboard-shortcut-text">for keyboard shortcuts press (?)</font>
     </div>
   </nav>
   <!-- keymaster.js -->
@@ -123,5 +129,21 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
       }
     });
 
+    // var isPushEnabled = false;
+
+    // window.addEventListener('load', function() {
+    //   var pushButton = document.querySelector('#notification-toggle');
+    //   pushButton.addEventListener('click', function() {
+    //     if (isPushEnabled) {
+    //       unsubscribe();
+    //     } else {
+    //       subscribe();
+    //     }
+    //   });
+    // });
+//   messaging.onMessage(function(payload) {
+//   console.log('Message received. ', payload);
+//   // ...
+// });
   </script>
 </div>

@@ -10,13 +10,14 @@ global $dbhandle;
 <html lang="en">
 <head>
   <title>Newtelco Maintenance | Overview</title>
+
+  <!-- jquery -->
+  <script rel="preload" as="script" src="dist/js/jquery-3.3.1.min.js"></script>
+
   <?php echo file_get_contents("views/meta.html"); ?>
 
   <!-- material design -->
   <script rel="preload" as="script" src="dist/js/material.min.js"></script>
-
-  <!-- jquery -->
-  <script rel="preload" as="script" src="dist/js/jquery-3.3.1.min.js"></script>
 
   <!-- luxon -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/luxon.min.js"></script>

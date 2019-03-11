@@ -1,3 +1,27 @@
+<?php
+
+use \Rollbar\Rollbar;
+use \Rollbar\Payload\Level;
+$username = $token_data['email'];
+if ($username == 'ndomino@newtelco.de') {
+    $userID = 1;
+} else if ($username == 'fwaleska@newtelco.de') {
+    $userID = 2;
+} else if ($username == 'sstergiou@newtelco.de') {
+    $userID = 3;
+} else if ($username == 'alissitsin@newtelco.de') {
+    $userID = 4;
+}
+$person = array("id"=>$userID,"email"=>$username);
+Rollbar::init(
+    array(
+        'access_token' => 'e0dbc12159df4dd3a6087170e3a8ace0',
+        'environment' => 'production',
+        'person' => $person 
+    )
+);
+
+?>
 <header class="mdl-layout__header mdl-color--light-green-nt">
   <div class="mdl-layout__header-row">
     <div class="mdl-layout-title2 hvr-grow">
@@ -15,6 +39,12 @@
         <div class="bar arrow-middle"></div>
         <div class="bar arrow-bottom"></div>
       </div>
+    </div>
+    <div style="margin-left:10px;font-size:10px;height:40px;max-width:55%">
+    <?php 
+      // printf($debugpubsub);
+      // var_dump($messages);
+    ?>
     </div>
     <div class="mdl-layout-spacer"></div>
     <div class="menu_userdetails">

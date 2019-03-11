@@ -296,7 +296,7 @@
      * OVERVIEW - get timeline data
      *****************************************/
 
-    $result = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.startDateTime as 'start', maintenancedb.endDateTime as 'end', companies.name as 'content', maintenancedb.betroffeneKunden as 'title' FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.done = '1' AND maintenancedb.cancelled = '0' AND maintenancedb.active = '1';") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.startDateTime as 'start', maintenancedb.endDateTime as 'end', companies.name as 'content', maintenancedb.betroffeneKunden as 'title' FROM maintenancedb LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.done = '1' AND maintenancedb.cancelled = '0' AND maintenancedb.active = '1' AND (DATE_SUB(NOW(), INTERVAL 14 DAY)) < maintenancedb.startDateTime;") or die(mysqli_error($dbhandle));
 
     $array2 = array();
 
@@ -481,7 +481,47 @@
       echo json_encode($jsonArrayObject);
       exit;
     }
+  } elseif (isset($_GET['addSub'])){
+    //$data = $_POST['subscriptionObjectToo'];
+    $data = file_get_contents("php://input");
+    $jsonData = json_decode($data, true);
+    
+    // foreach ($_POST as $key => $value) {
+    //   echo "Field ".htmlspecialchars($key)." is ".htmlspecialchars($value)."<br>";
+    // }
+    $user = $_GET['user'];
+    $endpoint = $jsonData['endpoint'];
+    $p256dh = $jsonData['keys']['p256dh'];
+    $auth = $jsonData['keys']['auth'];
 
+    // file_put_contents("addSub_data.txt",$data,FILE_APPEND);
+    $checkUserQuery = mysqli_query($dbhandle, "SELECT username FROM notificationSubs WHERE username LIKE '$user';");
+
+    $checkUserArray = mysqli_fetch_assoc($checkUserQuery);
+
+    if(sizeof($checkUserArray) > 0) {
+      $updateSubQuery = mysqli_query($dbhandle, "UPDATE notificationSubs SET endpoint = '$endpoint', p256dh = '$p256dh', auth = '$auth' WHERE username LIKE '$user';") or die (mysqli_error($dbhandle));
+    } else {
+      $insertSubQuery = mysqli_query($dbhandle, "INSERT INTO notificationSubs SET username = '$user', endpoint = '$endpoint', p256dh = '$p256dh', auth = '$auth';") or die(mysqli_error($dbhandle));
+    }
+
+  } elseif (isset($_GET['rmSub'])) {
+    $user = $_GET['user'];
+
+    $rmUserQuery = mysqli_query($dbhandle, "DELETE FROM notificationSubs WHERE username LIKE '$user';") or die (mysqli_error($dbhandle));
+
+    $rmUserArray = mysqli_fetch_array($rmUserQuery);
+
+    $result = array();
+
+    if($rmUserArray == 'TRUE') {
+      $result['removed'] = '1';
+    } else {
+      $result['removed'] = '0';
+    }
+
+    echo json_encode($result);
+  
   } elseif (isset($_POST['data'])) {
 
     /**************************
@@ -551,8 +591,10 @@
     // label lookup: https://developers.google.com/gmail/api/v1/reference/users/labels/list
 
     if ($odone == '1') {
-      $service3 = new Google_Service_Gmail($clientService);
-      modifyMessage($service3, "fwaleska@newtelco.de", $oreceivedmail, ["Label_2533604283317145521"], ["Label_2565420896079443395"]);
+      if(strpos($oreceivedmail,'NT-') === false){
+        $service3 = new Google_Service_Gmail($clientService);
+        modifyMessage($service3, "fwaleska@newtelco.de", $oreceivedmail, ["Label_2533604283317145521"], ["Label_2565420896079443395"]);
+      }
     }
 
     if ($update == '1') {
@@ -564,27 +606,36 @@
         $oupdatedID = $fetchID1[0];
       }
        
-
       // check if reschedule[$r] already exists for this maintenance
       $rescheduleCheckQ = mysqli_query($dbhandle, "SELECT MAX(reschedule.rcounter) FROM reschedule WHERE reschedule.maintenanceid LIKE '$omaintid'");
-      if($fetchReschedule = mysqli_fetch_array($rescheduleCheckQ)) {
+      $addeditA['omaintid'] = $omaintid;
+      $fetchReschedule = mysqli_fetch_array($rescheduleCheckQ);
+      $lastSavedRS = $fetchReschedule[0];
+
+      if(!is_null($lastSavedRS)) {
         // reschedules exist for this maintenance, count then update
         // maintenance Resch. exists - lets check which ones..
-        $lastSavedRS = $fetchReschedule[0];
+        $addeditA['lastSavedRS'] = $lastSavedRS;
 
-        for ($i=1;$i<$lastSavedRS;$i++) {
-          $rescheduleUpdateQuery = mysqli_query($dbhandle, "UPDATE reschedule SET sdt = '${'rSdt'.$i}', edt = '${'rEdt'.$i}', reason = '${'rReas'.$i}', location = '${'rLoc'.$i}', impact = '${'rLoc'.$i}' WHERE maintenanceid LIKE '$omaintid' AND rcounter LIKE '$i';");
+        for ($i=1;$i<=$lastSavedRS;$i++) {
+
+          // TODO add RID
+          $reschedRID = 'NT'.$omaintid.'_'.$i;
+          $rescheduleUpdateQuery = mysqli_query($dbhandle, "UPDATE reschedule SET sdt = '${'rSdt'.$i}', edt = '${'rEdt'.$i}', reason = '${'rReas'.$i}', location = '${'rLoc'.$i}', impact = '${'rImp'.$i}' WHERE rid LIKE '$reschedRID';");
+          $rescheduleUpdateQueryResults = mysqli_fetch_array($rescheduleUpdateQuery);
+          $addeditA['rsuqr'] = $rescheduleUpdateQueryResults;
         }
         $addeditA['reschExists'] = 1;
       } else {
         // reschedules dont exist, insert them
+        // update RID
         $rcounter = 1;
+        $reschedRID = 'NT'.$omaintid.'_'.$rcounter;
         for ($i=0;$i<$rescheduleCount;$i++) {
-          $rescheduleInsertQuery = mysqli_query($dbhandle, "INSERT INTO reschedule (maintenanceid,rcounter,user,datetime,sdt,edt,reason,location,impact,active) VALUES ('$omaintid','$rcounter','${'rUser'.$rcounter}','${'rEditTime'.$rcounter}','${'rSdt'.$rcounter}','${'rEdt'.$rcounter}','${'rReas'.$rcounter}','${'rLoc'.$rcounter}','${'rImp'.$rcounter}','1')");
+          $rescheduleInsertQuery = mysqli_query($dbhandle, "INSERT INTO reschedule (rid,maintenanceid,rcounter,user,datetime,sdt,edt,reason,location,impact,active) VALUES ('$reschedRID','$omaintid','$rcounter','${'rUser'.$rcounter}','${'rEditTime'.$rcounter}','${'rSdt'.$rcounter}','${'rEdt'.$rcounter}','${'rReas'.$rcounter}','${'rLoc'.$rcounter}','${'rImp'.$rcounter}','1')");
           $rcounter = $rcounter + 1;
         }
         $addeditA['reschExists'] = 0;
-
       }
 
       if ($resultx == 'TRUE'){

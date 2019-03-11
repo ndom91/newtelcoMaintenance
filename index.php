@@ -5,7 +5,6 @@ require('authenticate_google.php');
 <!--
 Credits:
 Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
-
 -->
 <html lang="en">
 <head>
@@ -19,7 +18,6 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
     }
   } else {
     if(isset($_COOKIE['label'])) {
-
       $labelID = urldecode($_COOKIE['label']);
     } else {
       $labelID = '0';
@@ -48,12 +46,11 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
     Newtelco Maintenance
   </title>
 
+  <script rel="preload" as="script" src="dist/js/jquery-3.3.1.min.js"></script>
+
   <?php echo file_get_contents("views/meta.html"); ?>
 
-  <!--  <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet"> -->
   <link href="https://fonts.googleapis.com/css?family=ZCOOL+QingKe+HuangYou" rel="stylesheet">
-
-  <script rel="preload" as="script" src="dist/js/jquery-3.3.1.min.js"></script>
 
   <!-- material design -->
   <script rel="preload" as="script" src="dist/js/material.min.js"></script>
@@ -63,6 +60,12 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
 
   <!-- chart.js -->
   <script rel="preload" as="script" src="dist/js/chart.js"></script>
+
+  <!-- toastify.js -->
+  <script rel="preload" as="script" src="dist/js/toastify.js"></script>
+
+  <!-- comlink.js -->
+  <script rel="preload" as="script" src="dist/js/comlink.js"></script>
 
   <!-- modalEffects.js -->
   <script rel="preload" as="script" src="dist/js/modalEffects.js"></script>
@@ -76,33 +79,16 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
 
   <script>
     var RELOAD_EVERY = 8;
-    setTimeout(function(){
-        location.reload();
-    }, RELOAD_EVERY * 60 * 1000);
+    // setTimeout(function(){
+    //     location.reload();
+    // }, RELOAD_EVERY * 60 * 1000);
   </script>
 
   <style>
     <?php echo file_get_contents("dist/css/style.min.css"); ?>
     <?php echo file_get_contents("dist/css/material.min.css"); ?>
   </style>
-
-  <script>
-  //This is the "Offline copy of pages" service worker
-
-  //Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
-  if (navigator.serviceWorker.controller) {
-    console.log('active service worker found, no need to register')
-  } else {
-    //Register the ServiceWorker
-    navigator.serviceWorker.register('sw4.js', {
-      scope: './'
-    }).then(function(reg) {
-      console.log('Service worker has been registered for scope:'+ reg.scope);
-    });
-  }
-
-
-  </script>
+ 
 </head>
 <body>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
@@ -219,8 +205,8 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
                     </tr>
                     <tr>
                       <td width="21%"><b>alt + h</b></td> <td width="21%">home</td>
-                      <td width="6%"></td> 
-                      <td width="21%"><b></b></td><td width="21%"></td>
+                      <td width="6%"></td>
+                      <td width="21%"><b>ctrl + shift + x</b></td>  <td width="21%">paste HTML</td>
                     </tr>
                     <tr>
                       <td width="21%"><b>alt + i</b></td>  <td width="21%">incoming</td>
@@ -243,6 +229,211 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
 
         <?php if ($labelID !== '0'): ?>
         <script>
+        // COMLINK SW DEMO
+
+        // async function initComlink() {
+        //   const {port1, port2} = new MessageChannel();
+        //   const msg = {
+        //     comlinkInit: true,
+        //     port: port1
+        //   };
+        //   navigator.serviceWorker.controller.postMessage(msg, [port1]);
+        //   const swProxy = Comlink.proxy(port2);
+        //   console.log(await swProxy.counter);
+        //   await swProxy.inc();
+        //   console.log(await swProxy.counter);
+        // }
+
+        // if (navigator.serviceWorker.controller) {
+        //   initComlink();
+        // }
+
+        // navigator.serviceWorker.addEventListener('controllerchange', initComlink);
+
+        // END COMLINK SW DEMO 
+
+
+        var toaster = Toastify({
+          text: "Subscribed",
+          gravity: "bottom",
+          // positionLeft: true,
+          close: true,
+          backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+        });
+        var toaster2 = Toastify({
+          text: "Unsubscribed",
+          gravity: "bottom",
+          // positionLeft: true,
+          close: true,
+          backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+        });
+
+        var fabPushElement = document.querySelector('#notification-toggle');
+        //var fabPushElement = fabPushElements[0];
+
+        const urlB64ToUint8Array = base64String => {
+          const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+          const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/')
+          const rawData = atob(base64)
+          const outputArray = new Uint8Array(rawData.length)
+          for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i)
+          }
+          return outputArray
+        }
+        //This is the "Offline copy of pages" service worker
+        if (navigator.serviceWorker.controller) {
+          console.log('active service worker found, no need to register')
+        } else {
+          //Register the ServiceWorker
+          navigator.serviceWorker.register('sw4.js', {
+            scope: './'
+          }).then(function(reg) {
+            console.log('Service worker has been registered for scope:'+ reg.scope);
+            // initialiseState();
+            reg.pushManager.getSubscription()
+              .then(function (subscription) {
+                //If already access granted, enable push button status
+                if (subscription) {
+                  changePushStatus(true);
+                }
+                else {
+                  changePushStatus(false);
+                }
+              })
+              .catch(function (error) {
+                console.error('Error occurred while enabling push ', error);
+              });
+          });
+          // get notification permission
+          const permission = window.Notification.requestPermission();
+          if(permission !== 'granted'){
+              throw new Error('Permission not granted for Notification');
+          }
+        }
+      
+        function subscribePush() {
+          subscription = navigator.serviceWorker.ready.then(function(registration) {
+            if (!registration.pushManager) {
+              alert('Your browser doesn\'t support push notification.');
+              return false;
+            }
+
+            //To subscribe `push notification` from push manager
+            const priv = '47EHLIK8B0qEK7stCiGipjURVHZg0XSLRn0c9rqlF5s';
+            // const pub = 'BLfTY9BFRjjTBBWsJBaH_T_kQ63PM9iQh5sk2TYA1ht2Qn3CH1jmgIY2IIAh7u2bpA6sEDmIP9m1GhEl1qE9tTQ';
+            const pub = 'BOoj1c6teeX075bCUjVA3K0LVrDxSTM2eQKjjV_DDDQohscn7wzzrPKRizkzqI2vlodUuKHOUJGXsibl6A5nCVA';
+            const applicationServerKey = urlB64ToUint8Array(pub);
+            registration.pushManager.subscribe({
+              applicationServerKey,
+              userVisibleOnly: true //Always show notification when received
+            })
+            .then(function (subscription) {
+              // toast('Subscribed successfully.');
+              const username = $('.menumail').text().trim();
+              setCookie("pushSub", username, 30);
+              toaster.showToast();
+              console.info('Push notification subscribed.');
+              console.log(JSON.stringify(subscription));
+              //saveSubscriptionID(subscription);
+              changePushStatus(true);
+              const subscriptionObjectToo = JSON.stringify(subscription);
+              console.log(subscriptionObjectToo);
+              $.ajax({
+                type: "POST",
+                //url: "https://webhook.site/8c9d96b6-03b3-4ab7-96f8-717cc1914002",
+                url: "api?addSub&user="+username,
+                cache: "false",
+                dataType: "json",
+                data: subscriptionObjectToo,
+                success: function(data) {
+
+                },
+                error: function(error) {
+
+                }
+            });
+            })
+            .catch(function (error) {
+              changePushStatus(false);
+              console.error('Push notification subscription error: ', error);
+            });
+          })
+          //return resolve();
+        }
+
+        // Unsubscribe the user from push notifications
+        function unsubscribePush() {
+          navigator.serviceWorker.ready
+          .then(function(registration) {
+            //Get `push subscription`
+            registration.pushManager.getSubscription()
+            .then(function (subscription) {
+              //If no `push subscription`, then return
+              if(!subscription) {
+                alert('Unable to unregister push notification.');
+                return;
+              }
+
+              //Unsubscribe `push notification`
+              subscription.unsubscribe()
+                .then(function () {
+                  //toast('Unsubscribed successfully.');
+                  const username = $('.menumail').text().trim();
+                  deleteCookie("pushSub");
+                  $.ajax({
+                    type: "GET",
+                    //url: "https://webhook.site/8c9d96b6-03b3-4ab7-96f8-717cc1914002",
+                    url: "api?rmSub&user="+username,
+                    cache: "false",
+                    success: function(data) {
+
+                    },
+                    error: function(error) {
+
+                    }
+                  });
+                  toaster2.showToast();
+                  console.info('Push notification unsubscribed.');
+                  console.log(subscription);
+                  //deleteSubscriptionID(subscription);
+                  changePushStatus(false);
+                })
+                .catch(function (error) {
+                  console.error(error);
+                });
+            })
+            .catch(function (error) {
+              console.error('Failed to unsubscribe push notification.');
+            });
+          })
+        }
+
+        //To change status
+        function changePushStatus(status) {
+          status = fabPushElement.checked;
+          if (status) {
+            fabPushElement.checked = true;
+          } else {
+            fabPushElement.checked = false;
+          }
+        }
+
+          fabPushElement.addEventListener('click', function () {
+          var isSubscribed = (fabPushElement.checked == true);
+          if (isSubscribed) {
+            subscribePush();
+            //console.log('click sub: ' + JSON.stringify(subscription));
+            
+            // todo send subscription object to backend via api.php
+            // https://web-push-book.gauntface.com/chapter-02/01-subscribing-a-user/
+          }
+          else {
+            unsubscribePush();
+            // invalidate subscription in backend 
+          }
+        });
+
 
         $('.md-trigger').on('click',function() {
           $('.md-modal').addClass('md-show');
@@ -258,6 +449,11 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
 
         $(document).ready(function() {
 
+          console.log('Cookie: ' + getCookie("pushSub"));
+          if(getCookie("pushSub") !== '') {
+            var fabPushElement = document.querySelector('#notification-toggle');
+            fabPushElement.checked = true;
+          }
           // military rank 
           setTimeout(function() {
             $('.fwaRank').attr('src',getRank($('.fwaCounter').text()));
@@ -303,11 +499,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
             $('.unreadCounter').css("color","rgba(103, 178, 70, 0.5)");
             $('.unreadCounter').css("text-shadow","0px 0px 30px #fff");
           } 
-        });
-
-        
-
-        $( window ).on('load',function() {
+   
           setTimeout(function() {$('#loading').hide()},500);
         });
 
@@ -370,6 +562,9 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
 
         <!-- animate css -->
         <link type="text/css" rel="stylesheet" href="dist/css/animate.css" />
+
+        <!-- toastify css -->
+        <link type="text/css" rel="stylesheet" href="dist/css/toastify.css" />
 
         <!-- chart.js init -->
         <script rel="preload" as="script" src="dist/js/ntchartinit2.js"></script>

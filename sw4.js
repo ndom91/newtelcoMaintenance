@@ -12,6 +12,7 @@
 */
 
 importScripts('https://cdnjs.cloudflare.com/ajax/libs/cache.adderall/1.0.0/cache.adderall.js');
+importScripts("https://cdn.jsdelivr.net/npm/comlinkjs@3/umd/comlink.js");
 
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
@@ -91,17 +92,6 @@ const PRECACHE_URLS = [
 
 // network / cache race
 // https://jakearchibald.com/2014/offline-cookbook/
-function promiseAny(promises) {
-  return new Promise((resolve, reject) => {
-    // make sure promises are all promises
-    promises = promises.map(p => Promise.resolve(p));
-    // resolve this promise as soon as one resolves
-    promises.forEach(p => p.then(resolve));
-    // reject if all promises reject
-    promises.reduce((a, b) => a.catch(() => b))
-      .catch(() => reject(Error("All failed")));
-  });
-};
 
 // The install handler takes care of precaching the resources we always need.
 self.addEventListener('install', event => {
@@ -130,67 +120,118 @@ self.addEventListener('activate', event => {
 // If no response is found, it populates the runtime cache with the response
 // from the network before returning it to the page.
 self.addEventListener('fetch', event => {
-
+  const urlPathname = event.request.url.pathname;
   // always grab /api requests from network
-//   if (/^\/api/.test(event.request.url.pathname)) {
-//     event.respondWith(fetch(event.request));
-//     return;
-//   }
-//   if (/^\/settings/.test(event.request.url.pathname)) {
-//     event.respondWith(fetch(event.request));
-//     return;
-//   }
-//   if (/^\/index/.test(event.request.url.pathname)) {
-//     event.respondWith(fetch(event.request));
-//     return;
-//   }
-//   if (/^\/incoming/.test(event.request.url.pathname)) {
-//     event.respondWith(fetch(event.request));
-//     return;
-//   }
-//   if (/overview/.test(event.request.url.pathname)) {
-//     event.respondWith(promiseAny([
-//       caches.match(event.request),
-//       fetch(event.request)
-//     ]));
-//     return;
-//   }
-  // Skip cross-origin requests, like those for Google Analytics.
-  if (event.request.url.startsWith(self.location.origin)) {
+  if ((/api/.test(urlPathname)) || (/incoming/.test(urlPathname)) || (/overview/.test(urlPathname))) {
+    event.respondWith(fetch(event.request));
+    return;
+  } else if (/js$/.test(event.request.url)) {
+    // stale while revalidate
+    event.respondWith(
+        caches.open(RUNTIME).then(function(cache) {
+          return cache.match(event.request).then(function(response) {
+            var fetchPromise = fetch(event.request).then(function(networkResponse) {
+              cache.put(event.request, networkResponse.clone());
+              return networkResponse;
+            })
+            return response || fetchPromise;
+          })
+        })
+      );
+  } else if (event.request.url.startsWith(self.location.origin)) {
         
         if (/api/.test(event.request.url)) {
           event.respondWith(fetch(event.request));
           return;
+        } else if (/addedit/.test(event.request.url)) {
+          event.respondWith(fetch(event.request));
+          return;
+        } else {
+          event.respondWith(async function() {
+          const cache = await caches.open(RUNTIME);
+          const cachedResponse = await cache.match(event.request);
+          const networkResponsePromise = fetch(event.request);
+
+          event.waitUntil(async function() {
+          const networkResponse = await networkResponsePromise;
+          await cache.put(event.request, networkResponse.clone());
+          }());
+
+          // Returned the cached response if we have one, otherwise return the network response.
+          return cachedResponse || networkResponsePromise;
+          }());
         }
-
-        event.respondWith(async function() {
-        const cache = await caches.open(RUNTIME);
-        const cachedResponse = await cache.match(event.request);
-        const networkResponsePromise = fetch(event.request);
-
-        event.waitUntil(async function() {
-        const networkResponse = await networkResponsePromise;
-        await cache.put(event.request, networkResponse.clone());
-        }());
-
-        // Returned the cached response if we have one, otherwise return the network response.
-        return cachedResponse || networkResponsePromise;
-    }());
-    // OG RespondWith Code
-    //
-    //   caches.match(event.request).then(cachedResponse => {
-    //     if (cachedResponse) {
-    //       return cachedResponse;
-    //     }
-
-    //     return caches.open(RUNTIME).then(cache => {
-    //       return fetch(event.request).then(response => {
-    //         // Put a copy of the response in the runtime cache.
-    //         return cache.put(event.request, response.clone()).then(() => {
-    //           return response;
-    //         });
-    //       });
-    //     });
-    //   })
   }
 });
+
+self.addEventListener('push', function(event) {
+  if (event.data) {
+    console.log('Push Message: ', event.data.text())
+  } else {
+    console.log('Push event but no data')
+  }
+  const notificationOptions = {
+    icon: 'dist/images/icons/mailNotification.png',
+    badge: 'dist/images/icons/mailNotification.png',
+    data: {
+      url: 'https://developers.google.com/web/fundamentals/getting-started/push-notifications/',
+    },
+  };
+
+  if (event.data) {
+    const dataText = JSON.parse(event.data.text());
+    const title = dataText['title'];
+    const body = dataText['body'];
+    notificationTitle = title;
+    notificationOptions.body = body;
+  }
+
+  event.waitUntil(
+    Promise.all([
+      self.registration.showNotification(
+        notificationTitle, notificationOptions)
+      //self.analytics.trackEvent('push-received'),
+    ])
+  );
+});
+
+// surma comlink - service worker example: https://github.com/GoogleChromeLabs/comlink/blob/master/docs/examples/05-service-worker/worker.js#L21
+// https://github.com/GoogleChromeLabs/comlink/tree/master/docs/examples
+// const obj = {
+//   counter: 0,
+//   inc() {
+//     this.counter++;
+//   }
+// };
+
+// self.addEventListener("message", event => {
+//   if (event.data.comlinkInit) {
+//     Comlink.expose(obj, event.data.port);
+//     return;
+//   }
+// });
+// end surma comlink example
+
+
+// Initialize the Firebase app in the service worker by passing in the
+// messagingSenderId.
+// firebase.initializeApp({
+//   'messagingSenderId': '976818051506'
+// });
+
+// // Retrieve an instance of Firebase Messaging so that it can handle background
+// // messages.
+// const messaging = firebase.messaging();
+
+// messaging.setBackgroundMessageHandler(function(payload) {
+//   console.log('[firebase-messaging-sw.js] Received background message ', payload);
+//   // Customize notification here
+//   var notificationTitle = 'Background Message Title';
+//   var notificationOptions = {
+//     body: 'Background Message body.'
+//     // icon: '/firebase-logo.png'
+//   };
+
+//   return self.registration.showNotification(notificationTitle,
+//     notificationOptions);
+// });

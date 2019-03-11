@@ -560,12 +560,16 @@ global $dbhandle;
                 { responsivePriority: 1, targets: [ 0, 3, 5 ] },
                 { responsivePriority: 2, targets: [ 0, 2, 13 ] },
                 {
-                    targets: [0, 2, 3, 5, 6, 7, 14 ],
+                    targets: [0, 2, 3, 6, 7, 14, -1 ],
                     className: 'mdl-data-table__cell--non-numeric'
                 },
                 {
-                    targets: [ 0, ],
+                    targets: [ 0 ],
                     className: 'all'
+                },
+                {
+                    targets: [ 5 ],
+                    className: 'datatablesWraptext'
                 },
                 {
                     targets: [5], render: function (a, b, data, d) {

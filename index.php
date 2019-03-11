@@ -500,8 +500,11 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
             $('.unreadCounter').css("text-shadow","0px 0px 30px #fff");
           } 
    
-          setTimeout(function() {$('#loading').hide()},500);
         });
+        $(window).on('load', function() {
+          setTimeout(function() {$('#loading').hide()},500);
+        })
+
 
         // source. https://thenounproject.com/smashicons/collection/smashicons-badges-army-md-outline/
 

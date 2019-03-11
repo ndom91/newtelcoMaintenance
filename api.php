@@ -477,7 +477,7 @@
         echo json_encode($array2);
 
     } else {
-      $jsonArrayObject = array(array('maileingang' => '', 'startDateTime' => '', 'endDateTime' => '', 'done' => '', 'id' => '', 'receivedmail' => '','betroffeneCIDs' => 'no such company in DB yet', 'name' => ''));
+      $jsonArrayObject = array(array('maileingang' => 'no such company in DB yet', 'startDateTime' => 'no such company in DB yet', 'endDateTime' => '', 'done' => '', 'id' => '', 'receivedmail' => '','betroffeneCIDs' => '','derenCID'=>'', 'name' => ''));
       echo json_encode($jsonArrayObject);
       exit;
     }

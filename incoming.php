@@ -40,9 +40,10 @@ global $dbhandle;
     <script rel="preload" as="script" type="text/javascript" src="dist/js/mdl-jquery-modal-dialog.js"></script>
 
     <style>
-        <?php echo file_get_contents("dist/css/style.min.css");
-        ?><?php echo file_get_contents("dist/css/material.min.css");
-          ?>
+      <?php 
+        echo file_get_contents("dist/css/style.min.css");
+        echo file_get_contents("dist/css/material.min.css");
+      ?>
     </style>
 </head>
 

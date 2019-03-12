@@ -65,7 +65,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
   <script rel="preload" as="script" src="dist/js/toastify.js"></script>
 
   <!-- comlink.js -->
-  <script rel="preload" as="script" src="dist/js/comlink.js"></script>
+  <script type="module" rel="preload" as="script" src="dist/js/comlink.js"></script>
 
   <!-- modalEffects.js -->
   <script rel="preload" as="script" src="dist/js/modalEffects.js"></script>
@@ -79,9 +79,9 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
 
   <script>
     var RELOAD_EVERY = 8;
-    // setTimeout(function(){
-    //     location.reload();
-    // }, RELOAD_EVERY * 60 * 1000);
+    setTimeout(function(){
+        location.reload();
+    }, RELOAD_EVERY * 60 * 1000);
   </script>
 
   <style>
@@ -104,6 +104,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
       echo $content_menu;
      ?> 
     <script>
+      <?php echo file_get_contents("dist/js/rollbarsnippet.js"); ?>
       $(window).on('load', function() {
         $('#loading').css('display','none');
       });
@@ -345,7 +346,6 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
               //saveSubscriptionID(subscription);
               changePushStatus(true);
               const subscriptionObjectToo = JSON.stringify(subscription);
-              console.log(subscriptionObjectToo) ;
               $.ajax({
                 type: "POST",
                 //url: "https://webhook.site/8c9d96b6-03b3-4ab7-96f8-717cc1914002",
@@ -402,7 +402,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
                   });
                   toaster2.showToast();
                   console.info('Push notification unsubscribed.');
-                  console.log(subscription);
+                  // console.log(subscription);
                   //deleteSubscriptionID(subscription);
                   changePushStatus(false);
                 })
@@ -456,7 +456,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
 
         $(document).ready(function() {
 
-          console.log('Cookie: ' + getCookie("pushSub"));
+          // console.log('Cookie: ' + getCookie("pushSub"));
           if(getCookie("pushSub") !== '') {
             var fabPushElement = document.querySelector('#notification-toggle');
             fabPushElement.checked = true;

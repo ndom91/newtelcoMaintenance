@@ -17,8 +17,8 @@ importScripts("https://cdn.jsdelivr.net/npm/comlinkjs@3/umd/comlink.js");
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
 // in turn trigger the install event again.
-const PRECACHE = 'precache-v2';
-const RUNTIME = 'runtime-v2';
+const PRECACHE = 'precache-v8';
+const RUNTIME = 'runtime-v8';
 
 // A list of local resources we always want to be cached.
 const PRECACHE_URLS = [
@@ -34,11 +34,15 @@ const PRECACHE_URLS = [
   "dist/images/svg/ballot.svg",
   "dist/images/svg/overview.svg",
   "dist/images/svg/home.svg",
+  "dist/fonts/Roboto_Latin300.woff2",
   "dist/fonts/Roboto_Latin500.woff2",
   "dist/fonts/Roboto_Latin700.woff2",
   "dist/fonts/Roboto_Latin400.woff2",
   "dist/fonts/Roboto_Latin100.woff2",
   "dist/fonts/MaterialIcons_400.woff2",
+  "dist/fonts/materialdesignicons-webfont.woff",
+  "dist/fonts/materialdesignicons-webfont.woff2",
+  "dist/fonts/fa-solid-900.woff",
   "dist/fonts/fa-solid-900.woff2",
   "dist/images/favicon/apple-icon-152x152.png",
   "dist/images/nt_square32_2_light2.png",
@@ -116,18 +120,12 @@ self.addEventListener('activate', event => {
   );
 });
 
-// The fetch handler serves responses for same-origin resources from a cache.
-// If no response is found, it populates the runtime cache with the response
-// from the network before returning it to the page.
 self.addEventListener('fetch', event => {
-  const urlPathname = event.request.url.pathname;
-  // always grab /api requests from network
-  if ((/api/.test(urlPathname)) || (/incoming/.test(urlPathname)) || (/overview/.test(urlPathname))) {
-    event.respondWith(fetch(event.request));
-    return;
-  } else if (/js$/.test(event.request.url)) {
-    // stale while revalidate
-    event.respondWith(
+  if (event.request.url.startsWith(self.location.origin)) {
+  
+    if ((/js$/.test(event.request.url)) || (/css$/.test(event.request.url)) || (/jpg$/.test(event.request.url)) || (/png$/.test(event.request.url)) || (/svg$/.test(event.request.url)) || (/svg$/.test(event.request.url)) || (/woff2$/.test(event.request.url))) {
+      // stale while revalidate
+      event.respondWith(
         caches.open(RUNTIME).then(function(cache) {
           return cache.match(event.request).then(function(response) {
             var fetchPromise = fetch(event.request).then(function(networkResponse) {
@@ -138,29 +136,44 @@ self.addEventListener('fetch', event => {
           })
         })
       );
-  } else if (event.request.url.startsWith(self.location.origin)) {
-        
-        if (/api/.test(event.request.url)) {
-          event.respondWith(fetch(event.request));
-          return;
-        } else if (/addedit/.test(event.request.url)) {
-          event.respondWith(fetch(event.request));
-          return;
-        } else {
-          event.respondWith(async function() {
-          const cache = await caches.open(RUNTIME);
-          const cachedResponse = await cache.match(event.request);
-          const networkResponsePromise = fetch(event.request);
+    } else {
+      event.respondWith(fetch(event.request));
+      return;
+    }
 
-          event.waitUntil(async function() {
-          const networkResponse = await networkResponsePromise;
-          await cache.put(event.request, networkResponse.clone());
-          }());
+    // if ((/api/.test(urlPathname)) || (/incoming/.test(urlPathname)) || (/overview/.test(urlPathname)) || (/index/.test(urlPathname)) || (/addedit/.test(urlPathname)) || event.request.type === 'POST') {
+    //   event.respondWith(fetch(event.request));
+    //   return;
+    // } else if (/js$/.test(event.request.url)) {
+    //   // stale while revalidate
+    //   event.respondWith(
+    //       caches.open(RUNTIME).then(function(cache) {
+    //         return cache.match(event.request).then(function(response) {
+    //           var fetchPromise = fetch(event.request).then(function(networkResponse) {
+    //             cache.put(event.request, networkResponse.clone());
+    //             return networkResponse;
+    //           })
+    //           return response || fetchPromise;
+    //         })
+    //       })
+    //     );
+    // } else {
+    //   event.respondWith(async function() {
+    //     const cache = await caches.open(RUNTIME);
+    //     const cachedResponse = await cache.match(event.request);
+    //     const networkResponsePromise = fetch(event.request);
 
-          // Returned the cached response if we have one, otherwise return the network response.
-          return cachedResponse || networkResponsePromise;
-          }());
-        }
+    //     event.waitUntil(async function() {
+    //       const networkResponse = await networkResponsePromise;
+    //       await cache.put(event.request, networkResponse.clone());
+    //     }());
+
+    //   // Returned the cached response if we have one, otherwise return the network response.
+    //   return cachedResponse || networkResponsePromise;
+    //   }());
+    // }
+
+
   }
 });
 

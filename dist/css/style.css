@@ -1246,6 +1246,12 @@ ul.dtr-details > li > .dtr-data {
   white-space: normal;
 }
 
+#incomingRecentsHeader {
+  font-size: 26px;
+  font-weight: 200;
+  text-align: center;
+}
+
 @media only screen and (min-width: 800px) {
   .table2 {
     position: absolute;

@@ -19,12 +19,13 @@
   }
 
   function checkCompanyExist($companyName,$dbhandle) {
+    $companyName = trim($companyName);
     $kundenQ = mysqli_query($dbhandle, "SELECT id FROM companies WHERE name LIKE '$companyName'") or die(mysqli_error($dbhandle));
     if ($fetchK = mysqli_fetch_array($kundenQ)) {
       $companyID = $fetchK[0];
       return $companyID;
     } else {
-      $kundenIQ = mysqli_query($dbhandle, "INSERT INTO companies (name, mailDomain) VALUES ('$companyName', '$mailDomain')") or die(mysqli_error($dbhandle));
+      $kundenIQ = mysqli_query($dbhandle, "INSERT INTO companies (name) VALUES ('$companyName')") or die(mysqli_error($dbhandle));
       return '0';
     }
   }
@@ -482,24 +483,17 @@
       exit;
     }
   } elseif (isset($_GET['addSub'])){
-    //$data = $_POST['subscriptionObjectToo'];
     $data = file_get_contents("php://input");
     $jsonData = json_decode($data, true);
     
-    // foreach ($_POST as $key => $value) {
-    //   echo "Field ".htmlspecialchars($key)." is ".htmlspecialchars($value)."<br>";
-    // }
     $user = $_GET['user'];
     $endpoint = $jsonData['endpoint'];
     $p256dh = $jsonData['keys']['p256dh'];
     $auth = $jsonData['keys']['auth'];
 
-    // file_put_contents("addSub_data.txt",$data,FILE_APPEND);
     $checkUserQuery = mysqli_query($dbhandle, "SELECT username FROM notificationSubs WHERE username LIKE '$user';");
 
-    $checkUserArray = mysqli_fetch_assoc($checkUserQuery);
-
-    if(sizeof($checkUserArray) > 0) {
+    if(mysqli_fetch_array($checkUserQuery)) {
       $updateSubQuery = mysqli_query($dbhandle, "UPDATE notificationSubs SET endpoint = '$endpoint', p256dh = '$p256dh', auth = '$auth' WHERE username LIKE '$user';") or die (mysqli_error($dbhandle));
     } else {
       $insertSubQuery = mysqli_query($dbhandle, "INSERT INTO notificationSubs SET username = '$user', endpoint = '$endpoint', p256dh = '$p256dh', auth = '$auth';") or die(mysqli_error($dbhandle));
@@ -510,11 +504,9 @@
 
     $rmUserQuery = mysqli_query($dbhandle, "DELETE FROM notificationSubs WHERE username LIKE '$user';") or die (mysqli_error($dbhandle));
 
-    $rmUserArray = mysqli_fetch_array($rmUserQuery);
-
     $result = array();
 
-    if($rmUserArray == 'TRUE') {
+    if($rmUserQuery == 1) {
       $result['removed'] = '1';
     } else {
       $result['removed'] = '0';
@@ -654,14 +646,15 @@
         $lastIDQ =  mysqli_query($dbhandle, "SELECT MAX(id) FROM maintenancedb") or die(mysqli_error($dbhandle));
         $fetchID = mysqli_fetch_array($lastIDQ);
         $lastID = $fetchID[0] + 1;
+        $olieferant = trim($olieferant);
 
-        // $olieferantid = checkCompanyExist($olieferant,$dbhandle);
-        $kundenQ = mysqli_query($dbhandle, "SELECT id FROM companies WHERE name LIKE '$olieferant'") or die(mysqli_error($dbhandle));
-        if ($fetchK = mysqli_fetch_array($kundenQ)) {
-          $olieferantid = $fetchK[0];
-        } else {
-          $kundenIQ = mysqli_query($dbhandle, "INSERT INTO companies (name, mailDomain) VALUES ('$olieferant', '$mailDomain')") or die(mysqli_error($dbhandle));
-        }
+        $olieferantid = checkCompanyExist($olieferant,$dbhandle);
+        // $kundenQ = mysqli_query($dbhandle, "SELECT id FROM companies WHERE name LIKE '$olieferant'") or die(mysqli_error($dbhandle));
+        // if ($fetchK = mysqli_fetch_array($kundenQ)) {
+        //   $olieferantid = $fetchK[0];
+        // } else {
+        //   $kundenIQ = mysqli_query($dbhandle, "INSERT INTO companies (name, mailDomain) VALUES ('$olieferant', '$mailDomain')") or die(mysqli_error($dbhandle));
+        // }
 
         $resultx = mysqli_query($dbhandle, "INSERT INTO maintenancedb (id, maileingang, receivedmail, bearbeitetvon, lieferant, derenCIDid, startDateTime, endDateTime, notes, mailSentAt, updatedBy, betroffeneKunden, betroffeneCIDs, done, cancelled, location, reason, impact)
         VALUES ('$lastID', '$omaileingang', '$oreceivedmail', '$obearbeitetvon', '$olieferantid', '$oderenCIDid', '$ostartdatetime', '$oenddatetime', '$onotes', '$mailSentAt', '$updatedBy', '$kundenCompanies', '$kundenCIDs', '$odone', '$cancelled', '$oloc', '$oreas', '$oimp')")  or die(mysqli_error($dbhandle));

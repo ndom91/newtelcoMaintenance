@@ -3,6 +3,7 @@
 use \Rollbar\Rollbar;
 use \Rollbar\Payload\Level;
 $username = $token_data['email'];
+$userID = '';
 if ($username == 'ndomino@newtelco.de') {
     $userID = 1;
 } else if ($username == 'fwaleska@newtelco.de') {
@@ -17,6 +18,7 @@ Rollbar::init(
     array(
         'access_token' => 'e0dbc12159df4dd3a6087170e3a8ace0',
         'environment' => 'production',
+        'capture_username' => true,
         'person' => $person 
     )
 );

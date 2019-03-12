@@ -1522,7 +1522,7 @@ global $dbhandle;
                         "omaintid": $('#maintid').val(),
                         "omaileingang": medtISO,
                         "oreceivedmail": $('#rmail').val(),
-                        "olieferant": $('#company option:selected').text(),
+                        "olieferant": $('#company option:selected').text().trim(),
                         "olieferantid": $("#company").val(),
                         "oderenCIDid": dcid,
                         "obearbeitetvon": $('#bearbeitet').val(),
@@ -1617,6 +1617,7 @@ global $dbhandle;
                                 var newID = result1.updatedID;
                                 // window.location.href = "https://maintenance.newtelco.de/addedit?gmid=" + $('#rmail').val() + "&mid=" + newID + "&update=1";
                                 $('#newlyCreatedMID').val(newID);
+                                $('#activeMID').val(newID);
                                 $('#update').val('1');
                                 // window.location.href = "https://maintenance.newtelco.de/addedit?gmid=" + $('#rmail').val() + "&mid=" + newID + "&update=1";
                                 var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?update=1&gmid=' + $('#rmail').val() + '&mid=' + newID;

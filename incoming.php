@@ -489,6 +489,7 @@ global $dbhandle;
                         ?>
                     </div>
                     <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone mdl-2col table2">
+                        <div id="incomingRecentsHeader"></div>
                         <table id="dataTable2" class="hidden mdl-data-table striped" style="width: 100%">
                             <thead>
                                 <tr>
@@ -594,7 +595,8 @@ global $dbhandle;
                       table2 = $('#dataTable2').DataTable();
                       table2.destroy();
                   }
-
+                  
+                  $('#incomingRecentsHeader').text(data2 + ' recents');
                   $('#dataTable2').addClass('display').removeClass('hidden');
                   $('#dataTable2').DataTable( {
                     ajax: {

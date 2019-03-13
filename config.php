@@ -1,9 +1,11 @@
 <?php
 
-    $username = "maint";
-    $password = "N3wt3lco";
-    $hostname = "94.249.164.180";
-    $database = "maintenance";
+    $dbconfig = parse_ini_file('configs/dbconfig_newtelcondo.ini');
+
+    $username = $dbconfig['username'];
+    $password = $dbconfig['password'];
+    $hostname = $dbconfig['hostname'];
+    $database = $dbconfig['database'];
 
     $domain = "https://".$_SERVER['SERVER_NAME'];
     //Define length of salt,minimum=10, maximum=35

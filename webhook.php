@@ -3,20 +3,12 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Google\Cloud\Core\Exception\AbortedException;
-// use sngrl\PhpFirebaseCloudMessaging\Client;
-// use sngrl\PhpFirebaseCloudMessaging\Message;
-// use sngrl\PhpFirebaseCloudMessaging\Recipient\Device;
-// use sngrl\PhpFirebaseCloudMessaging\Notification;
 use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\MessageSentReport;
 
 include_once "base.php";
-
-$mysql_username = "maint";
-$mysql_password = "N3wt3lco";
-$mysql_hostname = "94.249.164.180";
-$mysql_database = "maintenance";
+include_once "config.php";
 
 putenv('GOOGLE_APPLICATION_CREDENTIALS=configs/maintenanceapp-1dd9507b2c22.json');
 
@@ -146,13 +138,6 @@ if(sizeof($listMessageArray) > 0) {
 //file_put_contents("webhookphp2.txt",$listHistory,FILE_APPEND);
 // var_dump($listHistory);
 
-
-$dbhandle = mysqli_connect($mysql_hostname, $mysql_username, $mysql_password, $mysql_database);
-mysqli_set_charset($dbhandle, 'utf8');
-if (mysqli_connect_errno()) {
-  printf("Connect failed: %s\n", mysqli_connect_error());
-  exit();
-}
 
 $getUsersToNotifyQuery = mysqli_query($dbhandle, "SELECT DISTINCT username FROM notificationSubs;") or die(mysqli_error($dbhandle));
 

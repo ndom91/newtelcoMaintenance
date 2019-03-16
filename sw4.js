@@ -17,8 +17,14 @@ importScripts("https://cdn.jsdelivr.net/npm/comlinkjs@3/umd/comlink.js");
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
 // in turn trigger the install event again.
-const PRECACHE = 'precache-v8';
-const RUNTIME = 'runtime-v8';
+var dateObj = new Date();
+var month = ('0' + (dateObj.getMonth() + 1)).slice(-2);
+var date = ('0' + dateObj.getDate()).slice(-2);
+var year = dateObj.getFullYear();
+var CACHE_VERSION_DAY = date+month+year;
+
+const RUNTIME = 'runtime-v'+CACHE_VERSION_DAY;
+const PRECACHE = 'precache-v'+CACHE_VERSION_DAY;
 
 // A list of local resources we always want to be cached.
 const PRECACHE_URLS = [
@@ -121,9 +127,12 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  if (event.request.url.startsWith(self.location.origin)) {
-  
-    if ((/js$/.test(event.request.url)) || (/css$/.test(event.request.url)) || (/jpg$/.test(event.request.url)) || (/png$/.test(event.request.url)) || (/svg$/.test(event.request.url)) || (/svg$/.test(event.request.url)) || (/woff2$/.test(event.request.url))) {
+  // if (event.request.url.startsWith(self.location.origin)) {
+    // if(event.request.url.indexOf('api') !== -1) {
+    //    console.log('api: ' + event.request.url);
+    //    return;
+    //  } else 
+     if ((/js$/.test(event.request.url)) || (/css$/.test(event.request.url)) || (/jpg$/.test(event.request.url)) || (/png$/.test(event.request.url)) || (/svg$/.test(event.request.url)) || (/svg$/.test(event.request.url)) || (/woff2$/.test(event.request.url))) {
       // stale while revalidate
       event.respondWith(
         caches.open(RUNTIME).then(function(cache) {
@@ -136,8 +145,9 @@ self.addEventListener('fetch', event => {
           })
         })
       );
-    } else {
-      event.respondWith(fetch(event.request));
+    } 
+    else {
+      // event.respondWith(fetch(event.request));
       return;
     }
 
@@ -174,7 +184,7 @@ self.addEventListener('fetch', event => {
     // }
 
 
-  }
+  //}
 });
 
 self.addEventListener('push', function(event) {
@@ -186,9 +196,6 @@ self.addEventListener('push', function(event) {
   const notificationOptions = {
     icon: 'dist/images/icons/mailNotification.png',
     badge: 'dist/images/icons/mailNotification.png',
-    data: {
-      url: 'https://developers.google.com/web/fundamentals/getting-started/push-notifications/',
-    },
   };
 
   if (event.data) {
@@ -207,6 +214,18 @@ self.addEventListener('push', function(event) {
     ])
   );
 });
+
+self.addEventListener('notificationclick', function(event) {
+  event.waitUntil(
+    self.clients.matchAll().then(function(clientList) {
+      if (clientList.length > 0) {
+        return clientList[0].focus();
+      }
+      return self.clients.openWindow('https://maintenance.newtelco.de/incoming');
+    })
+  );
+});
+
 
 // surma comlink - service worker example: https://github.com/GoogleChromeLabs/comlink/blob/master/docs/examples/05-service-worker/worker.js#L21
 // https://github.com/GoogleChromeLabs/comlink/tree/master/docs/examples

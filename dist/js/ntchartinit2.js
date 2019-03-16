@@ -6,6 +6,8 @@ Chart.defaults.global.tooltips.custom = CustomTooltips;
 
 $.ajax({
     url: 'api?completedLine=1',
+    cache: true,
+    ifModified: true,
     success: function (data) {
 
       // Labels + Dates
@@ -142,6 +144,7 @@ $.ajax({
           }
         }
       });
+
 
       var maxY = Math.max(countDays(ali,func_m6), countDays(ali,func_m5), countDays(ali,func_m4), countDays(ali,func_m3), countDays(ali,func_m2), countDays(ali,func_m1), countDays(ali,func_m0),countDays(fwa,func_m6), countDays(fwa,func_m5), countDays(fwa,func_m4), countDays(fwa,func_m3), countDays(fwa,func_m2), countDays(fwa,func_m1), countDays(fwa,func_m0),countDays(sst,func_m6), countDays(sst,func_m5), countDays(sst,func_m4), countDays(sst,func_m3), countDays(sst,func_m2), countDays(sst,func_m1), countDays(sst,func_m0));
 
@@ -357,6 +360,7 @@ $.ajax({
 
   $.ajax({
     url: 'api?completedLine1=1',
+    cache: true,
     success: function (data) {
 
       var sstCount = 0;
@@ -752,4 +756,8 @@ $.ajax({
     tooltip.style.opacity = 1;
     tooltip.style.left = positionX + tooltipModel.caretX + "px";
     tooltip.style.top = positionY + tooltipModel.caretY + "px";
+
+
   }
+
+  //performance.mark("mySetTimeout-end2");

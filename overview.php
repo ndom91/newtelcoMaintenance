@@ -90,7 +90,7 @@ global $dbhandle;
                         <thead>
                           <tr>
                             <th style="width: max-content;"></th>
-                            <th class="">id</th>
+                            <th class="">ID</th>
                             <th class="">Maileingang Date/Time</th>
                             <th data-priority="10001">R Mail</th>
                             <th>Lieferant</th>
@@ -176,6 +176,7 @@ global $dbhandle;
                   </div>';
 
                 ?>
+                <div class="chartLabel">Press <font style="font-weight:300">CTRL</font> and <font style="font-weight:300">click</font> on a maintenance to open that entry in a new tab</div>
                 <div class="timelinewrapper">
                   <div id="timelinevis"></div>
                 </div>
@@ -214,7 +215,7 @@ global $dbhandle;
                         if (result1.updated === 1) {
                           var snackbarContainer = document.querySelector('#hideComplete');
                           var dataSB1 = {
-                            message: 'Maintenance Successfully Hidden',
+                            message: 'Maintenance Successfully Deleted',
                             timeout: 2000
                           };
                           snackbarContainer.MaterialSnackbar.showSnackbar(dataSB1);
@@ -269,7 +270,7 @@ global $dbhandle;
 
                   columnDefs: [
                       {
-                        "targets": [ 1, 16, 17 ],
+                        "targets": [ 12, 16, 17 ],
                         "visible": false,
                         "searchable": false
                       },
@@ -284,13 +285,19 @@ global $dbhandle;
                         "searchable": false
                       },
                       {
+                        "targets": [1],
+                          render: function(a, b, data, d) {
+                              return 'NT-' + data[1];
+                          }
+                      },
+                      {
                         targets: [ 7, 14 ],
                         className: "datatablesWraptext"
                       },
-                      { responsivePriority: 1, targets: [ 0, 2, 3, 4, 5, 6, 13 ] },
+                      { responsivePriority: 1, targets: [ 0, 1, 3, 4, 5, 6, 13 ] },
                       { responsivePriority: 2, targets: [ -1 ] },
                       { responsivePriority: 5, targets: [ 7, 8, 12 ] },
-                      { responsivePriority: 10, targets: [ 11, 9, 10, 14 ] },
+                      { responsivePriority: 10, targets: [ 2, 11, 9, 10, 14 ] },
                       {
                           targets: [ 0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 15 ],
                           className: 'mdl-data-table__cell--non-numeric'
@@ -449,6 +456,9 @@ global $dbhandle;
         <?php echo file_get_contents("views/footer.html"); ?>
       </div>
 
+      <?php  
+          mysqli_close($dbhandle); 
+      ?>
       <!-- mdl modal -->
       <link prefetch rel="preload stylesheet" as="style" href="dist/css/mdl-jquery-modal-dialog.css" type="text/css" onload="this.rel='stylesheet'">
 

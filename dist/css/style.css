@@ -1410,6 +1410,21 @@ tr.strikeout td:before {
   border-radius: 5px !important;
   color: #8b8989;
 }
+
+.chartLabel {
+  font-size: 10px;
+  font-family: 'Roboto';
+  font-weight: 200;
+}
+
+#maintenanceHeaderId {
+  color: #fff;
+  font-weight: 500;
+  font-size: 24px;
+  height: 24px;
+  margin-left: 10px;
+}
+
 @media only screen and (max-width: 700px) {
   #dialog1 {
     width: 90% !important;

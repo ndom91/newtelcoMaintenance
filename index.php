@@ -61,6 +61,9 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
   <!-- chart.js -->
   <script rel="preload" as="script" src="dist/js/chart.js"></script>
 
+  <!-- chart.js init -->
+  <script src="dist/js/ntchartinit2.js"></script>
+
   <!-- toastify.js -->
   <script rel="preload" as="script" src="dist/js/toastify.js"></script>
 
@@ -542,14 +545,16 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
         }
         </script>
         <?php endif; ?>
-        <?php  /*echo file_get_contents("views/footer.html");*/ ?>
+        <?php  
+          mysqli_close($dbhandle); 
+        ?>
 
         <!-- font awesome -->
         <link rel="preload stylesheet" as="style" href="dist/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
 
         <!-- material design -->
         <link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css" onload="this.rel='stylesheet'">
-        <link rel="preload stylesheet" as="style" href="dist/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">
+        <link rel="preload stylesheet" as="style" href="dist/fonts/GFonts_Roboto.css" type="text/css" crossorigin onload="this.rel='stylesheet'">
 
         <!-- material icons -->
         <link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css" onload="this.rel='stylesheet'">
@@ -572,8 +577,6 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
         <!-- toastify css -->
         <link type="text/css" rel="stylesheet" href="dist/css/toastify.css" />
 
-        <!-- chart.js init -->
-        <script rel="preload" as="script" src="dist/js/ntchartinit2.js"></script>
       </div>
 
 </body>

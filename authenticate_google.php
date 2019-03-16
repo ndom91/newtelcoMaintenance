@@ -167,7 +167,7 @@ if($client->isAccessTokenExpired() && isset($rtoken)){
 //   setcookie("mail1",$token_data['email']);
 // }
 
-require_once('gmailsub.php');
+//require_once('gmailsub.php');
 
 
 if (!isset($_SESSION['access_token']['id_token'])):

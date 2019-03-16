@@ -1125,6 +1125,9 @@ if (isset($_POST['endlabel'])) {
         <?php echo file_get_contents("views/footer.html"); ?>
       </div>
 
+      <?php  
+          mysqli_close($dbhandle); 
+      ?>
 
       <!-- mdl modal -->
       <link prefetch rel="preload stylesheet" as="style" href="dist/css/mdl-jquery-modal-dialog.css" type="text/css" onload="this.rel='stylesheet'">

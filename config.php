@@ -1,33 +1,31 @@
 <?php
 
-    $dbconfig = parse_ini_file('configs/dbconfig_newtelcondo.ini');
-
-    $username = $dbconfig['username'];
-    $password = $dbconfig['password'];
-    $hostname = $dbconfig['hostname'];
-    $database = $dbconfig['database'];
-
     $domain = "https://".$_SERVER['SERVER_NAME'];
-    //Define length of salt,minimum=10, maximum=35
-    $length_salt = 15;
-    //Define the maximum number of failed attempts to ban brute force attackers
-    //minimum is 5
-    $maxfailedattempt = 25;
-    //Define session timeout in seconds
-    //minimum 60 (for one minute)
-    $sessiontimeout = 1800;
 
     $privatekey = "6LfBa20UAAAAANLBlKD6YnxrgSC62vFe58A7kiYA";
     $publickey = "6LfBa20UAAAAAKhZPzEvB8oiLtMUcBpfHeuhuO1f";
 
-    $dbhandle = mysqli_connect($hostname, $username, $password, $database);
-    mysqli_set_charset($dbhandle, 'utf8');
-    // Test if connection occured.
-    if (mysqli_connect_errno()) {
-      printf("Connect failed: %s\n", mysqli_connect_error());
-      exit();
+    function db_connect() {
+
+      static $connection;
+
+      if(!isset($connection)) {
+        $dbconfig = parse_ini_file('configs/dbconfig_newtelcondo.ini');
+
+        $username = $dbconfig['username'];
+        $password = $dbconfig['password'];
+        $hostname = $dbconfig['hostname'];
+        $database = $dbconfig['database'];
+
+        $connection = mysqli_connect($hostname, $username, $password, $database);
+        mysqli_set_charset($connection, 'utf8');
+      }
+      if($connection === false) {
+        return mysqli_connect_error();
+      }
+      return $connection;
     }
-    $loginpage_url = $domain . 'index.php';
-    $forbidden_url = $domain . '403forbidden.php';
+
+    $dbhandle = db_connect();
 
 ?>

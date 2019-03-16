@@ -51,10 +51,10 @@
     /***************************
      * SETTINGS - UPDATE FIRMEN
      ***************************/
-    $firmenID = $_GET['id'];
-    $firmenName = $_GET['name'];
-    $firmenMailDomain = $_GET['mailDomain'];
-    $firmenMaintenanceRecipient = $_GET['maintenanceRecipient'];
+    $firmenID = mysqli_real_escape_string($dbhandle,$_GET['id']);
+    $firmenName = mysqli_real_escape_string($dbhandle,$_GET['name']);
+    $firmenMailDomain = mysqli_real_escape_string($dbhandle,$_GET['mailDomain']);
+    $firmenMaintenanceRecipient = mysqli_real_escape_string($dbhandle,$_GET['maintenanceRecipient']);
 
     $kundenQ = mysqli_query($dbhandle, "UPDATE companies SET companies.name = '" . $firmenName . "', companies.mailDomain = '" . $firmenMailDomain . "', companies.maintenanceRecipient = '" . $firmenMaintenanceRecipient . "' WHERE companies.id like '$firmenID'") or die(mysqli_error($dbhandle));
 
@@ -71,8 +71,8 @@
     /***************************
      * SETTINGS - UPDATE FIRMEN
      ***************************/
-    $rescheduleNum = $_GET['rmReschedule'];
-    $activeMID = $_GET['mid'];
+    $rescheduleNum = mysqli_real_escape_string($dbhandle,$_GET['rmReschedule']);
+    $activeMID = mysqli_real_escape_string($dbhandle,$_GET['mid']);
 
     $rid = 'NT'.$activeMID.'_'.$rescheduleNum;
 
@@ -92,7 +92,7 @@
      * INCOMING (DELETE) - MARK AS READ
      **************************/
 
-    $mID_read = $_GET['mRead'];
+    $mID_read = mysqli_real_escape_string($dbhandle,$_GET['mRead']);
 
     $gmailLabelRemove1 = 'UNREAD';
 
@@ -112,10 +112,10 @@
      * ADDEDIT - DONE SLIDER
      **************************/
 
-    $doneVal = $_GET['d'];
-    $msaVal = $_GET['msa'];
-    $mid = $_GET['id'];
-    $rmail = $_GET['gid'];
+    $doneVal = mysqli_real_escape_string($dbhandle,$_GET['d']);
+    $msaVal = mysqli_real_escape_string($dbhandle,$_GET['msa']);
+    $mid = mysqli_real_escape_string($dbhandle,$_GET['id']);
+    $rmail = mysqli_real_escape_string($dbhandle,$_GET['gid']);
 
     $result = mysqli_query($dbhandle, "UPDATE maintenancedb SET maintenancedb.done = '" . $doneVal . "', maintenancedb.mailSentAt = '" . $msaVal . "' WHERE maintenancedb.id LIKE '$mid'") or die(mysqli_error($dbhandle));
 
@@ -173,9 +173,9 @@
      * UPDATE LIEFERANTEN  
      *************************/
 
-    $id = $_GET['id'];
-    $name = $_GET['name'];
-    $derenCID = $_GET['derenCID'];
+    $id = mysqli_real_escape_string($dbhandle, $_GET['id']);
+    $name = mysqli_real_escape_string($dbhandle, $_GET['name']);
+    $derenCID = mysqli_real_escape_string($dbhandle, $_GET['derenCID']);
 
     $firmenQ1 = mysqli_query($dbhandle, "SELECT companies.id, companies.name FROM companies WHERE companies.name LIKE '".$name."';") or die(mysqli_error($dbhandle));   
      
@@ -204,11 +204,11 @@
      * UPDATE KUNDEN  
      *************************/
     
-    $id = $_GET['id'];
-    $name = $_GET['name'];
-    $kundenCID = $_GET['kundenCID'];
-    $protected = $_GET['protected'];
-    $derenCID = $_GET['derenCID'];
+    $id = mysqli_real_escape_string($dbhandle, $_GET['id']);
+    $name = mysqli_real_escape_string($dbhandle, $_GET['name']);
+    $kundenCID = mysqli_real_escape_string($dbhandle, $_GET['kundenCID']);
+    $protected = mysqli_real_escape_string($dbhandle, $_GET['protected']);
+    $derenCID = mysqli_real_escape_string($dbhandle, $_GET['derenCID']);
     
     if ($protected == 'Protected') {
       $protected = "1";
@@ -258,7 +258,7 @@
      * ADDEDIT - dCID SHOW LIST OF KundenCID
      *****************************************/
 
-    $dCID = $_GET['dCID'];
+    $dCID = mysqli_real_escape_string($dbhandle, $_GET['dCID']);
     //var_dump($dCID);
     //$dCID = preg_replace("/#.*?\n/", "\n", $dCID);
     $dCID = str_replace(",","','",$dCID);
@@ -279,7 +279,7 @@
      * OVERVIEW - maintenance hider
      *****************************************/
 
-    $mid = $_GET['mid'];
+    $mid = mysqli_real_escape_string($dbhandle, $_GET['mid']);
     
     $result = mysqli_query($dbhandle, "UPDATE maintenancedb SET maintenancedb.active = '0' WHERE maintenancedb.id LIKE '$mid'") or die(mysqli_error($dbhandle));
 
@@ -313,7 +313,7 @@
      * INDEX - get line chart data
      *****************************************/
 
-    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(updatedAt) as day FROM maintenancedb WHERE maintenancedb.done LIKE '1' AND DATE(maileingang) >= curdate() - INTERVAL DAYOFWEEK(curdate())+14 DAY ORDER BY day desc") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(updatedAt) as day FROM maintenancedb WHERE maintenancedb.done LIKE '1' AND DATE(maileingang) >= curdate() - INTERVAL DAYOFWEEK(curdate())+14 DAY ORDER BY id desc") or die(mysqli_error($dbhandle));
 
     $array3 = array();
 
@@ -344,6 +344,18 @@
 
     echo json_encode($addedCompany);
 
+  } elseif (isset($_GET['overview'])) {
+    
+    $overviewQuery = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.betroffeneKunden, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.betroffeneCIDs, maintenancedb.done, maintenancedb.cancelled, companies.mailDomain FROM maintenancedb LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.active = 1") or die (mysqli_error($dbhandle));
+
+    $overviewArray = array();
+
+    while($resultsrows = mysqli_fetch_assoc($overviewQuery)) {
+      $overviewArray[] = $resultsrows;
+    }
+
+    echo json_encode($overviewArray);
+    
   } elseif (isset($_GET['sAddL'])) {
 
     /*****************************************
@@ -429,7 +441,7 @@
      * INDEX - get line chart data
      *****************************************/
 
-    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(updatedAt) as day FROM maintenancedb WHERE maintenancedb.active LIKE '1' AND maintenancedb.done LIKE '1';") or die(mysqli_error($dbhandle));
+    $result = mysqli_query($dbhandle, "SELECT id, bearbeitetvon, DATE(updatedAt) as day FROM maintenancedb WHERE maintenancedb.active LIKE '1' AND maintenancedb.done LIKE '1' ;") or die(mysqli_error($dbhandle));
 
     $array3 = array();
 
@@ -461,7 +473,7 @@
      * INCOMING - liefName SHOW MAINTENANCES
      **************************************/
 
-    $liefDomain = $_GET['liefName'];
+    $liefDomain = mysqli_real_escape_string($dbhandle, $_GET['liefName']);
 
     $result0 = mysqli_query($dbhandle, "SELECT companies.id FROM companies WHERE companies.mailDomain LIKE '$liefDomain'") or die(mysqli_error($dbhandle));
 
@@ -486,7 +498,7 @@
     $data = file_get_contents("php://input");
     $jsonData = json_decode($data, true);
     
-    $user = $_GET['user'];
+    $user = mysqli_real_escape_string($dbhandle, $_GET['user']);
     $endpoint = $jsonData['endpoint'];
     $p256dh = $jsonData['keys']['p256dh'];
     $auth = $jsonData['keys']['auth'];
@@ -500,7 +512,7 @@
     }
 
   } elseif (isset($_GET['rmSub'])) {
-    $user = $_GET['user'];
+    $user = mysqli_real_escape_string($dbhandle, $_GET['user']);
 
     $rmUserQuery = mysqli_query($dbhandle, "DELETE FROM notificationSubs WHERE username LIKE '$user';") or die (mysqli_error($dbhandle));
 
@@ -567,8 +579,8 @@
     // $addeditA['rReas1'] = $rReas1;
     // $addeditA['rReas2'] = $rReas2;
 
-    $update = $fields[0]['update'];
-    $updatedBy = $fields[0]['updatedBy'];
+    $update = mysqli_real_escape_string($dbhandle, $fields[0]['update']);
+    $updatedBy = mysqli_real_escape_string($dbhandle, $fields[0]['updatedBy']);
     $gmailLabelRemove = $_COOKIE['label'];
     $gmailLabelRemove_ar = ["$gmailLabelRemove"];
     if (isset($_SESSION['endlabel'])) {
@@ -676,7 +688,7 @@
      * SETTINGS - SERVICE USER
      **************************/
 
-    $selectedUser = $_GET['userMails'];
+    $selectedUser = mysqli_real_escape_string($dbhandle, $_GET['userMails']);
     $selectedUserOutput = array();
 
     if ($selectedUser != '') {

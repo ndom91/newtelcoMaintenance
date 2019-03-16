@@ -2,7 +2,7 @@
 <?php
 require('authenticate_google.php');
 
-global $dbhandle;
+//global $dbhandle;
 
 ?>
 

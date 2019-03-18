@@ -505,11 +505,20 @@
 
     $checkUserQuery = mysqli_query($dbhandle, "SELECT username FROM notificationSubs WHERE username LIKE '$user';");
 
+    $addSubResult['success'] = 0;
     if(mysqli_fetch_array($checkUserQuery)) {
       $updateSubQuery = mysqli_query($dbhandle, "UPDATE notificationSubs SET endpoint = '$endpoint', p256dh = '$p256dh', auth = '$auth' WHERE username LIKE '$user';") or die (mysqli_error($dbhandle));
+      if($updateSubQuery) {
+        $addSubResult['success'] = 1;
+      }
     } else {
       $insertSubQuery = mysqli_query($dbhandle, "INSERT INTO notificationSubs SET username = '$user', endpoint = '$endpoint', p256dh = '$p256dh', auth = '$auth';") or die(mysqli_error($dbhandle));
+      if($insertSubQuery) {
+        $addSubResult['success'] = 1;
+      }
     }
+
+    echo json_encode($addSubResult);
 
   } elseif (isset($_GET['rmSub'])) {
     $user = mysqli_real_escape_string($dbhandle, $_GET['user']);

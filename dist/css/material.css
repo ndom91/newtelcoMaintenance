@@ -3891,7 +3891,8 @@ input.mdl-button[type="submit"] {
     background-color: rgba(158,158,158, 0.40); }
   .mdl-button--raised.mdl-button--colored {
     background: rgb(103, 178, 70);
-    color: rgb(255,255,255); }
+    color: rgb(255,255,255); 
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 5px 20px 0px, rgba(103,178,70, 0.6) 0px 13px 24px -8px !important;}
     .mdl-button--raised.mdl-button--colored:hover {
       background-color: rgb(103, 178, 70); }
     .mdl-button--raised.mdl-button--colored:active {
@@ -3939,7 +3940,8 @@ input.mdl-button[type="submit"] {
     background-color: rgba(158,158,158, 0.40); }
   .mdl-button--fab.mdl-button--colored {
     background: rgb(103, 178, 70);
-    color: rgb(255,255,255); }
+    color: rgb(255,255,255); 
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 20px 0px, rgba(103,178,70, 0.6) 0px 13px 24px -8px !important;}
     .mdl-button--fab.mdl-button--colored:hover {
       background-color: rgb(103, 178, 70); }
     .mdl-button--fab.mdl-button--colored:focus:not(:active) {

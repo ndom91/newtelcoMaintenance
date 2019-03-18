@@ -817,6 +817,10 @@ li .mdi {
   overflow-y: auto !important;
 }
 
+.dialog-container {
+  overflow: hidden !important;
+}
+
 .selectGoogleButton {
 	display: inline !important;
 	float: right;
@@ -1252,6 +1256,20 @@ ul.dtr-details > li > .dtr-data {
   text-align: center;
 }
 
+.incomingCelebration {
+  margin: 0 auto;
+  position:absolute;
+  left: 35%;
+}
+
+.celebrationTitle {
+  position: relative;
+  font-size: 26px;
+  font-weight: 200;
+  margin: 0 auto;
+  width: 270px;
+}
+
 @media only screen and (min-width: 800px) {
   .table2 {
     position: absolute;
@@ -1412,7 +1430,7 @@ tr.strikeout td:before {
 }
 
 .chartLabel {
-  font-size: 10px;
+  font-size: 12px;
   font-family: 'Roboto';
   font-weight: 200;
 }

@@ -60,24 +60,9 @@
         create_subscription($pubsub, $topicName, $subscriptionName);
     }
 
-    function watch($serviceAcct) {
-        $user = 'fwaleska@newtelco.de';
-        $postBody = new Google_Service_Gmail_WatchRequest();
-        $postBody->setTopicName('projects/maintenanceapp-221917/topics/maintGmail');
-        $postBody->setLabelIds(array('Label_2565420896079443395'));
-        $client_pubsub = new Google_Service_Gmail($serviceAcct);
-        $watch = $client_pubsub->users->watch($user,$postBody);
-        return $watch;
-    }
-    $watch = '';
-    $messages = '';
-
-    if(!isset($_COOKIE['pswatch'])){
-        // watch 1x per day, set cookie when watch is called
-        global $watch;
-        $watch = watch($clientService);
-        setcookie('pswatch','set',time()+60*60*24*1);
-    }
+    
+    //var_dump($debugpubsub);
+    //$messages = '';
 
     function getMessages($pubsub) {
         global $subscriptionName;
@@ -96,5 +81,6 @@
     }
 
     $messages = getMessages($pubsub);
+    //var_dump($messages);
 
 ?>

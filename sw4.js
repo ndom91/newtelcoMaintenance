@@ -195,7 +195,7 @@ self.addEventListener('push', function(event) {
   }
   const notificationOptions = {
     icon: 'dist/images/icons/mailNotification.png',
-    badge: 'dist/images/icons/mailNotification.png',
+    //badge: 'dist/images/icons/mailNotification.png',
   };
 
   if (event.data) {

@@ -41,6 +41,22 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
     setcookie("endlabel", 'Label_2533604283317145521', strtotime('+30 days'));
   }
 
+  // gmail pub sub [gmailsub.php] call watch() 1/week 
+  function watch($serviceAcct) {
+      $user = 'fwaleska@newtelco.de';
+      $postBody = new Google_Service_Gmail_WatchRequest();
+      $postBody->setTopicName('projects/maintenanceapp-221917/topics/maintGmail');
+      $postBody->setLabelIds(array('Label_2565420896079443395'));
+      $client_pubsub = new Google_Service_Gmail($serviceAcct);
+      $watch = $client_pubsub->users->watch($user,$postBody);
+      return $watch;
+  }
+
+  if(!isset($_COOKIE['gmail_watch'])){      
+    watch($clientService);
+    setcookie('gmail_watch','set',time()+60*60*24*1);
+  }
+
   ?>
   <title>
     Newtelco Maintenance
@@ -112,8 +128,6 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
         $('#loading').css('display','none');
       });
     </script>
-
-
 
         <main style="background-color: #e9e9e9;" class="mdl-layout__content container">
           <div id="loading">
@@ -196,6 +210,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
               </div>    
             </div>
         </main>
+    
       
             
         <div class="md-modal md-effect-10" id="modal-10">
@@ -263,24 +278,18 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
 
         // END COMLINK SW DEMO 
 
-
-        var toaster = Toastify({
-          text: "Subscribed",
-          gravity: "bottom",
-          // positionLeft: true,
-          close: true,
-          backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-        });
-        var toaster2 = Toastify({
-          text: "Unsubscribed",
-          gravity: "bottom",
-          // positionLeft: true,
-          close: true,
-          backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-        });
+        function showToaster(inputtext) {
+          var toaster = Toastify({
+            text: inputtext,
+            gravity: "bottom",
+            // positionLeft: true,
+            close: true,
+            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+          });
+          return toaster;
+        }
 
         var fabPushElement = document.querySelector('#notification-toggle');
-        //var fabPushElement = fabPushElements[0];
 
         const urlB64ToUint8Array = base64String => {
           const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
@@ -317,10 +326,11 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
               });
           });
           // get notification permission
-          // const permission = window.Notification.requestPermission();
-          // if(permission !== 'granted'){
-          //     throw new Error('Permission not granted for Notification');
-          // }
+          const permission = window.Notification.requestPermission();
+          if(permission !== 'granted'){
+              const permToast = showToaster("Notify Permissions Missing");
+              permToast.showToast();
+          }
         }
       
         function subscribePush() {
@@ -332,7 +342,6 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
 
             //To subscribe `push notification` from push manager
             const priv = '47EHLIK8B0qEK7stCiGipjURVHZg0XSLRn0c9rqlF5s';
-            // const pub = 'BLfTY9BFRjjTBBWsJBaH_T_kQ63PM9iQh5sk2TYA1ht2Qn3CH1jmgIY2IIAh7u2bpA6sEDmIP9m1GhEl1qE9tTQ';
             const pub = 'BOoj1c6teeX075bCUjVA3K0LVrDxSTM2eQKjjV_DDDQohscn7wzzrPKRizkzqI2vlodUuKHOUJGXsibl6A5nCVA';
             const applicationServerKey = urlB64ToUint8Array(pub);
             registration.pushManager.subscribe({
@@ -340,12 +349,6 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
               userVisibleOnly: true //Always show notification when received
             })
             .then(function (subscription) {
-              // toast('Subscribed successfully.');
-              const username = $('.menumail').text().trim();
-              setCookie("pushSub", username, 30);
-              toaster.showToast();
-              console.info('Push notification subscribed.');
-              console.log(JSON.stringify(subscription));
               //saveSubscriptionID(subscription);
               changePushStatus(true);
               const subscriptionObjectToo = JSON.stringify(subscription);
@@ -357,7 +360,12 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
                 dataType: "json",
                 data: subscriptionObjectToo,
                 success: function(data) {
-
+                  const username = $('.menumail').text().trim();
+                  setCookie("pushSub", username, 30);
+                  const subToast = showToaster("Enabled");
+                  subToast.showToast();
+                  console.info('Push notification subscribed.');
+                  console.log(JSON.stringify(subscription));
                 },
                 error: function(error) {
 
@@ -381,33 +389,33 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
             .then(function (subscription) {
               //If no `push subscription`, then return
               if(!subscription) {
-                alert('Unable to unregister push notification.');
+                const errsubToast = showToaster("Error - Please Try Again");
+                errsubToast.showToast();
                 return;
               }
 
               //Unsubscribe `push notification`
               subscription.unsubscribe()
                 .then(function () {
-                  //toast('Unsubscribed successfully.');
                   const username = $('.menumail').text().trim();
                   deleteCookie("pushSub");
+                  // remove User Sub from DB 
                   $.ajax({
                     type: "GET",
                     //url: "https://webhook.site/8c9d96b6-03b3-4ab7-96f8-717cc1914002",
                     url: "api?rmSub&user="+username,
                     cache: "false",
                     success: function(data) {
-
+                      const unsubToast = showToaster("Disabled");
+                      unsubToast.showToast();
+                      console.info('Push notification unsubscribed.');
+                      changePushStatus(false);
                     },
                     error: function(error) {
-
+                      const unsubToast = showToaster("Unsubscribe Error");
+                      unsubToast.showToast();
                     }
                   });
-                  toaster2.showToast();
-                  console.info('Push notification unsubscribed.');
-                  // console.log(subscription);
-                  //deleteSubscriptionID(subscription);
-                  changePushStatus(false);
                 })
                 .catch(function (error) {
                   console.error(error);
@@ -433,14 +441,10 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
           var isSubscribed = (fabPushElement.checked == true);
           if (isSubscribed) {
             subscribePush();
-            //console.log('click sub: ' + JSON.stringify(subscription));
-            
-            // todo send subscription object to backend via api.php
             // https://web-push-book.gauntface.com/chapter-02/01-subscribing-a-user/
           }
           else {
             unsubscribePush();
-            // invalidate subscription in backend 
           }
         });
 
@@ -547,6 +551,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
         <?php endif; ?>
         <?php  
           mysqli_close($dbhandle); 
+          require_once('gmailsub.php');
         ?>
 
         <!-- font awesome -->

@@ -1009,6 +1009,10 @@ global $dbhandle;
                 });
 
 
+                /*******************
+                 * Timezone Init
+                 *******************/
+
                 initTZ('#timezoneSelector');
 
                 // TODO: Check this on change event handler firing once per selected
@@ -1214,9 +1218,9 @@ global $dbhandle;
                     }
                     var rescheduleUser = $('.menumail').text();
                     moment.locale('de-DE');
-                    var rescheduleTime = moment().format('DD.MM.YYYY HH:mm:SS');
+                    var rescheduleTime = moment().format('YYYY-MM-DD HH:mm:SS');
                     console.log(itemToAppendTo);
-                    $('#gridAppend').append('<div data-val="' + rescheduleCount + '" class="rescheduleBlock mdl-grid"><div class="mdl-cell mdl-cell--12-col"><span class="rescheduleHeader">Reschedule ' + rescheduleCount + '</span><span style="float:right"><span class="rescheduleUser rescheduleUser' + rescheduleCount + '">' + rescheduleUser + '</span><span style="font-family:Roboto;font-weight:300;color:#67B246"> at </span><span class="rescheduleTime rescheduleTime' + rescheduleCount + '">' + rescheduleTime + '</span><button id="removeReschedule' + rescheduleCount + '" type="button" style="display: inline; height: 32px; width: 32px; min-width: 32px !important; margin: 0 0 0 10px !important;" class="removeRescheduleBtn mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"> <span class="mdi mdi-18px mdi-trash-can-outline mdi-light"></span> </button> <div class="mdl-tooltip mdl-tooltip--bottom" data-mdl-for="removeReschedule' + rescheduleCount + '">Delete</div></span></div><div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr' + rescheduleCount + '"> <input type="text" id="sdt' + rescheduleCount + '" class="mdl-textfield__input"  value="" data-input> <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span> <label class="mdl-textfield__label" for="sdt' + rescheduleCount + '">New Start Date/Time</label> </div> </div> <div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr' + rescheduleCount + '"> <input type="text" id="edt' + rescheduleCount + '" class="mdl-textfield__input"  value="" data-input> <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span> <label class="mdl-textfield__label" for="edt' + rescheduleCount + '">New End Date/Time</label> </div> </div><div style="margin-right: calc(12% - 32px) !important;" class="mdl-cell mdl-cell--12-col"> <label class="timeZoneLabel" for="timezoneSelector"> Timezone </label> <select class="js-example-basic-multiple js-states form-control" id="timezoneSelector' + rescheduleCount + '"></select> </div><div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" value="" id="mimp' + rescheduleCount + '"> <label class="mdl-textfield__label" for="mimp' + rescheduleCount + '">Impact</label> </div> </div> <div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" value="" id="mloc' + rescheduleCount + '"> <label class="mdl-textfield__label" for="mloc' + rescheduleCount + '">Location</label> </div> </div><div style="margin-right:calc(12% - 32px)!important" class="mdl-cell mdl-cell--12-col"> <div style="width: 80%" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" id="mreas' + rescheduleCount + '"> <label class="mdl-textfield__label" for="mreas' + rescheduleCount + '">Reason</label> </div> </div></div>');
+                    $('#gridAppend').append('<div data-val="' + rescheduleCount + '" class="rescheduleBlock mdl-grid"><div class="mdl-cell mdl-cell--12-col"><span class="rescheduleHeader">Reschedule ' + rescheduleCount + '</span><span style="float:right"><span class="rescheduleUser rescheduleUser' + rescheduleCount + '">' + rescheduleUser + '</span><span style="font-family:Roboto;font-weight:300;color:#67B246"> at </span><span class="rescheduleTime rescheduleTime' + rescheduleCount + '">' + rescheduleTime + '</span><button id="removeReschedule' + rescheduleCount + '" type="button" style="display: inline; height: 32px; width: 32px; min-width: 32px !important; margin: 0 0 0 10px !important;" class="removeRescheduleBtn mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"> <span class="mdi mdi-18px mdi-trash-can-outline mdi-light"></span> </button> <div class="mdl-tooltip mdl-tooltip--bottom" data-mdl-for="removeReschedule' + rescheduleCount + '">Delete</div></span></div><div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr' + rescheduleCount + '"> <input type="text" id="sdt' + rescheduleCount + '" class="mdl-textfield__input"  value="" data-input> <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span> <label class="mdl-textfield__label" for="sdt' + rescheduleCount + '">New Start Date/Time</label> </div> </div> <div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr' + rescheduleCount + '"> <input type="text" id="edt' + rescheduleCount + '" class="mdl-textfield__input"  value="" data-input> <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span> <label class="mdl-textfield__label" for="edt' + rescheduleCount + '">New End Date/Time</label> </div> </div><div style="margin-right: calc(12% - 32px) !important;" class="mdl-cell mdl-cell--12-col"> <label class="timeZoneLabel" for="timezoneSelector"> Timezone </label> <select class="js-example-basic-multiple js-states form-control" id="timezoneSelector' + rescheduleCount + '"></select> </div><div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" value="" id="mimp' + rescheduleCount + '"> <label class="mdl-textfield__label" for="mimp' + rescheduleCount + '">Impact</label> </div> </div> <div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" value="" id="mloc' + rescheduleCount + '"> <label class="mdl-textfield__label" for="mloc' + rescheduleCount + '">Location</label> </div> </div><div style="margin-right:calc(12% - 32px)!important" class="mdl-cell mdl-cell--12-col"> <div style="width: 100%" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" id="mreas' + rescheduleCount + '"> <label class="mdl-textfield__label" for="mreas' + rescheduleCount + '">Reason</label> </div> </div></div>');
                     
                     flatpickr('.flatpickr'+rescheduleCount);
 
@@ -1229,6 +1233,10 @@ global $dbhandle;
                     $('#removeReschedule'+rescheduleCount).on('click',removeRescheduleEvent);
 
                     $('#timezoneSelector' + rescheduleCount).select2();
+                    initTZ('#timezoneSelector' + rescheduleCount);
+                    $('#timezoneSelector' + rescheduleCount + ' + .select2-container').width($('#mreas'+rescheduleCount).width());
+
+                    $('#mreas' + rescheduleCount).width('100%');
 
                     $('.flatpickr' + rescheduleCount).flatpickr({
                         enableTime: true,
@@ -1389,6 +1397,30 @@ global $dbhandle;
                         var newReas = $('#mreas'+i).val();
                         var newLoc = $('#mloc'+i).val();
                         var newImp = $('#mimp'+i).val();
+
+                        // todo newEditTime Format converseion to Mysql DateTime
+                        var momentEditTime = moment(newEditTime);
+                        var start = moment(newSdt);
+                        var end = moment(newEdt);
+
+                        console.log(newEditTime);
+
+                        //var editTimeLabel = newEditTime.format("YYYY-MM-DD HH:mm:SS");
+                        //console.log(editTimeLabel);
+                        var startTimeLabel = start.format("DD MMM YYYY HH:mm:SS");
+                        var endTimeLabel = end.format("DD MMM YYYY HH:mm:SS");
+
+                        var tzSuffix = $("#timezoneSelector option:selected").text();
+                        var regExp = /\(([^)]+)\)/;
+                        var matches = regExp.exec(tzSuffix);
+                        var tzSuffixRAW = matches[1];
+                        // tzSuffixRAW = tzSuffixRAW.replace("+", "%2B");
+
+
+
+                        // todo time zone conversion
+                        var tzInput = $('#timezoneSelector'+i).val();
+
                         TableData.push({
                           'rUser': newUser,
                           'rEditTime' : newEditTime,
@@ -1645,27 +1677,24 @@ global $dbhandle;
 
                             rescheduleHeader = '[RESCHEDULED] ';
 
-                            rescheduleText = 'Dear Colleagues,<p>We regret to inform you the below mentioned scheduled maintenance has been reschedule.</p><p>The new details are as follows:</p><b>Maintenance ID:</b> ' + maintID + '_' + rescheduleCount + '<br><b>New Start Date/Time:</b> ' + rescheduleNewSDT + ' (' + tzSuffixRAW + ')<br><b>New End Date/Time:</b> ' + rescheduleNewEDT + ' (' + tzSuffixRAW + ')<br>';
+                            rescheduleText = 'Dear Colleagues,<p>We regret to inform you the below mentioned scheduled maintenance has been reschedule.</p><p>The new details are as follows:</p><table border="0" cellspacing="2" cellpadding="2" width="675"><tr><td>Maintenance ID:</td><td><b> ' + maintID + '_' + rescheduleCount + '</b></td></tr><tr><td>New Start Date/Time:</td><td><b> ' + rescheduleNewSDT + ' (' + tzSuffixRAW + ')</b></td></tr><tr><td>New End Date/Time:</td><td><b> ' + rescheduleNewEDT + ' (' + tzSuffixRAW + ')</b></td></tr>';
 
                             if(rescheduleNewImp != '') {
-                                rescheduleText += '<b>New Impact:</b> ' + rescheduleNewImp + '<br>';
+                                rescheduleText += '<tr><td>New Impact:</td><td>' + rescheduleNewImp + '</td></tr>';
                             }
 
                             if(rescheduleNewLoc != '') {
-                                rescheduleText += '<b>New Location:</b> ' + rescheduleNewLoc + '<br>';
+                                rescheduleText += '<tr><td>New Location:</td><td>' + rescheduleNewLoc + '</td></tr>';
                             }
 
                             if(rescheduleNewReas != '') {
-                                rescheduleText += '<b>New Reason:</b> ' + rescheduleNewReas + '<br>';
+                                rescheduleText += '<tr><td>New Reason:</td><td>' + rescheduleNewReas + '</td></tr>';
                             }
 
-                            rescheduleText += '<br>Thanks,<br><b>Newtelco Maintenance Team</b><br><br><hr><br>';
-                            
-                            rescheduleBuffer = '<table class="gray" border="0" cellspacing="2" cellpadding="2" width="675"><tr><td><p><span>Start date and time:</span></p></td><td><p><b><span>' + rescheduleNewSDT + ' (' + tzSuffixRAW + ')</span></b></p></td></tr><tr><td><p><span>Finish date and time:</span></p></td><td><p><b><span​​>​​' + rescheduleNewEDT + ' (' + tzSuffixRAW + ')</span></b></p></td></tr><tr><td><p><span>Impact:</span></p></td><td><p><span>' + rescheduleNewImp + '</span></p></td></tr><tr><td><p><span>Location:</span></p></td><td><p><span>' + rescheduleNewLoc + '</span></p></td></tr><tr><td><p><span>Reason:</span></p></td><td><p><span>' + rescheduleNewReas + '</span></p></td></tr></table><br><hr><br>';
-                            // rescheduleText = '';
+                            rescheduleText += '</table><br>Thanks,<br><b>Newtelco Maintenance Team</b><br><br><hr><br>';
                         }
 
-                        var body = '<style>.grayText10{​​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266}b{color:#636266}</style><body style="​​padding:0;margin:0;​​​" class="grayText10"><div​​ ​style="​font-size:10pt;font-family:\'Arial\',sans-serif;color:#636266" class="grayText10"​​>' + rescheduleText + 'Dear Colleagues,​​<p><span>We would like to inform you about planned work on the CID ​' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0" cellspacing="2" cellpadding="2" width="675"><tr><td>Maintenance ID:</td><td><b>' + maintID + '</b></td></tr><tr><td>Start date and time:</td><td><b>' + startTimeLabel + ' (' + tzSuffixRAW + ')</b></td></tr><tr><td>Finish date and time:</td><td><b>​​​' + endTimeLabel + ' (' + tzSuffixRAW + ')</b></td></tr>'
+                        var body = '<body style="color:#666666;"><div​​ ​style="​font-size:10pt;font-family:\'Arial\';"​​>' + rescheduleText + 'Dear Colleagues,​​<p><span>We would like to inform you about planned work on the CID ​' + data['kundenCID'] + '. The maintenance work is with the following details</span></p><table border="0" cellspacing="2" cellpadding="2" width="675"><tr><td>Maintenance ID:</td><td><b>' + maintID + '</b></td></tr><tr><td>Start date and time:</td><td><b>' + startTimeLabel + ' (' + tzSuffixRAW + ')</b></td></tr><tr><td>Finish date and time:</td><td><b>​​​' + endTimeLabel + ' (' + tzSuffixRAW + ')</b></td></tr>'
 
                         if (impact != '') {
                             body += '<tr><td>Impact:</td><td>' + impact + '</td></tr>';
@@ -1679,7 +1708,7 @@ global $dbhandle;
                             body += '<tr><td>Reason:</td><td>' + reason + '</td></tr>';
                         }
 
-                        body += '</table><p>We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</p><p>If you have any questions feel free to contact us at maintenance@newtelco.de.</p>​​</body>​​<footer>​<style>.sig{font-family:Century Gothic, sans-serif;font-size:9pt;color:#636266!important;}b.i{color:#4ca702;}.gray{color:#636266 !important;}a{text-decoration:none;color:#636266 !important;}</style><div class="sig"><div>Best regards <b class="i">|</b> Mit freundlichen Grüßen</div><br><div><b>Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b class="i">|</b> Moenchhofsstr. 24 <b class="i">|</b> 60326 Frankfurt a.M. <b class="i">|</b> DE <br>www.newtelco.com <b class="i">|</b> 24/7 NOC  49 69 75 00 27 30 ​​<b class="i">|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" height="29" width="516"></div></div>​</footer>';
+                        body += '</table><p>We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</p><p>If you have any questions feel free to contact us at maintenance@newtelco.de.</p></div>​​</body>​​<footer>​<style>.sig{font-family:Century Gothic, sans-serif;font-size:9pt;color:#636266!important;}b.i{color:#4ca702;}.gray{color:#636266 !important;}a{text-decoration:none;color:#636266 !important;}</style><div class="sig"><div>Best regards <b class="i">|</b> Mit freundlichen Grüßen</div><br><div><b>Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b class="i">|</b> Moenchhofsstr. 24 <b class="i">|</b> 60326 Frankfurt a.M. <b class="i">|</b> DE <br>www.newtelco.com <b class="i">|</b> 24/7 NOC  49 69 75 00 27 30 ​​<b class="i">|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" height="29" width="516"></div></div>​</footer>';
 
                         console.log(body.length); 
                         openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?from=maintenance@newtelco.de&subject=' + rescheduleHeader +'Planned Work Notification on CID: ' + data['kundenCID'] + '&cc=service@newtelco.de;maintenance@newtelco.de&body=​​​​' + body);

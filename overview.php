@@ -176,7 +176,7 @@ global $dbhandle;
                   </div>';
 
                 ?>
-                <div class="chartLabel">Press <font style="font-weight:300">CTRL</font> and <font style="font-weight:300">click</font> on a maintenance to open that entry in a new tab</div>
+                <div class="chartLabel">Press <font style="font-weight:300">CTRL</font> and <font style="font-weight:300">CLICK</font> on a maintenance to open that entry in a new tab</div>
                 <div class="timelinewrapper">
                   <div id="timelinevis"></div>
                 </div>
@@ -201,13 +201,13 @@ global $dbhandle;
             var table3 = $('#dataTable1').DataTable();
                 var mid = table3.row('.selected').data();
                 showDialog({
-                title: 'Hide Maintenance',
-                text: 'Do you really wish to hide the selected maintenance:<br><br><b>' + mid[4] + ' - ' + mid[5] + '</b><br>Bearbeitet von: <b>' + mid[6] + '</b><br>' + mid[8] + ' to ' + mid[9] + '<br><br>from the history table? There will be <b>no</b> reversing this decision.',
+                title: 'Delete Maintenance',
+                text: 'Do you really wish to delete the selected maintenance:<br><table style="color:#000;font-size:14px;"><tr><td>ID:</td><td><b>NT-' + mid[1] + '</b></td></tr><tr><td>CID:</td><td><b>' + mid[4] + ' - ' + mid[5] + '</b></td></tr><tr><td>Edited by:</td><td><b>' + mid[6] + '</b></td></tr><tr><td>Date/Time:</td><td><b>' + mid[8] + '</b> to <b>' + mid[9] + '</b></td></tr></table><br><p>From the history? There is <b>no</b> reversing this decision.</p>',
                 negative: {
                   title: 'Cancel',
                 },
                 positive: {
-                  title: 'Hide',
+                  title: 'Delete',
                   onClick: function() {$.ajax({
                     url: 'api?hider=1&mid='+mid[1],
                     success: function(result1){
@@ -250,7 +250,7 @@ global $dbhandle;
                   order: [ 13, 'desc' ],
 
                     // 0? - Buttons
-                    // 1 (H) - ID
+                    // 1 - ID
                     // 2 - Maileingang Date/Time
                     // 3 - R Mail
                     // 4 - Lieferant
@@ -299,8 +299,8 @@ global $dbhandle;
                       { responsivePriority: 5, targets: [ 7, 8, 12 ] },
                       { responsivePriority: 10, targets: [ 2, 11, 9, 10, 14 ] },
                       {
-                          targets: [ 0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 15 ],
-                          className: 'mdl-data-table__cell--non-numeric'
+                        targets: [ 0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 15 ],
+                        className: 'mdl-data-table__cell--non-numeric'
                       }
                   ]
               } );
@@ -311,9 +311,6 @@ global $dbhandle;
                       //console.log(data);
                 }
             });
-
-            
-
 
             // Hide Loader
             setTimeout(function() {$('#loading').hide()},500);
@@ -369,7 +366,7 @@ global $dbhandle;
                   },
                   start: m14days,
                   end: p14days,
-                  zoomMax: 1000 * 60 * 60 * 24 * 17
+                  zoomMax: 1000 * 60 * 60 * 24 * 12
                 };
 
                 // Create a Timeline
@@ -398,7 +395,7 @@ global $dbhandle;
           });
 
           $('#dataTable1').on('responsive-resize.dt', function(e) {
-            console.log('Table Redrawn - Responsive');
+            // console.log('Table Redrawn - Responsive');
             // console.log(e);
             // console.log(e.currentTarget.childNodes);
             var tbody = e.currentTarget.childNodes[3];
@@ -426,7 +423,7 @@ global $dbhandle;
           });
 
           $('#dataTable1').on('draw.dt', function(e) {
-            console.log('Table Redrawn - Draw');
+            // console.log('Table Redrawn - Draw');
             // console.log(e);
             // console.log(e.currentTarget.childNodes);
             var tbody = e.currentTarget.childNodes[3];

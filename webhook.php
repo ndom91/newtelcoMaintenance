@@ -17,20 +17,20 @@ $data = json_decode(file_get_contents("php://input"), true);
 file_put_contents("gmailMsg.txt","\n\n",FILE_APPEND);
 file_put_contents("gmailMsg.txt",json_encode($data),FILE_APPEND);
 $jsonencoded = json_encode($data);
-file_put_contents("webhookphp2.txt",$jsonencoded,FILE_APPEND);
+//file_put_contents("webhookphp2.txt",$jsonencoded,FILE_APPEND);
 
 $b64decoded = base64_decode($data['message']['data']);
 file_put_contents("gmailMsg.txt","\n\n",FILE_APPEND);
 file_put_contents("gmailMsg.txt",$b64decoded,FILE_APPEND);
 $jsondecodedMessage = json_decode($b64decoded,true);
 
-file_put_contents("gmailMsg.txt","\n",FILE_APPEND);
-file_put_contents("gmailMsg.txt",$jsondecodedMessage,FILE_APPEND);
+//file_put_contents("gmailMsg.txt","\n",FILE_APPEND);
+//file_put_contents("gmailMsg.txt",$jsondecodedMessage,FILE_APPEND);
 $historyid =  $jsondecodedMessage['historyId'];
-file_put_contents("gmailMsg.txt","\n",FILE_APPEND);
-file_put_contents("gmailMsg.txt",$historyid,FILE_APPEND);
+//file_put_contents("gmailMsg.txt","\n",FILE_APPEND);
+//file_put_contents("gmailMsg.txt",$historyid,FILE_APPEND);
 
-file_put_contents("webhookphp2.txt","\n\n",FILE_APPEND);
+//file_put_contents("webhookphp2.txt","\n\n",FILE_APPEND);
 // to-do get gmail history id from data base64 encoded, 
 // then insert incoming to new db table
 // then push it into dynamically create js
@@ -70,15 +70,15 @@ function getServiceAccountClient() {
 $clientService = getGoogleClient();
 $gmailService = new Google_Service_Gmail($clientService);
 
-// todo latest historyId doesnt return anything because there is nothing before it, only second to last does, for example. So I need to store the second to last everytime and grab those details?
-$lastHistoryFile = file_get_contents('lastHistoryId.txt');
-if($lastHistoryFile !== '') {
-  $startHistoryId =  $lastHistoryFile;
-}
+// TODO: latest historyId doesnt return anything because there is nothing before it, only second to last does, for example. So I need to store the second to last everytime and grab those details?
 
 // setcookie('lastHistoryID',$historyid,time()+60*60*24*1);
-file_put_contents("lastHistoryId.txt",$historyid);
 
+$lastHistoryFile = file_get_contents('lastHistoryId.txt');
+file_put_contents("lastHistoryId.txt",$historyid);
+if($lastHistoryFile !== '') {
+  $historyid = $lastHistoryFile;
+}
 // $history1 = $historyid;
 // $startHistoryId = $history1;
 
@@ -93,8 +93,8 @@ function listHistory($service, $userId, $startHistoryId) {
           $opt_param['pageToken'] = $pageToken;
         }
         $historyResponse = $service->users_history->listUsersHistory($userId, $opt_param);
-        var_dump($historyResponse);
-        file_put_contents("lastHistoryId_Resp.txt",$historyResponse);
+        var_dump(json_encode($historyResponse));
+        // file_put_contents("lastHistoryId_Resp.txt",$historyResponse);
         if ($historyResponse->getHistory()) {
           $histories = array_merge($histories, $historyResponse->getHistory());
           $pageToken = $historyResponse->getNextPageToken();
@@ -109,22 +109,26 @@ function listHistory($service, $userId, $startHistoryId) {
 
 file_put_contents("gmailMsg.txt","\n\n",FILE_APPEND);
 $listMessageArray = array();
-file_put_contents("gmailMsg.txt",json_encode($listMessageArray),FILE_APPEND);
+//file_put_contents("gmailMsg.txt",json_encode($listMessageArray),FILE_APPEND);
 $listHistory = listHistory($gmailService,'fwaleska@newtelco.de',$historyid);
 var_dump($listHistory);
-file_put_contents("gmailMsg.txt",json_encode($listHistory),FILE_APPEND);
 for($i=0;$i<sizeof($listHistory);$i++){
     $listMessages = $listHistory[$i]->messages;
     $listMessage = $listMessages[0]->id;
+    //file_put_contents("gmailMsg.txt","\n".json_encode($listMessage),FILE_APPEND);
     array_push($listMessageArray,$listMessage);
 }
 $listMessageArray = array_unique($listMessageArray);
+file_put_contents("gmailMsg.txt","\n".json_encode($listMessageArray),FILE_APPEND);
 
 
 $optParamsMsg['format'] = 'metadata';
 if(sizeof($listMessageArray) > 0) {
-  $single_message = $gmailService->users_messages->get('fwaleska@newtelco.de',$listMessageArray[0],$optParamsMsg);
-  file_put_contents("gmailMsg.txt","$listMessageArray[0]",FILE_APPEND);
+  $countLength = max(array_keys($listMessageArray));
+  $single_message = $gmailService->users_messages->get('fwaleska@newtelco.de',$listMessageArray[$countLength],$optParamsMsg);
+
+  file_put_contents("gmailMsg.txt",$listMessageArray[$countLength],FILE_APPEND);
+
   $payload = $single_message->getPayload();
   $headers = $payload->getHeaders();
   $snippet = $single_message->getSnippet();
@@ -133,9 +137,9 @@ if(sizeof($listMessageArray) > 0) {
   $from = getHeader($headers, 'From');
 
   $output = 'Date: ' . $date . ' | Subject: ' . $subject . ' | From: ' . $from;
-  var_dump($output);
+  //var_dump($output);
 }
-//file_put_contents("webhookphp2.txt",$listHistory,FILE_APPEND);
+// file_put_contents("webhookphp2.txt",$listHistory,FILE_APPEND);
 // var_dump($listHistory);
 
 
@@ -162,6 +166,7 @@ for($i=0;$i < sizeof($notifyUsers);$i++) {
         'privateKey' => $vapidpriv,
         //file_get_contents(__DIR__ . '/../keys/private_key.txt'), // in the real world, this would be in a secret file
     ),
+    'ttl' => 120
   );
 
   // var_dump($userNotifyDetailsQuery);
@@ -175,35 +180,44 @@ for($i=0;$i < sizeof($notifyUsers);$i++) {
 
   $notification = 
   [
-    'subscription' => Subscription::create([ // this is the structure for the working draft from october 2018 (https://www.w3.org/TR/2018/WD-push-api-20181026/) 
+    'subscription' => Subscription::create([ 
     "endpoint" => $endpoint,
         "keys" => [
             'p256dh' => $p256dh,
             'auth' => $auth
         ],
     ]),
-    'payload' => '{"title":"' . $subject . ' (' . $date . ')","body":"' . $from . ': ' . $snippet . '"}',
+    'payload' => '{
+      "title":"' . $subject . '",
+      "body":"' . $from . ': ' . $snippet . '",
+      "tag":"nt-maint"
+    }',
+    //  took this out of title for now - (' . $date . ')",
   ];
 
-    var_dump($notification);
-    // var_dump($authKeys);
-  $webPush = new WebPush($authKeys);
-  // var_dump($webPush);
-  $sent = $webPush->sendNotification(
-    $notification['subscription'],
-    $notification['payload'], // optional (defaults null)
-    true // optional (defaults false)
-  );
-  foreach ($webPush->flush() as $report) {
-    $endpoint = $report->getRequest()->getUri()->__toString();
+  // var_dump($notification);
+  // var_dump($authKeys);
 
-    if ($report->isSuccess()) {
-        echo "[v] Message sent successfully for subscription {$endpoint}.";
-    } else {
-        echo "[x] Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
+  // TODO: send webpush only when, i.e. "Subject" != ''
+  if($subject != '') {
+    $webPush = new WebPush($authKeys);
+    // var_dump($webPush);
+    $sent = $webPush->sendNotification(
+      $notification['subscription'],
+      $notification['payload'], // optional (defaults null)
+      true // optional (defaults false)
+    );
+    foreach ($webPush->flush() as $report) {
+      $endpoint = $report->getRequest()->getUri()->__toString();
+
+      if ($report->isSuccess()) {
+          echo "[v] Message sent successfully for subscription {$endpoint}.";
+      } else {
+          echo "[x] Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
+      }
     }
-}
-  var_dump($sent);
+  }
+  // var_dump($sent);
 }
 
 ?>

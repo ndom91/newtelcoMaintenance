@@ -1779,6 +1779,9 @@ tr.strikeout td:before {
   white-space:nowrap;
   opacity: 0.8;
 }
+.ndl-ntGlow {
+  text-shadow: rgba(0, 0, 0, 0.2) 0px 5px 20px 0px, rgba(103,178,70, 0.3) 0px 13px 24px -8px !important; 
+}
 .menuSubLabel {
   color: #67B246;
   float: right;
@@ -2019,6 +2022,19 @@ tr.strikeout td:before {
     right:20px;     */
     font-size: 20px;
     background-color: #67B246;
+}
+
+/* 404 */
+
+.image404 {
+  display: block;
+  width: 600px;
+  margin: 0 auto;
+}
+
+.text404 {
+  width: 380px;
+  margin: 0 auto;
 }
 
 /* Footer */

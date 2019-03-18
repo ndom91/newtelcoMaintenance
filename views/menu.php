@@ -64,6 +64,7 @@ if ($gmailLabelAdd != 'Choose label for \"completed mails\" in settings!') {
   <script>
     $('.homeLink').hover( function() {
         $('.ndl-home').toggleClass('hvr-grow2');
+        $('.ndl-home').toggleClass('ndl-ntGlow');
     });
     $('.historyLink').hover( function() {
         $('.ndl-overview').toggleClass('hvr-grow2');

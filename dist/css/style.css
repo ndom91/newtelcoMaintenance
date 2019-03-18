@@ -656,6 +656,9 @@ base-chart.chart {
   cursor: pointer;
 }
 
+.mdl-layout__header {
+  box-shadow: rgba(0,0,0,.1) 0 5px 20px 0,rgba(103,178,70,.6) 0 13px 24px -8px!important;
+}
 /* Hamburger -> Arrow Animation */
 
 .con {
@@ -1258,8 +1261,8 @@ ul.dtr-details > li > .dtr-data {
 
 .incomingCelebration {
   margin: 0 auto;
-  position:absolute;
-  left: 35%;
+  width: 512px;
+  display: block;
 }
 
 .celebrationTitle {

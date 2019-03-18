@@ -709,8 +709,22 @@ global $dbhandle;
                                         $rescheduleQuery = mysqli_query($dbhandle, "SELECT * FROM reschedule WHERE reschedule.maintenanceid LIKE '$activeID' AND reschedule.active LIKE 1;");
                                         $rescheduleCount = 1;
                                         if(mysqli_num_rows($rescheduleQuery)!=0) {
-                                            while($row = mysqli_fetch_assoc($rescheduleQuery)) {
-                                                echo '<div data-val="' . $rescheduleCount . '" class="rescheduleBlock mdl-grid"><div class="mdl-cell mdl-cell--12-col"><span class="rescheduleHeader">Reschedule ' . $rescheduleCount . '</span><span style="float:right"><span class="rescheduleUser rescheduleUser' . $rescheduleCount . '">' . $row['user'] . '</span><span style="font-family:Roboto;font-weight:300;color:#67B246"> at </span><span class="rescheduleTime rescheduleTime' . $rescheduleCount . '">' . $row['datetime'] . '</span><button id="removeReschedule' . $rescheduleCount . '" type="button" style="display: inline; height: 32px; width: 32px; min-width: 32px !important; margin: 0 0 0 10px !important;" class="removeRescheduleBtn mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"> <span class="mdi mdi-18px mdi-trash-can-outline mdi-light"></span> </button> <div class="mdl-tooltip mdl-tooltip--bottom" data-mdl-for="removeReschedule' . $rescheduleCount . '">Delete</div></span></div><div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr' . $rescheduleCount . '"> <input type="text" id="sdt' . $rescheduleCount . '" class="mdl-textfield__input"  value="' . $row['sdt'] . '" data-input> <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span> <label class="mdl-textfield__label" for="sdt' . $rescheduleCount . '">New Start Date/Time</label> </div> </div> <div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr' . $rescheduleCount . '"> <input type="text" id="edt' . $rescheduleCount . '" class="mdl-textfield__input"  value="' . $row['edt'] . '" data-input> <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span> <label class="mdl-textfield__label" for="edt' . $rescheduleCount . '">New End Date/Time</label> </div> </div><div style="margin-right: calc(12% - 32px) !important;" class="mdl-cell mdl-cell--12-col"> <label class="timeZoneLabel" for="timezoneSelector"> Timezone </label> <select class="js-example-basic-multiple js-states form-control" id="timezoneSelector' . $rescheduleCount . '"></select></div><div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" value="' . $row['impact'] . '" id="mimp' . $rescheduleCount . '"> <label class="mdl-textfield__label" for="mimp' . $rescheduleCount . '">Impact</label> </div> </div> <div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" value="' . $row['location'] . '" id="mloc' . $rescheduleCount . '"> <label class="mdl-textfield__label" for="mloc' . $rescheduleCount . '">Location</label> </div> </div><div style="margin-right:calc(12% - 32px)!important" class="mdl-cell mdl-cell--12-col"> <div style="width: 100%" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" style="" value="' . $row['reason'] .'" id="mreas' . $rescheduleCount . '"> <label class="mdl-textfield__label" for="mreas' . $rescheduleCount . '">Reason</label> </div> </div></div>';
+                                            while($row = mysqli_fetch_assoc($rescheduleQuery)) {  
+
+                                                $rSDT = $row['sdt'];
+                                                $rEDT = $row['edt'];
+
+                                                $newSDT = DateTime::createFromFormat("Y-m-d  H:i:s", $rSDT);
+                                                $newSDT = new DateTime($rSDT);
+                                                $newSDT->add(new DateInterval('PT1H'));
+                                                $newSDT = $newSDT->format('Y-m-d  H:i:s'); 
+
+                                                $newEDT = DateTime::createFromFormat("Y-m-d  H:i:s", $rEDT);
+                                                $newEDT = new DateTime($rEDT);
+                                                $newEDT->add(new DateInterval('PT1H'));
+                                                $newEDT = $newEDT->format('Y-m-d  H:i:s');
+                                                
+                                                echo '<div data-val="' . $rescheduleCount . '" class="rescheduleBlock mdl-grid"><div class="mdl-cell mdl-cell--12-col"><span class="rescheduleHeader">Reschedule ' . $rescheduleCount . '</span><span style="float:right"><span class="rescheduleUser rescheduleUser' . $rescheduleCount . '">' . $row['user'] . '</span><span style="font-family:Roboto;font-weight:300;color:#67B246"> at </span><span class="rescheduleTime rescheduleTime' . $rescheduleCount . '">' . $row['datetime'] . '</span><button id="removeReschedule' . $rescheduleCount . '" type="button" style="display: inline; height: 32px; width: 32px; min-width: 32px !important; margin: 0 0 0 10px !important;" class="removeRescheduleBtn mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"> <span class="mdi mdi-18px mdi-trash-can-outline mdi-light"></span> </button> <div class="mdl-tooltip mdl-tooltip--bottom" data-mdl-for="removeReschedule' . $rescheduleCount . '">Delete</div></span></div><div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr' . $rescheduleCount . '"> <input type="text" id="sdt' . $rescheduleCount . '" class="mdl-textfield__input"  value="' . $newSDT . '" data-input> <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span> <label class="mdl-textfield__label" for="sdt' . $rescheduleCount . '">New Start Date/Time</label> </div> </div> <div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr' . $rescheduleCount . '"> <input type="text" id="edt' . $rescheduleCount . '" class="mdl-textfield__input"  value="' . $newEDT . '" data-input> <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span> <label class="mdl-textfield__label" for="edt' . $rescheduleCount . '">New End Date/Time</label> </div> </div><div style="margin-right: calc(12% - 32px) !important;" class="mdl-cell mdl-cell--12-col"> <label class="timeZoneLabel" for="timezoneSelector"> Timezone </label> <select class="js-example-basic-multiple js-states form-control" id="timezoneSelector' . $rescheduleCount . '"></select></div><div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" value="' . $row['impact'] . '" id="mimp' . $rescheduleCount . '"> <label class="mdl-textfield__label" for="mimp' . $rescheduleCount . '">Impact</label> </div> </div> <div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" value="' . $row['location'] . '" id="mloc' . $rescheduleCount . '"> <label class="mdl-textfield__label" for="mloc' . $rescheduleCount . '">Location</label> </div> </div><div style="margin-right:calc(12% - 32px)!important" class="mdl-cell mdl-cell--12-col"> <div style="width: 100%" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" style="" value="' . $row['reason'] .'" id="mreas' . $rescheduleCount . '"> <label class="mdl-textfield__label" for="mreas' . $rescheduleCount . '">Reason</label> </div> </div></div>';
 
                                                 echo '<script>
                                                       $(\'#timezoneSelector' . $rescheduleCount.'\').select2({
@@ -1190,12 +1204,12 @@ global $dbhandle;
                          dataType: "json",
                          success: function(data) {
                             if(data.removed == 1) {
-                                var snackbarContainer4 = document.querySelector('#snackbarAddedit');
+                                var snackbarContainer2 = document.querySelector('#snackbarAddedit');
                                 var dataRM1 = {
                                     message: 'Reschedule Entry Removed',
                                     timeout: 2000
                                 };
-                                snackbarContainer4.MaterialSnachbar.showSnackbar(dataRM1);
+                                snackbarContainer2.MaterialSnackbar.showSnackbar(dataRM1);
                             }
                          },
                          error: function(e) {
@@ -1398,34 +1412,31 @@ global $dbhandle;
                         var newLoc = $('#mloc'+i).val();
                         var newImp = $('#mimp'+i).val();
 
-                        // todo newEditTime Format converseion to Mysql DateTime
-                        var momentEditTime = moment(newEditTime);
-                        var start = moment(newSdt);
-                        var end = moment(newEdt);
-
-                        console.log(newEditTime);
-
-                        //var editTimeLabel = newEditTime.format("YYYY-MM-DD HH:mm:SS");
-                        //console.log(editTimeLabel);
-                        var startTimeLabel = start.format("DD MMM YYYY HH:mm:SS");
-                        var endTimeLabel = end.format("DD MMM YYYY HH:mm:SS");
-
-                        var tzSuffix = $("#timezoneSelector option:selected").text();
-                        var regExp = /\(([^)]+)\)/;
-                        var matches = regExp.exec(tzSuffix);
-                        var tzSuffixRAW = matches[1];
-                        // tzSuffixRAW = tzSuffixRAW.replace("+", "%2B");
-
-
-
                         // todo time zone conversion
-                        var tzInput = $('#timezoneSelector'+i).val();
+                        var rdtTZ = $('#timezoneSelector'+i).val();
+
+                        var rSDT = $('#sdt'+i).val();
+                        var rSDT = moment(rSDT).format('YYYY-MM-DD\THH:mm:ss');
+                        var rzOffset = moment.tz(rdtTZ).format('Z');
+                        var tzConcat = rSDT.concat(rzOffset);
+                        var rsdtUTC = moment(tzConcat).utc().format();
+                        var rEDT = $('#edt'+i).val();
+                        var rEDT = moment(rEDT).format('YYYY-MM-DD\THH:mm:ss');
+                        var tzConcat2 = rEDT.concat(rzOffset);
+                        var redtUTC = moment(tzConcat2).utc().format();
+
+                        // todo newEditTime Format converseion to Mysql DateTime
+                        console.log(newEditTime);
+                        var rEditTime = moment.parseZone(newEditTime);
+                        console.log(rEditTime);
+                        rEditTimeISO = moment(rEditTime).toISOString();
+                        console.log(rEditTimeISO);
 
                         TableData.push({
                           'rUser': newUser,
-                          'rEditTime' : newEditTime,
-                          'rSdt' : newSdt,
-                          'rEdt' : newEdt,
+                          'rEditTime' : rEditTimeISO,
+                          'rSdt' : rsdtUTC,
+                          'rEdt' : redtUTC,
                           'rReas' : newReas,
                           'rLoc' : newLoc,
                           'rImp' : newImp 

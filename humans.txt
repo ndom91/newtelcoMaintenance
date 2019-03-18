@@ -1,0 +1,13 @@
+/* TEAM */
+Your title: The one, and only - Nico Domino
+Site: ndomino@newtelco.de
+Twitter: @ndom91
+Github: ndom91
+Location: Frankfurt, Germany
+							
+/* SITE */
+Last update: 16.03.19
+Standards: HTML5, CSS3, etc, etc.
+Components: JQuery, PHP, Google Client APIs, and many smaller libraries
+Software: Vim, VSCode (w/ VSCodeVIM) :)
+

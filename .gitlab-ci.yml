@@ -15,7 +15,8 @@ test:app:
   #Static analysis
   - phploc .
   #phpmd check coding style
-  - phpmd . text naming,design,unusedcode --suffixes php --ignore-violations-on-exit
+  #- phpmd . text naming,design,unusedcode --suffixes php --ignore-violations-on-exit
+  - phpmd . text design --suffixes php --ignore-violations-on-exit
   #checking Coding Standards with PHP Code Sniffer
   #- phpcpd .
   #Viewing Coding Standards Violations

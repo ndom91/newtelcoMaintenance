@@ -18,6 +18,9 @@ apt-get install git -yqq
 curl --location --output /usr/local/bin/phpmd http://static.phpmd.org/php/latest/phpmd.phar
 chmod +x /usr/local/bin/phpmd
 
+curl --location --output /usr/local/bin/phploc https://phar.phpunit.de/phploc.phar
+chmod +x /usr/local/bin/phploc
+
 # Install mysql driver
 # Here you can install any other extension that you need
 docker-php-ext-install mysqli

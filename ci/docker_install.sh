@@ -15,7 +15,7 @@ apt-get install git zip unzip -yqq
 #curl --location --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit.phar
 #chmod +x /usr/local/bin/phpunit
 
-#/usr/local/bin/composer.phar require nesbot/carbon=1.29.*
+composer require nesbot/carbon=1.29.*
 
 curl --location --output /usr/local/bin/phpmd http://static.phpmd.org/php/latest/phpmd.phar
 chmod +x /usr/local/bin/phpmd

@@ -9,10 +9,10 @@ test:app:
   script:
   #- phpunit --configuration phpunit_myapp.xml
   #Static analysis
-  - phploc .
+  #- phploc .
   #phpmd check coding style
   - phpmd . text naming
   #checking Coding Standards with PHP Code Sniffer
-  - phpcpd .
+  #- phpcpd .
   #Viewing Coding Standards Violations
-  - phpcs --standard=PEAR --report=summary
+  # - phpcs --standard=PEAR --report=summary

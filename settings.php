@@ -31,6 +31,13 @@ if (isset($_POST['endlabel'])) {
 
   <?php echo file_get_contents("views/meta.html"); ?>
 
+  <!-- toastify.js -->
+  <script rel="preload" as="script" src="dist/js/toastify.js"></script>
+
+  <!-- modalEffects.js -->
+  <script rel="preload" as="script" src="dist/js/modalEffects.js"></script>
+
+
   <!-- handsontable -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/handsontable.min.js"></script>
 
@@ -615,12 +622,14 @@ if (isset($_POST['endlabel'])) {
                         url: 'api?sAddF=1&sAddF_n='+cName+'&sAddF_d='+cDomain+'&sAddF_r='+cRecipient,
                         success: function (data) {
                           if (data.added === 1){
-                            var snackbarContainer = document.querySelector('#addResults1');
-                            var sbData = {
-                              message: 'Company Added',
-                              timeout: 2000
-                            };
-                            snackbarContainer.MaterialSnackbar.showSnackbar(sbData);
+                            const cAddedToast = showToaster("Company Added");
+                            cAddedToast.showToast();
+                            // var snackbarContainer = document.querySelector('#addResults1');
+                            // var sbData = {
+                            //   message: 'Company Added',
+                            //   timeout: 2000
+                            // };
+                            // snackbarContainer.MaterialSnackbar.showSnackbar(sbData);
                             setTimeout(function() {
                               window.location.reload(); 
                               // window.location.href = 'https://maintenance.newtelco.de/settings#firmenTab';
@@ -651,13 +660,15 @@ if (isset($_POST['endlabel'])) {
               url: 'api?sAddL=1&sAddL_c='+lAdd_company+'&sAddL_i='+lAdd_dCID,
               success: function (data) {
                 if (data.added === 1){
-                  var snackbarContainer = document.querySelector('#addResults1');
-                  var sbData = {
-                    message: 'Lieferant CID Added',
-                    timeout: 2000
-                  };
+                  const lCIDAdded = showToaster("Lieferant CID Added");
+                  lCIDAdded.showToast();
+                  // var snackbarContainer = document.querySelector('#addResults1');
+                  // var sbData = {
+                  //   message: 'Lieferant CID Added',
+                  //   timeout: 2000
+                  // };
                   $('.close1').click();
-                  snackbarContainer.MaterialSnackbar.showSnackbar(sbData);
+                  // snackbarContainer.MaterialSnackbar.showSnackbar(sbData);
                   setTimeout(function() {
                     window.location.reload(); 
                   },1000);
@@ -690,13 +701,15 @@ if (isset($_POST['endlabel'])) {
               url: 'api?sAddK=1&sAddK_c='+kAdd_company+'&sAddK_dc='+kAdd_dCID+'&sAddK_nt='+kAdd_ntCID+'&sAddK_p='+kAdd_p,
               success: function (data) {
                 if (data.added === 1){
-                  var snackbarContainer = document.querySelector('#addResults1');
-                  var sbData = {
-                    message: 'Newtelco/Kunden CID Added',
-                    timeout: 2000
-                  };
+                  const kCIDAdded = showToaster("Newtelco / Kunden CID Added");
+                  kCIDAdded.showToast();
+                  // var snackbarContainer = document.querySelector('#addResults1');
+                  // var sbData = {
+                  //   message: 'Newtelco/Kunden CID Added',
+                  //   timeout: 2000
+                  // };
                   $('.close3').click();
-                  snackbarContainer.MaterialSnackbar.showSnackbar(sbData);
+                  // snackbarContainer.MaterialSnackbar.showSnackbar(sbData);
                   setTimeout(function() {
                     window.location.reload(); 
                   },1000);
@@ -725,25 +738,31 @@ if (isset($_POST['endlabel'])) {
               'url':'api?userMails=' + selectedUser,
               'success': function(result2){
                 var obj = JSON.stringify(result2);
-                var snackbarContainer = document.querySelector('#settingsOutput');
+                // var snackbarContainer = document.querySelector('#settingsOutput');
 
                 if (result2.updated === 1) {
-                  var settingsOutput = {
-                    message: 'Successfully Saved',
-                    timeout: 4000
-                  };
+                  const sSaved = showToaster("Successfully Saved");
+                  sSaved.showToast();
+                  // var settingsOutput = {
+                  //   message: 'Successfully Saved',
+                  //   timeout: 4000
+                  // };
                 } else if (result2.same === 1) {
-                  var settingsOutput = {
-                    message: 'User already selected',
-                    timeout: 4000
-                  };
+                  const uSelected = showToaster("User Already Selected");
+                  uSelected.showToast();
+                  // var settingsOutput = {
+                  //   message: 'User already selected',
+                  //   timeout: 4000
+                  // };
                 } else if (result2.empty === 1) {
-                  var settingsOutput = {
-                    message: 'Please enter Email Address',
-                    timeout: 4000
-                  };
+                  const fullMail = showToaster("Please enter Email Address");
+                  fullMail.showToast();
+                  // var settingsOutput = {
+                  //   message: 'Please enter Email Address',
+                  //   timeout: 4000
+                  // };
                 }
-                snackbarContainer.MaterialSnackbar.showSnackbar(settingsOutput);
+                // snackbarContainer.MaterialSnackbar.showSnackbar(settingsOutput);
               }
             });
           });
@@ -906,15 +925,19 @@ if (isset($_POST['endlabel'])) {
                       data: cell.getRow().getData(),
                       type: "get",
                       success: function(response, textstatus, xhr) {
-                        var snackbarContainer3 = document.querySelector('#firmenUpdated');
-                        var dataFirmenUpdated2 = {
-                          message: 'Firmen Updated',
-                          timeout: 2000
-                        };
-                        snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
+                        const firmenUpdated = showToaster("Firmen Updated");
+                        firmenUpdated.showToast();
+                        // var snackbarContainer3 = document.querySelector('#firmenUpdated');
+                        // var dataFirmenUpdated2 = {
+                        //   message: 'Firmen Updated',
+                        //   timeout: 2000
+                        // };
+                        // snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
                       },
                       error: function(XMLHttpRequest, textstatus, error) {
-                        alert("AJAX error: " + textstatus + "; " + error);
+                        const firmenError = showToaster("Firmen Error - " + textstatus + ' - ' + error);
+                        firmenError.showToast();
+                        // alert("AJAX error: " + textstatus + "; " + error);
                       }
                     })
                   }
@@ -985,15 +1008,19 @@ if (isset($_POST['endlabel'])) {
                     data: cell.getRow().getData(),
                     type: "get",
                     success: function(response, textstatus, xhr) {
-                      var snackbarContainer3 = document.querySelector('#firmenUpdated');
-                      var dataFirmenUpdated2 = {
-                        message: 'Lieferanten Updated',
-                        timeout: 2000
-                      };
-                      snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
+                      const liefUpdated = showToaster("Lieferant Updated");
+                      liefUpdated.showToast();
+                      // var snackbarContainer3 = document.querySelector('#firmenUpdated');
+                      // var dataFirmenUpdated2 = {
+                      //   message: 'Lieferanten Updated',
+                      //   timeout: 2000
+                      // };
+                      // snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
                     },
                     error: function(XMLHttpRequest, textstatus, error) {
-                      alert("AJAX error: " + textstatus + "; " + error);
+                      const liefError = showToaster("Lieferant Error - " + textstatus + " - " + error);
+                      liefError.showToast();
+                      // alert("AJAX error: " + textstatus + "; " + error);
                     }
                   })
                 }
@@ -1073,15 +1100,19 @@ if (isset($_POST['endlabel'])) {
                     data: cell.getRow().getData(),
                     type: "get",
                     success: function(response, textstatus, xhr) {
-                      var snackbarContainer3 = document.querySelector('#firmenUpdated');
-                      var dataFirmenUpdated2 = {
-                        message: 'Kunden Updated',
-                        timeout: 2000
-                      };
-                      snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
+                      const kundenUpdated = showToaster("Kunden Updated");
+                      kundenUpdated.showToast();
+                      // var snackbarContainer3 = document.querySelector('#firmenUpdated');
+                      // var dataFirmenUpdated2 = {
+                      //   message: 'Kunden Updated',
+                      //   timeout: 2000
+                      // };
+                      // snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
                     },
                     error: function(XMLHttpRequest, textstatus, error) {
-                      alert("AJAX error: " + textstatus + "; " + error);
+                      const kundenError = showToaster("Lieferant Error - " + textstatus + " - " + error);
+                      kundenError.showToast();
+                      // alert("AJAX error: " + textstatus + "; " + error);
                     }
                   })
                 }
@@ -1153,6 +1184,9 @@ if (isset($_POST['endlabel'])) {
 
       <!-- tabulator -->
      <link href="dist/css/tabulator_bootstrap4.min.css" rel="preload stylesheet" as="style" media="screen" onload="this.rel='stylesheet'">
+
+      <!-- toastify css -->
+      <link type="text/css" rel="stylesheet" href="dist/css/toastify.css" />
 
       <!-- select 2 css -->
       <link rel="preload stylesheet" as="style" type="text/css" href="dist/css/select2.min.css" onload="this.rel='stylesheet'">

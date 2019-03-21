@@ -1,8 +1,8 @@
 ![Newtelco](./dist/images/newtelco_full_300w.png)  
 
-[![newtelco](https://img.shields.io/badge/Version-0.8.0_beta-green.svg?style=flat-square)](https://crm.newtelco.de) 
-[![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m781781334-0112a59d100b992b0132080d.svg?style=flat-square&colorB=green&label=Uptime)](https://uptime.newtelco.de/) 
-[![newtelco](https://img.shields.io/badge/Contact%20Me-%40-green.svg?style=flat-square)](mailto:ndomino@newtelco.de) 
+[![newtelco](https://img.shields.io/badge/Version-0.9.5_beta-brightgreen.svg?style=flat-square)](https://crm.newtelco.de) 
+[![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m781781334-0112a59d100b992b0132080d.svg?style=flat-square&colorB=brightgreen&label=Uptime)](https://uptime.newtelco.de/) 
+[![newtelco](https://img.shields.io/badge/Contact%20Me-%40-brightgreen.svg?style=flat-square)](mailto:ndomino@newtelco.de) 
 [![PIPELINE](https://git.newtelco.dev/ndomino/maintenancedb/badges/master/pipeline.svg?style=flat-square)](https://git.newtelco.dev/ndomino/maintenance)
 
 
@@ -26,8 +26,9 @@ Newtelco Maintenance Web Application, designed and developed in-house, to replac
 
 > **Tested On**:
 
-> - MariaDB 10.1.34  
-> - PHP 7.1.25  
+> - Ubuntu 18.04.01 + CentOS 6
+> - MariaDB 10.1.34 + 10.1.38
+> - PHP 7.1.25 + 7.2.16
 > - Apache 2.4.29
 
 ### Installation

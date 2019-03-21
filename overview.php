@@ -30,6 +30,9 @@ global $dbhandle;
   <script rel="preload" as="script" type="text/javascript" src="dist/js/dataTables/dataTables.responsive.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="dist/js/dataTables/dataTables.select.min.js"></script>
 
+  <!-- toastify.js -->
+  <script rel="preload" as="script" src="dist/js/toastify.js"></script>
+
   <!-- moment -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/luxon.min.js"></script>
   <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment.min.js"></script>
@@ -182,10 +185,10 @@ global $dbhandle;
                 </div>
               </div>
             </div>
-            <div id="hideComplete" class="mdl-js-snackbar mdl-snackbar">
+            <!-- <div id="hideComplete" class="mdl-js-snackbar mdl-snackbar">
               <div class="mdl-snackbar__text"></div>
               <button class="mdl-snackbar__action" type="button"></button>
-            </div>
+            </div> -->
         </main>
         <script>
 
@@ -213,12 +216,14 @@ global $dbhandle;
                     success: function(result1){
                         var obj = JSON.stringify(result1);
                         if (result1.updated === 1) {
-                          var snackbarContainer = document.querySelector('#hideComplete');
-                          var dataSB1 = {
-                            message: 'Maintenance Successfully Deleted',
-                            timeout: 2000
-                          };
-                          snackbarContainer.MaterialSnackbar.showSnackbar(dataSB1);
+                          const deletedToast = showToaster("Maintenance Successfully Deleted");
+                          deletedToast.showToast();
+                          // var snackbarContainer = document.querySelector('#hideComplete');
+                          // var dataSB1 = {
+                          //   message: 'Maintenance Successfully Deleted',
+                          //   timeout: 2000
+                          // };
+                          // snackbarContainer.MaterialSnackbar.showSnackbar(dataSB1);
                           setTimeout(function(){ window.location.href = 'https://'+window.location.hostname+'/overview'; }, 1000);
                         }
                     },
@@ -476,6 +481,9 @@ global $dbhandle;
       
       <!-- hover css -->
       <link type="text/css" rel="stylesheet" href="dist/css/hover.css" />
+
+      <!-- toastify css -->
+      <link type="text/css" rel="stylesheet" href="dist/css/toastify.css" />
 
       <!-- Google font -->
       <link prefetch rel="preload stylesheet" as="style" href="dist/fonts/GFonts_Roboto.css" type="text/css" onload="this.rel='stylesheet'">

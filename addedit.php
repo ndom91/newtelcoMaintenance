@@ -25,6 +25,9 @@ global $dbhandle;
     <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment.min.js"></script>
     <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/moment-timezone-with-data.min.js"></script>
 
+    <!-- toastify.js -->
+    <script rel="preload" as="script" src="dist/js/toastify.js"></script>
+
     <!-- select2 -->
     <script rel="preload" as="script" type="text/javascript" src="dist/js/select2_4.0.6-rc1.min.js"></script>
 
@@ -957,12 +960,14 @@ global $dbhandle;
                         dataType: "json",
                         success: function(data) {
                             if (data.updated === 1) {
-                                var snackbarContainer2 = document.querySelector('#snackbarAddedit');
-                                var dataME3 = {
-                                    message: 'Maintenance Status Saved',
-                                    timeout: 2000
-                                };
-                                snackbarContainer2.MaterialSnackbar.showSnackbar(dataME3);
+                                const savedToast = showToaster("Maintenance Status Saved");
+                                savedToast.showToast();
+                                // var snackbarContainer2 = document.querySelector('#snackbarAddedit');
+                                // var dataME3 = {
+                                //     message: 'Maintenance Status Saved',
+                                //     timeout: 2000
+                                // };
+                                // snackbarContainer2.MaterialSnackbar.showSnackbar(dataME3);
                             }
                         },
                         error: function(err) {
@@ -1174,12 +1179,14 @@ global $dbhandle;
                         dataType: "json",
                         success: function(data) {
                             if (data.updated === 1) {
-                                var snackbarContainer2 = document.querySelector('#snackbarAddedit');
-                                var dataME3 = {
-                                    message: 'Maintenance Status Saved',
-                                    timeout: 2000
-                                };
-                                snackbarContainer2.MaterialSnackbar.showSnackbar(dataME3);
+                                const savedToast = showToaster("Maintenance Status Saved");
+                                savedToast.showToast();
+                                // var snackbarContainer2 = document.querySelector('#snackbarAddedit');
+                                // var dataME3 = {
+                                //     message: 'Maintenance Status Saved',
+                                //     timeout: 2000
+                                // };
+                                // snackbarContainer2.MaterialSnackbar.showSnackbar(dataME3);
                             }
                         },
                         error: function(err) {
@@ -1204,12 +1211,14 @@ global $dbhandle;
                          dataType: "json",
                          success: function(data) {
                             if(data.removed == 1) {
-                                var snackbarContainer2 = document.querySelector('#snackbarAddedit');
-                                var dataRM1 = {
-                                    message: 'Reschedule Entry Removed',
-                                    timeout: 2000
-                                };
-                                snackbarContainer2.MaterialSnackbar.showSnackbar(dataRM1);
+                                const rescheduleToast = showToaster("Reschedule Entry Removed");
+                                rescheduleToast.showToast();
+                                // var snackbarContainer2 = document.querySelector('#snackbarAddedit');
+                                // var dataRM1 = {
+                                //     message: 'Reschedule Entry Removed',
+                                //     timeout: 2000
+                                // };
+                                // snackbarContainer2.MaterialSnackbar.showSnackbar(dataRM1);
                             }
                          },
                          error: function(e) {
@@ -1470,24 +1479,30 @@ global $dbhandle;
                                 };
                                 snackbarContainer.MaterialSnackbar.showSnackbar(dataME);
                             } else if (result1.added === 1) {
-                                var dataME2 = {
-                                    message: 'Maintenance Successfully Saved',
-                                    timeout: 2000
-                                };
-                                snackbarContainer.MaterialSnackbar.showSnackbar(dataME2);
+                                const savedToast = showToaster("Maintenance Successfully Saved");
+                                savedToast.showToast();
+                                // var dataME2 = {
+                                //     message: 'Maintenance Successfully Saved',
+                                //     timeout: 2000
+                                // };
+                                // snackbarContainer.MaterialSnackbar.showSnackbar(dataME2);
                                 
                             } else if (result1.updated === 1) {
-                                var dataME3 = {
-                                    message: 'Maintenance Successfully Updated',
-                                    timeout: 2000
-                                };
-                                snackbarContainer.MaterialSnackbar.showSnackbar(dataME3);
+                                const updatedToast = showToaster("Maintenance Successfully Updated");
+                                updatedToast.showToast();
+                                // var dataME3 = {
+                                //     message: 'Maintenance Successfully Updated',
+                                //     timeout: 2000
+                                // };
+                                // snackbarContainer.MaterialSnackbar.showSnackbar(dataME3);
                             } else {
-                                var dataME4 = {
-                                    message: 'Invalid Response',
-                                    timeout: 2000
-                                };
-                                snackbarContainer.MaterialSnackbar.showSnackbar(dataME4);
+                                const invalidToast = showToaster("Invalid Response");
+                                invalidToast.showToast();
+                                // var dataME4 = {
+                                //     message: 'Invalid Response',
+                                //     timeout: 2000
+                                // };
+                                // snackbarContainer.MaterialSnackbar.showSnackbar(dataME4);
                             }
                             if (result1.updatedID != '') {
                                 var newID = result1.updatedID;
@@ -1497,8 +1512,10 @@ global $dbhandle;
                                 $('#update').val('1');
                                 $('#maintenanceHeaderId').text($('#maintenanceHeaderId').text().trim());
                                 $('#maintenanceHeaderText').text('Edit Maintenance Entry');
-                                $('#maintenanceHeaderId').append(newID);
-                                $('#maintenanceHeaderId').show();
+                                if(!/[0-9]/g.test($('#maintenanceHeaderId').text())){
+                                    $('#maintenanceHeaderId').append(newID);
+                                    $('#maintenanceHeaderId').show();
+                                }
                                 // window.location.href = "https://maintenance.newtelco.de/addedit?gmid=" + $('#rmail').val() + "&mid=" + newID + "&update=1";
                                 var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?update=1&gmid=' + $('#rmail').val() + '&mid=' + newID;
                                 window.history.pushState({ path: newurl }, '', newurl);
@@ -1900,6 +1917,9 @@ global $dbhandle;
 
     <!-- hover css -->
     <link type="text/css" rel="stylesheet" href="dist/css/hover.css" />
+
+    <!-- toastify css -->
+    <link type="text/css" rel="stylesheet" href="dist/css/toastify.css" />
 
     <!-- overlay scrollbars css -->
     <link type="text/css" href="dist/css/OverlayScrollbars.css" rel="preload stylesheet" as="style" onload="this.rel='stylesheet'">

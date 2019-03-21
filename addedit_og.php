@@ -609,7 +609,7 @@ global $dbhandle;
               </dialog>';
             ?>
           </div>
-          <div id="sbMExists" class="mdl-js-snackbar mdl-snackbar">
+          <!-- <div id="sbMExists" class="mdl-js-snackbar mdl-snackbar">
             <div class="mdl-snackbar__text"></div>
             <button class="mdl-snackbar__action" type="button"></button>
           </div>
@@ -620,7 +620,7 @@ global $dbhandle;
           <div id="sbUpdated" class="mdl-js-snackbar mdl-snackbar">
             <div class="mdl-snackbar__text"></div>
             <button class="mdl-snackbar__action" type="button"></button>
-          </div>
+          </div> -->
           <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-phone">
             <div id="kundenCard" class="demo-card-wide3 mdl-card mdl-shadow--2dp hidden">
               <div id="addEditKundenTitle" class="mdl-card__title">

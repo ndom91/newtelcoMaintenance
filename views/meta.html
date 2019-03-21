@@ -30,6 +30,16 @@ function getCookie(cname) {
     //If we get to this point, that means the cookie wasn't find in the look, we return an empty string.
     return "";
 }
+function showToaster(inputtext) {
+    var toaster = Toastify({
+    text: inputtext,
+    gravity: "bottom",
+    // positionLeft: true,
+    close: true,
+    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+    });
+    return toaster;
+}
 </script>
 
 <meta charset="utf-8">

@@ -360,7 +360,6 @@ require('authenticate_google.php');
                       </p>
                     </div>
                   </dialog>';
-                              }
 
                               if ($list->getNextPageToken() != null) {
                                 $pageToken = $list->getNextPageToken();
@@ -430,6 +429,13 @@ require('authenticate_google.php');
                     });
                   });
                 </script>';
+
+                          if($FOUND_BODY=='') {
+                            return 0;
+                          } else {
+                            return 1;
+                          }
+                        }
                           } catch (Exception $e) {
                             echo $e->getMessage();
                           }
@@ -485,8 +491,8 @@ require('authenticate_google.php');
                         }
                         $q = 'label:' . $labelNameForSearch . ' is:unread';
                         $newIncoming = fetchMails($service, $q);
-
-                        if(is_null($newIncoming)) {
+                        // var_dump($newIncoming);
+                        if($newIncoming == 0) {
                           echo '<script>
                           table = $("#dataTable3");
                           //table.destroy();

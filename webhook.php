@@ -132,9 +132,9 @@ if(sizeof($listMessageArray) > 0) {
   $payload = $single_message->getPayload();
   $headers = $payload->getHeaders();
   $snippet = $single_message->getSnippet();
-  $date = getHeader($headers, 'Date');
-  $subject = getHeader($headers, 'Subject');
-  $from = getHeader($headers, 'From');
+  $date = json_encode(getHeader($headers, 'Date'));
+  $subject = json_encode(getHeader($headers, 'Subject'));
+  $from = json_encode(getHeader($headers, 'From'));
 
   $output = 'Date: ' . $date . ' | Subject: ' . $subject . ' | From: ' . $from;
   //var_dump($output);
@@ -189,7 +189,7 @@ for($i=0;$i < sizeof($notifyUsers);$i++) {
     ]),
     'payload' => '{
       "title":"' . $subject . '",
-      "body":"' . $from . ': ' . $snippet . '",
+      "body":"' . $from . '",
       "tag":"nt-maint"
     }',
     //  took this out of title for now - (' . $date . ')",

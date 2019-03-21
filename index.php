@@ -77,11 +77,11 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
   <!-- chart.js -->
   <script rel="preload" as="script" src="dist/js/chart.js"></script>
 
-  <!-- chart.js init -->
-  <script src="dist/js/ntchartinit2.js"></script>
-
   <!-- toastify.js -->
   <script rel="preload" as="script" src="dist/js/toastify.js"></script>
+
+  <!-- chart.js init -->
+  <script src="dist/js/ntchartinit2.js"></script>
 
   <!-- comlink.js -->
   <script type="module" rel="preload" as="script" src="dist/js/comlink.js"></script>
@@ -277,17 +277,6 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
         // navigator.serviceWorker.addEventListener('controllerchange', initComlink);
 
         // END COMLINK SW DEMO 
-
-        function showToaster(inputtext) {
-          var toaster = Toastify({
-            text: inputtext,
-            gravity: "bottom",
-            // positionLeft: true,
-            close: true,
-            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-          });
-          return toaster;
-        }
 
         var fabPushElement = document.querySelector('#notification-toggle');
 

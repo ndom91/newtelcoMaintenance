@@ -12,7 +12,7 @@ before_script:
 - php composer-setup.php
 - php -r "unlink('composer-setup.php');"
 - php composer.phar require nesbot/carbon=1.29.*
-- cp $CI_PROJECT_DIR/memory_limit.ini /usr/local/etc/php/conf.d/memory_limit.ini
+- cp $CI_PROJECT_DIR/ci/memory_limit.ini /usr/local/etc/php/conf.d/memory_limit.ini
 
 test:app:
   script:
@@ -21,7 +21,7 @@ test:app:
   - phploc .
   #phpmd check coding style
   #- phpmd . text naming,design,unusedcode --suffixes php --ignore-violations-on-exit
-  - phpmd . text design --suffixes php --ignore-violations-on-exit
+  - phpmd . text design --suffixes php --ignore-violations-on-exit --exclude vendor/*
   #checking Coding Standards with PHP Code Sniffer
   #- phpcpd .
   #Viewing Coding Standards Violations

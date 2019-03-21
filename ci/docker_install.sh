@@ -3,6 +3,10 @@
 # composer + npm deploy:
 #  https://docs.gitlab.com/ee/ci/examples/deployment/composer-npm-deploy.html
 # 
+#  another install guide incl. pushing to prod:
+#  https://digidworks.com/post/2
+# 
+
 # We need to install dependencies only for Docker
 [[ ! -e /.dockerenv ]] && exit 0
 
@@ -41,4 +45,4 @@ curl https://api.rollbar.com/api/1/deploy/ \
 # Here you can install any other extension that you need
 docker-php-ext-install mysqli gd zip gmp
 
-sed -i 's,^memory_limit =.*$,memory_limit = -1,' php.ini
+sed -i 's,^memory_limit =.*$,memory_limit = -1,' /usr/local/etc/php.ini

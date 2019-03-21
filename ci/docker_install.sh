@@ -16,6 +16,7 @@ apt-get install git -yqq
 #chmod +x /usr/local/bin/phpunit
 
 curl --location --output /usr/local/bin/phpmd http://static.phpmd.org/php/latest/phpmd.phar
+chmod +x /usr/local/bin/phpmd
 
 # Install mysql driver
 # Here you can install any other extension that you need

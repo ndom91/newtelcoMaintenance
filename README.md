@@ -3,7 +3,7 @@
 [![newtelco](https://img.shields.io/badge/Version-0.8.0_beta-green.svg?style=flat-square)](https://crm.newtelco.de) 
 [![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m781781334-0112a59d100b992b0132080d.svg?style=flat-square&colorB=green&label=Uptime)](https://uptime.newtelco.de/) 
 [![newtelco](https://img.shields.io/badge/Contact%20Me-%40-green.svg?style=flat-square)](mailto:ndomino@newtelco.de) 
-[![PIPELINE](https://git.newtelco.dev/ndomino/maintenancedb/badges/master/pipeline.svg)](https://git.newtelco.dev/ndomino/maintenance)
+[![PIPELINE](https://git.newtelco.dev/ndomino/maintenancedb/badges/master/pipeline.svg?style=flat-square)](https://git.newtelco.dev/ndomino/maintenance)
 
 
 #### Maintenance Web App

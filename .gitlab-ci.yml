@@ -5,6 +5,14 @@ before_script:
 # Install dependencies
 - bash ci/docker_install.sh > /dev/null
 
-#test:app:
-  #script:
+test:app:
+  script:
   #- phpunit --configuration phpunit_myapp.xml
+  #Static analysis
+  - phploc .
+  #phpmd check coding style
+  - phpmd . text naming
+  #checking Coding Standards with PHP Code Sniffer
+  - phpcpd .
+  #Viewing Coding Standards Violations
+  - phpcs --standard=PEAR --report=summary

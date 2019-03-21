@@ -13,7 +13,7 @@ test:app:
   script:
   #- phpunit --configuration phpunit_myapp.xml
   #Static analysis
-  - phploc /build/*.php --progress --no-ansi -n 
+  - phploc .
   #phpmd check coding style
   - phpmd . text naming,design,unusedcode --suffixes php --ignore-violations-on-exit
   #checking Coding Standards with PHP Code Sniffer

@@ -4,6 +4,9 @@ image: php:7.0
 before_script:
 # Install dependencies
 - bash ci/docker_install.sh > /dev/null
+- php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+- php composer-setup.php
+- php -r "unlink('composer-setup.php');"
 
 test:app:
   script:

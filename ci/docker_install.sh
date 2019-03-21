@@ -8,14 +8,14 @@ set -xe
 # Install git (the php image doesn't have it) which is required by composer
 apt-get update -yqq
 #apt-get install git phploc phpcpd phpmd php-pear -yqq
-apt-get install git -yqq
+apt-get install git zip unzip -yqq
 #apt-get install git php-phpunit-phploc php-phpunit-phpcpd php-phpmd-PHP-PMD -yqq
 
 # Install phpunit, the tool that we will use for testing
 #curl --location --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit.phar
 #chmod +x /usr/local/bin/phpunit
 
-/usr/local/bin/composer.phar require nesbot/carbon=1.29.*
+#/usr/local/bin/composer.phar require nesbot/carbon=1.29.*
 
 curl --location --output /usr/local/bin/phpmd http://static.phpmd.org/php/latest/phpmd.phar
 chmod +x /usr/local/bin/phpmd

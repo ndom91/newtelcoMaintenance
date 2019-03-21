@@ -45,4 +45,4 @@ curl https://api.rollbar.com/api/1/deploy/ \
 # Here you can install any other extension that you need
 docker-php-ext-install mysqli gd zip gmp
 
-sed -i 's,^memory_limit =.*$,memory_limit = -1,' /usr/local/etc/php/php.ini
+#sed -i 's,^memory_limit =.*$,memory_limit = -1,' /usr/local/etc/php/php.ini

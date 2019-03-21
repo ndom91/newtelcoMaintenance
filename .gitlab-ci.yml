@@ -12,6 +12,7 @@ before_script:
 - php composer-setup.php
 - php -r "unlink('composer-setup.php');"
 - php composer.phar require nesbot/carbon=1.29.*
+- cp $CI_PROJECT_DIR/memory_limit.ini /usr/local/etc/php/conf.d/memory_limit.ini
 
 test:app:
   script:

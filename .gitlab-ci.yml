@@ -21,8 +21,9 @@ test:app:
   - phploc .
   #phpmd check coding style
   #- phpmd . text naming,design,unusedcode --suffixes php --ignore-violations-on-exit
-  - phpmd . text unusedcode --suffixes php --ignore-violations-on-exit --exclude vendor/*
+  # - phpmd . text unusedcode --suffixes php --ignore-violations-on-exit --exclude vendor/*
   #checking Coding Standards with PHP Code Sniffer
   #- phpcpd .
   #Viewing Coding Standards Violations
+  #
   # - phpcs --standard=PEAR --report=summary

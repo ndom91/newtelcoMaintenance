@@ -615,6 +615,8 @@
 
       $resultx2 = mysqli_query($dbhandle, "SELECT id FROM maintenancedb WHERE id LIKE '$omaintid'") or die(mysqli_error($dbhandle));
 
+      $oupdatedID = '';
+
       if ($fetchID1 = mysqli_fetch_array($resultx2)) {
         $oupdatedID = $fetchID1[0];
       }

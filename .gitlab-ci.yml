@@ -34,7 +34,6 @@ build site:
   script:
     - php composer.phar install
     - npm install
-    - npm run deploy
   artifacts:
     expire_in: 1 week
     paths:

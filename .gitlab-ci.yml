@@ -30,6 +30,11 @@ test:app:
 build site:
   image: tetraweb/php
   stage: build
+  before_script:
+  # Install dependencies
+    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    - php composer-setup.php
+    - php -r "unlink('composer-setup.php');"
   script:
     - php composer.phar install
     - npm install

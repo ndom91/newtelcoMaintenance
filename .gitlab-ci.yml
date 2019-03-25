@@ -32,9 +32,12 @@ build site:
   stage: build
   before_script:
   # Install dependencies
+    - apt-get update -yqq
+    - apt-get install git zip unzip libpng-dev libgmp-dev -yqq
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php composer-setup.php
     - php -r "unlink('composer-setup.php');"
+    - docker-php-ext-install mysqli gd zip gmp
   script:
     - php composer.phar install
     - npm install

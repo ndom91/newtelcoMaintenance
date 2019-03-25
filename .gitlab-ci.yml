@@ -6,18 +6,18 @@ image: php:7.1
   #- vendor/
 
 test:app:
-before_script:
+  before_script:
   # Install dependencies
-  - bash ci/docker_install.sh > /dev/null
-  - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-  - php composer-setup.php
-  - php -r "unlink('composer-setup.php');"
-  - php composer.phar require nesbot/carbon=1.29.*
-  - cp $CI_PROJECT_DIR/ci/memory_limit.ini /usr/local/etc/php/conf.d/memory_limit.ini
- script:
+    - bash ci/docker_install.sh > /dev/null
+    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    - php composer-setup.php
+    - php -r "unlink('composer-setup.php');"
+    - php composer.phar require nesbot/carbon=1.29.*
+    - cp $CI_PROJECT_DIR/ci/memory_limit.ini /usr/local/etc/php/conf.d/memory_limit.ini
+  script:
   #- phpunit --configuration phpunit_myapp.xml
   #Static analysis
-  - phploc .
+    - phploc .
   #phpmd check coding style
   #- phpmd . text naming,design,unusedcode --suffixes php --ignore-violations-on-exit
   # - phpmd . text unusedcode --suffixes php --ignore-violations-on-exit --exclude vendor/*

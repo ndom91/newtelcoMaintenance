@@ -15,6 +15,7 @@ set -xe
 # Install git (the php image doesn't have it) which is required by composer
 apt-get update -yqq
 #apt-get install git phploc phpcpd phpmd php-pear -yqq
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 23E7166788B63E1E
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 apt-get install git zip unzip libpng-dev libgmp-dev -yqq
 #apt-get install git php-phpunit-phploc php-phpunit-phpcpd php-phpmd-PHP-PMD -yqq

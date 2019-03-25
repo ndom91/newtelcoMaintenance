@@ -1,9 +1,9 @@
 # Select image from https://hub.docker.com/r/_/php/
 image: php:7.1
 
-cache:
-  paths:
-  - vendor/
+#cache:
+  #paths:
+  #- vendor/
 
 before_script:
 # Install dependencies

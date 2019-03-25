@@ -27,3 +27,49 @@ test:app:
   #Viewing Coding Standards Violations
   #
   # - phpcs --standard=PEAR --report=summary
+
+build site:
+  image: tetraweb/php
+  stage: build
+  script:
+    - php composer.phar install
+    - npm install
+    - npm run deploy
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - build
+
+deploy_staging:
+  stage: deploy
+  only:
+    - dev
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - mkdir -p ~/.ssh
+    - eval $(ssh-agent -s)
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  script:
+    - apk add --no-cache rsync openssh
+    - mkdir -p ~/.ssh
+    - echo "$DEPLOY_PRIVATE_KEY" >> ~/.ssh/id_dsa
+    - chmod 600 ~/.ssh/id_dsa
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - rsync -rav -e 'ssh -p 2424' --delete public/ ndo@94.249.131.5:/var/www/html/maintenance_stage
+
+deploy_production:
+  stage: deploy
+  only:
+    - master
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - mkdir -p ~/.ssh
+    - eval $(ssh-agent -s)
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  script:
+    - apk add --no-cache rsync openssh
+    - mkdir -p ~/.ssh
+    - echo "$DEPLOY_PRIVATE_KEY" >> ~/.ssh/id_dsa
+    - chmod 600 ~/.ssh/id_dsa
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - rsync -rav -e 'ssh -p 2424' --delete public/ ndo@94.249.131.5:/var/www/html/maintenance_prod

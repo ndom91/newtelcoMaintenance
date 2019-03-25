@@ -196,7 +196,7 @@ if (!isset($_SESSION['access_token']['id_token'])):
     <script rel="preload" as="script" src="dist/js/particle.js"></script>
     <script>
     $(document).ready(function() {
-
+      
       setTimeout(function() {
         particlesJS("particles-js", {
         "particles": {
@@ -359,6 +359,18 @@ loginBox1.classList.add('animated', 'fadeIn');
 var favicon=new Favico();
 var image=document.getElementById('favicon2');
 favicon.image(image);
+
+})
+//$('.login').on('click', function() {
+
+$('.mdl-logo>img').on('click', function() {
+// vibrate test - star wars theme  
+navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+if (navigator.vibrate) {
+  navigator.vibrate([500,110,500,110,450,110,200,110,170,40,450,110,200,110,170,40,500]);
+} else {
+  alert("nope");
+}
 
 })
 

@@ -33,6 +33,8 @@ build site:
   before_script:
   # Install dependencies
     - apt-get update -yqq
+    - apt-get install gnupg2 -yqq
+    - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 23E7166788B63E1E
     - apt-get install git zip unzip libpng-dev libgmp-dev -yqq
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php composer-setup.php

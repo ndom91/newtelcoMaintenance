@@ -108,6 +108,7 @@ global $dbhandle;
                 $obearbeitetvon = '';
                 $omaintenancedate = '';
                 $cancelled = '';
+                $emergency = '';
                 $ostartdatetime = '';
                 $oenddatetime = '';
                 $opostponed = '';
@@ -158,6 +159,7 @@ global $dbhandle;
                   $oupdatedBy = $mIDresult['updatedBy'];
                   $oupdatedAt = $mIDresult['updatedAt'];
                   $cancelled = $mIDresult['cancelled'];
+                  $emergency = $mIDresult['emergency'];
                   //$ocal = $mIDresult['cal'];
                   if ($mIDresult['done'] == 1) {
                     $odone = 'checked';
@@ -165,6 +167,11 @@ global $dbhandle;
                   } else {
                     $odone = '';
                     $odoneVal = '0';
+                  }
+                  if ($mIDresult['emergency'] == 1) {
+                    $emergency = 'checked';
+                  } else {
+                    $emergency = '';
                   }
                   if ($mIDresult['cancelled'] == 1) {
                     $cancelled = 'checked';
@@ -649,6 +656,10 @@ global $dbhandle;
                                         </div>
                                     </div>
                                     <div class="mdl-cell mdl-cell--6-col">
+                                        <label class="aeEmergency" for="switch-4">
+                                            <input type="checkbox" id="switch-4" class="mdl-checkbox__input" <?php echo $emergency ?>>
+                                            <span class="mdl-checkbox__label">Emergency</span>
+                                        </label>
                                         <label class="aeCancel" for="switch-3">
                                             <input type="checkbox" id="switch-3" class="mdl-checkbox__input" <?php echo $cancelled ?>>
                                             <span class="mdl-checkbox__label">Cancelled</span>
@@ -1338,6 +1349,11 @@ global $dbhandle;
                     } else {
                         var odone = '0';
                     }
+                    if ($('#switch-4:checked').val() == 'on') {
+                        var emergency = '1';
+                    } else {
+                        var emergency = '0';
+                    }
                     if ($('#switch-3:checked').val() == 'on') {
                         var cancelled = '1';
                     } else {
@@ -1406,6 +1422,7 @@ global $dbhandle;
                         //"omailankunde" : makdtUTC.toString(),
                         "mailSentAt": $('#mailSentAt').val(),
                         "odone": odone,
+                        "emergency": emergency,
                         "cancelled": cancelled,
                         "update": $('#update').val(),
                         "updatedBy": $('.menumail').text(),
@@ -1697,6 +1714,10 @@ global $dbhandle;
 
                         var rescheduleText = '';
                         var rescheduleHeader = '';
+                        var emergencyHeader ='';
+                        if ($('#switch-4:checked').val() == 'on') {
+                            var emergencyHeader = '[EMERGENCY] ';
+                        } 
 
                         if($('.rescheduleBlock').length) {
                             var rescheduleMaxCount = $('.rescheduleBlock').length;
@@ -1744,7 +1765,7 @@ global $dbhandle;
                         body += '</table><p>We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</p><p>If you have any questions feel free to contact us at maintenance@newtelco.de.</p></div>​​</body>​​<footer>​<style>.sig{font-family:Century Gothic, sans-serif;font-size:9pt;color:#636266!important;}b.i{color:#4ca702;}.gray{color:#636266 !important;}a{text-decoration:none;color:#636266 !important;}</style><div class="sig"><div>Best regards <b class="i">|</b> Mit freundlichen Grüßen</div><br><div><b>Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b class="i">|</b> Moenchhofsstr. 24 <b class="i">|</b> 60326 Frankfurt a.M. <b class="i">|</b> DE <br>www.newtelco.com <b class="i">|</b> 24/7 NOC  49 69 75 00 27 30 ​​<b class="i">|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" height="29" width="516"></div></div>​</footer>';
 
                         console.log(body.length); 
-                        openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?from=maintenance@newtelco.de&subject=' + rescheduleHeader +'Planned Work Notification on CID: ' + maintID + '&cc=service@newtelco.de;maintenance@newtelco.de&body=​​​​' + body);
+                        openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?from=maintenance@newtelco.de&subject='+ emergencyHeader + rescheduleHeader +'Planned Work Notification on CID: ' + maintID + '&cc=service@newtelco.de;maintenance@newtelco.de&body=​​​​' + body);
 
                         var DateTime = luxon.DateTime;
                         var now = DateTime.local().toFormat("y-MM-dd HH:mm");

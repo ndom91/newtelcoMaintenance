@@ -360,6 +360,7 @@ require('authenticate_google.php');
                       </p>
                     </div>
                   </dialog>';
+                              }
 
                               if ($list->getNextPageToken() != null) {
                                 $pageToken = $list->getNextPageToken();
@@ -429,13 +430,6 @@ require('authenticate_google.php');
                     });
                   });
                 </script>';
-
-                          if($FOUND_BODY=='') {
-                            return 0;
-                          } else {
-                            return 1;
-                          }
-                        }
                           } catch (Exception $e) {
                             echo $e->getMessage();
                           }
@@ -490,26 +484,7 @@ require('authenticate_google.php');
                           $labelNameForSearch = 'aaaaaaa';
                         }
                         $q = 'label:' . $labelNameForSearch . ' is:unread';
-                        $newIncoming = fetchMails($service, $q);
-                        // var_dump($newIncoming);
-                        if($newIncoming == 0) {
-                          echo '<script>
-                          table = $("#dataTable3");
-                          //table.destroy();
-                          table.addClass("hidden");
-                          $(".dataTables_wrapper").hide();
-                          var celebrationImg = new Image();
-                          $(celebrationImg).attr({
-                            src: "dist/images/art/celebration.svg",
-                            height: "512px",
-                            width: "512px",
-                            class: "incomingCelebration"
-                          });
-                          var dtWrapper = $(".incomingHeaderWrapper");
-                          $(dtWrapper).append("<div class=\'celebrationTitle\'>Hurray! Nothing to do!</div>");
-                          $(celebrationImg).appendTo(dtWrapper);
-                          </script>';
-                        }
+                        fetchMails($service, $q);
 
                         ?>
                     </div>
@@ -520,9 +495,9 @@ require('authenticate_google.php');
                                 <tr>
                                     <th class=""></th>
                                     <th class="">Maileingang</th>
-                                    <th>ID</th>
                                     <th>Start Date/Time</th>
                                     <th>End Date/Time</th>
+                                    <th>ID</th>
                                     <th>Received Mail ID</th>
                                     <th>Betroffene CIDs</th>
                                     <th>Deren CID</th>
@@ -631,9 +606,9 @@ require('authenticate_google.php');
                     columns: [
                         { title: "View" },
                         { data: "maileingang" },
-                        { data: "id" },
                         { data: "startDateTime" },
                         { data: "endDateTime" },
+                        { data: "id" },
                         { data: "receivedmail" },
                         { data: "betroffeneCIDs" },
                         { data: "derenCID" },
@@ -646,7 +621,7 @@ require('authenticate_google.php');
                           "visible": true,
                           "searchable": false
                       },{
-                          "targets": [ 5, 6 ],
+                          "targets": [ 4, 5, 6 ],
                           "visible": false,
                           "searchable": false
                       },{
@@ -659,10 +634,6 @@ require('authenticate_google.php');
                             } else {
                               return subject;
                             }
-                          }
-                      },{
-                          targets: [2], render: function (a, b, data, d) {
-                              return 'NT-' + data['id'];
                           }
                       },{
                         targets: [9], render: function (a, b, data, d) {
@@ -683,7 +654,7 @@ require('authenticate_google.php');
                           }
                         }
                       },
-                      { responsivePriority: 1, targets: [ 0, 2, 3, 7 ] },
+                      { responsivePriority: 1, targets: [ 0, 2, 7 ] },
                       { responsivePriority: 2, targets: [ 2, 3 ] },
                       {
                           targets: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, -1 ],

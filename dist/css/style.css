@@ -1376,6 +1376,11 @@ tr.strikeout td:before {
 }
 /* addedit */
 
+.aeEmergency {
+  float:left;
+  margin-top: 15px;
+  margin-left: 3vw;
+}
 .aeCancel {
   float:right;
   margin-top: 15px;

@@ -494,10 +494,10 @@ require('authenticate_google.php');
                             <thead>
                                 <tr>
                                     <th class=""></th>
-                                    <th class="">Maileingang</th>
+                                    <th class="">ID</th>
                                     <th>Start Date/Time</th>
                                     <th>End Date/Time</th>
-                                    <th>ID</th>
+                                    <th>Maileingang</th>
                                     <th>Received Mail ID</th>
                                     <th>Betroffene CIDs</th>
                                     <th>Deren CID</th>
@@ -605,10 +605,10 @@ require('authenticate_google.php');
                     },
                     columns: [
                         { title: "View" },
+                        { data: "id" },
                         { data: "maileingang" },
                         { data: "startDateTime" },
                         { data: "endDateTime" },
-                        { data: "id" },
                         { data: "receivedmail" },
                         { data: "betroffeneCIDs" },
                         { data: "derenCID" },
@@ -621,7 +621,7 @@ require('authenticate_google.php');
                           "visible": true,
                           "searchable": false
                       },{
-                          "targets": [ 4, 5, 6 ],
+                          "targets": [ 5, 6 ],
                           "visible": false,
                           "searchable": false
                       },{
@@ -635,6 +635,10 @@ require('authenticate_google.php');
                               return subject;
                             }
                           }
+                      },{
+                        targets: [1], render: function (a, b, data, d) {
+                          return 'NT-'+data['id'];
+                        }
                       },{
                         targets: [9], render: function (a, b, data, d) {
                           if (data['done'] === '1'){
@@ -654,7 +658,7 @@ require('authenticate_google.php');
                           }
                         }
                       },
-                      { responsivePriority: 1, targets: [ 0, 2, 7 ] },
+                      { responsivePriority: 1, targets: [ 0, 1, 7 ] },
                       { responsivePriority: 2, targets: [ 2, 3 ] },
                       {
                           targets: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, -1 ],

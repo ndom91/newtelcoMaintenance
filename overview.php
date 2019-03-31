@@ -84,7 +84,7 @@ global $dbhandle;
                 <?php
 
                 if (empty($_POST['tLieferant']) && empty($_POST['tdCID'])) {
-                  $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.betroffeneKunden, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.betroffeneCIDs, maintenancedb.done, maintenancedb.cancelled, companies.mailDomain FROM maintenancedb LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.active = 1");
+                  $resultx = mysqli_query($dbhandle, "SELECT maintenancedb.id, maintenancedb.maileingang, maintenancedb.receivedmail, companies.name, lieferantCID.derenCID, maintenancedb.bearbeitetvon, maintenancedb.betroffeneKunden, maintenancedb.startDateTime, maintenancedb.endDateTime, maintenancedb.postponed, maintenancedb.notes, maintenancedb.mailSentAt, maintenancedb.updatedAt, maintenancedb.betroffeneCIDs, maintenancedb.done, maintenancedb.cancelled, companies.mailDomain, maintenancedb.emergency FROM maintenancedb LEFT JOIN lieferantCID ON maintenancedb.derenCIDid = lieferantCID.id LEFT JOIN companies ON maintenancedb.lieferant = companies.id WHERE maintenancedb.active = 1");
 
                 }
 
@@ -167,6 +167,12 @@ global $dbhandle;
                         $mailDomain = $rowx['mailDomain'];
                         echo "<td><img src='https://www.google.com/s2/favicons?domain=$mailDomain'> $value</td>";
                         
+                      } elseif ($key == 'id'){
+                        if ($rowx['emergency'] == '1') {
+                          echo "<td><font style=\"color:rgba(128,0,0,0.7);font-weight:700\">NT-$value</font></td>"; 
+                        } else {
+                          echo "<td>NT-$value</td>";
+                        }
                       } else {
                         echo "<td>$value</td>";
                       }
@@ -272,10 +278,11 @@ global $dbhandle;
                     // 15 - Complete
                     // 16 - Cancelled
                     // 17 - L Mail Domain
+                    // 18 - Emergency Status
 
                   columnDefs: [
                       {
-                        "targets": [ 12, 16, 17 ],
+                        "targets": [ 12, 16, 17, 18 ],
                         "visible": false,
                         "searchable": false
                       },
@@ -289,12 +296,12 @@ global $dbhandle;
                         "visible": true,
                         "searchable": false
                       },
-                      {
-                        "targets": [1],
-                          render: function(a, b, data, d) {
-                              return 'NT-' + data[1];
-                          }
-                      },
+                      // {
+                      //   "targets": [1],
+                      //     render: function(a, b, data, d) {
+                      //         return 'NT-' + data[1];
+                      //     }
+                      // },
                       {
                         targets: [ 7, 14 ],
                         className: "datatablesWraptext"

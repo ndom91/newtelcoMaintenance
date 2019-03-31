@@ -28,7 +28,7 @@ image: php:7.1
 #   # - phpcs --standard=PEAR --report=summary
 
 build site:
-  image: misterio92/ci-php-node:2.0
+  image: misterio92/ci-php-node:1.0
   #image: tetraweb/php:7.1
   stage: build
   before_script:

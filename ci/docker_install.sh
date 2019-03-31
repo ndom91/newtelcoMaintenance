@@ -17,8 +17,9 @@ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 23E7166788B63E1E
 
 # update apt and install required packages
-apt update -yqq
-apt install gnupg2 git zip unzip libpng-dev libgmp-dev -yqq
+rm /etc/apt/sources.list.d/additional.list
+apt-get update -yqq
+apt-get install gnupg2 git zip unzip libpng-dev libgmp-dev -yqq
 
 # Install phpunit, the tool that we will use for testing
 #curl --location --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit.phar

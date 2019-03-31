@@ -37,7 +37,7 @@ chmod +x /usr/local/bin/phploc
 # Rollbar Deploy Notify
 ACCESS_TOKEN=e0dbc12159df4dd3a6087170e3a8ace0
 ENVIRONMENT=production
-LOCAL_USERNAME=`whoami`
+LOCAL_USERNAME=ndo
 REVISION=`git rev-parse --verify HEAD`
 curl https://api.rollbar.com/api/1/deploy/ \
   -F access_token=$ACCESS_TOKEN \

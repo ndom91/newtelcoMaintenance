@@ -57,8 +57,8 @@ deploy_staging:
     - chmod 600 ~/.ssh/id_dsa
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - cp /builds/ndomino/maintenancedb/configs/dbconfig_template.ini /builds/ndomino/maintenancedb/configs/dbconfig_newtelcondo.ini 
-    - sed  -i 's/username =/username = "$DB_USERNAME"/g' /builds/ndomino/maintenancedb/configs/dbconfig_newtelcondo.ini 
-    - sed  -i 's/password =/password = "$DB_PASSWORD"/g' /builds/ndomino/maintenancedb/configs/dbconfig_newtelcondo.ini 
+    - sed  -i 's/username =/username = {$DB_USERNAME}/g' /builds/ndomino/maintenancedb/configs/dbconfig_newtelcondo.ini 
+    - sed  -i 's/password =/password = {$DB_PASSWORD}/g' /builds/ndomino/maintenancedb/configs/dbconfig_newtelcondo.ini 
     - rsync -rav -e 'ssh -p 2424' --delete /builds/ndomino/maintenancedb/* ndo@94.249.131.5:/var/www/html/maintenance_stage
 
 deploy_production:
@@ -73,6 +73,6 @@ deploy_production:
     - chmod 600 ~/.ssh/id_dsa
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - cp /builds/ndomino/maintenancedb/configs/dbconfig_template.ini /builds/ndomino/maintenancedb/configs/dbconfig_newtelcondo.ini 
-    - sed  -i 's/username =/username = "$DB_USERNAME"/g' /builds/ndomino/maintenancedb/configs/dbconfig_newtelcondo.ini 
-    - sed  -i 's/password =/password = "$DB_PASSWORD"/g' /builds/ndomino/maintenancedb/configs/dbconfig_newtelcondo.ini 
+    - sed  -i 's/username =/username = {$DB_USERNAME}/g' /builds/ndomino/maintenancedb/configs/dbconfig_newtelcondo.ini 
+    - sed  -i 's/password =/password = {$DB_PASSWORD}/g' /builds/ndomino/maintenancedb/configs/dbconfig_newtelcondo.ini 
     - rsync -rav -e 'ssh -p 2424' --delete /builds/ndomino/maintenancedb/* ndo@94.249.131.5:/var/www/html/maintenance_prod

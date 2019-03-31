@@ -15,8 +15,9 @@
 Newtelco Maintenance Web Application, designed and developed in-house, to replace Excel Tables + Emails back and forth.
 
 ### Screenshots  
-<img src="https://maintenance.newtelco.de/dist/images/maintenanceScreenshot1.png" width="400" height="250">
-<img src="https://maintenance.newtelco.de/dist/images/maintenanceScreenshot2.png" width="400" height="250">
+<img src="http://i.imgur.com/1x7gBWw.png" width="860" height="436">  
+<img src="http://i.imgur.com/oZUba6i.png" width="860" height="436">  
+<img src="http://i.imgur.com/davu6Pv.png" width="860" height="436">
 
 ### Requirements
 

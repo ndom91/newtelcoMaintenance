@@ -68,7 +68,6 @@ deploy_staging:
     - echo "$OAUTH_CREDENTIALS" >> /builds/ndomino/maintenancedb/configs/oauth_credentials.json
     - echo "$SERVICE_CREDENTIALS" >> /builds/ndomino/maintenancedb/configs/maintenanceapp-1dd9507b2c22.json
     - rsync -rav -e 'ssh -p 2424' --delete /builds/ndomino/maintenancedb/* ndo@94.249.131.5:/var/www/html/maintenance_stage
-    - ssh -p 2424 'echo N3wt3lco | ndo@94.249.164.180 [[ -d /var/www/html/maintenance_stage ]] || sudo mkdir /var/www/html/maintenance_stage '
     - ssh -p 2424 'echo N3wt3lco | ndo@94.249.164.180 sudo chown -R www-data:ndo /var/www/html/maintenance_stage'
 
 deploy_production:
@@ -90,5 +89,4 @@ deploy_production:
     - echo "$OAUTH_CREDENTIALS" >> /builds/ndomino/maintenancedb/configs/oauth_credentials.json
     - echo "$SERVICE_CREDENTIALS" >> /builds/ndomino/maintenancedb/configs/maintenanceapp-1dd9507b2c22.json
     - rsync -rav -e 'ssh -p 2424' --delete /builds/ndomino/maintenancedb/* ndo@94.249.131.5:/var/www/html/maintenance_prod
-    - ssh -p 2424 'echo N3wt3lco | ndo@94.249.164.180 [[ -d /var/www/html/maintenance_prod ]] || sudo mkdir /var/www/html/maintenance_prod '
     - ssh -p 2424 'echo N3wt3lco | ndo@94.249.164.180 sudo chown -R www-data:ndo /var/www/html/maintenance_prod'

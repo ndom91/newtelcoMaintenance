@@ -12,8 +12,11 @@
 
 set -xe
 
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 23E7166788B63E1E
+# install missing key
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 23E7166788B63E1E
+
+# update apt and install required packages
 apt update -yqq
 apt install gnupg2 git zip unzip libpng-dev libgmp-dev -yqq
 

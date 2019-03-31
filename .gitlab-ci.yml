@@ -28,7 +28,8 @@ image: php:7.1
 #   # - phpcs --standard=PEAR --report=summary
 
 build site:
-  image: tetraweb/php:7.1
+  image: misterio92/ci-php-node
+  #image: tetraweb/php:7.1
   stage: build
   before_script:
   # Install dependencies

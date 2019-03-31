@@ -1,4 +1,4 @@
-![Newtelco](./dist/images/newtelco_full_300w.png)  
+![Newtelco](./public/dist/images/newtelco_full_300w.png)  
 
 [![newtelco](https://img.shields.io/badge/Version-0.9.5_beta-brightgreen.svg?style=flat-square)](https://crm.newtelco.de) 
 [![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m781781334-0112a59d100b992b0132080d.svg?style=flat-square&colorB=brightgreen&label=Uptime)](https://uptime.newtelco.de/) 
@@ -27,8 +27,8 @@ Newtelco Maintenance Web Application, designed and developed in-house, to replac
 
 > **Tested On**:
 
-> - Ubuntu 18.04.01 + CentOS 6
-> - MariaDB 10.1.34 + 10.1.38
+> - Ubuntu 18.04.01 and CentOS 6
+> - MariaDB 10.1.34 and 10.1.38 and 10.3
 > - PHP 7.1.25 + 7.2.16
 > - Apache 2.4.29
 
@@ -37,8 +37,7 @@ Newtelco Maintenance Web Application, designed and developed in-house, to replac
 1) Clone this repo  
 > `git clone https://git.newtelco.de/ndomino/maintenancedb`
 
-2) Run install.sh  
-> `sudo ./install.sh`  
+2) let the pipeline install it..  
 
 3) Create database  
 > `sudo mysql -u[user] -p maintenancedb < configs/create_maintenanceDB.sql`  
@@ -50,11 +49,4 @@ Newtelco Maintenance Web Application, designed and developed in-house, to replac
 
 6) Enjoy!
 
---- 
 
-### To Dos:
-
-1) Generalize install.sh script  
-2) Clean-up minor bugs  
-3) Improve DB performance  
-4) Double check serviceworker behavior

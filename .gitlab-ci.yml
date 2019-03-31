@@ -45,7 +45,8 @@ build site:
   artifacts:
     expire_in: 6 hrs
     paths:
-      - /
+      - /builds/ndomino/maintenancedb/vendor
+      - /builds/ndomino/maintenancedb/node_modules
 
 deploy_staging:
   image: alpine

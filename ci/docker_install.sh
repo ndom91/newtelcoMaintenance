@@ -17,6 +17,7 @@ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 23E7166788B63E1E
 
 # update apt and install required packages
+cat /etc/apt/sources.list.d/*
 rm /etc/apt/sources.list.d/additional.list
 apt-get update -yqq
 apt-get install gnupg2 git zip unzip libpng-dev libgmp-dev -yqq

@@ -28,7 +28,7 @@ test:app:
   # - phpcs --standard=PEAR --report=summary
 
 build site:
-  image: tetraweb/php
+  image: tetraweb/php:7.1
   stage: build
   before_script:
   # Install dependencies

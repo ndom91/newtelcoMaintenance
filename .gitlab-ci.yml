@@ -28,7 +28,7 @@ image: php:7.1
 #   # - phpcs --standard=PEAR --report=summary
 
 build site:
-  image: vyuldashev/docker-ci-php-node:1.0
+  image: carlosalgms/composer-and-node-ci
   #image: tetraweb/php:7.1
   stage: build
   before_script:

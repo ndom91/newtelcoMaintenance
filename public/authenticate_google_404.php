@@ -1,13 +1,13 @@
 <?php
 session_start();
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once '../vendor/autoload.php';
 
 require_once('config.php');
 
 include_once "base.php";
 
-putenv('GOOGLE_APPLICATION_CREDENTIALS=configs/maintenanceapp-1dd9507b2c22.json');
+putenv('GOOGLE_APPLICATION_CREDENTIALS=../configs/maintenanceapp-1dd9507b2c22.json');
 
 $serviceUser = mysqli_query($dbhandle, "SELECT serviceuser from persistence where id like 0");
 if ($fetch = mysqli_fetch_array($serviceUser)) {

@@ -3,7 +3,7 @@
 require('authenticate_google.php');
 require_once('config.php');
 
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 global $dbhandle;

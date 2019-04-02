@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.2
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 16, 2019 at 11:10 AM
--- Server version: 5.5.60
--- PHP Version: 7.0.31
+-- Generation Time: Apr 02, 2019 at 05:48 PM
+-- Server version: 10.3.13-MariaDB-1:10.3.13+maria~bionic
+-- PHP Version: 7.2.16-1+ubuntu18.04.1+deb.sury.org+1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -62,7 +62,7 @@ CREATE TABLE `companies` (
 CREATE TABLE `kundenCID` (
   `id` int(32) NOT NULL,
   `lieferantCID` int(32) NOT NULL,
-  `kundenCID` varchar(254) NOT NULL,
+  `kundenCID` varchar(1700) NOT NULL,
   `protected` varchar(16) NOT NULL,
   `kunde` int(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -92,21 +92,38 @@ CREATE TABLE `maintenancedb` (
   `bearbeitetvon` varchar(128) DEFAULT NULL,
   `lieferant` int(11) NOT NULL,
   `derenCIDid` varchar(256) DEFAULT NULL,
-  `maintenancedate` datetime NOT NULL,
   `startDateTime` datetime DEFAULT NULL,
   `endDateTime` datetime DEFAULT NULL,
   `timezone` varchar(64) DEFAULT NULL,
-  `postponed` varchar(256) NOT NULL,
+  `postponed` varchar(256) DEFAULT NULL,
+  `reason` varchar(256) NOT NULL,
+  `impact` varchar(256) NOT NULL,
+  `location` varchar(256) NOT NULL,
   `notes` varchar(8192) NOT NULL,
   `mailSentAt` datetime DEFAULT NULL,
-  `done` tinyint(1) NOT NULL DEFAULT '0',
-  `inBearbeitung` tinyint(1) NOT NULL DEFAULT '0',
-  `updatedAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `done` tinyint(1) NOT NULL DEFAULT 0,
+  `inBearbeitung` tinyint(1) NOT NULL DEFAULT 0,
+  `updatedAt` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updatedBy` varchar(64) DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `active` tinyint(1) NOT NULL DEFAULT 1,
   `cancelled` tinyint(1) NOT NULL,
+  `emergency` tinyint(1) NOT NULL,
   `betroffeneKunden` varchar(256) NOT NULL,
   `betroffeneCIDs` varchar(256) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notificationSubs`
+--
+
+CREATE TABLE `notificationSubs` (
+  `id` int(8) NOT NULL,
+  `username` varchar(64) NOT NULL,
+  `endpoint` varchar(256) NOT NULL,
+  `p256dh` varchar(128) NOT NULL,
+  `auth` varchar(128) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -118,6 +135,27 @@ CREATE TABLE `maintenancedb` (
 CREATE TABLE `persistence` (
   `id` int(2) NOT NULL,
   `serviceuser` varchar(128) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reschedule`
+--
+
+CREATE TABLE `reschedule` (
+  `id` int(11) NOT NULL,
+  `rid` varchar(16) NOT NULL,
+  `maintenanceid` int(32) NOT NULL,
+  `rcounter` int(11) NOT NULL,
+  `user` varchar(64) NOT NULL,
+  `datetime` datetime NOT NULL,
+  `sdt` datetime NOT NULL,
+  `edt` datetime NOT NULL,
+  `reason` varchar(256) NOT NULL,
+  `location` varchar(256) NOT NULL,
+  `impact` varchar(256) NOT NULL,
+  `active` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -140,13 +178,16 @@ ALTER TABLE `companies`
 -- Indexes for table `kundenCID`
 --
 ALTER TABLE `kundenCID`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `lieferantCID` (`lieferantCID`),
+  ADD KEY `kunde` (`kunde`);
 
 --
 -- Indexes for table `lieferantCID`
 --
 ALTER TABLE `lieferantCID`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `lieferant` (`lieferant`);
 
 --
 -- Indexes for table `maintenancedb`
@@ -157,9 +198,21 @@ ALTER TABLE `maintenancedb`
   ADD KEY `index_derenCIDid` (`derenCIDid`);
 
 --
+-- Indexes for table `notificationSubs`
+--
+ALTER TABLE `notificationSubs`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `persistence`
 --
 ALTER TABLE `persistence`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `reschedule`
+--
+ALTER TABLE `reschedule`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -173,6 +226,12 @@ ALTER TABLE `companies`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `kundenCID`
+--
+ALTER TABLE `kundenCID`
+  MODIFY `id` int(32) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `lieferantCID`
 --
 ALTER TABLE `lieferantCID`
@@ -182,6 +241,18 @@ ALTER TABLE `lieferantCID`
 -- AUTO_INCREMENT for table `maintenancedb`
 --
 ALTER TABLE `maintenancedb`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `notificationSubs`
+--
+ALTER TABLE `notificationSubs`
+  MODIFY `id` int(8) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `reschedule`
+--
+ALTER TABLE `reschedule`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 

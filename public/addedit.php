@@ -182,12 +182,12 @@ global $dbhandle;
 
                   $newSDT = DateTime::createFromFormat("Y-m-d  H:i:s", $ostartdatetime);
                   $newSDT = new DateTime($ostartdatetime);
-                  $newSDT->add(new DateInterval('PT1H'));
+                  $newSDT->add(new DateInterval('PT0H'));
                   $newSDT = $newSDT->format('Y-m-d  H:i:s'); 
 
                   $newEDT = DateTime::createFromFormat("Y-m-d  H:i:s", $oenddatetime);
                   $newEDT = new DateTime($oenddatetime);
-                  $newEDT->add(new DateInterval('PT1H'));
+                  $newEDT->add(new DateInterval('PT0H'));
                   $newEDT = $newEDT->format('Y-m-d  H:i:s');
 
                   $derenCIDQ =  mysqli_query($dbhandle, "SELECT companies.name, lieferantCID.derenCID, lieferantCID.id FROM lieferantCID LEFT JOIN companies ON lieferantCID.lieferant = companies.id WHERE lieferantCID.lieferant LIKE '$olieferant'") or die(mysqli_error($dbhandle));
@@ -1257,7 +1257,7 @@ global $dbhandle;
                     }
                     var rescheduleUser = $('.menumail').text();
                     moment.locale('de-DE');
-                    var rescheduleTime = moment().format('YYYY-MM-DD HH:mm:SS');
+                    var rescheduleTime = moment().format('YYYY/MM/DD\THH:mm:ss');
                     console.log(itemToAppendTo);
                     $('#gridAppend').append('<div data-val="' + rescheduleCount + '" class="rescheduleBlock mdl-grid"><div class="mdl-cell mdl-cell--12-col"><span class="rescheduleHeader">Reschedule ' + rescheduleCount + '</span><span style="float:right"><span class="rescheduleUser rescheduleUser' + rescheduleCount + '">' + rescheduleUser + '</span><span style="font-family:Roboto;font-weight:300;color:#67B246"> at </span><span class="rescheduleTime rescheduleTime' + rescheduleCount + '">' + rescheduleTime + '</span><button id="removeReschedule' + rescheduleCount + '" type="button" style="display: inline; height: 32px; width: 32px; min-width: 32px !important; margin: 0 0 0 10px !important;" class="removeRescheduleBtn mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"> <span class="mdi mdi-18px mdi-trash-can-outline mdi-light"></span> </button> <div class="mdl-tooltip mdl-tooltip--bottom" data-mdl-for="removeReschedule' + rescheduleCount + '">Delete</div></span></div><div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr' + rescheduleCount + '"> <input type="text" id="sdt' + rescheduleCount + '" class="mdl-textfield__input"  value="" data-input> <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span> <label class="mdl-textfield__label" for="sdt' + rescheduleCount + '">New Start Date/Time</label> </div> </div> <div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label flatpickr' + rescheduleCount + '"> <input type="text" id="edt' + rescheduleCount + '" class="mdl-textfield__input"  value="" data-input> <span class="mdl-textfield__label__icon mdi mdi-24px mdi-calendar-clock" title="toggle" data-toggle></span> <label class="mdl-textfield__label" for="edt' + rescheduleCount + '">New End Date/Time</label> </div> </div><div style="margin-right: calc(12% - 32px) !important;" class="mdl-cell mdl-cell--12-col"> <label class="timeZoneLabel" for="timezoneSelector"> Timezone </label> <select class="js-example-basic-multiple js-states form-control" id="timezoneSelector' + rescheduleCount + '"></select> </div><div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" value="" id="mimp' + rescheduleCount + '"> <label class="mdl-textfield__label" for="mimp' + rescheduleCount + '">Impact</label> </div> </div> <div class="mdl-cell mdl-cell--6-col"> <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" value="" id="mloc' + rescheduleCount + '"> <label class="mdl-textfield__label" for="mloc' + rescheduleCount + '">Location</label> </div> </div><div style="margin-right:calc(12% - 32px)!important" class="mdl-cell mdl-cell--12-col"> <div style="width: 100%" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"> <input class="mdl-textfield__input" type="text" id="mreas' + rescheduleCount + '"> <label class="mdl-textfield__label" for="mreas' + rescheduleCount + '">Reason</label> </div> </div></div>');
                     
@@ -1327,7 +1327,7 @@ global $dbhandle;
                     if ($('#medt').val() != '') {
                         var medt = $('#medt').val();
                         var medtUTC = moment.parseZone(medt).utc().format();
-                        var medtISO = moment(medtUTC).toISOString();
+                        var medtISO = moment(medtUTC).format('YYYY/MM/DD\THH:mm:ss');
                     } else {
                         var medtISO = moment().format();
                     }
@@ -1335,14 +1335,22 @@ global $dbhandle;
                     var mdtTZ = $('#timezoneSelector').val();
 
                     var mSDT = $('#sdt0').val();
-                    var mSDT = moment(mSDT).format('YYYY-MM-DD\THH:mm:ss');
+                    var mSDT = moment(mSDT).format();
                     var zOffset = moment.tz(mdtTZ).format('Z');
                     var tzConcat = mSDT.concat(zOffset);
-                    var sdtUTC = moment(tzConcat).utc().format();
+                    var sdtUTC = moment(mSDT).utc().format('YYYY/MM/DD\THH:mm:ss');
                     var mEDT = $('#edt0').val();
-                    var mEDT = moment(mEDT).format('YYYY-MM-DD\THH:mm:ss');
+                    var mEDT = moment(mEDT).format();
                     var tzConcat2 = mEDT.concat(zOffset);
-                    var edtUTC = moment(tzConcat2).utc().format();
+                    var edtUTC = moment(mEDT).utc().format('YYYY/MM/DD\THH:mm:ss');
+
+                    console.log($('#mailSentAt').val());
+                    if ($('#mailSentAt').val() == '') {
+                        var mMailSentAt = moment().format('YYYY/MM/DD\THH:mm:ss');
+                    } else {
+                        var mMailSentAt = moment($('#mailSentAt').val()).utc().format('YYYY/MM/DD\THH:mm:ss');
+                    }
+                    console.log(mMailSentAt);
 
                     if ($('#switch-2:checked').val() == 'on') {
                         var odone = '1';
@@ -1420,7 +1428,7 @@ global $dbhandle;
                         "oloc": $('#mloc0').val(),
                         "oreas": $('#mreas0').val(),
                         //"omailankunde" : makdtUTC.toString(),
-                        "mailSentAt": $('#mailSentAt').val(),
+                        "mailSentAt": mMailSentAt,
                         "odone": odone,
                         "emergency": emergency,
                         "cancelled": cancelled,

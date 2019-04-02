@@ -65,7 +65,7 @@ require('authenticate_google.php');
                     </div>
                     <div class="mdl-card__supporting-text">
                       <!-- time.ly embeded calendar -->
-                      <script src="//dashboard.time.ly/js/embed.js" data-src="https://events.time.ly/2bulc72?view=month" data-max-height="0" id="timely_script" class="timely-script"></script>
+                      <script src="//dashboard.time.ly/js/embed.js" data-src="https://events.time.ly/2bulc72?view=stream" data-max-height="0" id="timely_script" class="timely-script"></script>
                     </div>
                   </div>
               </div>

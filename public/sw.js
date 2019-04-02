@@ -12,7 +12,7 @@
 */
 
 importScripts('https://cdnjs.cloudflare.com/ajax/libs/cache.adderall/1.0.0/cache.adderall.js');
-importScripts("https://cdn.jsdelivr.net/npm/comlinkjs@3/umd/comlink.js");
+// importScripts("https://cdn.jsdelivr.net/npm/comlinkjs@3/umd/comlink.js");
 
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
@@ -23,8 +23,10 @@ var date = ('0' + dateObj.getDate()).slice(-2);
 var year = dateObj.getFullYear();
 var CACHE_VERSION_DAY = date+month+year;
 
-const RUNTIME = 'runtime-v'+CACHE_VERSION_DAY;
-const PRECACHE = 'precache-v'+CACHE_VERSION_DAY;
+const RUNTIME = 'runtime-v20';
+// const RUNTIME = 'runtime-v'+CACHE_VERSION_DAY;
+const PRECACHE = 'precache-v20';
+// const PRECACHE = 'precache-v'+CACHE_VERSION_DAY;
 
 // A list of local resources we always want to be cached.
 const PRECACHE_URLS = [
@@ -140,14 +142,14 @@ self.addEventListener('fetch', event => {
             var fetchPromise = fetch(event.request).then(function(networkResponse) {
               cache.put(event.request, networkResponse.clone());
               return networkResponse;
-            })
+            });
             return response || fetchPromise;
-          })
+          });
         })
       );
     } 
     else {
-      // event.respondWith(fetch(event.request));
+      event.respondWith(fetch(event.request));
       return;
     }
 

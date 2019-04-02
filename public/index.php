@@ -62,35 +62,35 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
     Newtelco Maintenance
   </title>
 
-  <script rel="preload" as="script" src="dist/js/jquery-3.3.1.min.js"></script>
+  <script as="script" src="dist/js/jquery-3.3.1.min.js"></script>
 
   <?php echo file_get_contents("views/meta.html"); ?>
 
   <link href="https://fonts.googleapis.com/css?family=ZCOOL+QingKe+HuangYou" rel="stylesheet">
 
   <!-- material design -->
-  <script rel="preload" as="script" src="dist/js/material.min.js"></script>
+  <script as="script" src="dist/js/material.min.js"></script>
 
   <!-- pace -->
-  <script rel="preload" as="script" src="dist/js/pace.js"></script>
+  <script as="script" src="dist/js/pace.js"></script>
 
   <!-- chart.js -->
-  <script rel="preload" as="script" src="dist/js/chart.js"></script>
+  <script as="script" src="dist/js/chart.js"></script>
 
   <!-- toastify.js -->
-  <script rel="preload" as="script" src="dist/js/toastify.js"></script>
+  <script as="script" src="dist/js/toastify.js"></script>
 
   <!-- chart.js init -->
   <script src="dist/js/ntchartinit2.js"></script>
 
-  <!-- comlink.js -->
-  <script type="module" rel="preload" as="script" src="dist/js/comlink.js"></script>
+  <!-- comlink.js 
+  <script type="module" rel="preload" as="script" src="dist/js/comlink.js"></script> -->
 
   <!-- modalEffects.js -->
-  <script rel="preload" as="script" src="dist/js/modalEffects.js"></script>
+  <script as="script" src="dist/js/modalEffects.js"></script>
 
   <!-- luxon -->
-  <script rel="preload" as="script" type="text/javascript" src="dist/js/moment/luxon.min.js"></script>
+  <script as="script" type="text/javascript" src="dist/js/moment/luxon.min.js"></script>
 
   <!-- OverlayScrollbars -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/OverlayScrollbars.min.js"></script>
@@ -123,7 +123,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
       echo $content_menu;
      ?> 
     <script>
-      <?php echo file_get_contents("dist/js/rollbarsnippet.js"); ?>
+      <?php /* echo file_get_contents("dist/js/rollbarsnippet.js");*/ ?>
       $(window).on('load', function() {
         $('#loading').css('display','none');
       });
@@ -295,8 +295,8 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
           console.log('active service worker found, no need to register')
         } else {
           //Register the ServiceWorker
-          navigator.serviceWorker.register('sw.js', {
-            scope: './'
+          navigator.serviceWorker.register('/sw.js', {
+            scope: '/'
           }).then(function(reg) {
             console.log('Service worker has been registered for scope:'+ reg.scope);
             // initialiseState();
@@ -315,11 +315,26 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
               });
           });
           // get notification permission
-          const permission = window.Notification.requestPermission();
-          if(permission !== 'granted'){
-              const permToast = showToaster("Notify Permissions Missing");
-              permToast.showToast();
-          }
+          const permission = Notification.requestPermission().then(
+            function(permission) { 
+              console.log('Permission: ', permission)
+              if(permission == 'granted'){
+                  const permToast = showToaster("Notification Permissions Granted");
+                  setTimeout(function() { permToast.showToast(); }, 1000);
+              } else {
+                  const permToast = showToaster("Notification Permissions Denied");
+                  setTimeout(function() { permToast.showToast(); }, 1000);
+
+              }
+            }
+          );
+          // permission.then(
+          //   console.log('Permission: ' + permission);
+          //   if(permission !== 'granted'){
+          //       const permToast = showToaster("Notify Permissions Missing");
+          //       permToast.showToast();
+          //   }
+          // );
         }
       
         function subscribePush() {
@@ -328,7 +343,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
               alert('Your browser doesn\'t support push notification.');
               return false;
             }
-
+            console.log('Progress 0 ')
             //To subscribe `push notification` from push manager
             const priv = '47EHLIK8B0qEK7stCiGipjURVHZg0XSLRn0c9rqlF5s';
             const pub = 'BOoj1c6teeX075bCUjVA3K0LVrDxSTM2eQKjjV_DDDQohscn7wzzrPKRizkzqI2vlodUuKHOUJGXsibl6A5nCVA';
@@ -340,7 +355,9 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
             .then(function (subscription) {
               //saveSubscriptionID(subscription);
               changePushStatus(true);
+              console.log('Progress 1');
               const subscriptionObjectToo = JSON.stringify(subscription);
+              console.log('Progress 2 - ' + JSON.stringify(subscription));
               $.ajax({
                 type: "POST",
                 //url: "https://webhook.site/8c9d96b6-03b3-4ab7-96f8-717cc1914002",
@@ -547,8 +564,8 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
         <link rel="preload stylesheet" as="style" href="dist/fonts/fontawesome5.5.0.min.css" onload="this.rel='stylesheet'">
 
         <!-- material design -->
-        <link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css" onload="this.rel='stylesheet'">
-        <link rel="preload stylesheet" as="style" href="dist/fonts/GFonts_Roboto.css" type="text/css" crossorigin onload="this.rel='stylesheet'">
+        <link rel="stylesheet" as="style" href="dist/fonts/materialicons400.css" onload="this.rel='stylesheet'">
+        <link rel="stylesheet" as="style" href="dist/fonts/GFonts_Roboto.css" type="text/css" crossorigin onload="this.rel='stylesheet'">
 
         <!-- material icons -->
         <link rel="preload stylesheet" as="style" href="dist/fonts/materialicons400.css" onload="this.rel='stylesheet'">

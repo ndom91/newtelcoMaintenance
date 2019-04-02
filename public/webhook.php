@@ -146,7 +146,11 @@ if(sizeof($listMessageArray) > 0) {
 $getUsersToNotifyQuery = mysqli_query($dbhandle, "SELECT DISTINCT username FROM notificationSubs;") or die(mysqli_error($dbhandle));
 
 while($getUsersArray = mysqli_fetch_assoc($getUsersToNotifyQuery)) {
-  $notifyUsers[] = $getUsersArray;
+  if(is_null($getUserArray)) {
+    $notifyUsers = [];
+  } else {
+    $notifyUsers[] = $getUsersArray;
+  }
 }
 
 // var_dump($notifyUsers);

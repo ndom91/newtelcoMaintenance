@@ -12,7 +12,7 @@
 
 ### Intro
 
-Newtelco Maintenance Web Application, designed and developed in-house, to replace Excel Tables + Emails back and forth.
+> Newtelco Maintenance Web Application, designed and developed in-house, to replace Excel Tables + Emails back and forth.
 
 ### Screenshots  
 <img src="http://i.imgur.com/1x7gBWw.png" width="860" height="436">  
@@ -23,21 +23,25 @@ Newtelco Maintenance Web Application, designed and developed in-house, to replac
 
 1) G Suite Account @ newtelco.de  
 2) MySQL/MariaDB  
-3) PHP 7.0+ and webserver (i.e. nginx or apache)
+3) PHP 7.0+ and apache2 2.4.39
 
 > **Tested On**:
 
 > - Ubuntu 18.04.01 and CentOS 6
 > - MariaDB 10.1.34 and 10.1.38 and 10.3
 > - PHP 7.1.25 + 7.2.16
-> - Apache 2.4.29
+> - Apache 2.4.29 + 2.4.39
 
 ### Installation
+
+If you're internal to Newtelco, push anything to the repo at our internal Gitlab and just let the Gitlab Pipeline install it to our production web server. 
+
+If you've stumbled upon this repo and want to check it out, simply: 
 
 1) Clone this repo  
 > `git clone https://git.newtelco.de/ndomino/maintenancedb`
 
-2) let the pipeline install it..  
+2) Run `install.sh` 
 
 3) Create database  
 > `sudo mysql -u[user] -p maintenancedb < configs/create_maintenanceDB.sql`  
@@ -47,6 +51,6 @@ Newtelco Maintenance Web Application, designed and developed in-house, to replac
 > systemd - `sudo systemctl restart apache2`  
 > init.d - `sudo service apache2 restart`  
 
-6) Enjoy!
+6) Enjoy, and please push back upstream any improvements :)
 
 

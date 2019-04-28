@@ -42,7 +42,7 @@ esac
 
 echo ''
 echo '[*] Fixing permissions'
-chown -R www-data:ndo *
+chown -R www-data:$(whoami) *
 chmod -R 775 *
 
 echo ''
@@ -82,13 +82,10 @@ fi
 echo ''
 echo '[*] installing dependencies'
 echo '[*] 1 - npm i'
-su $(whoami) -c "
-source ~/.nvm/nvm.sh;
-npm i;"
+su $(whoami) -c "npm i"
 
 echo '[*] 2 - composer install'
-su $(whoami) -c "
-composer install;"
+su $(whoami) -c "composer install"
 echo ''
 
 echo ''

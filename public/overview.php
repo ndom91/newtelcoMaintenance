@@ -127,7 +127,7 @@ global $dbhandle;
 
                         $newDate = DateTime::createFromFormat("Y-m-d  H:i:s", $value);
                         $newDate = new DateTime($value);
-                        $newDate->add(new DateInterval('PT1H'));
+                        $newDate->add(new DateInterval('PT0H'));
                         $newDate = $newDate->format('Y-m-d  H:i:s'); // for example
 
                         echo "<td> $newDate </td>";
@@ -135,7 +135,7 @@ global $dbhandle;
 
                         $newDate = DateTime::createFromFormat("Y-m-d  H:i:s", $value);
                         $newDate = new DateTime($value);
-                        $newDate->add(new DateInterval('PT1H'));
+                        $newDate->add(new DateInterval('PT0H'));
                         $newDate = $newDate->format('Y-m-d  H:i:s'); // for example
 
                         echo "<td> $newDate </td>";
@@ -143,7 +143,7 @@ global $dbhandle;
 
                         $newDate = DateTime::createFromFormat("Y-m-d  H:i:s", $value);
                         $newDate = new DateTime($value);
-                        $newDate->add(new DateInterval('PT1H'));
+                        $newDate->add(new DateInterval('PT0H'));
                         $newDate = $newDate->format('Y-m-d  H:i:s'); // for example
 
                         echo "<td> $newDate </td>";
@@ -151,7 +151,7 @@ global $dbhandle;
 
                         $newDate = DateTime::createFromFormat("Y-m-d  H:i:s", $value);
                         $newDate = new DateTime($value);
-                        $newDate->add(new DateInterval('PT1H'));
+                        $newDate->add(new DateInterval('PT0H'));
                         $newDate = $newDate->format('Y-m-d  H:i:s'); // for example
 
                         echo "<td> $newDate </td>";

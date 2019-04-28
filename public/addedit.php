@@ -1394,19 +1394,19 @@ global $dbhandle;
                     }
                     var dcid = selectedNums.join(',');
 
-                    if($('#mimp0').val().length > 64) {
-                        alert('Impact must be less than 64 characters!');
+                    if($('#mimp0').val().length > 128) {
+                        alert('Impact must be less than 128 characters!');
                         return;
                     }
 
-                    if($('#mloc0').val().length > 64) {
-                        alert('Location must be less than 64 characters!');
+                    if($('#mloc0').val().length > 128) {
+                        alert('Location must be less than 128 characters!');
                         return;
                     }
                     console.log($('#mreas0').val().length);
 
-                    if($('#mreas0').val().length > 128) {
-                        alert('Reason must be less than 128 characters!');
+                    if($('#mreas0').val().length > 256) {
+                        alert('Reason must be less than 256 characters!');
                         return;
                     }
 
@@ -1699,6 +1699,8 @@ global $dbhandle;
                     });
 
                     $('#dataTable4').on('click', '#sendMailbtn', function() {
+
+
                         table3 = $('#dataTable4').DataTable();
                         var data = table3.row($(this).parents('tr')).data();
 
@@ -1718,7 +1720,7 @@ global $dbhandle;
                         var regExp = /\(([^)]+)\)/;
                         var matches = regExp.exec(tzSuffix);
                         var tzSuffixRAW = matches[1];
-                        tzSuffixRAW = tzSuffixRAW.replace("+", "%2B");
+                        // tzSuffixRAW = tzSuffixRAW.replace("+", "%2B");
 
                         var rescheduleText = '';
                         var rescheduleHeader = '';
@@ -1772,7 +1774,9 @@ global $dbhandle;
 
                         body += '</table><p>We sincerely regret causing any inconveniences by this and hope for your understanding and the further mutually advantageous cooperation.</p><p>If you have any questions feel free to contact us at maintenance@newtelco.de.</p></div>​​</body>​​<footer>​<style>.sig{font-family:Century Gothic, sans-serif;font-size:9pt;color:#636266!important;}b.i{color:#4ca702;}.gray{color:#636266 !important;}a{text-decoration:none;color:#636266 !important;}</style><div class="sig"><div>Best regards <b class="i">|</b> Mit freundlichen Grüßen</div><br><div><b>Newtelco Maintenance Team</b></div><br><div>NewTelco GmbH <b class="i">|</b> Moenchhofsstr. 24 <b class="i">|</b> 60326 Frankfurt a.M. <b class="i">|</b> DE <br>www.newtelco.com <b class="i">|</b> 24/7 NOC  49 69 75 00 27 30 ​​<b class="i">|</b> <a style="color:#" href="mailto:service@newtelco.de">service@newtelco.de</a><br><br><div><img src="https://home.newtelco.de/sig.png" height="29" width="516"></div></div>​</footer>';
 
-                        console.log(body.length); 
+                        // console.log(body.length); 
+                        // console.log(body);
+                        body = encodeURIComponent(body);
                         openInNewTab2('mailto:' + data['maintenanceRecipient'] + '?from=maintenance@newtelco.de&subject='+ emergencyHeader + rescheduleHeader +'Planned Work Notification - ' + maintID + '&cc=service@newtelco.de;maintenance@newtelco.de&body=​​​​' + body);
 
                         var DateTime = luxon.DateTime;

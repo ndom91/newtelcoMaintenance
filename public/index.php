@@ -358,6 +358,7 @@ Preloader: https://dribbble.com/shots/4963880-Down-for-Routine-Maintenance
               console.log('Progress 1');
               const subscriptionObjectToo = JSON.stringify(subscription);
               console.log('Progress 2 - ' + JSON.stringify(subscription));
+              const username = $('.menumail').text().trim();
               $.ajax({
                 type: "POST",
                 //url: "https://webhook.site/8c9d96b6-03b3-4ab7-96f8-717cc1914002",

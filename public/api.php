@@ -167,6 +167,57 @@
 
     echo json_encode($firmenArray);
 
+  } elseif (isset($_GET['lieferantenRowDelete'])) {
+    
+    $rowsToDelete = json_decode($_POST['selectedRows']);
+
+    for($i = 0; $i < sizeof($rowsToDelete); $i++) {
+      $id = mysqli_real_escape_string($dbhandle, $rowsToDelete[$i]);
+      $lieferantenDelQ = mysqli_query($dbhandle, "DELETE FROM lieferantCID WHERE id LIKE '" . $id . "';") or die(mysqli_error($dbhandle));
+    }
+
+    if ($lieferantenDelQ == 'TRUE') {
+      $lieferantDelResults['deleted'] = 1;
+    } else {
+      $lieferantDelResults['deleted'] = 0;
+    }
+
+    echo json_encode($lieferantDelResults);
+  
+  } elseif (isset($_GET['kundenRowDelete'])) {
+    
+    $rowsToDelete = json_decode($_POST['selectedRows']);
+
+    for($i = 0; $i < sizeof($rowsToDelete); $i++) {
+      $id = mysqli_real_escape_string($dbhandle, $rowsToDelete[$i]);
+      $kundenDelQ = mysqli_query($dbhandle, "DELETE FROM kundenCID WHERE id LIKE '" . $id . "';") or die(mysqli_error($dbhandle));
+    }
+
+    if ($kundenDelQ == 'TRUE') {
+      $kundenDelResults['deleted'] = 1;
+    } else {
+      $kundenDelResults['deleted'] = 0;
+    }
+
+    echo json_encode($kundenDelResults);
+  
+  } elseif (isset($_GET['firmenRowDelete'])) {
+    
+    $rowsToDelete = json_decode($_POST['selectedRows']);
+
+    for($i = 0; $i < sizeof($rowsToDelete); $i++) {
+      $id = mysqli_real_escape_string($dbhandle, $rowsToDelete[$i]);
+      $firmenDelQ = mysqli_query($dbhandle, "DELETE FROM companies WHERE id LIKE '" . $id . "';") or die(mysqli_error($dbhandle));
+    }
+
+    if ($firmenDelQ == 'TRUE') {
+      $firmenDelResults['deleted'] = 1;
+    } else {
+      $firmenDelResults['deleted'] = 0;
+    }
+
+    echo json_encode($firmenDelResults);
+  
   } elseif (isset($_GET['updateLieferanten'])) {
 
     /**************************

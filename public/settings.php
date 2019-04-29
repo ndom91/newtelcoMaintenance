@@ -910,6 +910,7 @@ if (isset($_POST['endlabel'])) {
                   addRowPos:"top",          //when adding a new row, add it to the top of the table
                   history:true,             //allow undo and redo actions on the table
                   resizableRows:true,       //allow row order to be changed
+                  selectable: true,         //allow selection - i.e. for deletion
                   initialSort:[             //set the initial sort order of the data
                     {column:"name", dir:"asc"},
                   ],
@@ -927,17 +928,10 @@ if (isset($_POST['endlabel'])) {
                       success: function(response, textstatus, xhr) {
                         const firmenUpdated = showToaster("Firmen Updated");
                         firmenUpdated.showToast();
-                        // var snackbarContainer3 = document.querySelector('#firmenUpdated');
-                        // var dataFirmenUpdated2 = {
-                        //   message: 'Firmen Updated',
-                        //   timeout: 2000
-                        // };
-                        // snackbarContainer3.MaterialSnackbar.showSnackbar(dataFirmenUpdated2);
                       },
                       error: function(XMLHttpRequest, textstatus, error) {
                         const firmenError = showToaster("Firmen Error - " + textstatus + ' - ' + error);
                         firmenError.showToast();
-                        // alert("AJAX error: " + textstatus + "; " + error);
                       }
                     })
                   }
@@ -955,14 +949,54 @@ if (isset($_POST['endlabel'])) {
                   ]]);
                 })
 
+                key('alt+shift+l', function(){ 
+                  // var firmenTable = $("#firmenTable").tabulator({});
+                  // console.log(firmenTable);
+                  var selectedRows = firmenTable.getSelectedRows();
+                  var selectedRowNames = '';
+                  var selectedRowIDs = [];
+                  for(i = 0; i < selectedRows.length; i++) {
+                    selectedRowNames += selectedRows[i]._row.data.name + ", ";
+                    selectedRowIDs.push(selectedRows[i]._row.data.id);
+                  }
+                  console.log(selectedRowIDs);
+                  selectedRowNames = selectedRowNames.substring(0, selectedRowNames.length -2);
+                  showDialog({
+                    title: 'Delete Companies',
+                    text: '<p>Do you really wish to delete the selected companies: <br><br><b>' + selectedRowNames + '</b><br><br> There is <b>no</b> reversing this decision.</p>',
+                    negative: {
+                      title: 'Cancel',
+                    },
+                    positive: {
+                      title: 'Delete',
+                      onClick: function() {
+                        $.ajax({
+                          'url':'api?firmenRowDelete',
+                          'type': 'post',
+                          'datatype': 'json',
+                          'data': 'selectedRows=' + JSON.stringify(selectedRowIDs),
+                          'success': function(data) {
+                            console.log(data);
+                            var delRows = [];
+                            for(i = 0; i < selectedRows.length; i++) {
+                              firmenTable.deleteRow(selectedRows[i]._row).then(function(){
+                                const rowDeletedToast = showToaster("Row Deleted");
+                                rowDeletedToast.showToast();
+                              });
+                            }
+                          }
+                        })
+                      }
+                    }
+                  })
+                })
               },
               'error': function () {
                 console.log("Loading error");
               }
             });
-
-          }
-        });
+          };
+         });
 
 
         $('#lieferantenTab').click(function(){
@@ -990,6 +1024,7 @@ if (isset($_POST['endlabel'])) {
                 tooltips:true,            //show tool tips on cells
                 addRowPos:"top",          //when adding a new row, add it to the top of the table
                 history:true,             //allow undo and redo actions on the table
+                selectable:true,
                 resizableRows:true,       //allow row order to be changed
                 // initialSort:[             //set the initial sort order of the data
                 //   {column:"name", dir:"desc"}
@@ -1035,6 +1070,47 @@ if (isset($_POST['endlabel'])) {
                   {field:"derenCID",type:"like",value:lieferantenSearchQuery},
                 ]]);
               })
+              key('alt+shift+l', function(){ 
+                // var firmenTable = $("#firmenTable").tabulator({});
+                // console.log(firmenTable);
+                var selectedRows = lieferantTable.getSelectedRows();
+                var selectedRowNames = '';
+                var selectedRowIDs = [];
+                for(i = 0; i < selectedRows.length; i++) {
+                  selectedRowNames += selectedRows[i]._row.data.derenCID + ", ";
+                  selectedRowIDs.push(selectedRows[i]._row.data.id);
+                }
+                console.log(selectedRowIDs);
+                selectedRowNames = selectedRowNames.substring(0, selectedRowNames.length -2);
+                showDialog({
+                  title: 'Delete Lieferanten CIDs',
+                  text: '<p>Do you really wish to delete the selected lieferanten CIDs: <br><br><b>' + selectedRowNames + '</b><br><br> There is <b>no</b> reversing this decision.</p>',
+                  negative: {
+                    title: 'Cancel',
+                  },
+                  positive: {
+                    title: 'Delete',
+                    onClick: function() {
+                      $.ajax({
+                        'url':'api?lieferantenRowDelete',
+                        'type': 'post',
+                        'datatype': 'json',
+                        'data': 'selectedRows=' + JSON.stringify(selectedRowIDs),
+                        'success': function(data) {
+                          console.log(data);
+                          var delRows = [];
+                          for(i = 0; i < selectedRows.length; i++) {
+                            lieferantTable.deleteRow(selectedRows[i]._row).then(function(){
+                              const rowDeletedToast = showToaster("Row Deleted");
+                              rowDeletedToast.showToast();
+                            });
+                          }
+                        }
+                      })
+                    }
+                  }
+                })
+              })
             },
             'error': function () {
               console.log("Loading error");
@@ -1077,6 +1153,7 @@ if (isset($_POST['endlabel'])) {
                 addRowPos:"top",          //when adding a new row, add it to the top of the table
                 history:true,             //allow undo and redo actions on the table
                 resizableRows:true,       //allow row order to be changed
+                selectable: true,
                 layoutColumnsOnNewData: true,
                 initialSort:[             //set the initial sort order of the data
                   {column:"derenCID", dir: "desc"},
@@ -1127,6 +1204,48 @@ if (isset($_POST['endlabel'])) {
                     {field:"derenCID",type:"like",value:kundenSearchQuery},
                     {field:"kundenCID",type:"like",value:kundenSearchQuery},
                   ]]);
+              })
+              key('alt+shift+l', function(){ 
+                // var firmenTable = $("#firmenTable").tabulator({});
+                // console.log(firmenTable);
+                var selectedRows = kundenTable.getSelectedRows();
+                var selectedRowNames = '';
+                var selectedRowIDs = [];
+                console.log(selectedRows);
+                for(i = 0; i < selectedRows.length; i++) {
+                  selectedRowNames += selectedRows[i]._row.data.kundenCID + " (" + selectedRows[i]._row.data.name + ")<br>";
+                  selectedRowIDs.push(selectedRows[i]._row.data.id);
+                }
+                console.log(selectedRowIDs);
+                selectedRowNames = selectedRowNames.substring(0, selectedRowNames.length -4);
+                showDialog({
+                  title: 'Delete Kunden CIDs',
+                  text: '<p>Do you really wish to delete the selected kunden CIDs: <br><br><b>' + selectedRowNames + '</b><br><br> There is <b>no</b> reversing this decision.</p>',
+                  negative: {
+                    title: 'Cancel',
+                  },
+                  positive: {
+                    title: 'Delete',
+                    onClick: function() {
+                      $.ajax({
+                        'url':'api?kundenRowDelete',
+                        'type': 'post',
+                        'datatype': 'json',
+                        'data': 'selectedRows=' + JSON.stringify(selectedRowIDs),
+                        'success': function(data) {
+                          console.log(data);
+                          var delRows = [];
+                          for(i = 0; i < selectedRows.length; i++) {
+                            kundenTable.deleteRow(selectedRows[i]._row).then(function(){
+                              const rowDeletedToast = showToaster("Row Deleted");
+                              rowDeletedToast.showToast();
+                            });
+                          }
+                        }
+                      })
+                    }
+                  }
+                })
               })
             },
             'error': function () {

@@ -37,7 +37,6 @@ if (isset($_POST['endlabel'])) {
   <!-- modalEffects.js -->
   <script rel="preload" as="script" src="dist/js/modalEffects.js"></script>
 
-
   <!-- handsontable -->
   <script rel="preload" as="script" type="text/javascript" src="dist/js/handsontable.min.js"></script>
 

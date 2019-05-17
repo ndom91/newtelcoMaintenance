@@ -6,3 +6,16 @@ vendor/
 logs/
 db_backup/
 .vscode/
+
+.scannerwork/
+addSub_data.txt
+addedit.php.bak
+configs/dbconfig_newtelcondo.ini
+gmailMsg.txt
+incoming.php.bak
+index.php.gridbackup
+lastHistoryId.txt
+lastHistoryId_Resp.txt
+public/gmailMsg.txt
+public/lastHistoryId.txt
+

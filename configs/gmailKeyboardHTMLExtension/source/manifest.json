@@ -1,9 +1,10 @@
 {
   "name": "Gmail Append HTML [Keyboard]",
   "description": "Allows the usage of HTML content in Gmail from the context menu.",
-  "version": "0.4.1",
+  "version": "1.0.2",
   "permissions": ["contextMenus", "clipboardRead"],
   "manifest_version": 2,
+  "update_url": "https://maintenance.newtelco.de/extension/1.0/manifest.xml",
   "background": {
     "persistent": false,
     "scripts": ["background.js"]

@@ -14,14 +14,14 @@ putenv('GOOGLE_APPLICATION_CREDENTIALS=configs/maintenanceapp-1dd9507b2c22.json'
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-file_put_contents("gmailMsg.txt","\n\n",FILE_APPEND);
-file_put_contents("gmailMsg.txt",json_encode($data),FILE_APPEND);
+// file_put_contents("gmailMsg.txt","\n\n",FILE_APPEND);
+// file_put_contents("gmailMsg.txt",json_encode($data),FILE_APPEND);
 $jsonencoded = json_encode($data);
 //file_put_contents("webhookphp2.txt",$jsonencoded,FILE_APPEND);
 
 $b64decoded = base64_decode($data['message']['data']);
-file_put_contents("gmailMsg.txt","\n\n",FILE_APPEND);
-file_put_contents("gmailMsg.txt",$b64decoded,FILE_APPEND);
+// file_put_contents("gmailMsg.txt","\n\n",FILE_APPEND);
+// file_put_contents("gmailMsg.txt",$b64decoded,FILE_APPEND);
 $jsondecodedMessage = json_decode($b64decoded,true);
 
 //file_put_contents("gmailMsg.txt","\n",FILE_APPEND);
@@ -107,7 +107,7 @@ function listHistory($service, $userId, $startHistoryId) {
     return $histories;
   }
 
-file_put_contents("gmailMsg.txt","\n\n",FILE_APPEND);
+// file_put_contents("gmailMsg.txt","\n\n",FILE_APPEND);
 $listMessageArray = array();
 //file_put_contents("gmailMsg.txt",json_encode($listMessageArray),FILE_APPEND);
 $listHistory = listHistory($gmailService,'fwaleska@newtelco.de',$historyid);
@@ -119,7 +119,7 @@ for($i=0;$i<sizeof($listHistory);$i++){
     array_push($listMessageArray,$listMessage);
 }
 $listMessageArray = array_unique($listMessageArray);
-file_put_contents("gmailMsg.txt","\n".json_encode($listMessageArray),FILE_APPEND);
+// file_put_contents("gmailMsg.txt","\n".json_encode($listMessageArray),FILE_APPEND);
 
 
 $optParamsMsg['format'] = 'metadata';
@@ -127,7 +127,7 @@ if(sizeof($listMessageArray) > 0) {
   $countLength = max(array_keys($listMessageArray));
   $single_message = $gmailService->users_messages->get('fwaleska@newtelco.de',$listMessageArray[$countLength],$optParamsMsg);
 
-  file_put_contents("gmailMsg.txt",$listMessageArray[$countLength],FILE_APPEND);
+  // file_put_contents("gmailMsg.txt",$listMessageArray[$countLength],FILE_APPEND);
 
   $payload = $single_message->getPayload();
   $headers = $payload->getHeaders();

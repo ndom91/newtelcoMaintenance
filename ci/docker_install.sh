@@ -27,12 +27,12 @@ apt-get install gnupg2 git zip unzip libpng-dev libgmp-dev -yqq
 #chmod +x /usr/local/bin/phpunit
 
 # https://github.com/phpmd/phpmd
-curl --location --output /usr/local/bin/phpmd http://static.phpmd.org/php/latest/phpmd.phar
-chmod +x /usr/local/bin/phpmd
+# curl --location --output /usr/local/bin/phpmd http://static.phpmd.org/php/latest/phpmd.phar
+# chmod +x /usr/local/bin/phpmd
 
 # https://github.com/sebastianbergmann/phploc
-curl --location --output /usr/local/bin/phploc https://phar.phpunit.de/phploc.phar
-chmod +x /usr/local/bin/phploc
+# curl --location --output /usr/local/bin/phploc https://phar.phpunit.de/phploc.phar
+# chmod +x /usr/local/bin/phploc
 
 # Rollbar Deploy Notify
 ACCESS_TOKEN=e0dbc12159df4dd3a6087170e3a8ace0

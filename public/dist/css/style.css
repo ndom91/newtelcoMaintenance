@@ -34,7 +34,6 @@ body::after {
 	box-shadow:
 	  inset 0px 121px 110px -100px #000,
 	  inset 0px -121px 110px -100px #000;
-    /*background: url('../images/bg4.jpg') no-repeat center center fixed; */
 }
 
 table {
@@ -657,8 +656,9 @@ base-chart.chart {
 }
 
 .mdl-layout__header {
-  box-shadow: rgba(0,0,0,.1) 0 5px 20px 0,rgba(103,178,70,.6) 0 13px 24px -8px!important;
+  box-shadow: rgba(0,0,0,.2) 0 0 25px 10px !important;
 }
+
 /* Hamburger -> Arrow Animation */
 
 .con {
@@ -738,56 +738,6 @@ base-chart.chart {
 
 
 /* End Hamburger -> Arrow Animation */
-
-/* 
-
-ToDo: Expandable Drawer:
-
-https://stackoverflow.com/questions/36812372/material-design-expandable-drawer
-
-https://jsfiddle.net/damo_s/Ln6e4qLt/
-
-.mdl-layout__drawer {
-  overflow: hidden;
-  width: 55px;
-  transform: translateX(0);
-  transition: 250ms width ease-in-out;
-}
-.mdl-layout__drawer .mdl-navigation__link span {
-  opacity: 0;
-  transition: 250ms opacity ease-in-out;
-}
-.mdl-layout__drawer + .mdl-layout__header, .mdl-layout__drawer ~ .mdl-layout__content {
-  transition: 250ms margin-left ease-in-out;
-}
-.mdl-layout__drawer.is-expanded {
-  width: 240px;
-}
-.mdl-layout__drawer.is-expanded .mdl-navigation__link span {
-  opacity: 1;
-}
-.mdl-layout__drawer.is-expanded + .mdl-layout__header {
-  margin-left: 240px !important;
-}
-.mdl-layout__drawer.is-expanded ~ .mdl-layout__content {
-  margin-left: 240px !important;
-}
-.mdl-layout__header, .mdl-layout__content {
-  margin-left: 55px !important;
-}
-.mdl-navigation {
-  width: 240px;
-}
-.mdl-layout__header-row {
-  padding: 0 16px 0 22px;
-}
-.mdl-layout__content {
-  background: #878787;
-}
-.mdl-layout__drawer-button {
-  display: none;
-} */
-
 
 
 /* header -> menu */

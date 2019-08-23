@@ -10,11 +10,9 @@
 
 
 👨 [`ndomino@newtelco.de`](mailto:ndomino@newtelco.de)  
-🌍 [`https://maintenance.newtelco.de`](https://maintenance.newtelco.de)
+🌍 [`maintenance.newtelco.de`](https://maintenance.newtelco.de)
 
-### 🏁 Intro
-
-> Newtelco Maintenance Web Application, designed and developed in-house, to replace Excel Tables + Emails back and forth.
+Newtelco Maintenance Web Application, designed and developed in-house, to replace Excel Tables + Emails back and forth in order to track incoming network circuit maintenance and inform our customers of effected circuits of theirs.
 
 ### 🏗️ Requirements
 
@@ -36,20 +34,21 @@ If you're internal to Newtelco, push anything to the repo at our internal Gitlab
 
 If you've stumbled upon this repo and want to check it out, simply: 
 
-1) Clone this repo  
+**1)** Clone this repo  
 > `git clone https://git.newtelco.de/ndomino/maintenancedb`
 
-2) Run `install.sh` as root 
+**2)** Run `install.sh` as root 
 
-3) Create database  
+**3)** Create database  
 > `sudo mysql -u[user] -p maintenancedb < configs/create_maintenanceDB.sql`  
 
-4) Copy Apache Configs from configs/apache2 to your apache sites config (on Ubuntu located at `/etc/apache2/sites-enabled`)  
-5) Restart Apache  
+**4)** Copy Apache Configs from configs/apache2 to your apache sites config (on Ubuntu located at `/etc/apache2/sites-enabled`)  
+**5)** Restart Apache  
 > systemd - `sudo systemctl restart apache2`  
 > init.d - `sudo service apache2 restart`  
 
-6) Enjoy, and please push back upstream any improvements :)
+**6)** Enjoy, and please push back upstream any improvements :)
+
 
 ### 📺 Screenshots  
 
